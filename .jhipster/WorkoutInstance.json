@@ -1,0 +1,80 @@
+{
+    "fluentMethods": true,
+    "relationships": [
+        {
+            "relationshipName": "userDemographic",
+            "otherEntityName": "userDemographic",
+            "relationshipType": "many-to-one",
+            "relationshipValidateRules": [
+                "required"
+            ],
+            "otherEntityField": "last_name"
+        },
+        {
+            "relationshipName": "workoutTemplate",
+            "otherEntityName": "workoutTemplate",
+            "relationshipType": "many-to-many",
+            "ownerSide": false,
+            "otherEntityRelationshipName": "workoutInstance"
+        },
+        {
+            "relationshipName": "muscle",
+            "otherEntityName": "muscle",
+            "relationshipType": "many-to-many",
+            "otherEntityField": "name",
+            "ownerSide": true,
+            "otherEntityRelationshipName": "workoutInstance"
+        },
+        {
+            "relationshipName": "exercise",
+            "otherEntityName": "exercise",
+            "relationshipType": "many-to-many",
+            "relationshipValidateRules": [
+                "required"
+            ],
+            "otherEntityField": "name",
+            "ownerSide": true,
+            "otherEntityRelationshipName": "workoutInstance"
+        },
+        {
+            "relationshipName": "workoutLog",
+            "otherEntityName": "workoutLog",
+            "relationshipType": "many-to-one",
+            "otherEntityField": "id"
+        }
+    ],
+    "fields": [
+        {
+            "fieldName": "name",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required",
+                "minlength"
+            ],
+            "fieldValidateRulesMinlength": 0
+        },
+        {
+            "fieldName": "last_updated",
+            "fieldType": "ZonedDateTime",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "created_on",
+            "fieldType": "ZonedDateTime",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "rest_between_instances",
+            "fieldType": "Integer"
+        }
+    ],
+    "changelogDate": "20170128030605",
+    "dto": "no",
+    "service": "serviceClass",
+    "entityTableName": "workout_instance",
+    "pagination": "infinite-scroll"
+}

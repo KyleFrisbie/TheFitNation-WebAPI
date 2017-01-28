@@ -1,0 +1,31 @@
+
+<div>
+    <h2><span>User Weight</span> {{vm.userWeight.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="dl-horizontal jh-entity-details">
+        <dt><span data-translate="theFitNationApp.userWeight.weight_date">Weight Date</span></dt>
+        <dd>
+            <span>{{vm.userWeight.weight_date | date:'medium'}}</span>
+        </dd>
+        <dt><span>Weight</span></dt>
+        <dd>
+            <span>{{vm.userWeight.weight}}</span>
+        </dd>
+        <dt><span>User Demographic</span></dt>
+        <dd>
+            <a ui-sref="user-demographic-detail({id:vm.userWeight.userDemographic.id})">{{vm.userWeight.userDemographic.last_name}}</a>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            ui-sref="{{ vm.previousState }}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span> Back</span>
+    </button>
+
+    <button type="button" ui-sref="user-weight-detail.edit({id:vm.userWeight.id})" class="btn btn-primary">
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="hidden-xs hidden-sm"> Edit</span>
+    </button>
+</div>

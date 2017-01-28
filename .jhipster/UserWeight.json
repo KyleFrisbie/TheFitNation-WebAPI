@@ -1,0 +1,37 @@
+{
+    "fluentMethods": true,
+    "relationships": [
+        {
+            "relationshipName": "userDemographic",
+            "otherEntityName": "userDemographic",
+            "relationshipType": "many-to-one",
+            "relationshipValidateRules": [
+                "required"
+            ],
+            "otherEntityField": "last_name"
+        }
+    ],
+    "fields": [
+        {
+            "fieldName": "weight_date",
+            "fieldType": "ZonedDateTime",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "weight",
+            "fieldType": "Float",
+            "fieldValidateRules": [
+                "required",
+                "min"
+            ],
+            "fieldValidateRulesMin": 0
+        }
+    ],
+    "changelogDate": "20170128025319",
+    "dto": "no",
+    "service": "serviceClass",
+    "entityTableName": "user_weight",
+    "pagination": "infinite-scroll"
+}
