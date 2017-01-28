@@ -1,3 +1,21 @@
+######################
+# Project Specific
+######################
+/src/main/webapp/content/css/main.css
+/target/www/**
+
+######################
+# Node
+######################
+node/
+node_tmp/
+node_modules/
+
+######################
+# SASS
+######################
+.sass-cache/
+
 # Created by https://www.gitignore.io/api/intellij,java,windows,macos
 
 ### Intellij ###
@@ -118,3 +136,59 @@ Temporary Items
 hs_err_pid*
 
 # End of https://www.gitignore.io/api/intellij,java,windows,macos
+
+######################
+# Maven
+######################
+log/
+target/
+
+######################
+# Gradle
+######################
+.gradle/
+
+######################
+# Package Files
+######################
+*.db
+
+######################
+# Mac OSX
+######################
+.DS_Store
+.svn
+
+######################
+# Directories
+######################
+/build/
+/bin/
+/deploy/
+
+######################
+# Logs
+######################
+*.log
+
+######################
+# Others
+######################
+*.*~
+*~
+.merge_file*
+
+######################
+# Gradle Wrapper
+######################
+!gradle/wrapper/gradle-wrapper.jar
+
+######################
+# Maven Wrapper
+######################
+!.mvn/wrapper/maven-wrapper.jar
+
+######################
+# ESLint
+######################
+.eslintcache

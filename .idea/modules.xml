@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/TheFitNation-WebAPI.iml" filepath="$PROJECT_DIR$/.idea/TheFitNation-WebAPI.iml" />
+      <module fileurl="file://$PROJECT_DIR$/the-fit-nation.iml" filepath="$PROJECT_DIR$/the-fit-nation.iml" />
     </modules>
   </component>
 </project>
