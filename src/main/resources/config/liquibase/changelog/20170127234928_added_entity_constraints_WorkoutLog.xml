@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <!--
+        Added the constraints for entity WorkoutLog.
+    -->
+    <changeSet id="20170127234928-2" author="jhipster">
+        
+        <addForeignKeyConstraint baseColumnNames="workout_logs_id"
+                                 baseTableName="workout_log_workout_template"
+                                 constraintName="fk_workout_log_workout_template_workout_logs_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="workout_log"/>
+        <addForeignKeyConstraint baseColumnNames="workout_templates_id"
+                                 baseTableName="workout_log_workout_template"
+                                 constraintName="fk_workout_log_workout_template_workout_templates_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="workout_template"/>
+        
+        <addForeignKeyConstraint baseColumnNames="workout_logs_id"
+                                 baseTableName="workout_log_workout_instance"
+                                 constraintName="fk_workout_log_workout_instance_workout_logs_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="workout_log"/>
+        <addForeignKeyConstraint baseColumnNames="workout_instances_id"
+                                 baseTableName="workout_log_workout_instance"
+                                 constraintName="fk_workout_log_workout_instance_workout_instances_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="workout_instance"/>
+        
+    </changeSet>
+</databaseChangeLog>

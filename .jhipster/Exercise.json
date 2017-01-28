@@ -1,0 +1,40 @@
+{
+    "fluentMethods": true,
+    "relationships": [
+        {
+            "relationshipName": "workoutInstance",
+            "otherEntityName": "workoutInstance",
+            "relationshipType": "many-to-many",
+            "ownerSide": false,
+            "otherEntityRelationshipName": "exercise"
+        },
+        {
+            "relationshipName": "muscle",
+            "otherEntityName": "muscle",
+            "relationshipType": "many-to-many",
+            "otherEntityField": "id",
+            "ownerSide": true,
+            "otherEntityRelationshipName": "exercise"
+        },
+        {
+            "relationshipName": "exerciseSet",
+            "otherEntityName": "exerciseSet",
+            "relationshipType": "one-to-many",
+            "otherEntityRelationshipName": "exercise"
+        }
+    ],
+    "fields": [
+        {
+            "fieldName": "name",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required"
+            ]
+        }
+    ],
+    "changelogDate": "20170127234548",
+    "dto": "no",
+    "service": "no",
+    "entityTableName": "exercise",
+    "pagination": "infinite-scroll"
+}

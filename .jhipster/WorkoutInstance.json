@@ -1,0 +1,64 @@
+{
+    "fluentMethods": true,
+    "relationships": [
+        {
+            "relationshipName": "workoutTemplate",
+            "otherEntityName": "workoutTemplate",
+            "relationshipType": "many-to-many",
+            "ownerSide": false,
+            "otherEntityRelationshipName": "workoutInstance"
+        },
+        {
+            "relationshipName": "muscle",
+            "otherEntityName": "muscle",
+            "relationshipType": "many-to-many",
+            "otherEntityField": "id",
+            "ownerSide": true,
+            "otherEntityRelationshipName": "workoutInstance"
+        },
+        {
+            "relationshipName": "exercise",
+            "otherEntityName": "exercise",
+            "relationshipType": "many-to-many",
+            "otherEntityField": "id",
+            "ownerSide": true,
+            "otherEntityRelationshipName": "workoutInstance"
+        },
+        {
+            "relationshipName": "workoutLog",
+            "otherEntityName": "workoutLog",
+            "relationshipType": "many-to-many",
+            "ownerSide": false,
+            "otherEntityRelationshipName": "workoutInstance"
+        }
+    ],
+    "fields": [
+        {
+            "fieldName": "name",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "created_on",
+            "fieldType": "ZonedDateTime",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "last_updated",
+            "fieldType": "ZonedDateTime",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "rest_between_instances",
+            "fieldType": "Integer"
+        }
+    ],
+    "changelogDate": "20170127234150",
+    "dto": "no",
+    "service": "no",
+    "entityTableName": "workout_instance",
+    "pagination": "infinite-scroll"
+}

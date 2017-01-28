@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="the-fit-nation:war">
+    <output-path>$PROJECT_DIR$/target</output-path>
+    <root id="archive" name="the-fit-nation-0.0.1-SNAPSHOT.war">
+      <element id="artifact" artifact-name="the-fit-nation:war exploded" />
+    </root>
+  </artifact>
+</component>
