@@ -75,10 +75,11 @@ jhipster:
         queueCapacity: 10000
     security:
         authentication:
-            jwt:
-                secret: d9909b93bd8ca663fe66161ed7b84f71d6af023c
-                # Token is valid 24 hours
-                tokenValidityInSeconds: 86400
+            oauth:
+                clientid: TheFitNationapp
+                secret: my-secret-token-to-change-in-production
+                # Token is valid 30 minutes
+                tokenValidityInSeconds: 1800
     metrics: # DropWizard Metrics configuration, used by MetricsConfiguration
         jmx.enabled: true
     swagger:

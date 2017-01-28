@@ -1,5 +1,4 @@
-[![Build Status](https://travis-ci.com/KyleFrisbie/TheFitNation-WebAPI.svg?token=xdYzvZBf58eKa1nBA2ue&branch=master)](https://travis-ci.com/KyleFrisbie/TheFitNation-WebAPI)
-#The Fit Nation Web API
+# TheFitNation
 
 This application was generated using JHipster 3.12.2, you can find documentation and help at [https://jhipster.github.io/documentation-archive/v3.12.2](https://jhipster.github.io/documentation-archive/v3.12.2).
 

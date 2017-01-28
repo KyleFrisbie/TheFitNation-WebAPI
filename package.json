@@ -58,10 +58,6 @@
     "proxy-middleware": "0.15.0",
     "run-sequence": "1.2.2",
     "xml2js": "0.4.17",
-    "generator-jhipster-webservice": "0.1.0",
-    "generator-jhipster-swagger-cli": "2.0.5",
-    "generator-jhipster-entity-audit": "2.2.2",
-    "generator-jhipster-google-analytics": "0.0.1",
 
     "yargs": "5.0.0"
   },

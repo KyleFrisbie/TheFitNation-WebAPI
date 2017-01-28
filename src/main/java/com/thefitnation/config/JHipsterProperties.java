@@ -29,8 +29,6 @@ public class JHipsterProperties {
 
     private final CorsConfiguration cors = new CorsConfiguration();
 
-    private final Social social = new Social();
-
     private final Ribbon ribbon = new Ribbon();
 
     public Async getAsync() {
@@ -63,10 +61,6 @@ public class JHipsterProperties {
 
     public CorsConfiguration getCors() {
         return cors;
-    }
-
-    public Social getSocial() {
-        return social;
     }
 
     public Ribbon getRibbon() {
@@ -181,19 +175,27 @@ public class JHipsterProperties {
         }
         public static class Authentication {
 
-            private final Jwt jwt = new Jwt();
+            private final Oauth oauth = new Oauth();
 
-            public Jwt getJwt() {
-                return jwt;
+            public Oauth getOauth() {
+                return oauth;
             }
 
-            public static class Jwt {
+            public static class Oauth {
+
+                private String clientid;
 
                 private String secret;
 
-                private long tokenValidityInSeconds = 1800;
+                private int tokenValidityInSeconds = 1800;
 
-                private long tokenValidityInSecondsForRememberMe = 2592000;
+                public String getClientid() {
+                    return clientid;
+                }
+
+                public void setClientid(String clientid) {
+                    this.clientid = clientid;
+                }
 
                 public String getSecret() {
                     return secret;
@@ -203,20 +205,12 @@ public class JHipsterProperties {
                     this.secret = secret;
                 }
 
-                public long getTokenValidityInSeconds() {
+                public int getTokenValidityInSeconds() {
                     return tokenValidityInSeconds;
                 }
 
-                public void setTokenValidityInSeconds(long tokenValidityInSeconds) {
+                public void setTokenValidityInSeconds(int tokenValidityInSeconds) {
                     this.tokenValidityInSeconds = tokenValidityInSeconds;
-                }
-
-                public long getTokenValidityInSecondsForRememberMe() {
-                    return tokenValidityInSecondsForRememberMe;
-                }
-
-                public void setTokenValidityInSecondsForRememberMe(long tokenValidityInSecondsForRememberMe) {
-                    this.tokenValidityInSecondsForRememberMe = tokenValidityInSecondsForRememberMe;
                 }
             }
         }
@@ -479,19 +473,6 @@ public class JHipsterProperties {
             public int getQueueSize() { return queueSize; }
 
             public void setQueueSize(int queueSize) { this.queueSize = queueSize; }
-        }
-    }
-
-    public static class Social {
-
-        private String redirectAfterSignIn = "/#/home";
-
-        public String getRedirectAfterSignIn() {
-            return redirectAfterSignIn;
-        }
-
-        public void setRedirectAfterSignIn(String redirectAfterSignIn) {
-            this.redirectAfterSignIn = redirectAfterSignIn;
         }
     }
 

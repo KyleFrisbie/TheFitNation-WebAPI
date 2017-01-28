@@ -77,12 +77,6 @@ jhipster:
     cache: # Hibernate 2nd level cache, used by CacheConfiguration
         ehcache:
             maxBytesLocalHeap: 16M
-    security:
-        authentication:
-            jwt:
-                secret: my-secret-token-to-change-in-production
-                # Token is valid 24 hours
-                tokenValidityInSeconds: 86400
     mail: # specific JHipster mail property, for standard properties see MailProperties
         from: TheFitNation@localhost
         baseUrl: http://127.0.0.1:8080

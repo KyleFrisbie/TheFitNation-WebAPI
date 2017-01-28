@@ -5,17 +5,6 @@
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
 
     <include file="classpath:config/liquibase/changelog/00000000000000_initial_schema.xml" relativeToChangelogFile="false"/>
-    <include file="classpath:config/liquibase/changelog/20170127233823_added_entity_WorkoutTemplate.xml" relativeToChangelogFile="false"/>
-    <include file="classpath:config/liquibase/changelog/20170127234150_added_entity_WorkoutInstance.xml" relativeToChangelogFile="false"/>
-    <include file="classpath:config/liquibase/changelog/20170127234419_added_entity_Muscle.xml" relativeToChangelogFile="false"/>
-    <include file="classpath:config/liquibase/changelog/20170127234548_added_entity_Exercise.xml" relativeToChangelogFile="false"/>
-    <include file="classpath:config/liquibase/changelog/20170127234729_added_entity_ExerciseSet.xml" relativeToChangelogFile="false"/>
-    <include file="classpath:config/liquibase/changelog/20170127234928_added_entity_WorkoutLog.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
-    <include file="classpath:config/liquibase/changelog/20170127233823_added_entity_constraints_WorkoutTemplate.xml" relativeToChangelogFile="false"/>
-    <include file="classpath:config/liquibase/changelog/20170127234150_added_entity_constraints_WorkoutInstance.xml" relativeToChangelogFile="false"/>
-    <include file="classpath:config/liquibase/changelog/20170127234548_added_entity_constraints_Exercise.xml" relativeToChangelogFile="false"/>
-    <include file="classpath:config/liquibase/changelog/20170127234729_added_entity_constraints_ExerciseSet.xml" relativeToChangelogFile="false"/>
-    <include file="classpath:config/liquibase/changelog/20170127234928_added_entity_constraints_WorkoutLog.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
 </databaseChangeLog>
