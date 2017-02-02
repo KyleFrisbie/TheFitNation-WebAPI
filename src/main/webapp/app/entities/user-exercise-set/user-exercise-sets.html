@@ -1,0 +1,87 @@
+<div>
+    <h2>User Exercise Sets</h2>
+    <jhi-alert></jhi-alert>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-4 no-padding-left">
+                <button class="btn btn-primary" ui-sref="user-exercise-set.new" >
+                    <span class="glyphicon glyphicon-plus"></span>
+                    <span class="hidden-xs" >
+                        Create new User Exercise Set
+                    </span>
+                </button>
+            </div>
+            <div class="col-xs-8 no-padding-right">
+                <form name="searchForm" class="form-inline">
+                    <div class="input-group pull-right" >
+                        <input type="text" class="form-control" ng-model="vm.searchQuery" id="searchQuery" placeholder="Query">
+                        <span  class="input-group-btn width-min" >
+                            <button class="btn btn-info" ng-click="vm.search(vm.searchQuery)">
+                                <span class="glyphicon glyphicon-search"></span>
+                            </button>
+                        </span>
+                        <span class="input-group-btn width-min" ng-if="vm.currentSearch">
+                            <button class="btn btn-info" ng-click="vm.clear()">
+                                <span class="glyphicon glyphicon-trash"></span>
+                            </button>
+                        </span>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <br/>
+    <div class="table-responsive">
+        <table class="jh-table table table-striped">
+            <thead>
+                <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.reset()">
+                    <th jh-sort-by="id"><span>ID</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="order_number"><span data-translate="theFitNationApp.userExerciseSet.order_number">Order Number</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="reps"><span>Reps</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="weight"><span>Weight</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="rest"><span>Rest</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="userExercise.id"><span>User Exercise</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="exerciseSet.id"><span>Exercise Set</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody infinite-scroll="vm.loadPage(vm.page + 1)" infinite-scroll-disabled="vm.page >= vm.links['last']">
+                <tr ng-repeat="userExerciseSet in vm.userExerciseSets track by userExerciseSet.id">
+                    <td><a ui-sref="user-exercise-set-detail({id:userExerciseSet.id})">{{userExerciseSet.id}}</a></td>
+                    <td>{{userExerciseSet.order_number}}</td>
+                    <td>{{userExerciseSet.reps}}</td>
+                    <td>{{userExerciseSet.weight}}</td>
+                    <td>{{userExerciseSet.rest}}</td>
+                    <td>
+                        <a ui-sref="user-exercise-detail({id:userExerciseSet.userExercise.id})">{{userExerciseSet.userExercise.id}}</a>
+                    </td>
+                    <td>
+                        <a ui-sref="exercise-set-detail({id:userExerciseSet.exerciseSet.id})">{{userExerciseSet.exerciseSet.id}}</a>
+                    </td>
+                    <td class="text-right">
+                        <div class="btn-group flex-btn-group-container">
+                            <button type="submit"
+                                    ui-sref="user-exercise-set-detail({id:userExerciseSet.id})"
+                                    class="btn btn-info btn-sm">
+                                <span class="glyphicon glyphicon-eye-open"></span>
+                                <span class="hidden-xs hidden-sm"></span>
+                            </button>
+                            <button type="submit"
+                                    ui-sref="user-exercise-set.edit({id:userExerciseSet.id})"
+                                    class="btn btn-primary btn-sm">
+                                <span class="glyphicon glyphicon-pencil"></span>
+                                <span class="hidden-xs hidden-sm"></span>
+                            </button>
+                            <button type="submit"
+                                    ui-sref="user-exercise-set.delete({id:userExerciseSet.id})"
+                                    class="btn btn-danger btn-sm">
+                                <span class="glyphicon glyphicon-remove-circle"></span>
+                                <span class="hidden-xs hidden-sm"></span>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

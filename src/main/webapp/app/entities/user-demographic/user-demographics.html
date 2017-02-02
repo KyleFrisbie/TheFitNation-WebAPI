@@ -36,6 +36,8 @@
             <thead>
                 <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.reset()">
                     <th jh-sort-by="id"><span>ID</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="join_date"><span data-translate="theFitNationApp.userDemographic.join_date">Join Date</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="last_login"><span data-translate="theFitNationApp.userDemographic.last_login">Last Login</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="first_name"><span data-translate="theFitNationApp.userDemographic.first_name">First Name</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="last_name"><span data-translate="theFitNationApp.userDemographic.last_name">Last Name</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="gender"><span>Gender</span> <span class="glyphicon glyphicon-sort"></span></th>
@@ -43,17 +45,16 @@
                     <th jh-sort-by="height"><span>Height</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="skill_level"><span data-translate="theFitNationApp.userDemographic.skill_level">Skill Level</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="unit_of_measure"><span data-translate="theFitNationApp.userDemographic.unit_of_measure">Unit Of Measure</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="last_login"><span data-translate="theFitNationApp.userDemographic.last_login">Last Login</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="join_date"><span data-translate="theFitNationApp.userDemographic.join_date">Join Date</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="is_active"><span data-translate="theFitNationApp.userDemographic.is_active">Is Active</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="workoutLog.id"><span>Workout Log</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="user.id"><span>User</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th></th>
                 </tr>
             </thead>
             <tbody infinite-scroll="vm.loadPage(vm.page + 1)" infinite-scroll-disabled="vm.page >= vm.links['last']">
                 <tr ng-repeat="userDemographic in vm.userDemographics track by userDemographic.id">
                     <td><a ui-sref="user-demographic-detail({id:userDemographic.id})">{{userDemographic.id}}</a></td>
+                    <td>{{userDemographic.join_date | date:'medium'}}</td>
+                    <td>{{userDemographic.last_login | date:'medium'}}</td>
                     <td>{{userDemographic.first_name}}</td>
                     <td>{{userDemographic.last_name}}</td>
                     <td>{{userDemographic.gender}}</td>
@@ -61,14 +62,9 @@
                     <td>{{userDemographic.height}}</td>
                     <td data-translate="{{'theFitNationApp.SkillLevel.' + userDemographic.skill_level}}">{{userDemographic.skill_level}}</td>
                     <td data-translate="{{'theFitNationApp.UnitOfMeasure.' + userDemographic.unit_of_measure}}">{{userDemographic.unit_of_measure}}</td>
-                    <td>{{userDemographic.last_login | date:'medium'}}</td>
-                    <td>{{userDemographic.join_date | date:'medium'}}</td>
                     <td>{{userDemographic.is_active}}</td>
                     <td>
                         <a ui-sref="workout-log-detail({id:userDemographic.workoutLog.id})">{{userDemographic.workoutLog.id}}</a>
-                    </td>
-                    <td>
-                        {{userDemographic.user.id}}
                     </td>
                     <td class="text-right">
                         <div class="btn-group flex-btn-group-container">

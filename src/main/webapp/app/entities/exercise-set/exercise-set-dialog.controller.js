@@ -5,15 +5,16 @@
         .module('theFitNationApp')
         .controller('ExerciseSetDialogController', ExerciseSetDialogController);
 
-    ExerciseSetDialogController.$inject = ['$timeout', '$scope', '$stateParams', '$uibModalInstance', 'entity', 'ExerciseSet', 'Exercise'];
+    ExerciseSetDialogController.$inject = ['$timeout', '$scope', '$stateParams', '$uibModalInstance', 'entity', 'ExerciseSet', 'Exercise', 'UserExerciseSet'];
 
-    function ExerciseSetDialogController ($timeout, $scope, $stateParams, $uibModalInstance, entity, ExerciseSet, Exercise) {
+    function ExerciseSetDialogController ($timeout, $scope, $stateParams, $uibModalInstance, entity, ExerciseSet, Exercise, UserExerciseSet) {
         var vm = this;
 
         vm.exerciseSet = entity;
         vm.clear = clear;
         vm.save = save;
         vm.exercises = Exercise.query();
+        vm.userexercisesets = UserExerciseSet.query();
 
         $timeout(function (){
             angular.element('.form-group:eq(1)>input').focus();

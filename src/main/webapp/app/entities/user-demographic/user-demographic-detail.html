@@ -4,6 +4,14 @@
     <hr>
     <jhi-alert-error></jhi-alert-error>
     <dl class="dl-horizontal jh-entity-details">
+        <dt><span data-translate="theFitNationApp.userDemographic.join_date">Join Date</span></dt>
+        <dd>
+            <span>{{vm.userDemographic.join_date | date:'medium'}}</span>
+        </dd>
+        <dt><span data-translate="theFitNationApp.userDemographic.last_login">Last Login</span></dt>
+        <dd>
+            <span>{{vm.userDemographic.last_login | date:'medium'}}</span>
+        </dd>
         <dt><span data-translate="theFitNationApp.userDemographic.first_name">First Name</span></dt>
         <dd>
             <span>{{vm.userDemographic.first_name}}</span>
@@ -32,31 +40,13 @@
         <dd>
             <span data-translate="{{'theFitNationApp.UnitOfMeasure.' + vm.userDemographic.unit_of_measure}}">{{vm.userDemographic.unit_of_measure}}</span>
         </dd>
-        <dt><span data-translate="theFitNationApp.userDemographic.last_login">Last Login</span></dt>
-        <dd>
-            <span>{{vm.userDemographic.last_login | date:'medium'}}</span>
-        </dd>
-        <dt><span data-translate="theFitNationApp.userDemographic.join_date">Join Date</span></dt>
-        <dd>
-            <span>{{vm.userDemographic.join_date | date:'medium'}}</span>
-        </dd>
         <dt><span data-translate="theFitNationApp.userDemographic.is_active">Is Active</span></dt>
         <dd>
             <span>{{vm.userDemographic.is_active}}</span>
         </dd>
-        <dt><span>Gym</span></dt>
-        <dd>
-            <span ng-repeat="gym in vm.userDemographic.gyms">
-                <a ui-sref="gym-detail({id: gym.id})">{{gym.name}}</a>{{$last ? '' : ', '}}
-            </span>
-        </dd>
         <dt><span>Workout Log</span></dt>
         <dd>
             <a ui-sref="workout-log-detail({id:vm.userDemographic.workoutLog.id})">{{vm.userDemographic.workoutLog.id}}</a>
-        </dd>
-        <dt><span>User</span></dt>
-        <dd>
-            {{vm.userDemographic.user.id}}
         </dd>
     </dl>
 

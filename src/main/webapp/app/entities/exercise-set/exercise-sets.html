@@ -36,7 +36,7 @@
             <thead>
                 <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.reset()">
                     <th jh-sort-by="id"><span>ID</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="exercise_set_number"><span data-translate="theFitNationApp.exerciseSet.exercise_set_number">Exercise Set Number</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="order_number"><span data-translate="theFitNationApp.exerciseSet.order_number">Order Number</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="reps"><span>Reps</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="weight"><span>Weight</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="rest"><span>Rest</span> <span class="glyphicon glyphicon-sort"></span></th>
@@ -47,7 +47,7 @@
             <tbody infinite-scroll="vm.loadPage(vm.page + 1)" infinite-scroll-disabled="vm.page >= vm.links['last']">
                 <tr ng-repeat="exerciseSet in vm.exerciseSets track by exerciseSet.id">
                     <td><a ui-sref="exercise-set-detail({id:exerciseSet.id})">{{exerciseSet.id}}</a></td>
-                    <td>{{exerciseSet.exercise_set_number}}</td>
+                    <td>{{exerciseSet.order_number}}</td>
                     <td>{{exerciseSet.reps}}</td>
                     <td>{{exerciseSet.weight}}</td>
                     <td>{{exerciseSet.rest}}</td>

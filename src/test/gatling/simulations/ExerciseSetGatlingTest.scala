@@ -80,7 +80,7 @@ class ExerciseSetGatlingTest extends Simulation {
             .exec(http("Create new exerciseSet")
             .post("/api/exercise-sets")
             .headers(headers_http_authenticated)
-            .body(StringBody("""{"id":null, "exercise_set_number":"0", "reps":"0", "weight":"0", "rest":"0"}""")).asJSON
+            .body(StringBody("""{"id":null, "order_number":"0", "reps":"0", "weight":null, "rest":"0"}""")).asJSON
             .check(status.is(201))
             .check(headerRegex("Location", "(.*)").saveAs("new_exerciseSet_url"))).exitHereIfFailed
             .pause(10)

@@ -16,6 +16,12 @@
         <dd>
             <span>{{vm.gym.last_visited | date:'medium'}}</span>
         </dd>
+        <dt><span>User Demographic</span></dt>
+        <dd>
+            <span ng-repeat="userDemographic in vm.gym.userDemographics">
+                <a ui-sref="user-demographic-detail({id: userDemographic.id})">{{userDemographic.last_name}}</a>{{$last ? '' : ', '}}
+            </span>
+        </dd>
     </dl>
 
     <button type="submit"

@@ -1,6 +1,5 @@
 package com.thefitnation.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.data.elasticsearch.annotations.Document;
@@ -29,6 +28,7 @@ public class Gym implements Serializable {
     private Long id;
 
     @NotNull
+    @Size(min = 1)
     @Column(name = "name", nullable = false)
     private String name;
 
@@ -40,9 +40,11 @@ public class Gym implements Serializable {
     @Column(name = "last_visited", nullable = false)
     private ZonedDateTime last_visited;
 
-    @ManyToMany(mappedBy = "gyms")
-    @JsonIgnore
+    @ManyToMany
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    @JoinTable(name = "gym_user_demographic",
+               joinColumns = @JoinColumn(name="gyms_id", referencedColumnName="ID"),
+               inverseJoinColumns = @JoinColumn(name="user_demographics_id", referencedColumnName="ID"))
     private Set<UserDemographic> userDemographics = new HashSet<>();
 
     public Long getId() {

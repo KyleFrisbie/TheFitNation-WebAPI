@@ -5,7 +5,8 @@
             "relationshipName": "userDemographic",
             "otherEntityName": "userDemographic",
             "relationshipType": "many-to-many",
-            "ownerSide": false,
+            "otherEntityField": "last_name",
+            "ownerSide": true,
             "otherEntityRelationshipName": "gym"
         }
     ],
@@ -14,8 +15,10 @@
             "fieldName": "name",
             "fieldType": "String",
             "fieldValidateRules": [
-                "required"
-            ]
+                "required",
+                "minlength"
+            ],
+            "fieldValidateRulesMinlength": "1"
         },
         {
             "fieldName": "location",
@@ -32,7 +35,7 @@
             ]
         }
     ],
-    "changelogDate": "20170128025610",
+    "changelogDate": "20170202013255",
     "dto": "no",
     "service": "serviceClass",
     "entityTableName": "gym",

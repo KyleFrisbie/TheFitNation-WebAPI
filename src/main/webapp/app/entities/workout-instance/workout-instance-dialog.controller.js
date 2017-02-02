@@ -5,9 +5,9 @@
         .module('theFitNationApp')
         .controller('WorkoutInstanceDialogController', WorkoutInstanceDialogController);
 
-    WorkoutInstanceDialogController.$inject = ['$timeout', '$scope', '$stateParams', '$uibModalInstance', 'entity', 'WorkoutInstance', 'UserDemographic', 'WorkoutTemplate', 'Muscle', 'Exercise', 'WorkoutLog'];
+    WorkoutInstanceDialogController.$inject = ['$timeout', '$scope', '$stateParams', '$uibModalInstance', 'entity', 'WorkoutInstance', 'WorkoutTemplate', 'Exercise', 'Muscle', 'UserWorkoutInstance'];
 
-    function WorkoutInstanceDialogController ($timeout, $scope, $stateParams, $uibModalInstance, entity, WorkoutInstance, UserDemographic, WorkoutTemplate, Muscle, Exercise, WorkoutLog) {
+    function WorkoutInstanceDialogController ($timeout, $scope, $stateParams, $uibModalInstance, entity, WorkoutInstance, WorkoutTemplate, Exercise, Muscle, UserWorkoutInstance) {
         var vm = this;
 
         vm.workoutInstance = entity;
@@ -15,11 +15,10 @@
         vm.datePickerOpenStatus = {};
         vm.openCalendar = openCalendar;
         vm.save = save;
-        vm.userdemographics = UserDemographic.query();
         vm.workouttemplates = WorkoutTemplate.query();
-        vm.muscles = Muscle.query();
         vm.exercises = Exercise.query();
-        vm.workoutlogs = WorkoutLog.query();
+        vm.muscles = Muscle.query();
+        vm.userworkoutinstances = UserWorkoutInstance.query();
 
         $timeout(function (){
             angular.element('.form-group:eq(1)>input').focus();
@@ -48,8 +47,8 @@
             vm.isSaving = false;
         }
 
-        vm.datePickerOpenStatus.last_updated = false;
         vm.datePickerOpenStatus.created_on = false;
+        vm.datePickerOpenStatus.last_updated = false;
 
         function openCalendar (date) {
             vm.datePickerOpenStatus[date] = true;

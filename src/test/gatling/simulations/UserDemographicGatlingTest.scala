@@ -80,7 +80,7 @@ class UserDemographicGatlingTest extends Simulation {
             .exec(http("Create new userDemographic")
             .post("/api/user-demographics")
             .headers(headers_http_authenticated)
-            .body(StringBody("""{"id":null, "first_name":"SAMPLE_TEXT", "last_name":"SAMPLE_TEXT", "gender":null, "dob":"2020-01-01T00:00:00.000Z", "height":null, "skill_level":null, "unit_of_measure":null, "last_login":"2020-01-01T00:00:00.000Z", "join_date":"2020-01-01T00:00:00.000Z", "is_active":null}""")).asJSON
+            .body(StringBody("""{"id":null, "join_date":"2020-01-01T00:00:00.000Z", "last_login":"2020-01-01T00:00:00.000Z", "first_name":"SAMPLE_TEXT", "last_name":"SAMPLE_TEXT", "gender":null, "dob":"2020-01-01T00:00:00.000Z", "height":"0", "skill_level":null, "unit_of_measure":null, "is_active":null}""")).asJSON
             .check(status.is(201))
             .check(headerRegex("Location", "(.*)").saveAs("new_userDemographic_url"))).exitHereIfFailed
             .pause(10)

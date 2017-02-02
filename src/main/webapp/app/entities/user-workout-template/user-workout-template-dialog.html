@@ -1,0 +1,84 @@
+
+<form name="editForm" role="form" novalidate ng-submit="vm.save()" show-validation>
+
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                ng-click="vm.clear()">&times;</button>
+        <h4 class="modal-title" id="myUserWorkoutTemplateLabel">Create or edit a User Workout Template</h4>
+    </div>
+    <div class="modal-body">
+        <jhi-alert-error></jhi-alert-error>
+        <div class="form-group" ng-show="vm.userWorkoutTemplate.id">
+            <label for="id">ID</label>
+            <input type="text" class="form-control" id="id" name="id"
+                    ng-model="vm.userWorkoutTemplate.id" readonly />
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="theFitNationApp.userWorkoutTemplate.created_on" for="field_created_on">Created On</label>
+                <div class="input-group">
+                    <input id="field_created_on" type="text" class="form-control" name="created_on" datetime-picker="{{dateformat}}" ng-model="vm.userWorkoutTemplate.created_on" is-open="vm.datePickerOpenStatus.created_on"
+                    required  />
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-default" ng-click="vm.openCalendar('created_on')"><i class="glyphicon glyphicon-calendar"></i></button>
+                    </span>
+                </div>
+            <div ng-show="editForm.created_on.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.created_on.$error.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.created_on.$error.ZonedDateTimelocal">
+                    This field should be a date and time.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="theFitNationApp.userWorkoutTemplate.last_updated" for="field_last_updated">Last Updated</label>
+                <div class="input-group">
+                    <input id="field_last_updated" type="text" class="form-control" name="last_updated" datetime-picker="{{dateformat}}" ng-model="vm.userWorkoutTemplate.last_updated" is-open="vm.datePickerOpenStatus.last_updated"
+                    required  />
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-default" ng-click="vm.openCalendar('last_updated')"><i class="glyphicon glyphicon-calendar"></i></button>
+                    </span>
+                </div>
+            <div ng-show="editForm.last_updated.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.last_updated.$error.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.last_updated.$error.ZonedDateTimelocal">
+                    This field should be a date and time.
+                </p>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="field_workoutLog">Workout Log</label>
+            <select class="form-control" id="field_workoutLog" name="workoutLog" ng-model="vm.userWorkoutTemplate.workoutLog" ng-options="workoutLog as workoutLog.id for workoutLog in vm.workoutlogs track by workoutLog.id" required>
+                <option value=""></option>
+            </select>
+        </div>
+        <div ng-show="editForm.workoutLog.$invalid">
+            <p class="help-block"
+                ng-show="editForm.workoutLog.$error.required">
+                This field is required.
+            </p>
+        </div>
+        <div class="form-group">
+            <label for="field_workoutTemplate">Workout Template</label>
+            <select class="form-control" id="field_workoutTemplate" name="workoutTemplate" ng-model="vm.userWorkoutTemplate.workoutTemplate" ng-options="workoutTemplate as workoutTemplate.name for workoutTemplate in vm.workouttemplates track by workoutTemplate.id">
+                <option value=""></option>
+            </select>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="vm.clear()">
+            <span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span>Cancel</span>
+        </button>
+        <button type="submit" ng-disabled="editForm.$invalid || vm.isSaving" class="btn btn-primary">
+            <span class="glyphicon glyphicon-save"></span>&nbsp;<span>Save</span>
+        </button>
+    </div>
+</form>

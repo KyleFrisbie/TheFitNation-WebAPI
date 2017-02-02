@@ -3,7 +3,6 @@ package com.thefitnation.web.rest;
 import com.thefitnation.TheFitNationApp;
 
 import com.thefitnation.domain.WorkoutInstance;
-import com.thefitnation.domain.UserDemographic;
 import com.thefitnation.domain.Exercise;
 import com.thefitnation.repository.WorkoutInstanceRepository;
 import com.thefitnation.service.WorkoutInstanceService;
@@ -49,14 +48,17 @@ public class WorkoutInstanceResourceIntTest {
     private static final String DEFAULT_NAME = "AAAAAAAAAA";
     private static final String UPDATED_NAME = "BBBBBBBBBB";
 
-    private static final ZonedDateTime DEFAULT_LAST_UPDATED = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
-    private static final ZonedDateTime UPDATED_LAST_UPDATED = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
-
     private static final ZonedDateTime DEFAULT_CREATED_ON = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
     private static final ZonedDateTime UPDATED_CREATED_ON = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
 
+    private static final ZonedDateTime DEFAULT_LAST_UPDATED = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
+    private static final ZonedDateTime UPDATED_LAST_UPDATED = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
+
     private static final Integer DEFAULT_REST_BETWEEN_INSTANCES = 1;
     private static final Integer UPDATED_REST_BETWEEN_INSTANCES = 2;
+
+    private static final Integer DEFAULT_ORDER_NUMBER = 1;
+    private static final Integer UPDATED_ORDER_NUMBER = 2;
 
     @Inject
     private WorkoutInstanceRepository workoutInstanceRepository;
@@ -99,14 +101,10 @@ public class WorkoutInstanceResourceIntTest {
     public static WorkoutInstance createEntity(EntityManager em) {
         WorkoutInstance workoutInstance = new WorkoutInstance()
                 .name(DEFAULT_NAME)
-                .last_updated(DEFAULT_LAST_UPDATED)
                 .created_on(DEFAULT_CREATED_ON)
-                .rest_between_instances(DEFAULT_REST_BETWEEN_INSTANCES);
-        // Add required entity
-        UserDemographic userDemographic = UserDemographicResourceIntTest.createEntity(em);
-        em.persist(userDemographic);
-        em.flush();
-        workoutInstance.setUserDemographic(userDemographic);
+                .last_updated(DEFAULT_LAST_UPDATED)
+                .rest_between_instances(DEFAULT_REST_BETWEEN_INSTANCES)
+                .order_number(DEFAULT_ORDER_NUMBER);
         // Add required entity
         Exercise exercise = ExerciseResourceIntTest.createEntity(em);
         em.persist(exercise);
@@ -138,9 +136,10 @@ public class WorkoutInstanceResourceIntTest {
         assertThat(workoutInstanceList).hasSize(databaseSizeBeforeCreate + 1);
         WorkoutInstance testWorkoutInstance = workoutInstanceList.get(workoutInstanceList.size() - 1);
         assertThat(testWorkoutInstance.getName()).isEqualTo(DEFAULT_NAME);
-        assertThat(testWorkoutInstance.getLast_updated()).isEqualTo(DEFAULT_LAST_UPDATED);
         assertThat(testWorkoutInstance.getCreated_on()).isEqualTo(DEFAULT_CREATED_ON);
+        assertThat(testWorkoutInstance.getLast_updated()).isEqualTo(DEFAULT_LAST_UPDATED);
         assertThat(testWorkoutInstance.getRest_between_instances()).isEqualTo(DEFAULT_REST_BETWEEN_INSTANCES);
+        assertThat(testWorkoutInstance.getOrder_number()).isEqualTo(DEFAULT_ORDER_NUMBER);
 
         // Validate the WorkoutInstance in ElasticSearch
         WorkoutInstance workoutInstanceEs = workoutInstanceSearchRepository.findOne(testWorkoutInstance.getId());
@@ -169,10 +168,10 @@ public class WorkoutInstanceResourceIntTest {
 
     @Test
     @Transactional
-    public void checkNameIsRequired() throws Exception {
+    public void checkCreated_onIsRequired() throws Exception {
         int databaseSizeBeforeTest = workoutInstanceRepository.findAll().size();
         // set the field null
-        workoutInstance.setName(null);
+        workoutInstance.setCreated_on(null);
 
         // Create the WorkoutInstance, which fails.
 
@@ -205,10 +204,10 @@ public class WorkoutInstanceResourceIntTest {
 
     @Test
     @Transactional
-    public void checkCreated_onIsRequired() throws Exception {
+    public void checkOrder_numberIsRequired() throws Exception {
         int databaseSizeBeforeTest = workoutInstanceRepository.findAll().size();
         // set the field null
-        workoutInstance.setCreated_on(null);
+        workoutInstance.setOrder_number(null);
 
         // Create the WorkoutInstance, which fails.
 
@@ -233,9 +232,10 @@ public class WorkoutInstanceResourceIntTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(workoutInstance.getId().intValue())))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
-            .andExpect(jsonPath("$.[*].last_updated").value(hasItem(sameInstant(DEFAULT_LAST_UPDATED))))
             .andExpect(jsonPath("$.[*].created_on").value(hasItem(sameInstant(DEFAULT_CREATED_ON))))
-            .andExpect(jsonPath("$.[*].rest_between_instances").value(hasItem(DEFAULT_REST_BETWEEN_INSTANCES)));
+            .andExpect(jsonPath("$.[*].last_updated").value(hasItem(sameInstant(DEFAULT_LAST_UPDATED))))
+            .andExpect(jsonPath("$.[*].rest_between_instances").value(hasItem(DEFAULT_REST_BETWEEN_INSTANCES)))
+            .andExpect(jsonPath("$.[*].order_number").value(hasItem(DEFAULT_ORDER_NUMBER)));
     }
 
     @Test
@@ -250,9 +250,10 @@ public class WorkoutInstanceResourceIntTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(workoutInstance.getId().intValue()))
             .andExpect(jsonPath("$.name").value(DEFAULT_NAME.toString()))
-            .andExpect(jsonPath("$.last_updated").value(sameInstant(DEFAULT_LAST_UPDATED)))
             .andExpect(jsonPath("$.created_on").value(sameInstant(DEFAULT_CREATED_ON)))
-            .andExpect(jsonPath("$.rest_between_instances").value(DEFAULT_REST_BETWEEN_INSTANCES));
+            .andExpect(jsonPath("$.last_updated").value(sameInstant(DEFAULT_LAST_UPDATED)))
+            .andExpect(jsonPath("$.rest_between_instances").value(DEFAULT_REST_BETWEEN_INSTANCES))
+            .andExpect(jsonPath("$.order_number").value(DEFAULT_ORDER_NUMBER));
     }
 
     @Test
@@ -275,9 +276,10 @@ public class WorkoutInstanceResourceIntTest {
         WorkoutInstance updatedWorkoutInstance = workoutInstanceRepository.findOne(workoutInstance.getId());
         updatedWorkoutInstance
                 .name(UPDATED_NAME)
-                .last_updated(UPDATED_LAST_UPDATED)
                 .created_on(UPDATED_CREATED_ON)
-                .rest_between_instances(UPDATED_REST_BETWEEN_INSTANCES);
+                .last_updated(UPDATED_LAST_UPDATED)
+                .rest_between_instances(UPDATED_REST_BETWEEN_INSTANCES)
+                .order_number(UPDATED_ORDER_NUMBER);
 
         restWorkoutInstanceMockMvc.perform(put("/api/workout-instances")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -289,9 +291,10 @@ public class WorkoutInstanceResourceIntTest {
         assertThat(workoutInstanceList).hasSize(databaseSizeBeforeUpdate);
         WorkoutInstance testWorkoutInstance = workoutInstanceList.get(workoutInstanceList.size() - 1);
         assertThat(testWorkoutInstance.getName()).isEqualTo(UPDATED_NAME);
-        assertThat(testWorkoutInstance.getLast_updated()).isEqualTo(UPDATED_LAST_UPDATED);
         assertThat(testWorkoutInstance.getCreated_on()).isEqualTo(UPDATED_CREATED_ON);
+        assertThat(testWorkoutInstance.getLast_updated()).isEqualTo(UPDATED_LAST_UPDATED);
         assertThat(testWorkoutInstance.getRest_between_instances()).isEqualTo(UPDATED_REST_BETWEEN_INSTANCES);
+        assertThat(testWorkoutInstance.getOrder_number()).isEqualTo(UPDATED_ORDER_NUMBER);
 
         // Validate the WorkoutInstance in ElasticSearch
         WorkoutInstance workoutInstanceEs = workoutInstanceSearchRepository.findOne(testWorkoutInstance.getId());
@@ -350,8 +353,9 @@ public class WorkoutInstanceResourceIntTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(workoutInstance.getId().intValue())))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
-            .andExpect(jsonPath("$.[*].last_updated").value(hasItem(sameInstant(DEFAULT_LAST_UPDATED))))
             .andExpect(jsonPath("$.[*].created_on").value(hasItem(sameInstant(DEFAULT_CREATED_ON))))
-            .andExpect(jsonPath("$.[*].rest_between_instances").value(hasItem(DEFAULT_REST_BETWEEN_INSTANCES)));
+            .andExpect(jsonPath("$.[*].last_updated").value(hasItem(sameInstant(DEFAULT_LAST_UPDATED))))
+            .andExpect(jsonPath("$.[*].rest_between_instances").value(hasItem(DEFAULT_REST_BETWEEN_INSTANCES)))
+            .andExpect(jsonPath("$.[*].order_number").value(hasItem(DEFAULT_ORDER_NUMBER)));
     }
 }

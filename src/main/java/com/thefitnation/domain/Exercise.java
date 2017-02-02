@@ -28,9 +28,14 @@ public class Exercise implements Serializable {
     private Long id;
 
     @NotNull
-    @Size(min = 0)
+    @Size(min = 1)
     @Column(name = "name", nullable = false)
     private String name;
+
+    @ManyToMany(mappedBy = "exercises")
+    @JsonIgnore
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    private Set<WorkoutInstance> workoutInstances = new HashSet<>();
 
     @ManyToMany
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
@@ -45,10 +50,10 @@ public class Exercise implements Serializable {
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<ExerciseSet> exerciseSets = new HashSet<>();
 
-    @ManyToMany(mappedBy = "exercises")
+    @OneToMany(mappedBy = "exercise")
     @JsonIgnore
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    private Set<WorkoutInstance> workoutInstances = new HashSet<>();
+    private Set<UserExercise> userExercises = new HashSet<>();
 
     public Long getId() {
         return id;
@@ -69,6 +74,31 @@ public class Exercise implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Set<WorkoutInstance> getWorkoutInstances() {
+        return workoutInstances;
+    }
+
+    public Exercise workoutInstances(Set<WorkoutInstance> workoutInstances) {
+        this.workoutInstances = workoutInstances;
+        return this;
+    }
+
+    public Exercise addWorkoutInstance(WorkoutInstance workoutInstance) {
+        workoutInstances.add(workoutInstance);
+        workoutInstance.getExercises().add(this);
+        return this;
+    }
+
+    public Exercise removeWorkoutInstance(WorkoutInstance workoutInstance) {
+        workoutInstances.remove(workoutInstance);
+        workoutInstance.getExercises().remove(this);
+        return this;
+    }
+
+    public void setWorkoutInstances(Set<WorkoutInstance> workoutInstances) {
+        this.workoutInstances = workoutInstances;
     }
 
     public Set<Muscle> getMuscles() {
@@ -121,29 +151,29 @@ public class Exercise implements Serializable {
         this.exerciseSets = exerciseSets;
     }
 
-    public Set<WorkoutInstance> getWorkoutInstances() {
-        return workoutInstances;
+    public Set<UserExercise> getUserExercises() {
+        return userExercises;
     }
 
-    public Exercise workoutInstances(Set<WorkoutInstance> workoutInstances) {
-        this.workoutInstances = workoutInstances;
+    public Exercise userExercises(Set<UserExercise> userExercises) {
+        this.userExercises = userExercises;
         return this;
     }
 
-    public Exercise addWorkoutInstance(WorkoutInstance workoutInstance) {
-        workoutInstances.add(workoutInstance);
-        workoutInstance.getExercises().add(this);
+    public Exercise addUserExercise(UserExercise userExercise) {
+        userExercises.add(userExercise);
+        userExercise.setExercise(this);
         return this;
     }
 
-    public Exercise removeWorkoutInstance(WorkoutInstance workoutInstance) {
-        workoutInstances.remove(workoutInstance);
-        workoutInstance.getExercises().remove(this);
+    public Exercise removeUserExercise(UserExercise userExercise) {
+        userExercises.remove(userExercise);
+        userExercise.setExercise(null);
         return this;
     }
 
-    public void setWorkoutInstances(Set<WorkoutInstance> workoutInstances) {
-        this.workoutInstances = workoutInstances;
+    public void setUserExercises(Set<UserExercise> userExercises) {
+        this.userExercises = userExercises;
     }
 
     @Override

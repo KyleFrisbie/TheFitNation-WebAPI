@@ -47,6 +47,12 @@ import com.thefitnation.domain.enumeration.UnitOfMeasure;
 @SpringBootTest(classes = TheFitNationApp.class)
 public class UserDemographicResourceIntTest {
 
+    private static final ZonedDateTime DEFAULT_JOIN_DATE = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
+    private static final ZonedDateTime UPDATED_JOIN_DATE = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
+
+    private static final ZonedDateTime DEFAULT_LAST_LOGIN = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
+    private static final ZonedDateTime UPDATED_LAST_LOGIN = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
+
     private static final String DEFAULT_FIRST_NAME = "AAAAAAAAAA";
     private static final String UPDATED_FIRST_NAME = "BBBBBBBBBB";
 
@@ -59,20 +65,14 @@ public class UserDemographicResourceIntTest {
     private static final ZonedDateTime DEFAULT_DOB = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
     private static final ZonedDateTime UPDATED_DOB = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
 
-    private static final Float DEFAULT_HEIGHT = 1F;
-    private static final Float UPDATED_HEIGHT = 2F;
+    private static final Integer DEFAULT_HEIGHT = 1;
+    private static final Integer UPDATED_HEIGHT = 2;
 
     private static final SkillLevel DEFAULT_SKILL_LEVEL = SkillLevel.Beginner;
     private static final SkillLevel UPDATED_SKILL_LEVEL = SkillLevel.Intermediate;
 
     private static final UnitOfMeasure DEFAULT_UNIT_OF_MEASURE = UnitOfMeasure.Imperial;
     private static final UnitOfMeasure UPDATED_UNIT_OF_MEASURE = UnitOfMeasure.Metric;
-
-    private static final ZonedDateTime DEFAULT_LAST_LOGIN = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
-    private static final ZonedDateTime UPDATED_LAST_LOGIN = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
-
-    private static final ZonedDateTime DEFAULT_JOIN_DATE = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
-    private static final ZonedDateTime UPDATED_JOIN_DATE = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
 
     private static final Boolean DEFAULT_IS_ACTIVE = false;
     private static final Boolean UPDATED_IS_ACTIVE = true;
@@ -117,6 +117,8 @@ public class UserDemographicResourceIntTest {
      */
     public static UserDemographic createEntity(EntityManager em) {
         UserDemographic userDemographic = new UserDemographic()
+                .join_date(DEFAULT_JOIN_DATE)
+                .last_login(DEFAULT_LAST_LOGIN)
                 .first_name(DEFAULT_FIRST_NAME)
                 .last_name(DEFAULT_LAST_NAME)
                 .gender(DEFAULT_GENDER)
@@ -124,8 +126,6 @@ public class UserDemographicResourceIntTest {
                 .height(DEFAULT_HEIGHT)
                 .skill_level(DEFAULT_SKILL_LEVEL)
                 .unit_of_measure(DEFAULT_UNIT_OF_MEASURE)
-                .last_login(DEFAULT_LAST_LOGIN)
-                .join_date(DEFAULT_JOIN_DATE)
                 .is_active(DEFAULT_IS_ACTIVE);
         return userDemographic;
     }
@@ -152,6 +152,8 @@ public class UserDemographicResourceIntTest {
         List<UserDemographic> userDemographicList = userDemographicRepository.findAll();
         assertThat(userDemographicList).hasSize(databaseSizeBeforeCreate + 1);
         UserDemographic testUserDemographic = userDemographicList.get(userDemographicList.size() - 1);
+        assertThat(testUserDemographic.getJoin_date()).isEqualTo(DEFAULT_JOIN_DATE);
+        assertThat(testUserDemographic.getLast_login()).isEqualTo(DEFAULT_LAST_LOGIN);
         assertThat(testUserDemographic.getFirst_name()).isEqualTo(DEFAULT_FIRST_NAME);
         assertThat(testUserDemographic.getLast_name()).isEqualTo(DEFAULT_LAST_NAME);
         assertThat(testUserDemographic.getGender()).isEqualTo(DEFAULT_GENDER);
@@ -159,8 +161,6 @@ public class UserDemographicResourceIntTest {
         assertThat(testUserDemographic.getHeight()).isEqualTo(DEFAULT_HEIGHT);
         assertThat(testUserDemographic.getSkill_level()).isEqualTo(DEFAULT_SKILL_LEVEL);
         assertThat(testUserDemographic.getUnit_of_measure()).isEqualTo(DEFAULT_UNIT_OF_MEASURE);
-        assertThat(testUserDemographic.getLast_login()).isEqualTo(DEFAULT_LAST_LOGIN);
-        assertThat(testUserDemographic.getJoin_date()).isEqualTo(DEFAULT_JOIN_DATE);
         assertThat(testUserDemographic.isIs_active()).isEqualTo(DEFAULT_IS_ACTIVE);
 
         // Validate the UserDemographic in ElasticSearch
@@ -190,6 +190,42 @@ public class UserDemographicResourceIntTest {
 
     @Test
     @Transactional
+    public void checkJoin_dateIsRequired() throws Exception {
+        int databaseSizeBeforeTest = userDemographicRepository.findAll().size();
+        // set the field null
+        userDemographic.setJoin_date(null);
+
+        // Create the UserDemographic, which fails.
+
+        restUserDemographicMockMvc.perform(post("/api/user-demographics")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(userDemographic)))
+            .andExpect(status().isBadRequest());
+
+        List<UserDemographic> userDemographicList = userDemographicRepository.findAll();
+        assertThat(userDemographicList).hasSize(databaseSizeBeforeTest);
+    }
+
+    @Test
+    @Transactional
+    public void checkLast_loginIsRequired() throws Exception {
+        int databaseSizeBeforeTest = userDemographicRepository.findAll().size();
+        // set the field null
+        userDemographic.setLast_login(null);
+
+        // Create the UserDemographic, which fails.
+
+        restUserDemographicMockMvc.perform(post("/api/user-demographics")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(userDemographic)))
+            .andExpect(status().isBadRequest());
+
+        List<UserDemographic> userDemographicList = userDemographicRepository.findAll();
+        assertThat(userDemographicList).hasSize(databaseSizeBeforeTest);
+    }
+
+    @Test
+    @Transactional
     public void checkFirst_nameIsRequired() throws Exception {
         int databaseSizeBeforeTest = userDemographicRepository.findAll().size();
         // set the field null
@@ -212,6 +248,24 @@ public class UserDemographicResourceIntTest {
         int databaseSizeBeforeTest = userDemographicRepository.findAll().size();
         // set the field null
         userDemographic.setLast_name(null);
+
+        // Create the UserDemographic, which fails.
+
+        restUserDemographicMockMvc.perform(post("/api/user-demographics")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(userDemographic)))
+            .andExpect(status().isBadRequest());
+
+        List<UserDemographic> userDemographicList = userDemographicRepository.findAll();
+        assertThat(userDemographicList).hasSize(databaseSizeBeforeTest);
+    }
+
+    @Test
+    @Transactional
+    public void checkGenderIsRequired() throws Exception {
+        int databaseSizeBeforeTest = userDemographicRepository.findAll().size();
+        // set the field null
+        userDemographic.setGender(null);
 
         // Create the UserDemographic, which fails.
 
@@ -280,42 +334,6 @@ public class UserDemographicResourceIntTest {
 
     @Test
     @Transactional
-    public void checkLast_loginIsRequired() throws Exception {
-        int databaseSizeBeforeTest = userDemographicRepository.findAll().size();
-        // set the field null
-        userDemographic.setLast_login(null);
-
-        // Create the UserDemographic, which fails.
-
-        restUserDemographicMockMvc.perform(post("/api/user-demographics")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(userDemographic)))
-            .andExpect(status().isBadRequest());
-
-        List<UserDemographic> userDemographicList = userDemographicRepository.findAll();
-        assertThat(userDemographicList).hasSize(databaseSizeBeforeTest);
-    }
-
-    @Test
-    @Transactional
-    public void checkJoin_dateIsRequired() throws Exception {
-        int databaseSizeBeforeTest = userDemographicRepository.findAll().size();
-        // set the field null
-        userDemographic.setJoin_date(null);
-
-        // Create the UserDemographic, which fails.
-
-        restUserDemographicMockMvc.perform(post("/api/user-demographics")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(userDemographic)))
-            .andExpect(status().isBadRequest());
-
-        List<UserDemographic> userDemographicList = userDemographicRepository.findAll();
-        assertThat(userDemographicList).hasSize(databaseSizeBeforeTest);
-    }
-
-    @Test
-    @Transactional
     public void checkIs_activeIsRequired() throws Exception {
         int databaseSizeBeforeTest = userDemographicRepository.findAll().size();
         // set the field null
@@ -343,15 +361,15 @@ public class UserDemographicResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(userDemographic.getId().intValue())))
+            .andExpect(jsonPath("$.[*].join_date").value(hasItem(sameInstant(DEFAULT_JOIN_DATE))))
+            .andExpect(jsonPath("$.[*].last_login").value(hasItem(sameInstant(DEFAULT_LAST_LOGIN))))
             .andExpect(jsonPath("$.[*].first_name").value(hasItem(DEFAULT_FIRST_NAME.toString())))
             .andExpect(jsonPath("$.[*].last_name").value(hasItem(DEFAULT_LAST_NAME.toString())))
             .andExpect(jsonPath("$.[*].gender").value(hasItem(DEFAULT_GENDER.toString())))
             .andExpect(jsonPath("$.[*].dob").value(hasItem(sameInstant(DEFAULT_DOB))))
-            .andExpect(jsonPath("$.[*].height").value(hasItem(DEFAULT_HEIGHT.doubleValue())))
+            .andExpect(jsonPath("$.[*].height").value(hasItem(DEFAULT_HEIGHT)))
             .andExpect(jsonPath("$.[*].skill_level").value(hasItem(DEFAULT_SKILL_LEVEL.toString())))
             .andExpect(jsonPath("$.[*].unit_of_measure").value(hasItem(DEFAULT_UNIT_OF_MEASURE.toString())))
-            .andExpect(jsonPath("$.[*].last_login").value(hasItem(sameInstant(DEFAULT_LAST_LOGIN))))
-            .andExpect(jsonPath("$.[*].join_date").value(hasItem(sameInstant(DEFAULT_JOIN_DATE))))
             .andExpect(jsonPath("$.[*].is_active").value(hasItem(DEFAULT_IS_ACTIVE.booleanValue())));
     }
 
@@ -366,15 +384,15 @@ public class UserDemographicResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(userDemographic.getId().intValue()))
+            .andExpect(jsonPath("$.join_date").value(sameInstant(DEFAULT_JOIN_DATE)))
+            .andExpect(jsonPath("$.last_login").value(sameInstant(DEFAULT_LAST_LOGIN)))
             .andExpect(jsonPath("$.first_name").value(DEFAULT_FIRST_NAME.toString()))
             .andExpect(jsonPath("$.last_name").value(DEFAULT_LAST_NAME.toString()))
             .andExpect(jsonPath("$.gender").value(DEFAULT_GENDER.toString()))
             .andExpect(jsonPath("$.dob").value(sameInstant(DEFAULT_DOB)))
-            .andExpect(jsonPath("$.height").value(DEFAULT_HEIGHT.doubleValue()))
+            .andExpect(jsonPath("$.height").value(DEFAULT_HEIGHT))
             .andExpect(jsonPath("$.skill_level").value(DEFAULT_SKILL_LEVEL.toString()))
             .andExpect(jsonPath("$.unit_of_measure").value(DEFAULT_UNIT_OF_MEASURE.toString()))
-            .andExpect(jsonPath("$.last_login").value(sameInstant(DEFAULT_LAST_LOGIN)))
-            .andExpect(jsonPath("$.join_date").value(sameInstant(DEFAULT_JOIN_DATE)))
             .andExpect(jsonPath("$.is_active").value(DEFAULT_IS_ACTIVE.booleanValue()));
     }
 
@@ -397,6 +415,8 @@ public class UserDemographicResourceIntTest {
         // Update the userDemographic
         UserDemographic updatedUserDemographic = userDemographicRepository.findOne(userDemographic.getId());
         updatedUserDemographic
+                .join_date(UPDATED_JOIN_DATE)
+                .last_login(UPDATED_LAST_LOGIN)
                 .first_name(UPDATED_FIRST_NAME)
                 .last_name(UPDATED_LAST_NAME)
                 .gender(UPDATED_GENDER)
@@ -404,8 +424,6 @@ public class UserDemographicResourceIntTest {
                 .height(UPDATED_HEIGHT)
                 .skill_level(UPDATED_SKILL_LEVEL)
                 .unit_of_measure(UPDATED_UNIT_OF_MEASURE)
-                .last_login(UPDATED_LAST_LOGIN)
-                .join_date(UPDATED_JOIN_DATE)
                 .is_active(UPDATED_IS_ACTIVE);
 
         restUserDemographicMockMvc.perform(put("/api/user-demographics")
@@ -417,6 +435,8 @@ public class UserDemographicResourceIntTest {
         List<UserDemographic> userDemographicList = userDemographicRepository.findAll();
         assertThat(userDemographicList).hasSize(databaseSizeBeforeUpdate);
         UserDemographic testUserDemographic = userDemographicList.get(userDemographicList.size() - 1);
+        assertThat(testUserDemographic.getJoin_date()).isEqualTo(UPDATED_JOIN_DATE);
+        assertThat(testUserDemographic.getLast_login()).isEqualTo(UPDATED_LAST_LOGIN);
         assertThat(testUserDemographic.getFirst_name()).isEqualTo(UPDATED_FIRST_NAME);
         assertThat(testUserDemographic.getLast_name()).isEqualTo(UPDATED_LAST_NAME);
         assertThat(testUserDemographic.getGender()).isEqualTo(UPDATED_GENDER);
@@ -424,8 +444,6 @@ public class UserDemographicResourceIntTest {
         assertThat(testUserDemographic.getHeight()).isEqualTo(UPDATED_HEIGHT);
         assertThat(testUserDemographic.getSkill_level()).isEqualTo(UPDATED_SKILL_LEVEL);
         assertThat(testUserDemographic.getUnit_of_measure()).isEqualTo(UPDATED_UNIT_OF_MEASURE);
-        assertThat(testUserDemographic.getLast_login()).isEqualTo(UPDATED_LAST_LOGIN);
-        assertThat(testUserDemographic.getJoin_date()).isEqualTo(UPDATED_JOIN_DATE);
         assertThat(testUserDemographic.isIs_active()).isEqualTo(UPDATED_IS_ACTIVE);
 
         // Validate the UserDemographic in ElasticSearch
@@ -484,15 +502,15 @@ public class UserDemographicResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(userDemographic.getId().intValue())))
+            .andExpect(jsonPath("$.[*].join_date").value(hasItem(sameInstant(DEFAULT_JOIN_DATE))))
+            .andExpect(jsonPath("$.[*].last_login").value(hasItem(sameInstant(DEFAULT_LAST_LOGIN))))
             .andExpect(jsonPath("$.[*].first_name").value(hasItem(DEFAULT_FIRST_NAME.toString())))
             .andExpect(jsonPath("$.[*].last_name").value(hasItem(DEFAULT_LAST_NAME.toString())))
             .andExpect(jsonPath("$.[*].gender").value(hasItem(DEFAULT_GENDER.toString())))
             .andExpect(jsonPath("$.[*].dob").value(hasItem(sameInstant(DEFAULT_DOB))))
-            .andExpect(jsonPath("$.[*].height").value(hasItem(DEFAULT_HEIGHT.doubleValue())))
+            .andExpect(jsonPath("$.[*].height").value(hasItem(DEFAULT_HEIGHT)))
             .andExpect(jsonPath("$.[*].skill_level").value(hasItem(DEFAULT_SKILL_LEVEL.toString())))
             .andExpect(jsonPath("$.[*].unit_of_measure").value(hasItem(DEFAULT_UNIT_OF_MEASURE.toString())))
-            .andExpect(jsonPath("$.[*].last_login").value(hasItem(sameInstant(DEFAULT_LAST_LOGIN))))
-            .andExpect(jsonPath("$.[*].join_date").value(hasItem(sameInstant(DEFAULT_JOIN_DATE))))
             .andExpect(jsonPath("$.[*].is_active").value(hasItem(DEFAULT_IS_ACTIVE.booleanValue())));
     }
 }

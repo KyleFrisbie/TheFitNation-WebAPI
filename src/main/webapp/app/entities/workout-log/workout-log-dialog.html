@@ -54,10 +54,6 @@
             </div>
         </div>
 
-        <div class="form-group">
-            <label for="field_workoutTemplate">Workout Template</label>
-            <select class="form-control" id="field_workoutTemplate" multiple name="workoutTemplate" ng-model="vm.workoutLog.workoutTemplates" ng-options="workoutTemplate as workoutTemplate.name for workoutTemplate in vm.workouttemplates track by workoutTemplate.id"></select>
-        </div>
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="vm.clear()">

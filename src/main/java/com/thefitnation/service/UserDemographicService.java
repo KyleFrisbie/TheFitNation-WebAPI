@@ -67,7 +67,7 @@ public class UserDemographicService {
     @Transactional(readOnly = true) 
     public UserDemographic findOne(Long id) {
         log.debug("Request to get UserDemographic : {}", id);
-        UserDemographic userDemographic = userDemographicRepository.findOneWithEagerRelationships(id);
+        UserDemographic userDemographic = userDemographicRepository.findOne(id);
         return userDemographic;
     }
 

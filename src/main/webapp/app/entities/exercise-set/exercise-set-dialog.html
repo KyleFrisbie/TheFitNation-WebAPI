@@ -14,21 +14,21 @@
                     ng-model="vm.exerciseSet.id" readonly />
         </div>
         <div class="form-group">
-            <label class="control-label" data-translate="theFitNationApp.exerciseSet.exercise_set_number" for="field_exercise_set_number">Exercise Set Number</label>
-            <input type="number" class="form-control" name="exercise_set_number" id="field_exercise_set_number"
-                    ng-model="vm.exerciseSet.exercise_set_number"
+            <label class="control-label" data-translate="theFitNationApp.exerciseSet.order_number" for="field_order_number">Order Number</label>
+            <input type="number" class="form-control" name="order_number" id="field_order_number"
+                    ng-model="vm.exerciseSet.order_number"
                     required min="1" />
-            <div ng-show="editForm.exercise_set_number.$invalid">
+            <div ng-show="editForm.order_number.$invalid">
                 <p class="help-block"
-                    ng-show="editForm.exercise_set_number.$error.required">
+                    ng-show="editForm.order_number.$error.required">
                     This field is required.
                 </p>
                 <p class="help-block"
-                    ng-show="editForm.exercise_set_number.$error.min" translate-value-min="1">
+                    ng-show="editForm.order_number.$error.min" translate-value-min="1">
                     This field should be more than 1.
                 </p>
                 <p class="help-block"
-                    ng-show="editForm.exercise_set_number.$error.number">
+                    ng-show="editForm.order_number.$error.number">
                     This field should be a number.
                 </p>
             </div>
@@ -37,15 +37,15 @@
             <label class="control-label" for="field_reps">Reps</label>
             <input type="number" class="form-control" name="reps" id="field_reps"
                     ng-model="vm.exerciseSet.reps"
-                    required min="1" />
+                    required min="0" />
             <div ng-show="editForm.reps.$invalid">
                 <p class="help-block"
                     ng-show="editForm.reps.$error.required">
                     This field is required.
                 </p>
                 <p class="help-block"
-                    ng-show="editForm.reps.$error.min" translate-value-min="1">
-                    This field should be more than 1.
+                    ng-show="editForm.reps.$error.min" translate-value-min="0">
+                    This field should be more than 0.
                 </p>
                 <p class="help-block"
                     ng-show="editForm.reps.$error.number">
@@ -63,17 +63,7 @@
             <label class="control-label" for="field_rest">Rest</label>
             <input type="number" class="form-control" name="rest" id="field_rest"
                     ng-model="vm.exerciseSet.rest"
-                    min="0" />
-            <div ng-show="editForm.rest.$invalid">
-                <p class="help-block"
-                    ng-show="editForm.rest.$error.min" translate-value-min="0">
-                    This field should be more than 0.
-                </p>
-                <p class="help-block"
-                    ng-show="editForm.rest.$error.number">
-                    This field should be a number.
-                </p>
-            </div>
+                     />
         </div>
 
         <div class="form-group">

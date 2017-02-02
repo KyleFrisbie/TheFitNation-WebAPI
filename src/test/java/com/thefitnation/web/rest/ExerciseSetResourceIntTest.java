@@ -40,17 +40,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = TheFitNationApp.class)
 public class ExerciseSetResourceIntTest {
 
-    private static final Integer DEFAULT_EXERCISE_SET_NUMBER = 1;
-    private static final Integer UPDATED_EXERCISE_SET_NUMBER = 2;
+    private static final Integer DEFAULT_ORDER_NUMBER = 1;
+    private static final Integer UPDATED_ORDER_NUMBER = 2;
 
-    private static final Integer DEFAULT_REPS = 1;
-    private static final Integer UPDATED_REPS = 2;
+    private static final Integer DEFAULT_REPS = 0;
+    private static final Integer UPDATED_REPS = 1;
 
-    private static final Integer DEFAULT_WEIGHT = 1;
-    private static final Integer UPDATED_WEIGHT = 2;
+    private static final Float DEFAULT_WEIGHT = 1F;
+    private static final Float UPDATED_WEIGHT = 2F;
 
-    private static final Integer DEFAULT_REST = 0;
-    private static final Integer UPDATED_REST = 1;
+    private static final Integer DEFAULT_REST = 1;
+    private static final Integer UPDATED_REST = 2;
 
     @Inject
     private ExerciseSetRepository exerciseSetRepository;
@@ -92,7 +92,7 @@ public class ExerciseSetResourceIntTest {
      */
     public static ExerciseSet createEntity(EntityManager em) {
         ExerciseSet exerciseSet = new ExerciseSet()
-                .exercise_set_number(DEFAULT_EXERCISE_SET_NUMBER)
+                .order_number(DEFAULT_ORDER_NUMBER)
                 .reps(DEFAULT_REPS)
                 .weight(DEFAULT_WEIGHT)
                 .rest(DEFAULT_REST);
@@ -126,7 +126,7 @@ public class ExerciseSetResourceIntTest {
         List<ExerciseSet> exerciseSetList = exerciseSetRepository.findAll();
         assertThat(exerciseSetList).hasSize(databaseSizeBeforeCreate + 1);
         ExerciseSet testExerciseSet = exerciseSetList.get(exerciseSetList.size() - 1);
-        assertThat(testExerciseSet.getExercise_set_number()).isEqualTo(DEFAULT_EXERCISE_SET_NUMBER);
+        assertThat(testExerciseSet.getOrder_number()).isEqualTo(DEFAULT_ORDER_NUMBER);
         assertThat(testExerciseSet.getReps()).isEqualTo(DEFAULT_REPS);
         assertThat(testExerciseSet.getWeight()).isEqualTo(DEFAULT_WEIGHT);
         assertThat(testExerciseSet.getRest()).isEqualTo(DEFAULT_REST);
@@ -158,10 +158,10 @@ public class ExerciseSetResourceIntTest {
 
     @Test
     @Transactional
-    public void checkExercise_set_numberIsRequired() throws Exception {
+    public void checkOrder_numberIsRequired() throws Exception {
         int databaseSizeBeforeTest = exerciseSetRepository.findAll().size();
         // set the field null
-        exerciseSet.setExercise_set_number(null);
+        exerciseSet.setOrder_number(null);
 
         // Create the ExerciseSet, which fails.
 
@@ -203,9 +203,9 @@ public class ExerciseSetResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(exerciseSet.getId().intValue())))
-            .andExpect(jsonPath("$.[*].exercise_set_number").value(hasItem(DEFAULT_EXERCISE_SET_NUMBER)))
+            .andExpect(jsonPath("$.[*].order_number").value(hasItem(DEFAULT_ORDER_NUMBER)))
             .andExpect(jsonPath("$.[*].reps").value(hasItem(DEFAULT_REPS)))
-            .andExpect(jsonPath("$.[*].weight").value(hasItem(DEFAULT_WEIGHT)))
+            .andExpect(jsonPath("$.[*].weight").value(hasItem(DEFAULT_WEIGHT.doubleValue())))
             .andExpect(jsonPath("$.[*].rest").value(hasItem(DEFAULT_REST)));
     }
 
@@ -220,9 +220,9 @@ public class ExerciseSetResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(exerciseSet.getId().intValue()))
-            .andExpect(jsonPath("$.exercise_set_number").value(DEFAULT_EXERCISE_SET_NUMBER))
+            .andExpect(jsonPath("$.order_number").value(DEFAULT_ORDER_NUMBER))
             .andExpect(jsonPath("$.reps").value(DEFAULT_REPS))
-            .andExpect(jsonPath("$.weight").value(DEFAULT_WEIGHT))
+            .andExpect(jsonPath("$.weight").value(DEFAULT_WEIGHT.doubleValue()))
             .andExpect(jsonPath("$.rest").value(DEFAULT_REST));
     }
 
@@ -245,7 +245,7 @@ public class ExerciseSetResourceIntTest {
         // Update the exerciseSet
         ExerciseSet updatedExerciseSet = exerciseSetRepository.findOne(exerciseSet.getId());
         updatedExerciseSet
-                .exercise_set_number(UPDATED_EXERCISE_SET_NUMBER)
+                .order_number(UPDATED_ORDER_NUMBER)
                 .reps(UPDATED_REPS)
                 .weight(UPDATED_WEIGHT)
                 .rest(UPDATED_REST);
@@ -259,7 +259,7 @@ public class ExerciseSetResourceIntTest {
         List<ExerciseSet> exerciseSetList = exerciseSetRepository.findAll();
         assertThat(exerciseSetList).hasSize(databaseSizeBeforeUpdate);
         ExerciseSet testExerciseSet = exerciseSetList.get(exerciseSetList.size() - 1);
-        assertThat(testExerciseSet.getExercise_set_number()).isEqualTo(UPDATED_EXERCISE_SET_NUMBER);
+        assertThat(testExerciseSet.getOrder_number()).isEqualTo(UPDATED_ORDER_NUMBER);
         assertThat(testExerciseSet.getReps()).isEqualTo(UPDATED_REPS);
         assertThat(testExerciseSet.getWeight()).isEqualTo(UPDATED_WEIGHT);
         assertThat(testExerciseSet.getRest()).isEqualTo(UPDATED_REST);
@@ -320,9 +320,9 @@ public class ExerciseSetResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(exerciseSet.getId().intValue())))
-            .andExpect(jsonPath("$.[*].exercise_set_number").value(hasItem(DEFAULT_EXERCISE_SET_NUMBER)))
+            .andExpect(jsonPath("$.[*].order_number").value(hasItem(DEFAULT_ORDER_NUMBER)))
             .andExpect(jsonPath("$.[*].reps").value(hasItem(DEFAULT_REPS)))
-            .andExpect(jsonPath("$.[*].weight").value(hasItem(DEFAULT_WEIGHT)))
+            .andExpect(jsonPath("$.[*].weight").value(hasItem(DEFAULT_WEIGHT.doubleValue())))
             .andExpect(jsonPath("$.[*].rest").value(hasItem(DEFAULT_REST)));
     }
 }

@@ -24,10 +24,10 @@
                 "required",
                 "minlength"
             ],
-            "fieldValidateRulesMinlength": 0
+            "fieldValidateRulesMinlength": "1"
         }
     ],
-    "changelogDate": "20170128030725",
+    "changelogDate": "20170202010950",
     "dto": "no",
     "service": "serviceClass",
     "entityTableName": "muscle",

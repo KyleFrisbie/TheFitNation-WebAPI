@@ -4,7 +4,7 @@ describe('Controller Tests', function() {
 
     describe('UserDemographic Management Detail Controller', function() {
         var $scope, $rootScope;
-        var MockEntity, MockPreviousState, MockUserDemographic, MockUserWeight, MockGym, MockWorkoutInstance, MockWorkoutTemplate, MockWorkoutLog, MockUser;
+        var MockEntity, MockPreviousState, MockUserDemographic, MockGym, MockUserWeight, MockWorkoutLog, MockWorkoutTemplate;
         var createController;
 
         beforeEach(inject(function($injector) {
@@ -13,12 +13,10 @@ describe('Controller Tests', function() {
             MockEntity = jasmine.createSpy('MockEntity');
             MockPreviousState = jasmine.createSpy('MockPreviousState');
             MockUserDemographic = jasmine.createSpy('MockUserDemographic');
-            MockUserWeight = jasmine.createSpy('MockUserWeight');
             MockGym = jasmine.createSpy('MockGym');
-            MockWorkoutInstance = jasmine.createSpy('MockWorkoutInstance');
-            MockWorkoutTemplate = jasmine.createSpy('MockWorkoutTemplate');
+            MockUserWeight = jasmine.createSpy('MockUserWeight');
             MockWorkoutLog = jasmine.createSpy('MockWorkoutLog');
-            MockUser = jasmine.createSpy('MockUser');
+            MockWorkoutTemplate = jasmine.createSpy('MockWorkoutTemplate');
             
 
             var locals = {
@@ -27,12 +25,10 @@ describe('Controller Tests', function() {
                 'entity': MockEntity,
                 'previousState': MockPreviousState,
                 'UserDemographic': MockUserDemographic,
-                'UserWeight': MockUserWeight,
                 'Gym': MockGym,
-                'WorkoutInstance': MockWorkoutInstance,
-                'WorkoutTemplate': MockWorkoutTemplate,
+                'UserWeight': MockUserWeight,
                 'WorkoutLog': MockWorkoutLog,
-                'User': MockUser
+                'WorkoutTemplate': MockWorkoutTemplate
             };
             createController = function() {
                 $injector.get('$controller')("UserDemographicDetailController", locals);

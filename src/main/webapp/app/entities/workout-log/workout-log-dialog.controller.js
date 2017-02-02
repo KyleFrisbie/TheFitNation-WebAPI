@@ -5,9 +5,9 @@
         .module('theFitNationApp')
         .controller('WorkoutLogDialogController', WorkoutLogDialogController);
 
-    WorkoutLogDialogController.$inject = ['$timeout', '$scope', '$stateParams', '$uibModalInstance', 'entity', 'WorkoutLog', 'WorkoutInstance', 'WorkoutTemplate', 'UserDemographic'];
+    WorkoutLogDialogController.$inject = ['$timeout', '$scope', '$stateParams', '$uibModalInstance', 'entity', 'WorkoutLog', 'UserDemographic', 'UserWorkoutTemplate'];
 
-    function WorkoutLogDialogController ($timeout, $scope, $stateParams, $uibModalInstance, entity, WorkoutLog, WorkoutInstance, WorkoutTemplate, UserDemographic) {
+    function WorkoutLogDialogController ($timeout, $scope, $stateParams, $uibModalInstance, entity, WorkoutLog, UserDemographic, UserWorkoutTemplate) {
         var vm = this;
 
         vm.workoutLog = entity;
@@ -15,9 +15,8 @@
         vm.datePickerOpenStatus = {};
         vm.openCalendar = openCalendar;
         vm.save = save;
-        vm.workoutinstances = WorkoutInstance.query();
-        vm.workouttemplates = WorkoutTemplate.query();
         vm.userdemographics = UserDemographic.query();
+        vm.userworkouttemplates = UserWorkoutTemplate.query();
 
         $timeout(function (){
             angular.element('.form-group:eq(1)>input').focus();

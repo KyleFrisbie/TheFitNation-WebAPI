@@ -2,24 +2,16 @@
     "fluentMethods": true,
     "relationships": [
         {
-            "relationshipName": "workoutInstance",
-            "otherEntityName": "workoutInstance",
-            "relationshipType": "one-to-many",
-            "otherEntityRelationshipName": "workoutLog"
-        },
-        {
-            "relationshipName": "workoutTemplate",
-            "otherEntityName": "workoutTemplate",
-            "relationshipType": "many-to-many",
-            "otherEntityField": "name",
-            "ownerSide": true,
-            "otherEntityRelationshipName": "workoutLog"
-        },
-        {
             "relationshipName": "userDemographic",
             "otherEntityName": "userDemographic",
             "relationshipType": "one-to-one",
             "ownerSide": false,
+            "otherEntityRelationshipName": "workoutLog"
+        },
+        {
+            "relationshipName": "userWorkoutTemplate",
+            "otherEntityName": "userWorkoutTemplate",
+            "relationshipType": "one-to-many",
             "otherEntityRelationshipName": "workoutLog"
         }
     ],
@@ -39,7 +31,7 @@
             ]
         }
     ],
-    "changelogDate": "20170128031804",
+    "changelogDate": "20170202011404",
     "dto": "no",
     "service": "serviceClass",
     "entityTableName": "workout_log",

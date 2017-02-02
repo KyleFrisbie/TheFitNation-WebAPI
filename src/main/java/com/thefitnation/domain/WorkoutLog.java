@@ -36,21 +36,14 @@ public class WorkoutLog implements Serializable {
     @Column(name = "last_updated", nullable = false)
     private ZonedDateTime last_updated;
 
-    @OneToMany(mappedBy = "workoutLog")
-    @JsonIgnore
-    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    private Set<WorkoutInstance> workoutInstances = new HashSet<>();
-
-    @ManyToMany
-    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    @JoinTable(name = "workout_log_workout_template",
-               joinColumns = @JoinColumn(name="workout_logs_id", referencedColumnName="ID"),
-               inverseJoinColumns = @JoinColumn(name="workout_templates_id", referencedColumnName="ID"))
-    private Set<WorkoutTemplate> workoutTemplates = new HashSet<>();
-
     @OneToOne(mappedBy = "workoutLog")
     @JsonIgnore
     private UserDemographic userDemographic;
+
+    @OneToMany(mappedBy = "workoutLog")
+    @JsonIgnore
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    private Set<UserWorkoutTemplate> userWorkoutTemplates = new HashSet<>();
 
     public Long getId() {
         return id;
@@ -86,56 +79,6 @@ public class WorkoutLog implements Serializable {
         this.last_updated = last_updated;
     }
 
-    public Set<WorkoutInstance> getWorkoutInstances() {
-        return workoutInstances;
-    }
-
-    public WorkoutLog workoutInstances(Set<WorkoutInstance> workoutInstances) {
-        this.workoutInstances = workoutInstances;
-        return this;
-    }
-
-    public WorkoutLog addWorkoutInstance(WorkoutInstance workoutInstance) {
-        workoutInstances.add(workoutInstance);
-        workoutInstance.setWorkoutLog(this);
-        return this;
-    }
-
-    public WorkoutLog removeWorkoutInstance(WorkoutInstance workoutInstance) {
-        workoutInstances.remove(workoutInstance);
-        workoutInstance.setWorkoutLog(null);
-        return this;
-    }
-
-    public void setWorkoutInstances(Set<WorkoutInstance> workoutInstances) {
-        this.workoutInstances = workoutInstances;
-    }
-
-    public Set<WorkoutTemplate> getWorkoutTemplates() {
-        return workoutTemplates;
-    }
-
-    public WorkoutLog workoutTemplates(Set<WorkoutTemplate> workoutTemplates) {
-        this.workoutTemplates = workoutTemplates;
-        return this;
-    }
-
-    public WorkoutLog addWorkoutTemplate(WorkoutTemplate workoutTemplate) {
-        workoutTemplates.add(workoutTemplate);
-        workoutTemplate.getWorkoutLogs().add(this);
-        return this;
-    }
-
-    public WorkoutLog removeWorkoutTemplate(WorkoutTemplate workoutTemplate) {
-        workoutTemplates.remove(workoutTemplate);
-        workoutTemplate.getWorkoutLogs().remove(this);
-        return this;
-    }
-
-    public void setWorkoutTemplates(Set<WorkoutTemplate> workoutTemplates) {
-        this.workoutTemplates = workoutTemplates;
-    }
-
     public UserDemographic getUserDemographic() {
         return userDemographic;
     }
@@ -147,6 +90,31 @@ public class WorkoutLog implements Serializable {
 
     public void setUserDemographic(UserDemographic userDemographic) {
         this.userDemographic = userDemographic;
+    }
+
+    public Set<UserWorkoutTemplate> getUserWorkoutTemplates() {
+        return userWorkoutTemplates;
+    }
+
+    public WorkoutLog userWorkoutTemplates(Set<UserWorkoutTemplate> userWorkoutTemplates) {
+        this.userWorkoutTemplates = userWorkoutTemplates;
+        return this;
+    }
+
+    public WorkoutLog addUserWorkoutTemplate(UserWorkoutTemplate userWorkoutTemplate) {
+        userWorkoutTemplates.add(userWorkoutTemplate);
+        userWorkoutTemplate.setWorkoutLog(this);
+        return this;
+    }
+
+    public WorkoutLog removeUserWorkoutTemplate(UserWorkoutTemplate userWorkoutTemplate) {
+        userWorkoutTemplates.remove(userWorkoutTemplate);
+        userWorkoutTemplate.setWorkoutLog(null);
+        return this;
+    }
+
+    public void setUserWorkoutTemplates(Set<UserWorkoutTemplate> userWorkoutTemplates) {
+        this.userWorkoutTemplates = userWorkoutTemplates;
     }
 
     @Override

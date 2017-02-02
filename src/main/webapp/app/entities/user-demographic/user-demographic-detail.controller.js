@@ -5,9 +5,9 @@
         .module('theFitNationApp')
         .controller('UserDemographicDetailController', UserDemographicDetailController);
 
-    UserDemographicDetailController.$inject = ['$scope', '$rootScope', '$stateParams', 'previousState', 'entity', 'UserDemographic', 'UserWeight', 'Gym', 'WorkoutInstance', 'WorkoutTemplate', 'WorkoutLog', 'User'];
+    UserDemographicDetailController.$inject = ['$scope', '$rootScope', '$stateParams', 'previousState', 'entity', 'UserDemographic', 'Gym', 'UserWeight', 'WorkoutLog', 'WorkoutTemplate'];
 
-    function UserDemographicDetailController($scope, $rootScope, $stateParams, previousState, entity, UserDemographic, UserWeight, Gym, WorkoutInstance, WorkoutTemplate, WorkoutLog, User) {
+    function UserDemographicDetailController($scope, $rootScope, $stateParams, previousState, entity, UserDemographic, Gym, UserWeight, WorkoutLog, WorkoutTemplate) {
         var vm = this;
 
         vm.userDemographic = entity;

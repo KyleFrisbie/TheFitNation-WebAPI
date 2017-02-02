@@ -35,15 +35,26 @@ public class UserDemographic implements Serializable {
     private Long id;
 
     @NotNull
+    @Column(name = "join_date", nullable = false)
+    private ZonedDateTime join_date;
+
+    @NotNull
+    @Column(name = "last_login", nullable = false)
+    private ZonedDateTime last_login;
+
+    @NotNull
+    @Size(min = 1)
     @Column(name = "first_name", nullable = false)
     private String first_name;
 
     @NotNull
+    @Size(min = 1)
     @Column(name = "last_name", nullable = false)
     private String last_name;
 
+    @NotNull
     @Enumerated(EnumType.STRING)
-    @Column(name = "gender")
+    @Column(name = "gender", nullable = false)
     private Gender gender;
 
     @NotNull
@@ -51,7 +62,7 @@ public class UserDemographic implements Serializable {
     private ZonedDateTime dob;
 
     @Column(name = "height")
-    private Float height;
+    private Integer height;
 
     @NotNull
     @Enumerated(EnumType.STRING)
@@ -64,46 +75,27 @@ public class UserDemographic implements Serializable {
     private UnitOfMeasure unit_of_measure;
 
     @NotNull
-    @Column(name = "last_login", nullable = false)
-    private ZonedDateTime last_login;
-
-    @NotNull
-    @Column(name = "join_date", nullable = false)
-    private ZonedDateTime join_date;
-
-    @NotNull
     @Column(name = "is_active", nullable = false)
     private Boolean is_active;
+
+    @ManyToMany(mappedBy = "userDemographics")
+    @JsonIgnore
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    private Set<Gym> gyms = new HashSet<>();
 
     @OneToMany(mappedBy = "userDemographic")
     @JsonIgnore
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<UserWeight> userWeights = new HashSet<>();
 
-    @ManyToMany
-    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    @JoinTable(name = "user_demographic_gym",
-               joinColumns = @JoinColumn(name="user_demographics_id", referencedColumnName="ID"),
-               inverseJoinColumns = @JoinColumn(name="gyms_id", referencedColumnName="ID"))
-    private Set<Gym> gyms = new HashSet<>();
-
-    @OneToMany(mappedBy = "userDemographic")
-    @JsonIgnore
-    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    private Set<WorkoutInstance> workoutInstances = new HashSet<>();
+    @OneToOne
+    @JoinColumn(unique = true)
+    private WorkoutLog workoutLog;
 
     @OneToMany(mappedBy = "userDemographic")
     @JsonIgnore
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<WorkoutTemplate> workoutTemplates = new HashSet<>();
-
-    @OneToOne
-    @JoinColumn(unique = true)
-    private WorkoutLog workoutLog;
-
-    @OneToOne
-    @JoinColumn(unique = true)
-    private User user;
 
     public Long getId() {
         return id;
@@ -111,6 +103,32 @@ public class UserDemographic implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public ZonedDateTime getJoin_date() {
+        return join_date;
+    }
+
+    public UserDemographic join_date(ZonedDateTime join_date) {
+        this.join_date = join_date;
+        return this;
+    }
+
+    public void setJoin_date(ZonedDateTime join_date) {
+        this.join_date = join_date;
+    }
+
+    public ZonedDateTime getLast_login() {
+        return last_login;
+    }
+
+    public UserDemographic last_login(ZonedDateTime last_login) {
+        this.last_login = last_login;
+        return this;
+    }
+
+    public void setLast_login(ZonedDateTime last_login) {
+        this.last_login = last_login;
     }
 
     public String getFirst_name() {
@@ -165,16 +183,16 @@ public class UserDemographic implements Serializable {
         this.dob = dob;
     }
 
-    public Float getHeight() {
+    public Integer getHeight() {
         return height;
     }
 
-    public UserDemographic height(Float height) {
+    public UserDemographic height(Integer height) {
         this.height = height;
         return this;
     }
 
-    public void setHeight(Float height) {
+    public void setHeight(Integer height) {
         this.height = height;
     }
 
@@ -204,32 +222,6 @@ public class UserDemographic implements Serializable {
         this.unit_of_measure = unit_of_measure;
     }
 
-    public ZonedDateTime getLast_login() {
-        return last_login;
-    }
-
-    public UserDemographic last_login(ZonedDateTime last_login) {
-        this.last_login = last_login;
-        return this;
-    }
-
-    public void setLast_login(ZonedDateTime last_login) {
-        this.last_login = last_login;
-    }
-
-    public ZonedDateTime getJoin_date() {
-        return join_date;
-    }
-
-    public UserDemographic join_date(ZonedDateTime join_date) {
-        this.join_date = join_date;
-        return this;
-    }
-
-    public void setJoin_date(ZonedDateTime join_date) {
-        this.join_date = join_date;
-    }
-
     public Boolean isIs_active() {
         return is_active;
     }
@@ -241,31 +233,6 @@ public class UserDemographic implements Serializable {
 
     public void setIs_active(Boolean is_active) {
         this.is_active = is_active;
-    }
-
-    public Set<UserWeight> getUserWeights() {
-        return userWeights;
-    }
-
-    public UserDemographic userWeights(Set<UserWeight> userWeights) {
-        this.userWeights = userWeights;
-        return this;
-    }
-
-    public UserDemographic addUserWeight(UserWeight userWeight) {
-        userWeights.add(userWeight);
-        userWeight.setUserDemographic(this);
-        return this;
-    }
-
-    public UserDemographic removeUserWeight(UserWeight userWeight) {
-        userWeights.remove(userWeight);
-        userWeight.setUserDemographic(null);
-        return this;
-    }
-
-    public void setUserWeights(Set<UserWeight> userWeights) {
-        this.userWeights = userWeights;
     }
 
     public Set<Gym> getGyms() {
@@ -293,29 +260,42 @@ public class UserDemographic implements Serializable {
         this.gyms = gyms;
     }
 
-    public Set<WorkoutInstance> getWorkoutInstances() {
-        return workoutInstances;
+    public Set<UserWeight> getUserWeights() {
+        return userWeights;
     }
 
-    public UserDemographic workoutInstances(Set<WorkoutInstance> workoutInstances) {
-        this.workoutInstances = workoutInstances;
+    public UserDemographic userWeights(Set<UserWeight> userWeights) {
+        this.userWeights = userWeights;
         return this;
     }
 
-    public UserDemographic addWorkoutInstance(WorkoutInstance workoutInstance) {
-        workoutInstances.add(workoutInstance);
-        workoutInstance.setUserDemographic(this);
+    public UserDemographic addUserWeight(UserWeight userWeight) {
+        userWeights.add(userWeight);
+        userWeight.setUserDemographic(this);
         return this;
     }
 
-    public UserDemographic removeWorkoutInstance(WorkoutInstance workoutInstance) {
-        workoutInstances.remove(workoutInstance);
-        workoutInstance.setUserDemographic(null);
+    public UserDemographic removeUserWeight(UserWeight userWeight) {
+        userWeights.remove(userWeight);
+        userWeight.setUserDemographic(null);
         return this;
     }
 
-    public void setWorkoutInstances(Set<WorkoutInstance> workoutInstances) {
-        this.workoutInstances = workoutInstances;
+    public void setUserWeights(Set<UserWeight> userWeights) {
+        this.userWeights = userWeights;
+    }
+
+    public WorkoutLog getWorkoutLog() {
+        return workoutLog;
+    }
+
+    public UserDemographic workoutLog(WorkoutLog workoutLog) {
+        this.workoutLog = workoutLog;
+        return this;
+    }
+
+    public void setWorkoutLog(WorkoutLog workoutLog) {
+        this.workoutLog = workoutLog;
     }
 
     public Set<WorkoutTemplate> getWorkoutTemplates() {
@@ -343,32 +323,6 @@ public class UserDemographic implements Serializable {
         this.workoutTemplates = workoutTemplates;
     }
 
-    public WorkoutLog getWorkoutLog() {
-        return workoutLog;
-    }
-
-    public UserDemographic workoutLog(WorkoutLog workoutLog) {
-        this.workoutLog = workoutLog;
-        return this;
-    }
-
-    public void setWorkoutLog(WorkoutLog workoutLog) {
-        this.workoutLog = workoutLog;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public UserDemographic user(User user) {
-        this.user = user;
-        return this;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -393,6 +347,8 @@ public class UserDemographic implements Serializable {
     public String toString() {
         return "UserDemographic{" +
             "id=" + id +
+            ", join_date='" + join_date + "'" +
+            ", last_login='" + last_login + "'" +
             ", first_name='" + first_name + "'" +
             ", last_name='" + last_name + "'" +
             ", gender='" + gender + "'" +
@@ -400,8 +356,6 @@ public class UserDemographic implements Serializable {
             ", height='" + height + "'" +
             ", skill_level='" + skill_level + "'" +
             ", unit_of_measure='" + unit_of_measure + "'" +
-            ", last_login='" + last_login + "'" +
-            ", join_date='" + join_date + "'" +
             ", is_active='" + is_active + "'" +
             '}';
     }

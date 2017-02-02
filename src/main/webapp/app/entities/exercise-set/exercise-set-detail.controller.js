@@ -5,9 +5,9 @@
         .module('theFitNationApp')
         .controller('ExerciseSetDetailController', ExerciseSetDetailController);
 
-    ExerciseSetDetailController.$inject = ['$scope', '$rootScope', '$stateParams', 'previousState', 'entity', 'ExerciseSet', 'Exercise'];
+    ExerciseSetDetailController.$inject = ['$scope', '$rootScope', '$stateParams', 'previousState', 'entity', 'ExerciseSet', 'Exercise', 'UserExerciseSet'];
 
-    function ExerciseSetDetailController($scope, $rootScope, $stateParams, previousState, entity, ExerciseSet, Exercise) {
+    function ExerciseSetDetailController($scope, $rootScope, $stateParams, previousState, entity, ExerciseSet, Exercise, UserExerciseSet) {
         var vm = this;
 
         vm.exerciseSet = entity;

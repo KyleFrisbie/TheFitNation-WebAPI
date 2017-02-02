@@ -28,7 +28,7 @@ public class Muscle implements Serializable {
     private Long id;
 
     @NotNull
-    @Size(min = 0)
+    @Size(min = 1)
     @Column(name = "name", nullable = false)
     private String name;
 

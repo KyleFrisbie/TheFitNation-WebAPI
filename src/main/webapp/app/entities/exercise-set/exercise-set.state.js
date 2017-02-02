@@ -95,7 +95,7 @@
                     resolve: {
                         entity: function () {
                             return {
-                                exercise_set_number: null,
+                                order_number: null,
                                 reps: null,
                                 weight: null,
                                 rest: null,

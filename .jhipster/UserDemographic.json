@@ -2,28 +2,15 @@
     "fluentMethods": true,
     "relationships": [
         {
-            "relationshipName": "userWeight",
-            "otherEntityName": "userWeight",
-            "relationshipType": "one-to-many",
-            "otherEntityRelationshipName": "userDemographic"
-        },
-        {
             "relationshipName": "gym",
             "otherEntityName": "gym",
             "relationshipType": "many-to-many",
-            "otherEntityField": "name",
-            "ownerSide": true,
+            "ownerSide": false,
             "otherEntityRelationshipName": "userDemographic"
         },
         {
-            "relationshipName": "workoutInstance",
-            "otherEntityName": "workoutInstance",
-            "relationshipType": "one-to-many",
-            "otherEntityRelationshipName": "userDemographic"
-        },
-        {
-            "relationshipName": "workoutTemplate",
-            "otherEntityName": "workoutTemplate",
+            "relationshipName": "userWeight",
+            "otherEntityName": "userWeight",
             "relationshipType": "one-to-many",
             "otherEntityRelationshipName": "userDemographic"
         },
@@ -36,33 +23,52 @@
             "otherEntityRelationshipName": "userDemographic"
         },
         {
-            "relationshipName": "user",
-            "otherEntityName": "user",
-            "relationshipType": "one-to-one",
-            "otherEntityField": "id",
-            "ownerSide": true,
+            "relationshipName": "workoutTemplate",
+            "otherEntityName": "workoutTemplate",
+            "relationshipType": "one-to-many",
             "otherEntityRelationshipName": "userDemographic"
         }
     ],
     "fields": [
         {
-            "fieldName": "first_name",
-            "fieldType": "String",
+            "fieldName": "join_date",
+            "fieldType": "ZonedDateTime",
             "fieldValidateRules": [
                 "required"
             ]
+        },
+        {
+            "fieldName": "last_login",
+            "fieldType": "ZonedDateTime",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "first_name",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required",
+                "minlength"
+            ],
+            "fieldValidateRulesMinlength": "1"
         },
         {
             "fieldName": "last_name",
             "fieldType": "String",
             "fieldValidateRules": [
-                "required"
-            ]
+                "required",
+                "minlength"
+            ],
+            "fieldValidateRulesMinlength": "1"
         },
         {
             "fieldName": "gender",
             "fieldType": "Gender",
-            "fieldValues": "Male, Female, Other"
+            "fieldValues": "Male, Female, Other",
+            "fieldValidateRules": [
+                "required"
+            ]
         },
         {
             "fieldName": "dob",
@@ -73,8 +79,7 @@
         },
         {
             "fieldName": "height",
-            "fieldType": "Float",
-            "fieldValidateRules": []
+            "fieldType": "Integer"
         },
         {
             "fieldName": "skill_level",
@@ -93,20 +98,6 @@
             ]
         },
         {
-            "fieldName": "last_login",
-            "fieldType": "ZonedDateTime",
-            "fieldValidateRules": [
-                "required"
-            ]
-        },
-        {
-            "fieldName": "join_date",
-            "fieldType": "ZonedDateTime",
-            "fieldValidateRules": [
-                "required"
-            ]
-        },
-        {
             "fieldName": "is_active",
             "fieldType": "Boolean",
             "fieldValidateRules": [
@@ -114,7 +105,7 @@
             ]
         }
     ],
-    "changelogDate": "20170128024425",
+    "changelogDate": "20170202005606",
     "dto": "no",
     "service": "serviceClass",
     "entityTableName": "user_demographic",

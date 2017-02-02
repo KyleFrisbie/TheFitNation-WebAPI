@@ -11,13 +11,6 @@
             "otherEntityField": "last_name"
         },
         {
-            "relationshipName": "workoutLog",
-            "otherEntityName": "workoutLog",
-            "relationshipType": "many-to-many",
-            "ownerSide": false,
-            "otherEntityRelationshipName": "workoutTemplate"
-        },
-        {
             "relationshipName": "workoutInstance",
             "otherEntityName": "workoutInstance",
             "relationshipType": "many-to-many",
@@ -26,6 +19,12 @@
             ],
             "otherEntityField": "name",
             "ownerSide": true,
+            "otherEntityRelationshipName": "workoutTemplate"
+        },
+        {
+            "relationshipName": "userWorkoutTemplate",
+            "otherEntityName": "userWorkoutTemplate",
+            "relationshipType": "one-to-many",
             "otherEntityRelationshipName": "workoutTemplate"
         }
     ],
@@ -37,7 +36,7 @@
                 "required",
                 "minlength"
             ],
-            "fieldValidateRulesMinlength": 0
+            "fieldValidateRulesMinlength": "1"
         },
         {
             "fieldName": "created_on",
@@ -61,7 +60,7 @@
             ]
         }
     ],
-    "changelogDate": "20170128030055",
+    "changelogDate": "20170202010019",
     "dto": "no",
     "service": "serviceClass",
     "entityTableName": "workout_template",

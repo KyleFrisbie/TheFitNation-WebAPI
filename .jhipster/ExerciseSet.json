@@ -9,11 +9,17 @@
                 "required"
             ],
             "otherEntityField": "name"
+        },
+        {
+            "relationshipName": "userExerciseSet",
+            "otherEntityName": "userExerciseSet",
+            "relationshipType": "one-to-many",
+            "otherEntityRelationshipName": "exerciseSet"
         }
     ],
     "fields": [
         {
-            "fieldName": "exercise_set_number",
+            "fieldName": "order_number",
             "fieldType": "Integer",
             "fieldValidateRules": [
                 "required",
@@ -28,22 +34,18 @@
                 "required",
                 "min"
             ],
-            "fieldValidateRulesMin": "1"
+            "fieldValidateRulesMin": 0
         },
         {
             "fieldName": "weight",
-            "fieldType": "Integer"
+            "fieldType": "Float"
         },
         {
             "fieldName": "rest",
-            "fieldType": "Integer",
-            "fieldValidateRules": [
-                "min"
-            ],
-            "fieldValidateRulesMin": 0
+            "fieldType": "Integer"
         }
     ],
-    "changelogDate": "20170128031319",
+    "changelogDate": "20170202011230",
     "dto": "no",
     "service": "serviceClass",
     "entityTableName": "exercise_set",

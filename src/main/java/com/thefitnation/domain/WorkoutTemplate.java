@@ -29,7 +29,7 @@ public class WorkoutTemplate implements Serializable {
     private Long id;
 
     @NotNull
-    @Size(min = 0)
+    @Size(min = 1)
     @Column(name = "name", nullable = false)
     private String name;
 
@@ -49,11 +49,6 @@ public class WorkoutTemplate implements Serializable {
     @NotNull
     private UserDemographic userDemographic;
 
-    @ManyToMany(mappedBy = "workoutTemplates")
-    @JsonIgnore
-    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    private Set<WorkoutLog> workoutLogs = new HashSet<>();
-
     @ManyToMany
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     @NotNull
@@ -61,6 +56,11 @@ public class WorkoutTemplate implements Serializable {
                joinColumns = @JoinColumn(name="workout_templates_id", referencedColumnName="ID"),
                inverseJoinColumns = @JoinColumn(name="workout_instances_id", referencedColumnName="ID"))
     private Set<WorkoutInstance> workoutInstances = new HashSet<>();
+
+    @OneToMany(mappedBy = "workoutTemplate")
+    @JsonIgnore
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    private Set<UserWorkoutTemplate> userWorkoutTemplates = new HashSet<>();
 
     public Long getId() {
         return id;
@@ -135,31 +135,6 @@ public class WorkoutTemplate implements Serializable {
         this.userDemographic = userDemographic;
     }
 
-    public Set<WorkoutLog> getWorkoutLogs() {
-        return workoutLogs;
-    }
-
-    public WorkoutTemplate workoutLogs(Set<WorkoutLog> workoutLogs) {
-        this.workoutLogs = workoutLogs;
-        return this;
-    }
-
-    public WorkoutTemplate addWorkoutLog(WorkoutLog workoutLog) {
-        workoutLogs.add(workoutLog);
-        workoutLog.getWorkoutTemplates().add(this);
-        return this;
-    }
-
-    public WorkoutTemplate removeWorkoutLog(WorkoutLog workoutLog) {
-        workoutLogs.remove(workoutLog);
-        workoutLog.getWorkoutTemplates().remove(this);
-        return this;
-    }
-
-    public void setWorkoutLogs(Set<WorkoutLog> workoutLogs) {
-        this.workoutLogs = workoutLogs;
-    }
-
     public Set<WorkoutInstance> getWorkoutInstances() {
         return workoutInstances;
     }
@@ -183,6 +158,31 @@ public class WorkoutTemplate implements Serializable {
 
     public void setWorkoutInstances(Set<WorkoutInstance> workoutInstances) {
         this.workoutInstances = workoutInstances;
+    }
+
+    public Set<UserWorkoutTemplate> getUserWorkoutTemplates() {
+        return userWorkoutTemplates;
+    }
+
+    public WorkoutTemplate userWorkoutTemplates(Set<UserWorkoutTemplate> userWorkoutTemplates) {
+        this.userWorkoutTemplates = userWorkoutTemplates;
+        return this;
+    }
+
+    public WorkoutTemplate addUserWorkoutTemplate(UserWorkoutTemplate userWorkoutTemplate) {
+        userWorkoutTemplates.add(userWorkoutTemplate);
+        userWorkoutTemplate.setWorkoutTemplate(this);
+        return this;
+    }
+
+    public WorkoutTemplate removeUserWorkoutTemplate(UserWorkoutTemplate userWorkoutTemplate) {
+        userWorkoutTemplates.remove(userWorkoutTemplate);
+        userWorkoutTemplate.setWorkoutTemplate(null);
+        return this;
+    }
+
+    public void setUserWorkoutTemplates(Set<UserWorkoutTemplate> userWorkoutTemplates) {
+        this.userWorkoutTemplates = userWorkoutTemplates;
     }
 
     @Override

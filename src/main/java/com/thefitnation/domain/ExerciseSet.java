@@ -1,5 +1,6 @@
 package com.thefitnation.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.data.elasticsearch.annotations.Document;
@@ -7,6 +8,8 @@ import org.springframework.data.elasticsearch.annotations.Document;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.Objects;
 
 /**
@@ -26,24 +29,28 @@ public class ExerciseSet implements Serializable {
 
     @NotNull
     @Min(value = 1)
-    @Column(name = "exercise_set_number", nullable = false)
-    private Integer exercise_set_number;
+    @Column(name = "order_number", nullable = false)
+    private Integer order_number;
 
     @NotNull
-    @Min(value = 1)
+    @Min(value = 0)
     @Column(name = "reps", nullable = false)
     private Integer reps;
 
     @Column(name = "weight")
-    private Integer weight;
+    private Float weight;
 
-    @Min(value = 0)
     @Column(name = "rest")
     private Integer rest;
 
     @ManyToOne
     @NotNull
     private Exercise exercise;
+
+    @OneToMany(mappedBy = "exerciseSet")
+    @JsonIgnore
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    private Set<UserExerciseSet> userExerciseSets = new HashSet<>();
 
     public Long getId() {
         return id;
@@ -53,17 +60,17 @@ public class ExerciseSet implements Serializable {
         this.id = id;
     }
 
-    public Integer getExercise_set_number() {
-        return exercise_set_number;
+    public Integer getOrder_number() {
+        return order_number;
     }
 
-    public ExerciseSet exercise_set_number(Integer exercise_set_number) {
-        this.exercise_set_number = exercise_set_number;
+    public ExerciseSet order_number(Integer order_number) {
+        this.order_number = order_number;
         return this;
     }
 
-    public void setExercise_set_number(Integer exercise_set_number) {
-        this.exercise_set_number = exercise_set_number;
+    public void setOrder_number(Integer order_number) {
+        this.order_number = order_number;
     }
 
     public Integer getReps() {
@@ -79,16 +86,16 @@ public class ExerciseSet implements Serializable {
         this.reps = reps;
     }
 
-    public Integer getWeight() {
+    public Float getWeight() {
         return weight;
     }
 
-    public ExerciseSet weight(Integer weight) {
+    public ExerciseSet weight(Float weight) {
         this.weight = weight;
         return this;
     }
 
-    public void setWeight(Integer weight) {
+    public void setWeight(Float weight) {
         this.weight = weight;
     }
 
@@ -118,6 +125,31 @@ public class ExerciseSet implements Serializable {
         this.exercise = exercise;
     }
 
+    public Set<UserExerciseSet> getUserExerciseSets() {
+        return userExerciseSets;
+    }
+
+    public ExerciseSet userExerciseSets(Set<UserExerciseSet> userExerciseSets) {
+        this.userExerciseSets = userExerciseSets;
+        return this;
+    }
+
+    public ExerciseSet addUserExerciseSet(UserExerciseSet userExerciseSet) {
+        userExerciseSets.add(userExerciseSet);
+        userExerciseSet.setExerciseSet(this);
+        return this;
+    }
+
+    public ExerciseSet removeUserExerciseSet(UserExerciseSet userExerciseSet) {
+        userExerciseSets.remove(userExerciseSet);
+        userExerciseSet.setExerciseSet(null);
+        return this;
+    }
+
+    public void setUserExerciseSets(Set<UserExerciseSet> userExerciseSets) {
+        this.userExerciseSets = userExerciseSets;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -142,7 +174,7 @@ public class ExerciseSet implements Serializable {
     public String toString() {
         return "ExerciseSet{" +
             "id=" + id +
-            ", exercise_set_number='" + exercise_set_number + "'" +
+            ", order_number='" + order_number + "'" +
             ", reps='" + reps + "'" +
             ", weight='" + weight + "'" +
             ", rest='" + rest + "'" +

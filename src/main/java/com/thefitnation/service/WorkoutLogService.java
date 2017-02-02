@@ -81,7 +81,7 @@ public class WorkoutLogService {
     @Transactional(readOnly = true) 
     public WorkoutLog findOne(Long id) {
         log.debug("Request to get WorkoutLog : {}", id);
-        WorkoutLog workoutLog = workoutLogRepository.findOneWithEagerRelationships(id);
+        WorkoutLog workoutLog = workoutLogRepository.findOne(id);
         return workoutLog;
     }
 

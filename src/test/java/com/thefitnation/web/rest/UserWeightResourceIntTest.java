@@ -48,8 +48,8 @@ public class UserWeightResourceIntTest {
     private static final ZonedDateTime DEFAULT_WEIGHT_DATE = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
     private static final ZonedDateTime UPDATED_WEIGHT_DATE = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
 
-    private static final Float DEFAULT_WEIGHT = 0F;
-    private static final Float UPDATED_WEIGHT = 1F;
+    private static final Float DEFAULT_WEIGHT = 1F;
+    private static final Float UPDATED_WEIGHT = 2F;
 
     @Inject
     private UserWeightRepository userWeightRepository;

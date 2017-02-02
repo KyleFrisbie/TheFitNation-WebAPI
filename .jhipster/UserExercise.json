@@ -1,0 +1,35 @@
+{
+    "fluentMethods": true,
+    "relationships": [
+        {
+            "relationshipName": "userWorkoutInstance",
+            "otherEntityName": "userWorkoutInstance",
+            "relationshipType": "many-to-one",
+            "relationshipValidateRules": [
+                "required"
+            ],
+            "otherEntityField": "id"
+        },
+        {
+            "relationshipName": "exercise",
+            "otherEntityName": "exercise",
+            "relationshipType": "many-to-one",
+            "relationshipValidateRules": [
+                "required"
+            ],
+            "otherEntityField": "name"
+        },
+        {
+            "relationshipName": "userExerciseSet",
+            "otherEntityName": "userExerciseSet",
+            "relationshipType": "one-to-many",
+            "otherEntityRelationshipName": "userExercise"
+        }
+    ],
+    "fields": [],
+    "changelogDate": "20170202012145",
+    "dto": "no",
+    "service": "serviceClass",
+    "entityTableName": "user_exercise",
+    "pagination": "infinite-scroll"
+}

@@ -4,7 +4,7 @@ describe('Controller Tests', function() {
 
     describe('Exercise Management Detail Controller', function() {
         var $scope, $rootScope;
-        var MockEntity, MockPreviousState, MockExercise, MockMuscle, MockExerciseSet, MockWorkoutInstance;
+        var MockEntity, MockPreviousState, MockExercise, MockWorkoutInstance, MockMuscle, MockExerciseSet, MockUserExercise;
         var createController;
 
         beforeEach(inject(function($injector) {
@@ -13,9 +13,10 @@ describe('Controller Tests', function() {
             MockEntity = jasmine.createSpy('MockEntity');
             MockPreviousState = jasmine.createSpy('MockPreviousState');
             MockExercise = jasmine.createSpy('MockExercise');
+            MockWorkoutInstance = jasmine.createSpy('MockWorkoutInstance');
             MockMuscle = jasmine.createSpy('MockMuscle');
             MockExerciseSet = jasmine.createSpy('MockExerciseSet');
-            MockWorkoutInstance = jasmine.createSpy('MockWorkoutInstance');
+            MockUserExercise = jasmine.createSpy('MockUserExercise');
             
 
             var locals = {
@@ -24,9 +25,10 @@ describe('Controller Tests', function() {
                 'entity': MockEntity,
                 'previousState': MockPreviousState,
                 'Exercise': MockExercise,
+                'WorkoutInstance': MockWorkoutInstance,
                 'Muscle': MockMuscle,
                 'ExerciseSet': MockExerciseSet,
-                'WorkoutInstance': MockWorkoutInstance
+                'UserExercise': MockUserExercise
             };
             createController = function() {
                 $injector.get('$controller')("ExerciseDetailController", locals);

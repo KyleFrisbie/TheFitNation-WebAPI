@@ -67,7 +67,7 @@ public class GymService {
     @Transactional(readOnly = true) 
     public Gym findOne(Long id) {
         log.debug("Request to get Gym : {}", id);
-        Gym gym = gymRepository.findOne(id);
+        Gym gym = gymRepository.findOneWithEagerRelationships(id);
         return gym;
     }
 

@@ -30,7 +30,7 @@ public class UserWeight implements Serializable {
     private ZonedDateTime weight_date;
 
     @NotNull
-    @DecimalMin(value = "0")
+    @DecimalMin(value = "1")
     @Column(name = "weight", nullable = false)
     private Float weight;
 

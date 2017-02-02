@@ -95,6 +95,8 @@
                     resolve: {
                         entity: function () {
                             return {
+                                join_date: null,
+                                last_login: null,
                                 first_name: null,
                                 last_name: null,
                                 gender: null,
@@ -102,8 +104,6 @@
                                 height: null,
                                 skill_level: null,
                                 unit_of_measure: null,
-                                last_login: null,
-                                join_date: null,
                                 is_active: false,
                                 id: null
                             };
