@@ -22,10 +22,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-
-import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
  * REST controller for managing UserExerciseSet.
@@ -129,25 +125,5 @@ public class UserExerciseSetResource {
         userExerciseSetService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("userExerciseSet", id.toString())).build();
     }
-
-    /**
-     * SEARCH  /_search/user-exercise-sets?query=:query : search for the userExerciseSet corresponding
-     * to the query.
-     *
-     * @param query the query of the userExerciseSet search 
-     * @param pageable the pagination information
-     * @return the result of the search
-     * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
-     */
-    @GetMapping("/_search/user-exercise-sets")
-    @Timed
-    public ResponseEntity<List<UserExerciseSet>> searchUserExerciseSets(@RequestParam String query, @ApiParam Pageable pageable)
-        throws URISyntaxException {
-        log.debug("REST request to search for a page of UserExerciseSets for query {}", query);
-        Page<UserExerciseSet> page = userExerciseSetService.search(query, pageable);
-        HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/user-exercise-sets");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
-    }
-
 
 }

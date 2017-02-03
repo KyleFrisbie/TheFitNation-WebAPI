@@ -5,7 +5,6 @@ import com.thefitnation.TheFitNationApp;
 import com.thefitnation.domain.Muscle;
 import com.thefitnation.repository.MuscleRepository;
 import com.thefitnation.service.MuscleService;
-import com.thefitnation.repository.search.MuscleSearchRepository;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -49,9 +48,6 @@ public class MuscleResourceIntTest {
     private MuscleService muscleService;
 
     @Inject
-    private MuscleSearchRepository muscleSearchRepository;
-
-    @Inject
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
 
     @Inject
@@ -88,7 +84,6 @@ public class MuscleResourceIntTest {
 
     @Before
     public void initTest() {
-        muscleSearchRepository.deleteAll();
         muscle = createEntity(em);
     }
 
@@ -109,10 +104,6 @@ public class MuscleResourceIntTest {
         assertThat(muscleList).hasSize(databaseSizeBeforeCreate + 1);
         Muscle testMuscle = muscleList.get(muscleList.size() - 1);
         assertThat(testMuscle.getName()).isEqualTo(DEFAULT_NAME);
-
-        // Validate the Muscle in ElasticSearch
-        Muscle muscleEs = muscleSearchRepository.findOne(testMuscle.getId());
-        assertThat(muscleEs).isEqualToComparingFieldByField(testMuscle);
     }
 
     @Test
@@ -212,10 +203,6 @@ public class MuscleResourceIntTest {
         assertThat(muscleList).hasSize(databaseSizeBeforeUpdate);
         Muscle testMuscle = muscleList.get(muscleList.size() - 1);
         assertThat(testMuscle.getName()).isEqualTo(UPDATED_NAME);
-
-        // Validate the Muscle in ElasticSearch
-        Muscle muscleEs = muscleSearchRepository.findOne(testMuscle.getId());
-        assertThat(muscleEs).isEqualToComparingFieldByField(testMuscle);
     }
 
     @Test
@@ -249,26 +236,8 @@ public class MuscleResourceIntTest {
             .accept(TestUtil.APPLICATION_JSON_UTF8))
             .andExpect(status().isOk());
 
-        // Validate ElasticSearch is empty
-        boolean muscleExistsInEs = muscleSearchRepository.exists(muscle.getId());
-        assertThat(muscleExistsInEs).isFalse();
-
         // Validate the database is empty
         List<Muscle> muscleList = muscleRepository.findAll();
         assertThat(muscleList).hasSize(databaseSizeBeforeDelete - 1);
-    }
-
-    @Test
-    @Transactional
-    public void searchMuscle() throws Exception {
-        // Initialize the database
-        muscleService.save(muscle);
-
-        // Search the muscle
-        restMuscleMockMvc.perform(get("/api/_search/muscles?query=id:" + muscle.getId()))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(muscle.getId().intValue())))
-            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())));
     }
 }

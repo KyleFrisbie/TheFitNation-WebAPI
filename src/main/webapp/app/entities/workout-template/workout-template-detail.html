@@ -24,12 +24,6 @@
         <dd>
             <a ui-sref="user-demographic-detail({id:vm.workoutTemplate.userDemographic.id})">{{vm.workoutTemplate.userDemographic.last_name}}</a>
         </dd>
-        <dt><span>Workout Instance</span></dt>
-        <dd>
-            <span ng-repeat="workoutInstance in vm.workoutTemplate.workoutInstances">
-                <a ui-sref="workout-instance-detail({id: workoutInstance.id})">{{workoutInstance.name}}</a>{{$last ? '' : ', '}}
-            </span>
-        </dd>
     </dl>
 
     <button type="submit"

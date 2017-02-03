@@ -13,10 +13,10 @@ import java.util.List;
 @SuppressWarnings("unused")
 public interface WorkoutInstanceRepository extends JpaRepository<WorkoutInstance,Long> {
 
-    @Query("select distinct workoutInstance from WorkoutInstance workoutInstance left join fetch workoutInstance.exercises left join fetch workoutInstance.muscles")
+    @Query("select distinct workoutInstance from WorkoutInstance workoutInstance left join fetch workoutInstance.exercises")
     List<WorkoutInstance> findAllWithEagerRelationships();
 
-    @Query("select workoutInstance from WorkoutInstance workoutInstance left join fetch workoutInstance.exercises left join fetch workoutInstance.muscles where workoutInstance.id =:id")
+    @Query("select workoutInstance from WorkoutInstance workoutInstance left join fetch workoutInstance.exercises where workoutInstance.id =:id")
     WorkoutInstance findOneWithEagerRelationships(@Param("id") Long id);
 
 }

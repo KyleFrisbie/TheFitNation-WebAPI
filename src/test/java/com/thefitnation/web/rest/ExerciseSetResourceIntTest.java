@@ -6,7 +6,6 @@ import com.thefitnation.domain.ExerciseSet;
 import com.thefitnation.domain.Exercise;
 import com.thefitnation.repository.ExerciseSetRepository;
 import com.thefitnation.service.ExerciseSetService;
-import com.thefitnation.repository.search.ExerciseSetSearchRepository;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -43,8 +42,8 @@ public class ExerciseSetResourceIntTest {
     private static final Integer DEFAULT_ORDER_NUMBER = 1;
     private static final Integer UPDATED_ORDER_NUMBER = 2;
 
-    private static final Integer DEFAULT_REPS = 0;
-    private static final Integer UPDATED_REPS = 1;
+    private static final Integer DEFAULT_REPS = 1;
+    private static final Integer UPDATED_REPS = 2;
 
     private static final Float DEFAULT_WEIGHT = 1F;
     private static final Float UPDATED_WEIGHT = 2F;
@@ -57,9 +56,6 @@ public class ExerciseSetResourceIntTest {
 
     @Inject
     private ExerciseSetService exerciseSetService;
-
-    @Inject
-    private ExerciseSetSearchRepository exerciseSetSearchRepository;
 
     @Inject
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
@@ -106,7 +102,6 @@ public class ExerciseSetResourceIntTest {
 
     @Before
     public void initTest() {
-        exerciseSetSearchRepository.deleteAll();
         exerciseSet = createEntity(em);
     }
 
@@ -130,10 +125,6 @@ public class ExerciseSetResourceIntTest {
         assertThat(testExerciseSet.getReps()).isEqualTo(DEFAULT_REPS);
         assertThat(testExerciseSet.getWeight()).isEqualTo(DEFAULT_WEIGHT);
         assertThat(testExerciseSet.getRest()).isEqualTo(DEFAULT_REST);
-
-        // Validate the ExerciseSet in ElasticSearch
-        ExerciseSet exerciseSetEs = exerciseSetSearchRepository.findOne(testExerciseSet.getId());
-        assertThat(exerciseSetEs).isEqualToComparingFieldByField(testExerciseSet);
     }
 
     @Test
@@ -263,10 +254,6 @@ public class ExerciseSetResourceIntTest {
         assertThat(testExerciseSet.getReps()).isEqualTo(UPDATED_REPS);
         assertThat(testExerciseSet.getWeight()).isEqualTo(UPDATED_WEIGHT);
         assertThat(testExerciseSet.getRest()).isEqualTo(UPDATED_REST);
-
-        // Validate the ExerciseSet in ElasticSearch
-        ExerciseSet exerciseSetEs = exerciseSetSearchRepository.findOne(testExerciseSet.getId());
-        assertThat(exerciseSetEs).isEqualToComparingFieldByField(testExerciseSet);
     }
 
     @Test
@@ -300,29 +287,8 @@ public class ExerciseSetResourceIntTest {
             .accept(TestUtil.APPLICATION_JSON_UTF8))
             .andExpect(status().isOk());
 
-        // Validate ElasticSearch is empty
-        boolean exerciseSetExistsInEs = exerciseSetSearchRepository.exists(exerciseSet.getId());
-        assertThat(exerciseSetExistsInEs).isFalse();
-
         // Validate the database is empty
         List<ExerciseSet> exerciseSetList = exerciseSetRepository.findAll();
         assertThat(exerciseSetList).hasSize(databaseSizeBeforeDelete - 1);
-    }
-
-    @Test
-    @Transactional
-    public void searchExerciseSet() throws Exception {
-        // Initialize the database
-        exerciseSetService.save(exerciseSet);
-
-        // Search the exerciseSet
-        restExerciseSetMockMvc.perform(get("/api/_search/exercise-sets?query=id:" + exerciseSet.getId()))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(exerciseSet.getId().intValue())))
-            .andExpect(jsonPath("$.[*].order_number").value(hasItem(DEFAULT_ORDER_NUMBER)))
-            .andExpect(jsonPath("$.[*].reps").value(hasItem(DEFAULT_REPS)))
-            .andExpect(jsonPath("$.[*].weight").value(hasItem(DEFAULT_WEIGHT.doubleValue())))
-            .andExpect(jsonPath("$.[*].rest").value(hasItem(DEFAULT_REST)));
     }
 }

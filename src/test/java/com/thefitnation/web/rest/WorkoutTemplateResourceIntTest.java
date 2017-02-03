@@ -4,10 +4,8 @@ import com.thefitnation.TheFitNationApp;
 
 import com.thefitnation.domain.WorkoutTemplate;
 import com.thefitnation.domain.UserDemographic;
-import com.thefitnation.domain.WorkoutInstance;
 import com.thefitnation.repository.WorkoutTemplateRepository;
 import com.thefitnation.service.WorkoutTemplateService;
-import com.thefitnation.repository.search.WorkoutTemplateSearchRepository;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -65,9 +63,6 @@ public class WorkoutTemplateResourceIntTest {
     private WorkoutTemplateService workoutTemplateService;
 
     @Inject
-    private WorkoutTemplateSearchRepository workoutTemplateSearchRepository;
-
-    @Inject
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
 
     @Inject
@@ -107,17 +102,11 @@ public class WorkoutTemplateResourceIntTest {
         em.persist(userDemographic);
         em.flush();
         workoutTemplate.setUserDemographic(userDemographic);
-        // Add required entity
-        WorkoutInstance workoutInstance = WorkoutInstanceResourceIntTest.createEntity(em);
-        em.persist(workoutInstance);
-        em.flush();
-        workoutTemplate.getWorkoutInstances().add(workoutInstance);
         return workoutTemplate;
     }
 
     @Before
     public void initTest() {
-        workoutTemplateSearchRepository.deleteAll();
         workoutTemplate = createEntity(em);
     }
 
@@ -141,10 +130,6 @@ public class WorkoutTemplateResourceIntTest {
         assertThat(testWorkoutTemplate.getCreated_on()).isEqualTo(DEFAULT_CREATED_ON);
         assertThat(testWorkoutTemplate.getLast_updated()).isEqualTo(DEFAULT_LAST_UPDATED);
         assertThat(testWorkoutTemplate.isIs_private()).isEqualTo(DEFAULT_IS_PRIVATE);
-
-        // Validate the WorkoutTemplate in ElasticSearch
-        WorkoutTemplate workoutTemplateEs = workoutTemplateSearchRepository.findOne(testWorkoutTemplate.getId());
-        assertThat(workoutTemplateEs).isEqualToComparingFieldByField(testWorkoutTemplate);
     }
 
     @Test
@@ -310,10 +295,6 @@ public class WorkoutTemplateResourceIntTest {
         assertThat(testWorkoutTemplate.getCreated_on()).isEqualTo(UPDATED_CREATED_ON);
         assertThat(testWorkoutTemplate.getLast_updated()).isEqualTo(UPDATED_LAST_UPDATED);
         assertThat(testWorkoutTemplate.isIs_private()).isEqualTo(UPDATED_IS_PRIVATE);
-
-        // Validate the WorkoutTemplate in ElasticSearch
-        WorkoutTemplate workoutTemplateEs = workoutTemplateSearchRepository.findOne(testWorkoutTemplate.getId());
-        assertThat(workoutTemplateEs).isEqualToComparingFieldByField(testWorkoutTemplate);
     }
 
     @Test
@@ -347,29 +328,8 @@ public class WorkoutTemplateResourceIntTest {
             .accept(TestUtil.APPLICATION_JSON_UTF8))
             .andExpect(status().isOk());
 
-        // Validate ElasticSearch is empty
-        boolean workoutTemplateExistsInEs = workoutTemplateSearchRepository.exists(workoutTemplate.getId());
-        assertThat(workoutTemplateExistsInEs).isFalse();
-
         // Validate the database is empty
         List<WorkoutTemplate> workoutTemplateList = workoutTemplateRepository.findAll();
         assertThat(workoutTemplateList).hasSize(databaseSizeBeforeDelete - 1);
-    }
-
-    @Test
-    @Transactional
-    public void searchWorkoutTemplate() throws Exception {
-        // Initialize the database
-        workoutTemplateService.save(workoutTemplate);
-
-        // Search the workoutTemplate
-        restWorkoutTemplateMockMvc.perform(get("/api/_search/workout-templates?query=id:" + workoutTemplate.getId()))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(workoutTemplate.getId().intValue())))
-            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
-            .andExpect(jsonPath("$.[*].created_on").value(hasItem(sameInstant(DEFAULT_CREATED_ON))))
-            .andExpect(jsonPath("$.[*].last_updated").value(hasItem(sameInstant(DEFAULT_LAST_UPDATED))))
-            .andExpect(jsonPath("$.[*].is_private").value(hasItem(DEFAULT_IS_PRIVATE.booleanValue())));
     }
 }

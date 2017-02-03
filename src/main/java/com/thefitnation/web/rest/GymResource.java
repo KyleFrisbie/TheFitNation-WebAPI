@@ -22,10 +22,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-
-import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
  * REST controller for managing Gym.
@@ -129,25 +125,5 @@ public class GymResource {
         gymService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("gym", id.toString())).build();
     }
-
-    /**
-     * SEARCH  /_search/gyms?query=:query : search for the gym corresponding
-     * to the query.
-     *
-     * @param query the query of the gym search 
-     * @param pageable the pagination information
-     * @return the result of the search
-     * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
-     */
-    @GetMapping("/_search/gyms")
-    @Timed
-    public ResponseEntity<List<Gym>> searchGyms(@RequestParam String query, @ApiParam Pageable pageable)
-        throws URISyntaxException {
-        log.debug("REST request to search for a page of Gyms for query {}", query);
-        Page<Gym> page = gymService.search(query, pageable);
-        HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/gyms");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
-    }
-
 
 }

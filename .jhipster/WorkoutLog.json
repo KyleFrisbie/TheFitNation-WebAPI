@@ -31,7 +31,7 @@
             ]
         }
     ],
-    "changelogDate": "20170202011404",
+    "changelogDate": "20170203231338",
     "dto": "no",
     "service": "serviceClass",
     "entityTableName": "workout_log",

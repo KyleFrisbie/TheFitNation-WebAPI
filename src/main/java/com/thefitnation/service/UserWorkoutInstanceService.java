@@ -2,7 +2,6 @@ package com.thefitnation.service;
 
 import com.thefitnation.domain.UserWorkoutInstance;
 import com.thefitnation.repository.UserWorkoutInstanceRepository;
-import com.thefitnation.repository.search.UserWorkoutInstanceSearchRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -12,10 +11,6 @@ import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-
-import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
  * Service Implementation for managing UserWorkoutInstance.
@@ -29,9 +24,6 @@ public class UserWorkoutInstanceService {
     @Inject
     private UserWorkoutInstanceRepository userWorkoutInstanceRepository;
 
-    @Inject
-    private UserWorkoutInstanceSearchRepository userWorkoutInstanceSearchRepository;
-
     /**
      * Save a userWorkoutInstance.
      *
@@ -41,7 +33,6 @@ public class UserWorkoutInstanceService {
     public UserWorkoutInstance save(UserWorkoutInstance userWorkoutInstance) {
         log.debug("Request to save UserWorkoutInstance : {}", userWorkoutInstance);
         UserWorkoutInstance result = userWorkoutInstanceRepository.save(userWorkoutInstance);
-        userWorkoutInstanceSearchRepository.save(result);
         return result;
     }
 
@@ -79,19 +70,5 @@ public class UserWorkoutInstanceService {
     public void delete(Long id) {
         log.debug("Request to delete UserWorkoutInstance : {}", id);
         userWorkoutInstanceRepository.delete(id);
-        userWorkoutInstanceSearchRepository.delete(id);
-    }
-
-    /**
-     * Search for the userWorkoutInstance corresponding to the query.
-     *
-     *  @param query the query of the search
-     *  @return the list of entities
-     */
-    @Transactional(readOnly = true)
-    public Page<UserWorkoutInstance> search(String query, Pageable pageable) {
-        log.debug("Request to search for a page of UserWorkoutInstances for query {}", query);
-        Page<UserWorkoutInstance> result = userWorkoutInstanceSearchRepository.search(queryStringQuery(query), pageable);
-        return result;
     }
 }

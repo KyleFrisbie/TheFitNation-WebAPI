@@ -20,13 +20,19 @@
 
     <cache alias="com.thefitnation.domain.User.persistentTokens" uses-template="simple"/>
 
+    <cache alias="com.thefitnation.domain.Muscle" uses-template="simple"/>
+
     <cache alias="com.thefitnation.domain.UserDemographic" uses-template="simple"/>
 
     <cache alias="com.thefitnation.domain.UserDemographic.gyms" uses-template="simple"/>
 
     <cache alias="com.thefitnation.domain.UserDemographic.userWeights" uses-template="simple"/>
 
-    <cache alias="com.thefitnation.domain.UserDemographic.workoutTemplates" uses-template="simple"/>
+    <cache alias="com.thefitnation.domain.UserWeight" uses-template="simple"/>
+
+    <cache alias="com.thefitnation.domain.Gym" uses-template="simple"/>
+
+    <cache alias="com.thefitnation.domain.Gym.userDemographics" uses-template="simple"/>
 
     <cache alias="com.thefitnation.domain.WorkoutTemplate" uses-template="simple"/>
 
@@ -34,15 +40,13 @@
 
     <cache alias="com.thefitnation.domain.WorkoutTemplate.userWorkoutTemplates" uses-template="simple"/>
 
+    <cache alias="com.thefitnation.domain.UserDemographic.workoutTemplates" uses-template="simple"/>
+
     <cache alias="com.thefitnation.domain.WorkoutInstance" uses-template="simple"/>
 
-    <cache alias="com.thefitnation.domain.WorkoutInstance.workoutTemplates" uses-template="simple"/>
+    <cache alias="com.thefitnation.domain.WorkoutInstance.userWorkoutInstances" uses-template="simple"/>
 
     <cache alias="com.thefitnation.domain.WorkoutInstance.exercises" uses-template="simple"/>
-
-    <cache alias="com.thefitnation.domain.WorkoutInstance.muscles" uses-template="simple"/>
-
-    <cache alias="com.thefitnation.domain.WorkoutInstance.userWorkoutInstances" uses-template="simple"/>
 
     <cache alias="com.thefitnation.domain.Exercise" uses-template="simple"/>
 
@@ -53,10 +57,6 @@
     <cache alias="com.thefitnation.domain.Exercise.exerciseSets" uses-template="simple"/>
 
     <cache alias="com.thefitnation.domain.Exercise.userExercises" uses-template="simple"/>
-
-    <cache alias="com.thefitnation.domain.Muscle" uses-template="simple"/>
-
-    <cache alias="com.thefitnation.domain.Muscle.workoutInstances" uses-template="simple"/>
 
     <cache alias="com.thefitnation.domain.Muscle.exercises" uses-template="simple"/>
 
@@ -81,12 +81,6 @@
     <cache alias="com.thefitnation.domain.UserExercise.userExerciseSets" uses-template="simple"/>
 
     <cache alias="com.thefitnation.domain.UserExerciseSet" uses-template="simple"/>
-
-    <cache alias="com.thefitnation.domain.Gym" uses-template="simple"/>
-
-    <cache alias="com.thefitnation.domain.Gym.userDemographics" uses-template="simple"/>
-
-    <cache alias="com.thefitnation.domain.UserWeight" uses-template="simple"/>
 
     <!-- jhipster-needle-ehcache-add-entry -->
 </config>

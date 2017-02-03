@@ -96,8 +96,8 @@
                         entity: function () {
                             return {
                                 name: null,
-                                created_on: null,
                                 last_updated: null,
+                                created_on: null,
                                 rest_between_instances: null,
                                 order_number: null,
                                 id: null

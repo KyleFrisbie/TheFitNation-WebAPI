@@ -2,7 +2,6 @@ package com.thefitnation.service;
 
 import com.thefitnation.domain.WorkoutInstance;
 import com.thefitnation.repository.WorkoutInstanceRepository;
-import com.thefitnation.repository.search.WorkoutInstanceSearchRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -12,10 +11,6 @@ import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-
-import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
  * Service Implementation for managing WorkoutInstance.
@@ -29,9 +24,6 @@ public class WorkoutInstanceService {
     @Inject
     private WorkoutInstanceRepository workoutInstanceRepository;
 
-    @Inject
-    private WorkoutInstanceSearchRepository workoutInstanceSearchRepository;
-
     /**
      * Save a workoutInstance.
      *
@@ -41,7 +33,6 @@ public class WorkoutInstanceService {
     public WorkoutInstance save(WorkoutInstance workoutInstance) {
         log.debug("Request to save WorkoutInstance : {}", workoutInstance);
         WorkoutInstance result = workoutInstanceRepository.save(workoutInstance);
-        workoutInstanceSearchRepository.save(result);
         return result;
     }
 
@@ -79,19 +70,5 @@ public class WorkoutInstanceService {
     public void delete(Long id) {
         log.debug("Request to delete WorkoutInstance : {}", id);
         workoutInstanceRepository.delete(id);
-        workoutInstanceSearchRepository.delete(id);
-    }
-
-    /**
-     * Search for the workoutInstance corresponding to the query.
-     *
-     *  @param query the query of the search
-     *  @return the list of entities
-     */
-    @Transactional(readOnly = true)
-    public Page<WorkoutInstance> search(String query, Pageable pageable) {
-        log.debug("Request to search for a page of WorkoutInstances for query {}", query);
-        Page<WorkoutInstance> result = workoutInstanceSearchRepository.search(queryStringQuery(query), pageable);
-        return result;
     }
 }

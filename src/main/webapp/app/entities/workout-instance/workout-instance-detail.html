@@ -8,13 +8,13 @@
         <dd>
             <span>{{vm.workoutInstance.name}}</span>
         </dd>
-        <dt><span data-translate="theFitNationApp.workoutInstance.created_on">Created On</span></dt>
-        <dd>
-            <span>{{vm.workoutInstance.created_on | date:'medium'}}</span>
-        </dd>
         <dt><span data-translate="theFitNationApp.workoutInstance.last_updated">Last Updated</span></dt>
         <dd>
             <span>{{vm.workoutInstance.last_updated | date:'medium'}}</span>
+        </dd>
+        <dt><span data-translate="theFitNationApp.workoutInstance.created_on">Created On</span></dt>
+        <dd>
+            <span>{{vm.workoutInstance.created_on | date:'medium'}}</span>
         </dd>
         <dt><span data-translate="theFitNationApp.workoutInstance.rest_between_instances">Rest Between Instances</span></dt>
         <dd>
@@ -24,16 +24,14 @@
         <dd>
             <span>{{vm.workoutInstance.order_number}}</span>
         </dd>
+        <dt><span>Workout Template</span></dt>
+        <dd>
+            <a ui-sref="workout-template-detail({id:vm.workoutInstance.workoutTemplate.id})">{{vm.workoutInstance.workoutTemplate.name}}</a>
+        </dd>
         <dt><span>Exercise</span></dt>
         <dd>
             <span ng-repeat="exercise in vm.workoutInstance.exercises">
                 <a ui-sref="exercise-detail({id: exercise.id})">{{exercise.name}}</a>{{$last ? '' : ', '}}
-            </span>
-        </dd>
-        <dt><span>Muscle</span></dt>
-        <dd>
-            <span ng-repeat="muscle in vm.workoutInstance.muscles">
-                <a ui-sref="muscle-detail({id: muscle.id})">{{muscle.name}}</a>{{$last ? '' : ', '}}
             </span>
         </dd>
     </dl>

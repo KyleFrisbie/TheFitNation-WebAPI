@@ -2,7 +2,6 @@ package com.thefitnation.service;
 
 import com.thefitnation.domain.Gym;
 import com.thefitnation.repository.GymRepository;
-import com.thefitnation.repository.search.GymSearchRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -12,10 +11,6 @@ import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-
-import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
  * Service Implementation for managing Gym.
@@ -29,9 +24,6 @@ public class GymService {
     @Inject
     private GymRepository gymRepository;
 
-    @Inject
-    private GymSearchRepository gymSearchRepository;
-
     /**
      * Save a gym.
      *
@@ -41,7 +33,6 @@ public class GymService {
     public Gym save(Gym gym) {
         log.debug("Request to save Gym : {}", gym);
         Gym result = gymRepository.save(gym);
-        gymSearchRepository.save(result);
         return result;
     }
 
@@ -79,19 +70,5 @@ public class GymService {
     public void delete(Long id) {
         log.debug("Request to delete Gym : {}", id);
         gymRepository.delete(id);
-        gymSearchRepository.delete(id);
-    }
-
-    /**
-     * Search for the gym corresponding to the query.
-     *
-     *  @param query the query of the search
-     *  @return the list of entities
-     */
-    @Transactional(readOnly = true)
-    public Page<Gym> search(String query, Pageable pageable) {
-        log.debug("Request to search for a page of Gyms for query {}", query);
-        Page<Gym> result = gymSearchRepository.search(queryStringQuery(query), pageable);
-        return result;
     }
 }

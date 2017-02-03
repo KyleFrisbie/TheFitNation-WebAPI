@@ -5,6 +5,9 @@
             "relationshipName": "userWorkoutTemplate",
             "otherEntityName": "userWorkoutTemplate",
             "relationshipType": "many-to-one",
+            "relationshipValidateRules": [
+                "required"
+            ],
             "otherEntityField": "id"
         },
         {
@@ -36,7 +39,7 @@
             ]
         }
     ],
-    "changelogDate": "20170202012012",
+    "changelogDate": "20170203231753",
     "dto": "no",
     "service": "serviceClass",
     "entityTableName": "user_workout_instance",

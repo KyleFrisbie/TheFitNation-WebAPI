@@ -4,9 +4,9 @@ import com.thefitnation.TheFitNationApp;
 
 import com.thefitnation.domain.UserWorkoutTemplate;
 import com.thefitnation.domain.WorkoutLog;
+import com.thefitnation.domain.WorkoutTemplate;
 import com.thefitnation.repository.UserWorkoutTemplateRepository;
 import com.thefitnation.service.UserWorkoutTemplateService;
-import com.thefitnation.repository.search.UserWorkoutTemplateSearchRepository;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -58,9 +58,6 @@ public class UserWorkoutTemplateResourceIntTest {
     private UserWorkoutTemplateService userWorkoutTemplateService;
 
     @Inject
-    private UserWorkoutTemplateSearchRepository userWorkoutTemplateSearchRepository;
-
-    @Inject
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
 
     @Inject
@@ -98,12 +95,16 @@ public class UserWorkoutTemplateResourceIntTest {
         em.persist(workoutLog);
         em.flush();
         userWorkoutTemplate.setWorkoutLog(workoutLog);
+        // Add required entity
+        WorkoutTemplate workoutTemplate = WorkoutTemplateResourceIntTest.createEntity(em);
+        em.persist(workoutTemplate);
+        em.flush();
+        userWorkoutTemplate.setWorkoutTemplate(workoutTemplate);
         return userWorkoutTemplate;
     }
 
     @Before
     public void initTest() {
-        userWorkoutTemplateSearchRepository.deleteAll();
         userWorkoutTemplate = createEntity(em);
     }
 
@@ -125,10 +126,6 @@ public class UserWorkoutTemplateResourceIntTest {
         UserWorkoutTemplate testUserWorkoutTemplate = userWorkoutTemplateList.get(userWorkoutTemplateList.size() - 1);
         assertThat(testUserWorkoutTemplate.getCreated_on()).isEqualTo(DEFAULT_CREATED_ON);
         assertThat(testUserWorkoutTemplate.getLast_updated()).isEqualTo(DEFAULT_LAST_UPDATED);
-
-        // Validate the UserWorkoutTemplate in ElasticSearch
-        UserWorkoutTemplate userWorkoutTemplateEs = userWorkoutTemplateSearchRepository.findOne(testUserWorkoutTemplate.getId());
-        assertThat(userWorkoutTemplateEs).isEqualToComparingFieldByField(testUserWorkoutTemplate);
     }
 
     @Test
@@ -250,10 +247,6 @@ public class UserWorkoutTemplateResourceIntTest {
         UserWorkoutTemplate testUserWorkoutTemplate = userWorkoutTemplateList.get(userWorkoutTemplateList.size() - 1);
         assertThat(testUserWorkoutTemplate.getCreated_on()).isEqualTo(UPDATED_CREATED_ON);
         assertThat(testUserWorkoutTemplate.getLast_updated()).isEqualTo(UPDATED_LAST_UPDATED);
-
-        // Validate the UserWorkoutTemplate in ElasticSearch
-        UserWorkoutTemplate userWorkoutTemplateEs = userWorkoutTemplateSearchRepository.findOne(testUserWorkoutTemplate.getId());
-        assertThat(userWorkoutTemplateEs).isEqualToComparingFieldByField(testUserWorkoutTemplate);
     }
 
     @Test
@@ -287,27 +280,8 @@ public class UserWorkoutTemplateResourceIntTest {
             .accept(TestUtil.APPLICATION_JSON_UTF8))
             .andExpect(status().isOk());
 
-        // Validate ElasticSearch is empty
-        boolean userWorkoutTemplateExistsInEs = userWorkoutTemplateSearchRepository.exists(userWorkoutTemplate.getId());
-        assertThat(userWorkoutTemplateExistsInEs).isFalse();
-
         // Validate the database is empty
         List<UserWorkoutTemplate> userWorkoutTemplateList = userWorkoutTemplateRepository.findAll();
         assertThat(userWorkoutTemplateList).hasSize(databaseSizeBeforeDelete - 1);
-    }
-
-    @Test
-    @Transactional
-    public void searchUserWorkoutTemplate() throws Exception {
-        // Initialize the database
-        userWorkoutTemplateService.save(userWorkoutTemplate);
-
-        // Search the userWorkoutTemplate
-        restUserWorkoutTemplateMockMvc.perform(get("/api/_search/user-workout-templates?query=id:" + userWorkoutTemplate.getId()))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(userWorkoutTemplate.getId().intValue())))
-            .andExpect(jsonPath("$.[*].created_on").value(hasItem(sameInstant(DEFAULT_CREATED_ON))))
-            .andExpect(jsonPath("$.[*].last_updated").value(hasItem(sameInstant(DEFAULT_LAST_UPDATED))));
     }
 }

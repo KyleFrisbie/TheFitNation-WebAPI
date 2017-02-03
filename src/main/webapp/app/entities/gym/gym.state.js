@@ -97,7 +97,6 @@
                             return {
                                 name: null,
                                 location: null,
-                                last_visited: null,
                                 id: null
                             };
                         }

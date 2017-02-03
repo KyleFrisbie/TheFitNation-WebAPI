@@ -2,7 +2,6 @@ package com.thefitnation.service;
 
 import com.thefitnation.domain.WorkoutLog;
 import com.thefitnation.repository.WorkoutLogRepository;
-import com.thefitnation.repository.search.WorkoutLogSearchRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -14,8 +13,6 @@ import javax.inject.Inject;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
-
-import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
  * Service Implementation for managing WorkoutLog.
@@ -29,9 +26,6 @@ public class WorkoutLogService {
     @Inject
     private WorkoutLogRepository workoutLogRepository;
 
-    @Inject
-    private WorkoutLogSearchRepository workoutLogSearchRepository;
-
     /**
      * Save a workoutLog.
      *
@@ -41,7 +35,6 @@ public class WorkoutLogService {
     public WorkoutLog save(WorkoutLog workoutLog) {
         log.debug("Request to save WorkoutLog : {}", workoutLog);
         WorkoutLog result = workoutLogRepository.save(workoutLog);
-        workoutLogSearchRepository.save(result);
         return result;
     }
 
@@ -93,19 +86,5 @@ public class WorkoutLogService {
     public void delete(Long id) {
         log.debug("Request to delete WorkoutLog : {}", id);
         workoutLogRepository.delete(id);
-        workoutLogSearchRepository.delete(id);
-    }
-
-    /**
-     * Search for the workoutLog corresponding to the query.
-     *
-     *  @param query the query of the search
-     *  @return the list of entities
-     */
-    @Transactional(readOnly = true)
-    public Page<WorkoutLog> search(String query, Pageable pageable) {
-        log.debug("Request to search for a page of WorkoutLogs for query {}", query);
-        Page<WorkoutLog> result = workoutLogSearchRepository.search(queryStringQuery(query), pageable);
-        return result;
     }
 }

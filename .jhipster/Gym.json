@@ -15,10 +15,8 @@
             "fieldName": "name",
             "fieldType": "String",
             "fieldValidateRules": [
-                "required",
-                "minlength"
-            ],
-            "fieldValidateRulesMinlength": "1"
+                "required"
+            ]
         },
         {
             "fieldName": "location",
@@ -26,16 +24,9 @@
             "fieldValidateRules": [
                 "required"
             ]
-        },
-        {
-            "fieldName": "last_visited",
-            "fieldType": "ZonedDateTime",
-            "fieldValidateRules": [
-                "required"
-            ]
         }
     ],
-    "changelogDate": "20170202013255",
+    "changelogDate": "20170203225728",
     "dto": "no",
     "service": "serviceClass",
     "entityTableName": "gym",

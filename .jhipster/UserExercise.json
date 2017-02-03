@@ -27,7 +27,7 @@
         }
     ],
     "fields": [],
-    "changelogDate": "20170202012145",
+    "changelogDate": "20170203231942",
     "dto": "no",
     "service": "serviceClass",
     "entityTableName": "user_exercise",

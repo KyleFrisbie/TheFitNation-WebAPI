@@ -5,7 +5,6 @@ import com.thefitnation.TheFitNationApp;
 import com.thefitnation.domain.WorkoutLog;
 import com.thefitnation.repository.WorkoutLogRepository;
 import com.thefitnation.service.WorkoutLogService;
-import com.thefitnation.repository.search.WorkoutLogSearchRepository;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -57,9 +56,6 @@ public class WorkoutLogResourceIntTest {
     private WorkoutLogService workoutLogService;
 
     @Inject
-    private WorkoutLogSearchRepository workoutLogSearchRepository;
-
-    @Inject
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
 
     @Inject
@@ -97,7 +93,6 @@ public class WorkoutLogResourceIntTest {
 
     @Before
     public void initTest() {
-        workoutLogSearchRepository.deleteAll();
         workoutLog = createEntity(em);
     }
 
@@ -119,10 +114,6 @@ public class WorkoutLogResourceIntTest {
         WorkoutLog testWorkoutLog = workoutLogList.get(workoutLogList.size() - 1);
         assertThat(testWorkoutLog.getCreated_on()).isEqualTo(DEFAULT_CREATED_ON);
         assertThat(testWorkoutLog.getLast_updated()).isEqualTo(DEFAULT_LAST_UPDATED);
-
-        // Validate the WorkoutLog in ElasticSearch
-        WorkoutLog workoutLogEs = workoutLogSearchRepository.findOne(testWorkoutLog.getId());
-        assertThat(workoutLogEs).isEqualToComparingFieldByField(testWorkoutLog);
     }
 
     @Test
@@ -244,10 +235,6 @@ public class WorkoutLogResourceIntTest {
         WorkoutLog testWorkoutLog = workoutLogList.get(workoutLogList.size() - 1);
         assertThat(testWorkoutLog.getCreated_on()).isEqualTo(UPDATED_CREATED_ON);
         assertThat(testWorkoutLog.getLast_updated()).isEqualTo(UPDATED_LAST_UPDATED);
-
-        // Validate the WorkoutLog in ElasticSearch
-        WorkoutLog workoutLogEs = workoutLogSearchRepository.findOne(testWorkoutLog.getId());
-        assertThat(workoutLogEs).isEqualToComparingFieldByField(testWorkoutLog);
     }
 
     @Test
@@ -281,27 +268,8 @@ public class WorkoutLogResourceIntTest {
             .accept(TestUtil.APPLICATION_JSON_UTF8))
             .andExpect(status().isOk());
 
-        // Validate ElasticSearch is empty
-        boolean workoutLogExistsInEs = workoutLogSearchRepository.exists(workoutLog.getId());
-        assertThat(workoutLogExistsInEs).isFalse();
-
         // Validate the database is empty
         List<WorkoutLog> workoutLogList = workoutLogRepository.findAll();
         assertThat(workoutLogList).hasSize(databaseSizeBeforeDelete - 1);
-    }
-
-    @Test
-    @Transactional
-    public void searchWorkoutLog() throws Exception {
-        // Initialize the database
-        workoutLogService.save(workoutLog);
-
-        // Search the workoutLog
-        restWorkoutLogMockMvc.perform(get("/api/_search/workout-logs?query=id:" + workoutLog.getId()))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(workoutLog.getId().intValue())))
-            .andExpect(jsonPath("$.[*].created_on").value(hasItem(sameInstant(DEFAULT_CREATED_ON))))
-            .andExpect(jsonPath("$.[*].last_updated").value(hasItem(sameInstant(DEFAULT_LAST_UPDATED))));
     }
 }

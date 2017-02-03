@@ -2,7 +2,6 @@ package com.thefitnation.service;
 
 import com.thefitnation.domain.UserWorkoutTemplate;
 import com.thefitnation.repository.UserWorkoutTemplateRepository;
-import com.thefitnation.repository.search.UserWorkoutTemplateSearchRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -12,10 +11,6 @@ import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-
-import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
  * Service Implementation for managing UserWorkoutTemplate.
@@ -29,9 +24,6 @@ public class UserWorkoutTemplateService {
     @Inject
     private UserWorkoutTemplateRepository userWorkoutTemplateRepository;
 
-    @Inject
-    private UserWorkoutTemplateSearchRepository userWorkoutTemplateSearchRepository;
-
     /**
      * Save a userWorkoutTemplate.
      *
@@ -41,7 +33,6 @@ public class UserWorkoutTemplateService {
     public UserWorkoutTemplate save(UserWorkoutTemplate userWorkoutTemplate) {
         log.debug("Request to save UserWorkoutTemplate : {}", userWorkoutTemplate);
         UserWorkoutTemplate result = userWorkoutTemplateRepository.save(userWorkoutTemplate);
-        userWorkoutTemplateSearchRepository.save(result);
         return result;
     }
 
@@ -79,19 +70,5 @@ public class UserWorkoutTemplateService {
     public void delete(Long id) {
         log.debug("Request to delete UserWorkoutTemplate : {}", id);
         userWorkoutTemplateRepository.delete(id);
-        userWorkoutTemplateSearchRepository.delete(id);
-    }
-
-    /**
-     * Search for the userWorkoutTemplate corresponding to the query.
-     *
-     *  @param query the query of the search
-     *  @return the list of entities
-     */
-    @Transactional(readOnly = true)
-    public Page<UserWorkoutTemplate> search(String query, Pageable pageable) {
-        log.debug("Request to search for a page of UserWorkoutTemplates for query {}", query);
-        Page<UserWorkoutTemplate> result = userWorkoutTemplateSearchRepository.search(queryStringQuery(query), pageable);
-        return result;
     }
 }

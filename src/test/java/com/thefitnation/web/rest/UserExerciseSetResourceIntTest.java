@@ -6,7 +6,6 @@ import com.thefitnation.domain.UserExerciseSet;
 import com.thefitnation.domain.UserExercise;
 import com.thefitnation.repository.UserExerciseSetRepository;
 import com.thefitnation.service.UserExerciseSetService;
-import com.thefitnation.repository.search.UserExerciseSetSearchRepository;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -43,23 +42,20 @@ public class UserExerciseSetResourceIntTest {
     private static final Integer DEFAULT_ORDER_NUMBER = 1;
     private static final Integer UPDATED_ORDER_NUMBER = 2;
 
-    private static final Integer DEFAULT_REPS = 0;
-    private static final Integer UPDATED_REPS = 1;
+    private static final Integer DEFAULT_REPS = 1;
+    private static final Integer UPDATED_REPS = 2;
 
     private static final Float DEFAULT_WEIGHT = 1F;
     private static final Float UPDATED_WEIGHT = 2F;
 
-    private static final Integer DEFAULT_REST = 0;
-    private static final Integer UPDATED_REST = 1;
+    private static final Integer DEFAULT_REST = 1;
+    private static final Integer UPDATED_REST = 2;
 
     @Inject
     private UserExerciseSetRepository userExerciseSetRepository;
 
     @Inject
     private UserExerciseSetService userExerciseSetService;
-
-    @Inject
-    private UserExerciseSetSearchRepository userExerciseSetSearchRepository;
 
     @Inject
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
@@ -106,7 +102,6 @@ public class UserExerciseSetResourceIntTest {
 
     @Before
     public void initTest() {
-        userExerciseSetSearchRepository.deleteAll();
         userExerciseSet = createEntity(em);
     }
 
@@ -130,10 +125,6 @@ public class UserExerciseSetResourceIntTest {
         assertThat(testUserExerciseSet.getReps()).isEqualTo(DEFAULT_REPS);
         assertThat(testUserExerciseSet.getWeight()).isEqualTo(DEFAULT_WEIGHT);
         assertThat(testUserExerciseSet.getRest()).isEqualTo(DEFAULT_REST);
-
-        // Validate the UserExerciseSet in ElasticSearch
-        UserExerciseSet userExerciseSetEs = userExerciseSetSearchRepository.findOne(testUserExerciseSet.getId());
-        assertThat(userExerciseSetEs).isEqualToComparingFieldByField(testUserExerciseSet);
     }
 
     @Test
@@ -263,10 +254,6 @@ public class UserExerciseSetResourceIntTest {
         assertThat(testUserExerciseSet.getReps()).isEqualTo(UPDATED_REPS);
         assertThat(testUserExerciseSet.getWeight()).isEqualTo(UPDATED_WEIGHT);
         assertThat(testUserExerciseSet.getRest()).isEqualTo(UPDATED_REST);
-
-        // Validate the UserExerciseSet in ElasticSearch
-        UserExerciseSet userExerciseSetEs = userExerciseSetSearchRepository.findOne(testUserExerciseSet.getId());
-        assertThat(userExerciseSetEs).isEqualToComparingFieldByField(testUserExerciseSet);
     }
 
     @Test
@@ -300,29 +287,8 @@ public class UserExerciseSetResourceIntTest {
             .accept(TestUtil.APPLICATION_JSON_UTF8))
             .andExpect(status().isOk());
 
-        // Validate ElasticSearch is empty
-        boolean userExerciseSetExistsInEs = userExerciseSetSearchRepository.exists(userExerciseSet.getId());
-        assertThat(userExerciseSetExistsInEs).isFalse();
-
         // Validate the database is empty
         List<UserExerciseSet> userExerciseSetList = userExerciseSetRepository.findAll();
         assertThat(userExerciseSetList).hasSize(databaseSizeBeforeDelete - 1);
-    }
-
-    @Test
-    @Transactional
-    public void searchUserExerciseSet() throws Exception {
-        // Initialize the database
-        userExerciseSetService.save(userExerciseSet);
-
-        // Search the userExerciseSet
-        restUserExerciseSetMockMvc.perform(get("/api/_search/user-exercise-sets?query=id:" + userExerciseSet.getId()))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(userExerciseSet.getId().intValue())))
-            .andExpect(jsonPath("$.[*].order_number").value(hasItem(DEFAULT_ORDER_NUMBER)))
-            .andExpect(jsonPath("$.[*].reps").value(hasItem(DEFAULT_REPS)))
-            .andExpect(jsonPath("$.[*].weight").value(hasItem(DEFAULT_WEIGHT.doubleValue())))
-            .andExpect(jsonPath("$.[*].rest").value(hasItem(DEFAULT_REST)));
     }
 }

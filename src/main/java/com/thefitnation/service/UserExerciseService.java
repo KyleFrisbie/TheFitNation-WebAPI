@@ -2,7 +2,6 @@ package com.thefitnation.service;
 
 import com.thefitnation.domain.UserExercise;
 import com.thefitnation.repository.UserExerciseRepository;
-import com.thefitnation.repository.search.UserExerciseSearchRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -12,10 +11,6 @@ import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-
-import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
  * Service Implementation for managing UserExercise.
@@ -29,9 +24,6 @@ public class UserExerciseService {
     @Inject
     private UserExerciseRepository userExerciseRepository;
 
-    @Inject
-    private UserExerciseSearchRepository userExerciseSearchRepository;
-
     /**
      * Save a userExercise.
      *
@@ -41,7 +33,6 @@ public class UserExerciseService {
     public UserExercise save(UserExercise userExercise) {
         log.debug("Request to save UserExercise : {}", userExercise);
         UserExercise result = userExerciseRepository.save(userExercise);
-        userExerciseSearchRepository.save(result);
         return result;
     }
 
@@ -79,19 +70,5 @@ public class UserExerciseService {
     public void delete(Long id) {
         log.debug("Request to delete UserExercise : {}", id);
         userExerciseRepository.delete(id);
-        userExerciseSearchRepository.delete(id);
-    }
-
-    /**
-     * Search for the userExercise corresponding to the query.
-     *
-     *  @param query the query of the search
-     *  @return the list of entities
-     */
-    @Transactional(readOnly = true)
-    public Page<UserExercise> search(String query, Pageable pageable) {
-        log.debug("Request to search for a page of UserExercises for query {}", query);
-        Page<UserExercise> result = userExerciseSearchRepository.search(queryStringQuery(query), pageable);
-        return result;
     }
 }

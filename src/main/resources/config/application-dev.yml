@@ -24,16 +24,13 @@ spring:
         serialization.indent_output: true
     datasource:
         type: com.zaxxer.hikari.HikariDataSource
-        url: jdbc:h2:file:./target/h2db/db/thefitnation;DB_CLOSE_DELAY=-1
+        url: jdbc:postgresql://localhost:5432/TheFitNation
         name:
         username: TheFitNation
         password:
-    h2:
-        console:
-            enabled: false
     jpa:
-        database-platform: com.thefitnation.domain.util.FixedH2Dialect
-        database: H2
+        database-platform: com.thefitnation.domain.util.FixedPostgreSQL82Dialect
+        database: POSTGRESQL
         show-sql: true
         properties:
             hibernate.cache.use_second_level_cache: true
@@ -45,14 +42,6 @@ spring:
     cache:
         jcache:
             config: ehcache.xml
-    data:
-        elasticsearch:
-            cluster-name:
-            cluster-nodes:
-            properties:
-                path:
-                  logs: target/elasticsearch/log
-                  data: target/elasticsearch/data
     mail:
         host: localhost
         port: 25

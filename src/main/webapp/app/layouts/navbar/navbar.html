@@ -33,9 +33,27 @@
                     </a>
                     <ul class="dropdown-menu" uib-dropdown-menu>
                         <li ui-sref-active="active">
+                            <a ui-sref="muscle" ng-click="vm.collapseNavbar()">
+                                <span class="glyphicon glyphicon-asterisk"></span>&nbsp;
+                                <span >Muscle</span>
+                            </a>
+                        </li>
+                        <li ui-sref-active="active">
                             <a ui-sref="user-demographic" ng-click="vm.collapseNavbar()">
                                 <span class="glyphicon glyphicon-asterisk"></span>&nbsp;
                                 <span >User Demographic</span>
+                            </a>
+                        </li>
+                        <li ui-sref-active="active">
+                            <a ui-sref="user-weight" ng-click="vm.collapseNavbar()">
+                                <span class="glyphicon glyphicon-asterisk"></span>&nbsp;
+                                <span >User Weight</span>
+                            </a>
+                        </li>
+                        <li ui-sref-active="active">
+                            <a ui-sref="gym" ng-click="vm.collapseNavbar()">
+                                <span class="glyphicon glyphicon-asterisk"></span>&nbsp;
+                                <span >Gym</span>
                             </a>
                         </li>
                         <li ui-sref-active="active">
@@ -54,12 +72,6 @@
                             <a ui-sref="exercise" ng-click="vm.collapseNavbar()">
                                 <span class="glyphicon glyphicon-asterisk"></span>&nbsp;
                                 <span >Exercise</span>
-                            </a>
-                        </li>
-                        <li ui-sref-active="active">
-                            <a ui-sref="muscle" ng-click="vm.collapseNavbar()">
-                                <span class="glyphicon glyphicon-asterisk"></span>&nbsp;
-                                <span >Muscle</span>
                             </a>
                         </li>
                         <li ui-sref-active="active">
@@ -96,18 +108,6 @@
                             <a ui-sref="user-exercise-set" ng-click="vm.collapseNavbar()">
                                 <span class="glyphicon glyphicon-asterisk"></span>&nbsp;
                                 <span >User Exercise Set</span>
-                            </a>
-                        </li>
-                        <li ui-sref-active="active">
-                            <a ui-sref="gym" ng-click="vm.collapseNavbar()">
-                                <span class="glyphicon glyphicon-asterisk"></span>&nbsp;
-                                <span >Gym</span>
-                            </a>
-                        </li>
-                        <li ui-sref-active="active">
-                            <a ui-sref="user-weight" ng-click="vm.collapseNavbar()">
-                                <span class="glyphicon glyphicon-asterisk"></span>&nbsp;
-                                <span >User Weight</span>
                             </a>
                         </li>
                         <!-- jhipster-needle-add-entity-to-menu - JHipster will add entities to the menu here -->
@@ -172,12 +172,6 @@
                             </a>
                         </li>
                         <li ui-sref-active="active">
-                            <a ui-sref="jhi-tracker" ng-click="vm.collapseNavbar()">
-                                <span class="glyphicon glyphicon-eye-open"></span>&nbsp;
-                                <span>User tracker</span>
-                            </a>
-                        </li>
-                        <li ui-sref-active="active">
                             <a ui-sref="jhi-metrics" ng-click="vm.collapseNavbar()">
                                 <span class="glyphicon glyphicon-dashboard"></span>&nbsp;
                                 <span>Metrics</span>
@@ -214,12 +208,6 @@
                             </a>
                         </li>
                         <!-- jhipster-needle-add-element-to-admin-menu - JHipster will add entities to the admin menu here -->
-                        <li ng-hide="vm.inProduction">
-                            <a href='/h2-console' target="_tab" ng-click="vm.collapseNavbar()">
-                                <span class="glyphicon glyphicon-hdd"></span>&nbsp;
-                                <span>Database</span>
-                            </a>
-                        </li>
                     </ul>
                 </li>
             </ul>

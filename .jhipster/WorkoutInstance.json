@@ -4,8 +4,16 @@
         {
             "relationshipName": "workoutTemplate",
             "otherEntityName": "workoutTemplate",
-            "relationshipType": "many-to-many",
-            "ownerSide": false,
+            "relationshipType": "many-to-one",
+            "relationshipValidateRules": [
+                "required"
+            ],
+            "otherEntityField": "name"
+        },
+        {
+            "relationshipName": "userWorkoutInstance",
+            "otherEntityName": "userWorkoutInstance",
+            "relationshipType": "one-to-many",
             "otherEntityRelationshipName": "workoutInstance"
         },
         {
@@ -18,37 +26,25 @@
             "otherEntityField": "name",
             "ownerSide": true,
             "otherEntityRelationshipName": "workoutInstance"
-        },
-        {
-            "relationshipName": "muscle",
-            "otherEntityName": "muscle",
-            "relationshipType": "many-to-many",
-            "otherEntityField": "name",
-            "ownerSide": true,
-            "otherEntityRelationshipName": "workoutInstance"
-        },
-        {
-            "relationshipName": "userWorkoutInstance",
-            "otherEntityName": "userWorkoutInstance",
-            "relationshipType": "one-to-many",
-            "otherEntityRelationshipName": "workoutInstance"
         }
     ],
     "fields": [
         {
             "fieldName": "name",
             "fieldType": "String",
-            "fieldValidateRules": []
-        },
-        {
-            "fieldName": "created_on",
-            "fieldType": "ZonedDateTime",
             "fieldValidateRules": [
                 "required"
             ]
         },
         {
             "fieldName": "last_updated",
+            "fieldType": "ZonedDateTime",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "created_on",
             "fieldType": "ZonedDateTime",
             "fieldValidateRules": [
                 "required"
@@ -62,11 +58,13 @@
             "fieldName": "order_number",
             "fieldType": "Integer",
             "fieldValidateRules": [
-                "required"
-            ]
+                "required",
+                "min"
+            ],
+            "fieldValidateRulesMin": "1"
         }
     ],
-    "changelogDate": "20170202010544",
+    "changelogDate": "20170203230758",
     "dto": "no",
     "service": "serviceClass",
     "entityTableName": "workout_instance",

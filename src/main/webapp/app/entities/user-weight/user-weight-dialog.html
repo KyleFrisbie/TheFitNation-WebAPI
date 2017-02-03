@@ -37,15 +37,11 @@
             <label class="control-label" for="field_weight">Weight</label>
             <input type="number" class="form-control" name="weight" id="field_weight"
                     ng-model="vm.userWeight.weight"
-                    required min="1" />
+                    required />
             <div ng-show="editForm.weight.$invalid">
                 <p class="help-block"
                     ng-show="editForm.weight.$error.required">
                     This field is required.
-                </p>
-                <p class="help-block"
-                    ng-show="editForm.weight.$error.min" translate-value-min="1">
-                    This field should be more than 1.
                 </p>
                 <p class="help-block"
                     ng-show="editForm.weight.$error.number">

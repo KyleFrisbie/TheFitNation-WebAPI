@@ -25,8 +25,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import static org.elasticsearch.index.query.QueryBuilders.*;
-
 /**
  * REST controller for managing WorkoutLog.
  */
@@ -135,25 +133,5 @@ public class WorkoutLogResource {
         workoutLogService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("workoutLog", id.toString())).build();
     }
-
-    /**
-     * SEARCH  /_search/workout-logs?query=:query : search for the workoutLog corresponding
-     * to the query.
-     *
-     * @param query the query of the workoutLog search 
-     * @param pageable the pagination information
-     * @return the result of the search
-     * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
-     */
-    @GetMapping("/_search/workout-logs")
-    @Timed
-    public ResponseEntity<List<WorkoutLog>> searchWorkoutLogs(@RequestParam String query, @ApiParam Pageable pageable)
-        throws URISyntaxException {
-        log.debug("REST request to search for a page of WorkoutLogs for query {}", query);
-        Page<WorkoutLog> page = workoutLogService.search(query, pageable);
-        HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/workout-logs");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
-    }
-
 
 }

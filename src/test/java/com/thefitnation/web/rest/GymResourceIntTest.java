@@ -5,7 +5,6 @@ import com.thefitnation.TheFitNationApp;
 import com.thefitnation.domain.Gym;
 import com.thefitnation.repository.GymRepository;
 import com.thefitnation.service.GymService;
-import com.thefitnation.repository.search.GymSearchRepository;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -23,13 +22,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import java.time.Instant;
-import java.time.ZonedDateTime;
-import java.time.ZoneOffset;
-import java.time.ZoneId;
 import java.util.List;
 
-import static com.thefitnation.web.rest.TestUtil.sameInstant;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -50,17 +44,11 @@ public class GymResourceIntTest {
     private static final String DEFAULT_LOCATION = "AAAAAAAAAA";
     private static final String UPDATED_LOCATION = "BBBBBBBBBB";
 
-    private static final ZonedDateTime DEFAULT_LAST_VISITED = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
-    private static final ZonedDateTime UPDATED_LAST_VISITED = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
-
     @Inject
     private GymRepository gymRepository;
 
     @Inject
     private GymService gymService;
-
-    @Inject
-    private GymSearchRepository gymSearchRepository;
 
     @Inject
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
@@ -94,14 +82,12 @@ public class GymResourceIntTest {
     public static Gym createEntity(EntityManager em) {
         Gym gym = new Gym()
                 .name(DEFAULT_NAME)
-                .location(DEFAULT_LOCATION)
-                .last_visited(DEFAULT_LAST_VISITED);
+                .location(DEFAULT_LOCATION);
         return gym;
     }
 
     @Before
     public void initTest() {
-        gymSearchRepository.deleteAll();
         gym = createEntity(em);
     }
 
@@ -123,11 +109,6 @@ public class GymResourceIntTest {
         Gym testGym = gymList.get(gymList.size() - 1);
         assertThat(testGym.getName()).isEqualTo(DEFAULT_NAME);
         assertThat(testGym.getLocation()).isEqualTo(DEFAULT_LOCATION);
-        assertThat(testGym.getLast_visited()).isEqualTo(DEFAULT_LAST_VISITED);
-
-        // Validate the Gym in ElasticSearch
-        Gym gymEs = gymSearchRepository.findOne(testGym.getId());
-        assertThat(gymEs).isEqualToComparingFieldByField(testGym);
     }
 
     @Test
@@ -188,24 +169,6 @@ public class GymResourceIntTest {
 
     @Test
     @Transactional
-    public void checkLast_visitedIsRequired() throws Exception {
-        int databaseSizeBeforeTest = gymRepository.findAll().size();
-        // set the field null
-        gym.setLast_visited(null);
-
-        // Create the Gym, which fails.
-
-        restGymMockMvc.perform(post("/api/gyms")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(gym)))
-            .andExpect(status().isBadRequest());
-
-        List<Gym> gymList = gymRepository.findAll();
-        assertThat(gymList).hasSize(databaseSizeBeforeTest);
-    }
-
-    @Test
-    @Transactional
     public void getAllGyms() throws Exception {
         // Initialize the database
         gymRepository.saveAndFlush(gym);
@@ -216,8 +179,7 @@ public class GymResourceIntTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(gym.getId().intValue())))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
-            .andExpect(jsonPath("$.[*].location").value(hasItem(DEFAULT_LOCATION.toString())))
-            .andExpect(jsonPath("$.[*].last_visited").value(hasItem(sameInstant(DEFAULT_LAST_VISITED))));
+            .andExpect(jsonPath("$.[*].location").value(hasItem(DEFAULT_LOCATION.toString())));
     }
 
     @Test
@@ -232,8 +194,7 @@ public class GymResourceIntTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(gym.getId().intValue()))
             .andExpect(jsonPath("$.name").value(DEFAULT_NAME.toString()))
-            .andExpect(jsonPath("$.location").value(DEFAULT_LOCATION.toString()))
-            .andExpect(jsonPath("$.last_visited").value(sameInstant(DEFAULT_LAST_VISITED)));
+            .andExpect(jsonPath("$.location").value(DEFAULT_LOCATION.toString()));
     }
 
     @Test
@@ -256,8 +217,7 @@ public class GymResourceIntTest {
         Gym updatedGym = gymRepository.findOne(gym.getId());
         updatedGym
                 .name(UPDATED_NAME)
-                .location(UPDATED_LOCATION)
-                .last_visited(UPDATED_LAST_VISITED);
+                .location(UPDATED_LOCATION);
 
         restGymMockMvc.perform(put("/api/gyms")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -270,11 +230,6 @@ public class GymResourceIntTest {
         Gym testGym = gymList.get(gymList.size() - 1);
         assertThat(testGym.getName()).isEqualTo(UPDATED_NAME);
         assertThat(testGym.getLocation()).isEqualTo(UPDATED_LOCATION);
-        assertThat(testGym.getLast_visited()).isEqualTo(UPDATED_LAST_VISITED);
-
-        // Validate the Gym in ElasticSearch
-        Gym gymEs = gymSearchRepository.findOne(testGym.getId());
-        assertThat(gymEs).isEqualToComparingFieldByField(testGym);
     }
 
     @Test
@@ -308,28 +263,8 @@ public class GymResourceIntTest {
             .accept(TestUtil.APPLICATION_JSON_UTF8))
             .andExpect(status().isOk());
 
-        // Validate ElasticSearch is empty
-        boolean gymExistsInEs = gymSearchRepository.exists(gym.getId());
-        assertThat(gymExistsInEs).isFalse();
-
         // Validate the database is empty
         List<Gym> gymList = gymRepository.findAll();
         assertThat(gymList).hasSize(databaseSizeBeforeDelete - 1);
-    }
-
-    @Test
-    @Transactional
-    public void searchGym() throws Exception {
-        // Initialize the database
-        gymService.save(gym);
-
-        // Search the gym
-        restGymMockMvc.perform(get("/api/_search/gyms?query=id:" + gym.getId()))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(gym.getId().intValue())))
-            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
-            .andExpect(jsonPath("$.[*].location").value(hasItem(DEFAULT_LOCATION.toString())))
-            .andExpect(jsonPath("$.[*].last_visited").value(hasItem(sameInstant(DEFAULT_LAST_VISITED))));
     }
 }

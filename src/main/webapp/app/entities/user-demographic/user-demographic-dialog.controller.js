@@ -55,7 +55,7 @@
             vm.isSaving = false;
         }
 
-        vm.datePickerOpenStatus.join_date = false;
+        vm.datePickerOpenStatus.created_on = false;
         vm.datePickerOpenStatus.last_login = false;
         vm.datePickerOpenStatus.dob = false;
 

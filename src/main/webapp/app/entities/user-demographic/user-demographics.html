@@ -6,27 +6,10 @@
             <div class="col-xs-4 no-padding-left">
                 <button class="btn btn-primary" ui-sref="user-demographic.new" >
                     <span class="glyphicon glyphicon-plus"></span>
-                    <span class="hidden-xs" >
+                    <span >
                         Create new User Demographic
                     </span>
                 </button>
-            </div>
-            <div class="col-xs-8 no-padding-right">
-                <form name="searchForm" class="form-inline">
-                    <div class="input-group pull-right" >
-                        <input type="text" class="form-control" ng-model="vm.searchQuery" id="searchQuery" placeholder="Query">
-                        <span  class="input-group-btn width-min" >
-                            <button class="btn btn-info" ng-click="vm.search(vm.searchQuery)">
-                                <span class="glyphicon glyphicon-search"></span>
-                            </button>
-                        </span>
-                        <span class="input-group-btn width-min" ng-if="vm.currentSearch">
-                            <button class="btn btn-info" ng-click="vm.clear()">
-                                <span class="glyphicon glyphicon-trash"></span>
-                            </button>
-                        </span>
-                    </div>
-                </form>
             </div>
         </div>
     </div>
@@ -36,7 +19,7 @@
             <thead>
                 <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.reset()">
                     <th jh-sort-by="id"><span>ID</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="join_date"><span data-translate="theFitNationApp.userDemographic.join_date">Join Date</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="created_on"><span data-translate="theFitNationApp.userDemographic.created_on">Created On</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="last_login"><span data-translate="theFitNationApp.userDemographic.last_login">Last Login</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="first_name"><span data-translate="theFitNationApp.userDemographic.first_name">First Name</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="last_name"><span data-translate="theFitNationApp.userDemographic.last_name">Last Name</span> <span class="glyphicon glyphicon-sort"></span></th>
@@ -53,7 +36,7 @@
             <tbody infinite-scroll="vm.loadPage(vm.page + 1)" infinite-scroll-disabled="vm.page >= vm.links['last']">
                 <tr ng-repeat="userDemographic in vm.userDemographics track by userDemographic.id">
                     <td><a ui-sref="user-demographic-detail({id:userDemographic.id})">{{userDemographic.id}}</a></td>
-                    <td>{{userDemographic.join_date | date:'medium'}}</td>
+                    <td>{{userDemographic.created_on | date:'medium'}}</td>
                     <td>{{userDemographic.last_login | date:'medium'}}</td>
                     <td>{{userDemographic.first_name}}</td>
                     <td>{{userDemographic.last_name}}</td>

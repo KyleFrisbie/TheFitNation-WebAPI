@@ -2,7 +2,6 @@ package com.thefitnation.domain;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.springframework.data.elasticsearch.annotations.Document;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
@@ -15,7 +14,6 @@ import java.util.Objects;
 @Entity
 @Table(name = "user_exercise_set")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@Document(indexName = "userexerciseset")
 public class UserExerciseSet implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -30,14 +28,13 @@ public class UserExerciseSet implements Serializable {
     private Integer order_number;
 
     @NotNull
-    @Min(value = 0)
+    @Min(value = 1)
     @Column(name = "reps", nullable = false)
     private Integer reps;
 
     @Column(name = "weight")
     private Float weight;
 
-    @Min(value = 0)
     @Column(name = "rest")
     private Integer rest;
 

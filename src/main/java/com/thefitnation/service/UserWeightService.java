@@ -2,7 +2,6 @@ package com.thefitnation.service;
 
 import com.thefitnation.domain.UserWeight;
 import com.thefitnation.repository.UserWeightRepository;
-import com.thefitnation.repository.search.UserWeightSearchRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -12,10 +11,6 @@ import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-
-import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
  * Service Implementation for managing UserWeight.
@@ -29,9 +24,6 @@ public class UserWeightService {
     @Inject
     private UserWeightRepository userWeightRepository;
 
-    @Inject
-    private UserWeightSearchRepository userWeightSearchRepository;
-
     /**
      * Save a userWeight.
      *
@@ -41,7 +33,6 @@ public class UserWeightService {
     public UserWeight save(UserWeight userWeight) {
         log.debug("Request to save UserWeight : {}", userWeight);
         UserWeight result = userWeightRepository.save(userWeight);
-        userWeightSearchRepository.save(result);
         return result;
     }
 
@@ -79,19 +70,5 @@ public class UserWeightService {
     public void delete(Long id) {
         log.debug("Request to delete UserWeight : {}", id);
         userWeightRepository.delete(id);
-        userWeightSearchRepository.delete(id);
-    }
-
-    /**
-     * Search for the userWeight corresponding to the query.
-     *
-     *  @param query the query of the search
-     *  @return the list of entities
-     */
-    @Transactional(readOnly = true)
-    public Page<UserWeight> search(String query, Pageable pageable) {
-        log.debug("Request to search for a page of UserWeights for query {}", query);
-        Page<UserWeight> result = userWeightSearchRepository.search(queryStringQuery(query), pageable);
-        return result;
     }
 }

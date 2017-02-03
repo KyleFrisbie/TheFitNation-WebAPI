@@ -3,7 +3,6 @@ package com.thefitnation.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.springframework.data.elasticsearch.annotations.Document;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
@@ -19,7 +18,6 @@ import java.util.Objects;
 @Entity
 @Table(name = "workout_template")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@Document(indexName = "workouttemplate")
 public class WorkoutTemplate implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -29,7 +27,6 @@ public class WorkoutTemplate implements Serializable {
     private Long id;
 
     @NotNull
-    @Size(min = 1)
     @Column(name = "name", nullable = false)
     private String name;
 
@@ -49,12 +46,9 @@ public class WorkoutTemplate implements Serializable {
     @NotNull
     private UserDemographic userDemographic;
 
-    @ManyToMany
+    @OneToMany(mappedBy = "workoutTemplate")
+    @JsonIgnore
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    @NotNull
-    @JoinTable(name = "workout_template_workout_instance",
-               joinColumns = @JoinColumn(name="workout_templates_id", referencedColumnName="ID"),
-               inverseJoinColumns = @JoinColumn(name="workout_instances_id", referencedColumnName="ID"))
     private Set<WorkoutInstance> workoutInstances = new HashSet<>();
 
     @OneToMany(mappedBy = "workoutTemplate")
@@ -146,13 +140,13 @@ public class WorkoutTemplate implements Serializable {
 
     public WorkoutTemplate addWorkoutInstance(WorkoutInstance workoutInstance) {
         workoutInstances.add(workoutInstance);
-        workoutInstance.getWorkoutTemplates().add(this);
+        workoutInstance.setWorkoutTemplate(this);
         return this;
     }
 
     public WorkoutTemplate removeWorkoutInstance(WorkoutInstance workoutInstance) {
         workoutInstances.remove(workoutInstance);
-        workoutInstance.getWorkoutTemplates().remove(this);
+        workoutInstance.setWorkoutTemplate(null);
         return this;
     }
 

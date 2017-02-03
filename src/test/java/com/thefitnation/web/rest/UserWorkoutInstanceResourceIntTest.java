@@ -3,9 +3,9 @@ package com.thefitnation.web.rest;
 import com.thefitnation.TheFitNationApp;
 
 import com.thefitnation.domain.UserWorkoutInstance;
+import com.thefitnation.domain.UserWorkoutTemplate;
 import com.thefitnation.repository.UserWorkoutInstanceRepository;
 import com.thefitnation.service.UserWorkoutInstanceService;
-import com.thefitnation.repository.search.UserWorkoutInstanceSearchRepository;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -57,9 +57,6 @@ public class UserWorkoutInstanceResourceIntTest {
     private UserWorkoutInstanceService userWorkoutInstanceService;
 
     @Inject
-    private UserWorkoutInstanceSearchRepository userWorkoutInstanceSearchRepository;
-
-    @Inject
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
 
     @Inject
@@ -92,12 +89,16 @@ public class UserWorkoutInstanceResourceIntTest {
         UserWorkoutInstance userWorkoutInstance = new UserWorkoutInstance()
                 .created_on(DEFAULT_CREATED_ON)
                 .was_completed(DEFAULT_WAS_COMPLETED);
+        // Add required entity
+        UserWorkoutTemplate userWorkoutTemplate = UserWorkoutTemplateResourceIntTest.createEntity(em);
+        em.persist(userWorkoutTemplate);
+        em.flush();
+        userWorkoutInstance.setUserWorkoutTemplate(userWorkoutTemplate);
         return userWorkoutInstance;
     }
 
     @Before
     public void initTest() {
-        userWorkoutInstanceSearchRepository.deleteAll();
         userWorkoutInstance = createEntity(em);
     }
 
@@ -119,10 +120,6 @@ public class UserWorkoutInstanceResourceIntTest {
         UserWorkoutInstance testUserWorkoutInstance = userWorkoutInstanceList.get(userWorkoutInstanceList.size() - 1);
         assertThat(testUserWorkoutInstance.getCreated_on()).isEqualTo(DEFAULT_CREATED_ON);
         assertThat(testUserWorkoutInstance.isWas_completed()).isEqualTo(DEFAULT_WAS_COMPLETED);
-
-        // Validate the UserWorkoutInstance in ElasticSearch
-        UserWorkoutInstance userWorkoutInstanceEs = userWorkoutInstanceSearchRepository.findOne(testUserWorkoutInstance.getId());
-        assertThat(userWorkoutInstanceEs).isEqualToComparingFieldByField(testUserWorkoutInstance);
     }
 
     @Test
@@ -244,10 +241,6 @@ public class UserWorkoutInstanceResourceIntTest {
         UserWorkoutInstance testUserWorkoutInstance = userWorkoutInstanceList.get(userWorkoutInstanceList.size() - 1);
         assertThat(testUserWorkoutInstance.getCreated_on()).isEqualTo(UPDATED_CREATED_ON);
         assertThat(testUserWorkoutInstance.isWas_completed()).isEqualTo(UPDATED_WAS_COMPLETED);
-
-        // Validate the UserWorkoutInstance in ElasticSearch
-        UserWorkoutInstance userWorkoutInstanceEs = userWorkoutInstanceSearchRepository.findOne(testUserWorkoutInstance.getId());
-        assertThat(userWorkoutInstanceEs).isEqualToComparingFieldByField(testUserWorkoutInstance);
     }
 
     @Test
@@ -281,27 +274,8 @@ public class UserWorkoutInstanceResourceIntTest {
             .accept(TestUtil.APPLICATION_JSON_UTF8))
             .andExpect(status().isOk());
 
-        // Validate ElasticSearch is empty
-        boolean userWorkoutInstanceExistsInEs = userWorkoutInstanceSearchRepository.exists(userWorkoutInstance.getId());
-        assertThat(userWorkoutInstanceExistsInEs).isFalse();
-
         // Validate the database is empty
         List<UserWorkoutInstance> userWorkoutInstanceList = userWorkoutInstanceRepository.findAll();
         assertThat(userWorkoutInstanceList).hasSize(databaseSizeBeforeDelete - 1);
-    }
-
-    @Test
-    @Transactional
-    public void searchUserWorkoutInstance() throws Exception {
-        // Initialize the database
-        userWorkoutInstanceService.save(userWorkoutInstance);
-
-        // Search the userWorkoutInstance
-        restUserWorkoutInstanceMockMvc.perform(get("/api/_search/user-workout-instances?query=id:" + userWorkoutInstance.getId()))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(userWorkoutInstance.getId().intValue())))
-            .andExpect(jsonPath("$.[*].created_on").value(hasItem(sameInstant(DEFAULT_CREATED_ON))))
-            .andExpect(jsonPath("$.[*].was_completed").value(hasItem(DEFAULT_WAS_COMPLETED.booleanValue())));
     }
 }

@@ -48,9 +48,15 @@
 
         <div class="form-group">
             <label for="field_userWorkoutTemplate">User Workout Template</label>
-            <select class="form-control" id="field_userWorkoutTemplate" name="userWorkoutTemplate" ng-model="vm.userWorkoutInstance.userWorkoutTemplate" ng-options="userWorkoutTemplate as userWorkoutTemplate.id for userWorkoutTemplate in vm.userworkouttemplates track by userWorkoutTemplate.id">
+            <select class="form-control" id="field_userWorkoutTemplate" name="userWorkoutTemplate" ng-model="vm.userWorkoutInstance.userWorkoutTemplate" ng-options="userWorkoutTemplate as userWorkoutTemplate.id for userWorkoutTemplate in vm.userworkouttemplates track by userWorkoutTemplate.id" required>
                 <option value=""></option>
             </select>
+        </div>
+        <div ng-show="editForm.userWorkoutTemplate.$invalid">
+            <p class="help-block"
+                ng-show="editForm.userWorkoutTemplate.$error.required">
+                This field is required.
+            </p>
         </div>
         <div class="form-group">
             <label for="field_workoutInstance">Workout Instance</label>

@@ -3,7 +3,6 @@ package com.thefitnation.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.springframework.data.elasticsearch.annotations.Document;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
@@ -18,7 +17,6 @@ import java.util.Objects;
 @Entity
 @Table(name = "muscle")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@Document(indexName = "muscle")
 public class Muscle implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -28,14 +26,8 @@ public class Muscle implements Serializable {
     private Long id;
 
     @NotNull
-    @Size(min = 1)
     @Column(name = "name", nullable = false)
     private String name;
-
-    @ManyToMany(mappedBy = "muscles")
-    @JsonIgnore
-    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    private Set<WorkoutInstance> workoutInstances = new HashSet<>();
 
     @ManyToMany(mappedBy = "muscles")
     @JsonIgnore
@@ -61,31 +53,6 @@ public class Muscle implements Serializable {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public Set<WorkoutInstance> getWorkoutInstances() {
-        return workoutInstances;
-    }
-
-    public Muscle workoutInstances(Set<WorkoutInstance> workoutInstances) {
-        this.workoutInstances = workoutInstances;
-        return this;
-    }
-
-    public Muscle addWorkoutInstance(WorkoutInstance workoutInstance) {
-        workoutInstances.add(workoutInstance);
-        workoutInstance.getMuscles().add(this);
-        return this;
-    }
-
-    public Muscle removeWorkoutInstance(WorkoutInstance workoutInstance) {
-        workoutInstances.remove(workoutInstance);
-        workoutInstance.getMuscles().remove(this);
-        return this;
-    }
-
-    public void setWorkoutInstances(Set<WorkoutInstance> workoutInstances) {
-        this.workoutInstances = workoutInstances;
     }
 
     public Set<Exercise> getExercises() {

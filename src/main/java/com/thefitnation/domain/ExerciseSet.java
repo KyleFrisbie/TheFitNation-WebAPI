@@ -3,7 +3,6 @@ package com.thefitnation.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.springframework.data.elasticsearch.annotations.Document;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
@@ -18,7 +17,6 @@ import java.util.Objects;
 @Entity
 @Table(name = "exercise_set")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@Document(indexName = "exerciseset")
 public class ExerciseSet implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -33,7 +31,7 @@ public class ExerciseSet implements Serializable {
     private Integer order_number;
 
     @NotNull
-    @Min(value = 0)
+    @Min(value = 1)
     @Column(name = "reps", nullable = false)
     private Integer reps;
 

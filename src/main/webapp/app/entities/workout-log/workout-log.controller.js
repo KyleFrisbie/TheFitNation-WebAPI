@@ -5,9 +5,9 @@
         .module('theFitNationApp')
         .controller('WorkoutLogController', WorkoutLogController);
 
-    WorkoutLogController.$inject = ['$scope', '$state', 'WorkoutLog', 'WorkoutLogSearch', 'ParseLinks', 'AlertService', 'paginationConstants'];
+    WorkoutLogController.$inject = ['$scope', '$state', 'WorkoutLog', 'ParseLinks', 'AlertService', 'paginationConstants'];
 
-    function WorkoutLogController ($scope, $state, WorkoutLog, WorkoutLogSearch, ParseLinks, AlertService, paginationConstants) {
+    function WorkoutLogController ($scope, $state, WorkoutLog, ParseLinks, AlertService, paginationConstants) {
         var vm = this;
 
         vm.workoutLogs = [];
@@ -20,27 +20,15 @@
         vm.predicate = 'id';
         vm.reset = reset;
         vm.reverse = true;
-        vm.clear = clear;
-        vm.loadAll = loadAll;
-        vm.search = search;
 
         loadAll();
 
         function loadAll () {
-            if (vm.currentSearch) {
-                WorkoutLogSearch.query({
-                    query: vm.currentSearch,
-                    page: vm.page,
-                    size: vm.itemsPerPage,
-                    sort: sort()
-                }, onSuccess, onError);
-            } else {
-                WorkoutLog.query({
-                    page: vm.page,
-                    size: vm.itemsPerPage,
-                    sort: sort()
-                }, onSuccess, onError);
-            }
+            WorkoutLog.query({
+                page: vm.page,
+                size: vm.itemsPerPage,
+                sort: sort()
+            }, onSuccess, onError);
             function sort() {
                 var result = [vm.predicate + ',' + (vm.reverse ? 'asc' : 'desc')];
                 if (vm.predicate !== 'id') {
@@ -71,34 +59,6 @@
         function loadPage(page) {
             vm.page = page;
             loadAll();
-        }
-
-        function clear () {
-            vm.workoutLogs = [];
-            vm.links = {
-                last: 0
-            };
-            vm.page = 0;
-            vm.predicate = 'id';
-            vm.reverse = true;
-            vm.searchQuery = null;
-            vm.currentSearch = null;
-            vm.loadAll();
-        }
-
-        function search (searchQuery) {
-            if (!searchQuery){
-                return vm.clear();
-            }
-            vm.workoutLogs = [];
-            vm.links = {
-                last: 0
-            };
-            vm.page = 0;
-            vm.predicate = '_score';
-            vm.reverse = false;
-            vm.currentSearch = searchQuery;
-            vm.loadAll();
         }
     }
 })();

@@ -23,13 +23,11 @@
             "fieldName": "weight",
             "fieldType": "Float",
             "fieldValidateRules": [
-                "required",
-                "min"
-            ],
-            "fieldValidateRulesMin": "1"
+                "required"
+            ]
         }
     ],
-    "changelogDate": "20170202013413",
+    "changelogDate": "20170203225632",
     "dto": "no",
     "service": "serviceClass",
     "entityTableName": "user_weight",

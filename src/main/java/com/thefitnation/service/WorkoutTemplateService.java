@@ -2,7 +2,6 @@ package com.thefitnation.service;
 
 import com.thefitnation.domain.WorkoutTemplate;
 import com.thefitnation.repository.WorkoutTemplateRepository;
-import com.thefitnation.repository.search.WorkoutTemplateSearchRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -12,10 +11,6 @@ import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-
-import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
  * Service Implementation for managing WorkoutTemplate.
@@ -29,9 +24,6 @@ public class WorkoutTemplateService {
     @Inject
     private WorkoutTemplateRepository workoutTemplateRepository;
 
-    @Inject
-    private WorkoutTemplateSearchRepository workoutTemplateSearchRepository;
-
     /**
      * Save a workoutTemplate.
      *
@@ -41,7 +33,6 @@ public class WorkoutTemplateService {
     public WorkoutTemplate save(WorkoutTemplate workoutTemplate) {
         log.debug("Request to save WorkoutTemplate : {}", workoutTemplate);
         WorkoutTemplate result = workoutTemplateRepository.save(workoutTemplate);
-        workoutTemplateSearchRepository.save(result);
         return result;
     }
 
@@ -67,7 +58,7 @@ public class WorkoutTemplateService {
     @Transactional(readOnly = true) 
     public WorkoutTemplate findOne(Long id) {
         log.debug("Request to get WorkoutTemplate : {}", id);
-        WorkoutTemplate workoutTemplate = workoutTemplateRepository.findOneWithEagerRelationships(id);
+        WorkoutTemplate workoutTemplate = workoutTemplateRepository.findOne(id);
         return workoutTemplate;
     }
 
@@ -79,19 +70,5 @@ public class WorkoutTemplateService {
     public void delete(Long id) {
         log.debug("Request to delete WorkoutTemplate : {}", id);
         workoutTemplateRepository.delete(id);
-        workoutTemplateSearchRepository.delete(id);
-    }
-
-    /**
-     * Search for the workoutTemplate corresponding to the query.
-     *
-     *  @param query the query of the search
-     *  @return the list of entities
-     */
-    @Transactional(readOnly = true)
-    public Page<WorkoutTemplate> search(String query, Pageable pageable) {
-        log.debug("Request to search for a page of WorkoutTemplates for query {}", query);
-        Page<WorkoutTemplate> result = workoutTemplateSearchRepository.search(queryStringQuery(query), pageable);
-        return result;
     }
 }

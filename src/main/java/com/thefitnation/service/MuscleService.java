@@ -2,7 +2,6 @@ package com.thefitnation.service;
 
 import com.thefitnation.domain.Muscle;
 import com.thefitnation.repository.MuscleRepository;
-import com.thefitnation.repository.search.MuscleSearchRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -12,10 +11,6 @@ import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-
-import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
  * Service Implementation for managing Muscle.
@@ -29,9 +24,6 @@ public class MuscleService {
     @Inject
     private MuscleRepository muscleRepository;
 
-    @Inject
-    private MuscleSearchRepository muscleSearchRepository;
-
     /**
      * Save a muscle.
      *
@@ -41,7 +33,6 @@ public class MuscleService {
     public Muscle save(Muscle muscle) {
         log.debug("Request to save Muscle : {}", muscle);
         Muscle result = muscleRepository.save(muscle);
-        muscleSearchRepository.save(result);
         return result;
     }
 
@@ -79,19 +70,5 @@ public class MuscleService {
     public void delete(Long id) {
         log.debug("Request to delete Muscle : {}", id);
         muscleRepository.delete(id);
-        muscleSearchRepository.delete(id);
-    }
-
-    /**
-     * Search for the muscle corresponding to the query.
-     *
-     *  @param query the query of the search
-     *  @return the list of entities
-     */
-    @Transactional(readOnly = true)
-    public Page<Muscle> search(String query, Pageable pageable) {
-        log.debug("Request to search for a page of Muscles for query {}", query);
-        Page<Muscle> result = muscleSearchRepository.search(queryStringQuery(query), pageable);
-        return result;
     }
 }

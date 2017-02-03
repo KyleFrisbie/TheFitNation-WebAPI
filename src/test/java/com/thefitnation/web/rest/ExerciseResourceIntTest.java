@@ -6,7 +6,6 @@ import com.thefitnation.domain.Exercise;
 import com.thefitnation.domain.Muscle;
 import com.thefitnation.repository.ExerciseRepository;
 import com.thefitnation.service.ExerciseService;
-import com.thefitnation.repository.search.ExerciseSearchRepository;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -50,9 +49,6 @@ public class ExerciseResourceIntTest {
     private ExerciseService exerciseService;
 
     @Inject
-    private ExerciseSearchRepository exerciseSearchRepository;
-
-    @Inject
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
 
     @Inject
@@ -94,7 +90,6 @@ public class ExerciseResourceIntTest {
 
     @Before
     public void initTest() {
-        exerciseSearchRepository.deleteAll();
         exercise = createEntity(em);
     }
 
@@ -115,10 +110,6 @@ public class ExerciseResourceIntTest {
         assertThat(exerciseList).hasSize(databaseSizeBeforeCreate + 1);
         Exercise testExercise = exerciseList.get(exerciseList.size() - 1);
         assertThat(testExercise.getName()).isEqualTo(DEFAULT_NAME);
-
-        // Validate the Exercise in ElasticSearch
-        Exercise exerciseEs = exerciseSearchRepository.findOne(testExercise.getId());
-        assertThat(exerciseEs).isEqualToComparingFieldByField(testExercise);
     }
 
     @Test
@@ -218,10 +209,6 @@ public class ExerciseResourceIntTest {
         assertThat(exerciseList).hasSize(databaseSizeBeforeUpdate);
         Exercise testExercise = exerciseList.get(exerciseList.size() - 1);
         assertThat(testExercise.getName()).isEqualTo(UPDATED_NAME);
-
-        // Validate the Exercise in ElasticSearch
-        Exercise exerciseEs = exerciseSearchRepository.findOne(testExercise.getId());
-        assertThat(exerciseEs).isEqualToComparingFieldByField(testExercise);
     }
 
     @Test
@@ -255,26 +242,8 @@ public class ExerciseResourceIntTest {
             .accept(TestUtil.APPLICATION_JSON_UTF8))
             .andExpect(status().isOk());
 
-        // Validate ElasticSearch is empty
-        boolean exerciseExistsInEs = exerciseSearchRepository.exists(exercise.getId());
-        assertThat(exerciseExistsInEs).isFalse();
-
         // Validate the database is empty
         List<Exercise> exerciseList = exerciseRepository.findAll();
         assertThat(exerciseList).hasSize(databaseSizeBeforeDelete - 1);
-    }
-
-    @Test
-    @Transactional
-    public void searchExercise() throws Exception {
-        // Initialize the database
-        exerciseService.save(exercise);
-
-        // Search the exercise
-        restExerciseMockMvc.perform(get("/api/_search/exercises?query=id:" + exercise.getId()))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(exercise.getId().intValue())))
-            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())));
     }
 }

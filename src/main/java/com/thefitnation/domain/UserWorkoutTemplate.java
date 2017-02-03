@@ -3,7 +3,6 @@ package com.thefitnation.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.springframework.data.elasticsearch.annotations.Document;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
@@ -19,7 +18,6 @@ import java.util.Objects;
 @Entity
 @Table(name = "user_workout_template")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@Document(indexName = "userworkouttemplate")
 public class UserWorkoutTemplate implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -41,6 +39,7 @@ public class UserWorkoutTemplate implements Serializable {
     private WorkoutLog workoutLog;
 
     @ManyToOne
+    @NotNull
     private WorkoutTemplate workoutTemplate;
 
     @OneToMany(mappedBy = "userWorkoutTemplate")

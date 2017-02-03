@@ -2,7 +2,6 @@ package com.thefitnation.service;
 
 import com.thefitnation.domain.UserExerciseSet;
 import com.thefitnation.repository.UserExerciseSetRepository;
-import com.thefitnation.repository.search.UserExerciseSetSearchRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -12,10 +11,6 @@ import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-
-import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
  * Service Implementation for managing UserExerciseSet.
@@ -29,9 +24,6 @@ public class UserExerciseSetService {
     @Inject
     private UserExerciseSetRepository userExerciseSetRepository;
 
-    @Inject
-    private UserExerciseSetSearchRepository userExerciseSetSearchRepository;
-
     /**
      * Save a userExerciseSet.
      *
@@ -41,7 +33,6 @@ public class UserExerciseSetService {
     public UserExerciseSet save(UserExerciseSet userExerciseSet) {
         log.debug("Request to save UserExerciseSet : {}", userExerciseSet);
         UserExerciseSet result = userExerciseSetRepository.save(userExerciseSet);
-        userExerciseSetSearchRepository.save(result);
         return result;
     }
 
@@ -79,19 +70,5 @@ public class UserExerciseSetService {
     public void delete(Long id) {
         log.debug("Request to delete UserExerciseSet : {}", id);
         userExerciseSetRepository.delete(id);
-        userExerciseSetSearchRepository.delete(id);
-    }
-
-    /**
-     * Search for the userExerciseSet corresponding to the query.
-     *
-     *  @param query the query of the search
-     *  @return the list of entities
-     */
-    @Transactional(readOnly = true)
-    public Page<UserExerciseSet> search(String query, Pageable pageable) {
-        log.debug("Request to search for a page of UserExerciseSets for query {}", query);
-        Page<UserExerciseSet> result = userExerciseSetSearchRepository.search(queryStringQuery(query), pageable);
-        return result;
     }
 }

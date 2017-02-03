@@ -5,9 +5,9 @@
         .module('theFitNationApp')
         .controller('WorkoutTemplateController', WorkoutTemplateController);
 
-    WorkoutTemplateController.$inject = ['$scope', '$state', 'WorkoutTemplate', 'WorkoutTemplateSearch', 'ParseLinks', 'AlertService', 'paginationConstants'];
+    WorkoutTemplateController.$inject = ['$scope', '$state', 'WorkoutTemplate', 'ParseLinks', 'AlertService', 'paginationConstants'];
 
-    function WorkoutTemplateController ($scope, $state, WorkoutTemplate, WorkoutTemplateSearch, ParseLinks, AlertService, paginationConstants) {
+    function WorkoutTemplateController ($scope, $state, WorkoutTemplate, ParseLinks, AlertService, paginationConstants) {
         var vm = this;
 
         vm.workoutTemplates = [];
@@ -20,27 +20,15 @@
         vm.predicate = 'id';
         vm.reset = reset;
         vm.reverse = true;
-        vm.clear = clear;
-        vm.loadAll = loadAll;
-        vm.search = search;
 
         loadAll();
 
         function loadAll () {
-            if (vm.currentSearch) {
-                WorkoutTemplateSearch.query({
-                    query: vm.currentSearch,
-                    page: vm.page,
-                    size: vm.itemsPerPage,
-                    sort: sort()
-                }, onSuccess, onError);
-            } else {
-                WorkoutTemplate.query({
-                    page: vm.page,
-                    size: vm.itemsPerPage,
-                    sort: sort()
-                }, onSuccess, onError);
-            }
+            WorkoutTemplate.query({
+                page: vm.page,
+                size: vm.itemsPerPage,
+                sort: sort()
+            }, onSuccess, onError);
             function sort() {
                 var result = [vm.predicate + ',' + (vm.reverse ? 'asc' : 'desc')];
                 if (vm.predicate !== 'id') {
@@ -71,34 +59,6 @@
         function loadPage(page) {
             vm.page = page;
             loadAll();
-        }
-
-        function clear () {
-            vm.workoutTemplates = [];
-            vm.links = {
-                last: 0
-            };
-            vm.page = 0;
-            vm.predicate = 'id';
-            vm.reverse = true;
-            vm.searchQuery = null;
-            vm.currentSearch = null;
-            vm.loadAll();
-        }
-
-        function search (searchQuery) {
-            if (!searchQuery){
-                return vm.clear();
-            }
-            vm.workoutTemplates = [];
-            vm.links = {
-                last: 0
-            };
-            vm.page = 0;
-            vm.predicate = '_score';
-            vm.reverse = false;
-            vm.currentSearch = searchQuery;
-            vm.loadAll();
         }
     }
 })();

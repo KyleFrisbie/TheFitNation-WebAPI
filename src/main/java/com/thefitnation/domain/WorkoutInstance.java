@@ -3,7 +3,6 @@ package com.thefitnation.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.springframework.data.elasticsearch.annotations.Document;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
@@ -19,7 +18,6 @@ import java.util.Objects;
 @Entity
 @Table(name = "workout_instance")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@Document(indexName = "workoutinstance")
 public class WorkoutInstance implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -28,28 +26,34 @@ public class WorkoutInstance implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(name = "name")
-    private String name;
-
     @NotNull
-    @Column(name = "created_on", nullable = false)
-    private ZonedDateTime created_on;
+    @Column(name = "name", nullable = false)
+    private String name;
 
     @NotNull
     @Column(name = "last_updated", nullable = false)
     private ZonedDateTime last_updated;
 
+    @NotNull
+    @Column(name = "created_on", nullable = false)
+    private ZonedDateTime created_on;
+
     @Column(name = "rest_between_instances")
     private Integer rest_between_instances;
 
     @NotNull
+    @Min(value = 1)
     @Column(name = "order_number", nullable = false)
     private Integer order_number;
 
-    @ManyToMany(mappedBy = "workoutInstances")
+    @ManyToOne
+    @NotNull
+    private WorkoutTemplate workoutTemplate;
+
+    @OneToMany(mappedBy = "workoutInstance")
     @JsonIgnore
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    private Set<WorkoutTemplate> workoutTemplates = new HashSet<>();
+    private Set<UserWorkoutInstance> userWorkoutInstances = new HashSet<>();
 
     @ManyToMany
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
@@ -58,18 +62,6 @@ public class WorkoutInstance implements Serializable {
                joinColumns = @JoinColumn(name="workout_instances_id", referencedColumnName="ID"),
                inverseJoinColumns = @JoinColumn(name="exercises_id", referencedColumnName="ID"))
     private Set<Exercise> exercises = new HashSet<>();
-
-    @ManyToMany
-    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    @JoinTable(name = "workout_instance_muscle",
-               joinColumns = @JoinColumn(name="workout_instances_id", referencedColumnName="ID"),
-               inverseJoinColumns = @JoinColumn(name="muscles_id", referencedColumnName="ID"))
-    private Set<Muscle> muscles = new HashSet<>();
-
-    @OneToMany(mappedBy = "workoutInstance")
-    @JsonIgnore
-    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    private Set<UserWorkoutInstance> userWorkoutInstances = new HashSet<>();
 
     public Long getId() {
         return id;
@@ -92,19 +84,6 @@ public class WorkoutInstance implements Serializable {
         this.name = name;
     }
 
-    public ZonedDateTime getCreated_on() {
-        return created_on;
-    }
-
-    public WorkoutInstance created_on(ZonedDateTime created_on) {
-        this.created_on = created_on;
-        return this;
-    }
-
-    public void setCreated_on(ZonedDateTime created_on) {
-        this.created_on = created_on;
-    }
-
     public ZonedDateTime getLast_updated() {
         return last_updated;
     }
@@ -116,6 +95,19 @@ public class WorkoutInstance implements Serializable {
 
     public void setLast_updated(ZonedDateTime last_updated) {
         this.last_updated = last_updated;
+    }
+
+    public ZonedDateTime getCreated_on() {
+        return created_on;
+    }
+
+    public WorkoutInstance created_on(ZonedDateTime created_on) {
+        this.created_on = created_on;
+        return this;
+    }
+
+    public void setCreated_on(ZonedDateTime created_on) {
+        this.created_on = created_on;
     }
 
     public Integer getRest_between_instances() {
@@ -144,79 +136,17 @@ public class WorkoutInstance implements Serializable {
         this.order_number = order_number;
     }
 
-    public Set<WorkoutTemplate> getWorkoutTemplates() {
-        return workoutTemplates;
+    public WorkoutTemplate getWorkoutTemplate() {
+        return workoutTemplate;
     }
 
-    public WorkoutInstance workoutTemplates(Set<WorkoutTemplate> workoutTemplates) {
-        this.workoutTemplates = workoutTemplates;
+    public WorkoutInstance workoutTemplate(WorkoutTemplate workoutTemplate) {
+        this.workoutTemplate = workoutTemplate;
         return this;
     }
 
-    public WorkoutInstance addWorkoutTemplate(WorkoutTemplate workoutTemplate) {
-        workoutTemplates.add(workoutTemplate);
-        workoutTemplate.getWorkoutInstances().add(this);
-        return this;
-    }
-
-    public WorkoutInstance removeWorkoutTemplate(WorkoutTemplate workoutTemplate) {
-        workoutTemplates.remove(workoutTemplate);
-        workoutTemplate.getWorkoutInstances().remove(this);
-        return this;
-    }
-
-    public void setWorkoutTemplates(Set<WorkoutTemplate> workoutTemplates) {
-        this.workoutTemplates = workoutTemplates;
-    }
-
-    public Set<Exercise> getExercises() {
-        return exercises;
-    }
-
-    public WorkoutInstance exercises(Set<Exercise> exercises) {
-        this.exercises = exercises;
-        return this;
-    }
-
-    public WorkoutInstance addExercise(Exercise exercise) {
-        exercises.add(exercise);
-        exercise.getWorkoutInstances().add(this);
-        return this;
-    }
-
-    public WorkoutInstance removeExercise(Exercise exercise) {
-        exercises.remove(exercise);
-        exercise.getWorkoutInstances().remove(this);
-        return this;
-    }
-
-    public void setExercises(Set<Exercise> exercises) {
-        this.exercises = exercises;
-    }
-
-    public Set<Muscle> getMuscles() {
-        return muscles;
-    }
-
-    public WorkoutInstance muscles(Set<Muscle> muscles) {
-        this.muscles = muscles;
-        return this;
-    }
-
-    public WorkoutInstance addMuscle(Muscle muscle) {
-        muscles.add(muscle);
-        muscle.getWorkoutInstances().add(this);
-        return this;
-    }
-
-    public WorkoutInstance removeMuscle(Muscle muscle) {
-        muscles.remove(muscle);
-        muscle.getWorkoutInstances().remove(this);
-        return this;
-    }
-
-    public void setMuscles(Set<Muscle> muscles) {
-        this.muscles = muscles;
+    public void setWorkoutTemplate(WorkoutTemplate workoutTemplate) {
+        this.workoutTemplate = workoutTemplate;
     }
 
     public Set<UserWorkoutInstance> getUserWorkoutInstances() {
@@ -244,6 +174,31 @@ public class WorkoutInstance implements Serializable {
         this.userWorkoutInstances = userWorkoutInstances;
     }
 
+    public Set<Exercise> getExercises() {
+        return exercises;
+    }
+
+    public WorkoutInstance exercises(Set<Exercise> exercises) {
+        this.exercises = exercises;
+        return this;
+    }
+
+    public WorkoutInstance addExercise(Exercise exercise) {
+        exercises.add(exercise);
+        exercise.getWorkoutInstances().add(this);
+        return this;
+    }
+
+    public WorkoutInstance removeExercise(Exercise exercise) {
+        exercises.remove(exercise);
+        exercise.getWorkoutInstances().remove(this);
+        return this;
+    }
+
+    public void setExercises(Set<Exercise> exercises) {
+        this.exercises = exercises;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -269,8 +224,8 @@ public class WorkoutInstance implements Serializable {
         return "WorkoutInstance{" +
             "id=" + id +
             ", name='" + name + "'" +
-            ", created_on='" + created_on + "'" +
             ", last_updated='" + last_updated + "'" +
+            ", created_on='" + created_on + "'" +
             ", rest_between_instances='" + rest_between_instances + "'" +
             ", order_number='" + order_number + "'" +
             '}';

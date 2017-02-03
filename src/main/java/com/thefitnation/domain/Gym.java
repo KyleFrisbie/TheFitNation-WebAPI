@@ -2,12 +2,10 @@ package com.thefitnation.domain;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.springframework.data.elasticsearch.annotations.Document;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.io.Serializable;
-import java.time.ZonedDateTime;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Objects;
@@ -18,7 +16,6 @@ import java.util.Objects;
 @Entity
 @Table(name = "gym")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@Document(indexName = "gym")
 public class Gym implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -28,17 +25,12 @@ public class Gym implements Serializable {
     private Long id;
 
     @NotNull
-    @Size(min = 1)
     @Column(name = "name", nullable = false)
     private String name;
 
     @NotNull
     @Column(name = "location", nullable = false)
     private String location;
-
-    @NotNull
-    @Column(name = "last_visited", nullable = false)
-    private ZonedDateTime last_visited;
 
     @ManyToMany
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
@@ -79,19 +71,6 @@ public class Gym implements Serializable {
 
     public void setLocation(String location) {
         this.location = location;
-    }
-
-    public ZonedDateTime getLast_visited() {
-        return last_visited;
-    }
-
-    public Gym last_visited(ZonedDateTime last_visited) {
-        this.last_visited = last_visited;
-        return this;
-    }
-
-    public void setLast_visited(ZonedDateTime last_visited) {
-        this.last_visited = last_visited;
     }
 
     public Set<UserDemographic> getUserDemographics() {
@@ -145,7 +124,6 @@ public class Gym implements Serializable {
             "id=" + id +
             ", name='" + name + "'" +
             ", location='" + location + "'" +
-            ", last_visited='" + last_visited + "'" +
             '}';
     }
 }

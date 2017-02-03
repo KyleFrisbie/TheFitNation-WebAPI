@@ -4,7 +4,6 @@ import com.thefitnation.domain.Authority;
 import com.thefitnation.domain.User;
 import com.thefitnation.repository.AuthorityRepository;
 import com.thefitnation.repository.UserRepository;
-import com.thefitnation.repository.search.UserSearchRepository;
 import com.thefitnation.security.AuthoritiesConstants;
 import com.thefitnation.security.SecurityUtils;
 import com.thefitnation.service.util.RandomUtil;
@@ -40,9 +39,6 @@ public class UserService {
     private UserRepository userRepository;
 
     @Inject
-    private UserSearchRepository userSearchRepository;
-
-    @Inject
     private AuthorityRepository authorityRepository;
 
     public Optional<User> activateRegistration(String key) {
@@ -52,7 +48,6 @@ public class UserService {
                 // activate given user for the registration key.
                 user.setActivated(true);
                 user.setActivationKey(null);
-                userSearchRepository.save(user);
                 log.debug("Activated user: {}", user);
                 return user;
             });
@@ -105,7 +100,6 @@ public class UserService {
         authorities.add(authority);
         newUser.setAuthorities(authorities);
         userRepository.save(newUser);
-        userSearchRepository.save(newUser);
         log.debug("Created Information for User: {}", newUser);
         return newUser;
     }
@@ -134,7 +128,6 @@ public class UserService {
         user.setResetDate(ZonedDateTime.now());
         user.setActivated(true);
         userRepository.save(user);
-        userSearchRepository.save(user);
         log.debug("Created Information for User: {}", user);
         return user;
     }
@@ -145,7 +138,6 @@ public class UserService {
             user.setLastName(lastName);
             user.setEmail(email);
             user.setLangKey(langKey);
-            userSearchRepository.save(user);
             log.debug("Changed Information for User: {}", user);
         });
     }
@@ -176,7 +168,6 @@ public class UserService {
             jdbcTokenStore.removeAccessToken(token));
         userRepository.findOneByLogin(login).ifPresent(user -> {
             userRepository.delete(user);
-            userSearchRepository.delete(user);
             log.debug("Deleted User: {}", user);
         });
     }
@@ -229,7 +220,6 @@ public class UserService {
         for (User user : users) {
             log.debug("Deleting not activated user {}", user.getLogin());
             userRepository.delete(user);
-            userSearchRepository.delete(user);
         }
     }
 }

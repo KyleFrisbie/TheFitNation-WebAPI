@@ -4,9 +4,9 @@
         .module('theFitNationApp')
         .factory('Gym', Gym);
 
-    Gym.$inject = ['$resource', 'DateUtils'];
+    Gym.$inject = ['$resource'];
 
-    function Gym ($resource, DateUtils) {
+    function Gym ($resource) {
         var resourceUrl =  'api/gyms/:id';
 
         return $resource(resourceUrl, {}, {
@@ -16,7 +16,6 @@
                 transformResponse: function (data) {
                     if (data) {
                         data = angular.fromJson(data);
-                        data.last_visited = DateUtils.convertDateTimeFromServer(data.last_visited);
                     }
                     return data;
                 }

@@ -5,15 +5,14 @@
         .module('theFitNationApp')
         .controller('MuscleDialogController', MuscleDialogController);
 
-    MuscleDialogController.$inject = ['$timeout', '$scope', '$stateParams', '$uibModalInstance', 'entity', 'Muscle', 'WorkoutInstance', 'Exercise'];
+    MuscleDialogController.$inject = ['$timeout', '$scope', '$stateParams', '$uibModalInstance', 'entity', 'Muscle', 'Exercise'];
 
-    function MuscleDialogController ($timeout, $scope, $stateParams, $uibModalInstance, entity, Muscle, WorkoutInstance, Exercise) {
+    function MuscleDialogController ($timeout, $scope, $stateParams, $uibModalInstance, entity, Muscle, Exercise) {
         var vm = this;
 
         vm.muscle = entity;
         vm.clear = clear;
         vm.save = save;
-        vm.workoutinstances = WorkoutInstance.query();
         vm.exercises = Exercise.query();
 
         $timeout(function (){

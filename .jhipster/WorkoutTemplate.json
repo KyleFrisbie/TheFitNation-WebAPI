@@ -13,12 +13,7 @@
         {
             "relationshipName": "workoutInstance",
             "otherEntityName": "workoutInstance",
-            "relationshipType": "many-to-many",
-            "relationshipValidateRules": [
-                "required"
-            ],
-            "otherEntityField": "name",
-            "ownerSide": true,
+            "relationshipType": "one-to-many",
             "otherEntityRelationshipName": "workoutTemplate"
         },
         {
@@ -33,10 +28,8 @@
             "fieldName": "name",
             "fieldType": "String",
             "fieldValidateRules": [
-                "required",
-                "minlength"
-            ],
-            "fieldValidateRulesMinlength": "1"
+                "required"
+            ]
         },
         {
             "fieldName": "created_on",
@@ -60,7 +53,7 @@
             ]
         }
     ],
-    "changelogDate": "20170202010019",
+    "changelogDate": "20170203230115",
     "dto": "no",
     "service": "serviceClass",
     "entityTableName": "workout_template",

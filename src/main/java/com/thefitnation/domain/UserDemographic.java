@@ -3,7 +3,6 @@ package com.thefitnation.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.springframework.data.elasticsearch.annotations.Document;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
@@ -25,7 +24,6 @@ import com.thefitnation.domain.enumeration.UnitOfMeasure;
 @Entity
 @Table(name = "user_demographic")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@Document(indexName = "userdemographic")
 public class UserDemographic implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -35,26 +33,23 @@ public class UserDemographic implements Serializable {
     private Long id;
 
     @NotNull
-    @Column(name = "join_date", nullable = false)
-    private ZonedDateTime join_date;
+    @Column(name = "created_on", nullable = false)
+    private ZonedDateTime created_on;
 
     @NotNull
     @Column(name = "last_login", nullable = false)
     private ZonedDateTime last_login;
 
     @NotNull
-    @Size(min = 1)
     @Column(name = "first_name", nullable = false)
     private String first_name;
 
     @NotNull
-    @Size(min = 1)
     @Column(name = "last_name", nullable = false)
     private String last_name;
 
-    @NotNull
     @Enumerated(EnumType.STRING)
-    @Column(name = "gender", nullable = false)
+    @Column(name = "gender")
     private Gender gender;
 
     @NotNull
@@ -64,9 +59,8 @@ public class UserDemographic implements Serializable {
     @Column(name = "height")
     private Integer height;
 
-    @NotNull
     @Enumerated(EnumType.STRING)
-    @Column(name = "skill_level", nullable = false)
+    @Column(name = "skill_level")
     private SkillLevel skill_level;
 
     @NotNull
@@ -105,17 +99,17 @@ public class UserDemographic implements Serializable {
         this.id = id;
     }
 
-    public ZonedDateTime getJoin_date() {
-        return join_date;
+    public ZonedDateTime getCreated_on() {
+        return created_on;
     }
 
-    public UserDemographic join_date(ZonedDateTime join_date) {
-        this.join_date = join_date;
+    public UserDemographic created_on(ZonedDateTime created_on) {
+        this.created_on = created_on;
         return this;
     }
 
-    public void setJoin_date(ZonedDateTime join_date) {
-        this.join_date = join_date;
+    public void setCreated_on(ZonedDateTime created_on) {
+        this.created_on = created_on;
     }
 
     public ZonedDateTime getLast_login() {
@@ -347,7 +341,7 @@ public class UserDemographic implements Serializable {
     public String toString() {
         return "UserDemographic{" +
             "id=" + id +
-            ", join_date='" + join_date + "'" +
+            ", created_on='" + created_on + "'" +
             ", last_login='" + last_login + "'" +
             ", first_name='" + first_name + "'" +
             ", last_name='" + last_name + "'" +

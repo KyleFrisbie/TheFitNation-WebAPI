@@ -95,7 +95,7 @@
                     resolve: {
                         entity: function () {
                             return {
-                                join_date: null,
+                                created_on: null,
                                 last_login: null,
                                 first_name: null,
                                 last_name: null,

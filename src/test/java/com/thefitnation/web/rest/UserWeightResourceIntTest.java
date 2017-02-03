@@ -6,7 +6,6 @@ import com.thefitnation.domain.UserWeight;
 import com.thefitnation.domain.UserDemographic;
 import com.thefitnation.repository.UserWeightRepository;
 import com.thefitnation.service.UserWeightService;
-import com.thefitnation.repository.search.UserWeightSearchRepository;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -58,9 +57,6 @@ public class UserWeightResourceIntTest {
     private UserWeightService userWeightService;
 
     @Inject
-    private UserWeightSearchRepository userWeightSearchRepository;
-
-    @Inject
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
 
     @Inject
@@ -103,7 +99,6 @@ public class UserWeightResourceIntTest {
 
     @Before
     public void initTest() {
-        userWeightSearchRepository.deleteAll();
         userWeight = createEntity(em);
     }
 
@@ -125,10 +120,6 @@ public class UserWeightResourceIntTest {
         UserWeight testUserWeight = userWeightList.get(userWeightList.size() - 1);
         assertThat(testUserWeight.getWeight_date()).isEqualTo(DEFAULT_WEIGHT_DATE);
         assertThat(testUserWeight.getWeight()).isEqualTo(DEFAULT_WEIGHT);
-
-        // Validate the UserWeight in ElasticSearch
-        UserWeight userWeightEs = userWeightSearchRepository.findOne(testUserWeight.getId());
-        assertThat(userWeightEs).isEqualToComparingFieldByField(testUserWeight);
     }
 
     @Test
@@ -250,10 +241,6 @@ public class UserWeightResourceIntTest {
         UserWeight testUserWeight = userWeightList.get(userWeightList.size() - 1);
         assertThat(testUserWeight.getWeight_date()).isEqualTo(UPDATED_WEIGHT_DATE);
         assertThat(testUserWeight.getWeight()).isEqualTo(UPDATED_WEIGHT);
-
-        // Validate the UserWeight in ElasticSearch
-        UserWeight userWeightEs = userWeightSearchRepository.findOne(testUserWeight.getId());
-        assertThat(userWeightEs).isEqualToComparingFieldByField(testUserWeight);
     }
 
     @Test
@@ -287,27 +274,8 @@ public class UserWeightResourceIntTest {
             .accept(TestUtil.APPLICATION_JSON_UTF8))
             .andExpect(status().isOk());
 
-        // Validate ElasticSearch is empty
-        boolean userWeightExistsInEs = userWeightSearchRepository.exists(userWeight.getId());
-        assertThat(userWeightExistsInEs).isFalse();
-
         // Validate the database is empty
         List<UserWeight> userWeightList = userWeightRepository.findAll();
         assertThat(userWeightList).hasSize(databaseSizeBeforeDelete - 1);
-    }
-
-    @Test
-    @Transactional
-    public void searchUserWeight() throws Exception {
-        // Initialize the database
-        userWeightService.save(userWeight);
-
-        // Search the userWeight
-        restUserWeightMockMvc.perform(get("/api/_search/user-weights?query=id:" + userWeight.getId()))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(userWeight.getId().intValue())))
-            .andExpect(jsonPath("$.[*].weight_date").value(hasItem(sameInstant(DEFAULT_WEIGHT_DATE))))
-            .andExpect(jsonPath("$.[*].weight").value(hasItem(DEFAULT_WEIGHT.doubleValue())));
     }
 }

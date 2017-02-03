@@ -31,7 +31,7 @@
     ],
     "fields": [
         {
-            "fieldName": "join_date",
+            "fieldName": "created_on",
             "fieldType": "ZonedDateTime",
             "fieldValidateRules": [
                 "required"
@@ -48,27 +48,20 @@
             "fieldName": "first_name",
             "fieldType": "String",
             "fieldValidateRules": [
-                "required",
-                "minlength"
-            ],
-            "fieldValidateRulesMinlength": "1"
+                "required"
+            ]
         },
         {
             "fieldName": "last_name",
             "fieldType": "String",
             "fieldValidateRules": [
-                "required",
-                "minlength"
-            ],
-            "fieldValidateRulesMinlength": "1"
+                "required"
+            ]
         },
         {
             "fieldName": "gender",
             "fieldType": "Gender",
-            "fieldValues": "Male, Female, Other",
-            "fieldValidateRules": [
-                "required"
-            ]
+            "fieldValues": "Male, Female, Other"
         },
         {
             "fieldName": "dob",
@@ -84,10 +77,7 @@
         {
             "fieldName": "skill_level",
             "fieldType": "SkillLevel",
-            "fieldValues": "Beginner, Intermediate, Advanced",
-            "fieldValidateRules": [
-                "required"
-            ]
+            "fieldValues": "Beginner, Intermediate, Advanced"
         },
         {
             "fieldName": "unit_of_measure",
@@ -105,7 +95,7 @@
             ]
         }
     ],
-    "changelogDate": "20170202005606",
+    "changelogDate": "20170203225520",
     "dto": "no",
     "service": "serviceClass",
     "entityTableName": "user_demographic",
