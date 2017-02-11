@@ -30,6 +30,7 @@ import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import com.thefitnation.domain.enumeration.ExerciseType;
 /**
  * Test class for the ExerciseResource REST controller.
  *
@@ -41,6 +42,9 @@ public class ExerciseResourceIntTest {
 
     private static final String DEFAULT_NAME = "AAAAAAAAAA";
     private static final String UPDATED_NAME = "BBBBBBBBBB";
+
+    private static final ExerciseType DEFAULT_EXERCISE_TYPE = ExerciseType.BodyWeight;
+    private static final ExerciseType UPDATED_EXERCISE_TYPE = ExerciseType.Cable;
 
     @Inject
     private ExerciseRepository exerciseRepository;
@@ -79,7 +83,8 @@ public class ExerciseResourceIntTest {
      */
     public static Exercise createEntity(EntityManager em) {
         Exercise exercise = new Exercise()
-                .name(DEFAULT_NAME);
+                .name(DEFAULT_NAME)
+                .exercise_type(DEFAULT_EXERCISE_TYPE);
         // Add required entity
         Muscle muscle = MuscleResourceIntTest.createEntity(em);
         em.persist(muscle);
@@ -110,6 +115,7 @@ public class ExerciseResourceIntTest {
         assertThat(exerciseList).hasSize(databaseSizeBeforeCreate + 1);
         Exercise testExercise = exerciseList.get(exerciseList.size() - 1);
         assertThat(testExercise.getName()).isEqualTo(DEFAULT_NAME);
+        assertThat(testExercise.getExercise_type()).isEqualTo(DEFAULT_EXERCISE_TYPE);
     }
 
     @Test
@@ -161,7 +167,8 @@ public class ExerciseResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(exercise.getId().intValue())))
-            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())));
+            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
+            .andExpect(jsonPath("$.[*].exercise_type").value(hasItem(DEFAULT_EXERCISE_TYPE.toString())));
     }
 
     @Test
@@ -175,7 +182,8 @@ public class ExerciseResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(exercise.getId().intValue()))
-            .andExpect(jsonPath("$.name").value(DEFAULT_NAME.toString()));
+            .andExpect(jsonPath("$.name").value(DEFAULT_NAME.toString()))
+            .andExpect(jsonPath("$.exercise_type").value(DEFAULT_EXERCISE_TYPE.toString()));
     }
 
     @Test
@@ -197,7 +205,8 @@ public class ExerciseResourceIntTest {
         // Update the exercise
         Exercise updatedExercise = exerciseRepository.findOne(exercise.getId());
         updatedExercise
-                .name(UPDATED_NAME);
+                .name(UPDATED_NAME)
+                .exercise_type(UPDATED_EXERCISE_TYPE);
 
         restExerciseMockMvc.perform(put("/api/exercises")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -209,6 +218,7 @@ public class ExerciseResourceIntTest {
         assertThat(exerciseList).hasSize(databaseSizeBeforeUpdate);
         Exercise testExercise = exerciseList.get(exerciseList.size() - 1);
         assertThat(testExercise.getName()).isEqualTo(UPDATED_NAME);
+        assertThat(testExercise.getExercise_type()).isEqualTo(UPDATED_EXERCISE_TYPE);
     }
 
     @Test

@@ -11,6 +11,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.Objects;
 
+import com.thefitnation.domain.enumeration.ExerciseType;
+
 /**
  * A Exercise.
  */
@@ -28,6 +30,10 @@ public class Exercise implements Serializable {
     @NotNull
     @Column(name = "name", nullable = false)
     private String name;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "exercise_type")
+    private ExerciseType exercise_type;
 
     @ManyToMany(mappedBy = "exercises")
     @JsonIgnore
@@ -71,6 +77,19 @@ public class Exercise implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public ExerciseType getExercise_type() {
+        return exercise_type;
+    }
+
+    public Exercise exercise_type(ExerciseType exercise_type) {
+        this.exercise_type = exercise_type;
+        return this;
+    }
+
+    public void setExercise_type(ExerciseType exercise_type) {
+        this.exercise_type = exercise_type;
     }
 
     public Set<WorkoutInstance> getWorkoutInstances() {
@@ -198,6 +217,7 @@ public class Exercise implements Serializable {
         return "Exercise{" +
             "id=" + id +
             ", name='" + name + "'" +
+            ", exercise_type='" + exercise_type + "'" +
             '}';
     }
 }

@@ -24,9 +24,9 @@ spring:
         serialization.indent_output: true
     datasource:
         type: com.zaxxer.hikari.HikariDataSource
-        url: jdbc:postgresql://localhost:5432/TheFitNation
+        url: jdbc:postgresql://localhost:5432/thefitnationdev
         name:
-        username: TheFitNation
+        username: thefitnation
         password:
     jpa:
         database-platform: com.thefitnation.domain.util.FixedPostgreSQL82Dialect

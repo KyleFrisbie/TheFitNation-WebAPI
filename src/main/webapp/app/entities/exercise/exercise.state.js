@@ -96,6 +96,7 @@
                         entity: function () {
                             return {
                                 name: null,
+                                exercise_type: null,
                                 id: null
                             };
                         }

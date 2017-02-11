@@ -8,6 +8,10 @@
         <dd>
             <span>{{vm.exercise.name}}</span>
         </dd>
+        <dt><span data-translate="theFitNationApp.exercise.exercise_type">Exercise Type</span></dt>
+        <dd>
+            <span data-translate="{{'theFitNationApp.ExerciseType.' + vm.exercise.exercise_type}}">{{vm.exercise.exercise_type}}</span>
+        </dd>
         <dt><span>Muscle</span></dt>
         <dd>
             <span ng-repeat="muscle in vm.exercise.muscles">

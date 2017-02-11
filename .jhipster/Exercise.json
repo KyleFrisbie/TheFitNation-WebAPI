@@ -39,6 +39,11 @@
             "fieldValidateRules": [
                 "required"
             ]
+        },
+        {
+            "fieldName": "exercise_type",
+            "fieldType": "ExerciseType",
+            "fieldValues": "BodyWeight, Cable, Machine, FreeWeight, Stretch"
         }
     ],
     "changelogDate": "20170203230958",
