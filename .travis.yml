@@ -29,7 +29,6 @@ script:
   - mvn clean
   - mvn test
   - gulp test
-  - mvn cobertura:cobertura
   - mvn package -Pprod -DskipTests
 notifications:
   webhooks:
