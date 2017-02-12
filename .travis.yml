@@ -36,4 +36,5 @@ notifications:
     on_failure: always  # options: [always|never|change] default: always
     on_start: false     # default: false
 after_success:
-  - bash <(curl -s https://codecov.io/bash) -t 5c07d5c0-cd4d-4ecf-ab6a-7209eaa46548
+  - export CODECOV_TOKEN="5c07d5c0-cd4d-4ecf-ab6a-7209eaa46548"
+  - bash <(curl -s https://codecov.io/bash)
