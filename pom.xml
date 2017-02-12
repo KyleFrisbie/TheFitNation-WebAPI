@@ -20,7 +20,7 @@
     </prerequisites>
 
     <properties>
-        <argLine>${argLine} -Djava.security.egd=file:/dev/./urandom -Xmx256m</argLine>
+        <argLine>-Djava.security.egd=file:/dev/./urandom -Xmx256m</argLine>
         <assertj-core.version>3.5.2</assertj-core.version>
         <awaitility.version>1.7.0</awaitility.version>
         <commons-io.version>2.5</commons-io.version>
@@ -567,6 +567,7 @@
                     <execution>
                         <id>default-test</id>
                         <configuration>
+                            <argLine>${argLine}</argLine>
                             <excludes>
                                 <exclude>**/Abstract*.java</exclude>
                                 <exclude>**/*Cucumber*.java</exclude>
