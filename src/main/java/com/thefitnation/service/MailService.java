@@ -1,20 +1,21 @@
 package com.thefitnation.service;
 
-import com.thefitnation.config.JHipsterProperties;
 import com.thefitnation.domain.User;
+
+import io.github.jhipster.config.JHipsterProperties;
 
 import org.apache.commons.lang3.CharEncoding;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring4.SpringTemplateEngine;
+import org.apache.commons.lang3.StringUtils;
 
-import javax.inject.Inject;
 import javax.mail.internet.MimeMessage;
 import java.util.Locale;
 
@@ -33,17 +34,22 @@ public class MailService {
 
     private static final String BASE_URL = "baseUrl";
 
-    @Inject
-    private JHipsterProperties jHipsterProperties;
+    private final JHipsterProperties jHipsterProperties;
 
-    @Inject
-    private JavaMailSenderImpl javaMailSender;
+    private final JavaMailSender javaMailSender;
 
-    @Inject
-    private MessageSource messageSource;
+    private final MessageSource messageSource;
 
-    @Inject
-    private SpringTemplateEngine templateEngine;
+    private final SpringTemplateEngine templateEngine;
+
+    public MailService(JHipsterProperties jHipsterProperties, JavaMailSender javaMailSender,
+            MessageSource messageSource, SpringTemplateEngine templateEngine) {
+
+        this.jHipsterProperties = jHipsterProperties;
+        this.javaMailSender = javaMailSender;
+        this.messageSource = messageSource;
+        this.templateEngine = templateEngine;
+    }
 
     @Async
     public void sendEmail(String to, String subject, String content, boolean isMultipart, boolean isHtml) {
@@ -98,6 +104,18 @@ public class MailService {
         context.setVariable(BASE_URL, jHipsterProperties.getMail().getBaseUrl());
         String content = templateEngine.process("passwordResetEmail", context);
         String subject = messageSource.getMessage("email.reset.title", null, locale);
+        sendEmail(user.getEmail(), subject, content, false, true);
+    }
+
+    @Async
+    public void sendSocialRegistrationValidationEmail(User user, String provider) {
+        log.debug("Sending social registration validation e-mail to '{}'", user.getEmail());
+        Locale locale = Locale.forLanguageTag(user.getLangKey());
+        Context context = new Context(locale);
+        context.setVariable(USER, user);
+        context.setVariable("provider", StringUtils.capitalize(provider));
+        String content = templateEngine.process("socialRegistrationValidationEmail", context);
+        String subject = messageSource.getMessage("email.social.registration.title", null, locale);
         sendEmail(user.getEmail(), subject, content, false, true);
     }
 }

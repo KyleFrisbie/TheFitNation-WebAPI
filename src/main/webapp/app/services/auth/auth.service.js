@@ -5,9 +5,9 @@
         .module('theFitNationApp')
         .factory('Auth', Auth);
 
-    Auth.$inject = ['$rootScope', '$state', '$sessionStorage', '$q', 'Principal', 'AuthServerProvider', 'Account', 'LoginService', 'Register', 'Activate', 'Password', 'PasswordResetInit', 'PasswordResetFinish'];
+    Auth.$inject = ['$rootScope', '$state', '$sessionStorage', '$q', '$translate', 'Principal', 'AuthServerProvider', 'Account', 'LoginService', 'Register', 'Activate', 'Password', 'PasswordResetInit', 'PasswordResetFinish'];
 
-    function Auth ($rootScope, $state, $sessionStorage, $q, Principal, AuthServerProvider, Account, LoginService, Register, Activate, Password, PasswordResetInit, PasswordResetFinish) {
+    function Auth ($rootScope, $state, $sessionStorage, $q, $translate, Principal, AuthServerProvider, Account, LoginService, Register, Activate, Password, PasswordResetInit, PasswordResetFinish) {
         var service = {
             activateAccount: activateAccount,
             authorize: authorize,
@@ -16,6 +16,7 @@
             getPreviousState: getPreviousState,
             login: login,
             logout: logout,
+            loginWithToken: loginWithToken,
             resetPasswordFinish: resetPasswordFinish,
             resetPasswordInit: resetPasswordInit,
             resetPreviousState: resetPreviousState,
@@ -46,7 +47,7 @@
                 var isAuthenticated = Principal.isAuthenticated();
 
                 // an authenticated user can't access to login and register pages
-                if (isAuthenticated && $rootScope.toState.parent === 'account' && ($rootScope.toState.name === 'login' || $rootScope.toState.name === 'register')) {
+                if (isAuthenticated && $rootScope.toState.parent === 'account' && ($rootScope.toState.name === 'login' || $rootScope.toState.name === 'register' || $rootScope.toState.name === 'social-auth')) {
                     $state.go('home');
                 }
 
@@ -113,6 +114,13 @@
 
             function loginThen (data) {
                 Principal.identity(true).then(function(account) {
+                    // After the login the language will be changed to
+                    // the language selected by the user during his registration
+                    if (account!== null) {
+                        $translate.use(account.langKey).then(function () {
+                            $translate.refresh();
+                        });
+                    }
                     deferred.resolve(data);
                 });
                 return cb();
@@ -121,6 +129,9 @@
             return deferred.promise;
         }
 
+        function loginWithToken(jwt, rememberMe) {
+            return AuthServerProvider.loginWithToken(jwt, rememberMe);
+        }
 
         function logout () {
             AuthServerProvider.logout();

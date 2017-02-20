@@ -1,11 +1,11 @@
 {
   "generator-jhipster": {
-    "jhipsterVersion": "3.12.2",
+    "jhipsterVersion": "4.0.5",
     "baseName": "TheFitNation",
     "packageName": "com.thefitnation",
     "packageFolder": "com/thefitnation",
     "serverPort": "8080",
-    "authenticationType": "oauth2",
+    "authenticationType": "jwt",
     "hibernateCache": "ehcache",
     "clusteredHttpSession": false,
     "websocket": false,
@@ -14,15 +14,23 @@
     "prodDatabaseType": "postgresql",
     "searchEngine": false,
     "messageBroker": false,
+    "serviceDiscoveryType": false,
     "buildTool": "maven",
-    "enableSocialSignIn": false,
+    "enableSocialSignIn": true,
+    "jwtSecretKey": "e2e74f772c08cf627176d8b26223aadc7d27c518",
+    "clientFramework": "angular1",
     "useSass": true,
+    "clientPackageManager": "npm",
     "applicationType": "monolith",
     "testFrameworks": [
       "gatling",
       "cucumber"
     ],
     "jhiPrefix": "jhi",
-    "enableTranslation": false
+    "enableTranslation": true,
+    "nativeLanguage": "en",
+    "languages": [
+      "en"
+    ]
   }
 }
