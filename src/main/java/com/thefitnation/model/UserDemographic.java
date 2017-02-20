@@ -20,11 +20,11 @@ public class UserDemographic {
 
     @NotNull
     @Column(name = "created_on", nullable = false)
-    private ZonedDateTime createDate;
+    private LocalDate createDate;
 
     @NotNull
     @Column(name = "last_login", nullable = false)
-    private ZonedDateTime lastLogin;
+    private LocalDate lastLogin;
 
     @NotNull
     @Column(name = "first_name", nullable = false)
@@ -40,7 +40,7 @@ public class UserDemographic {
 
     @NotNull
     @Column(name = "dob", nullable = false)
-    private ZonedDateTime dob;
+    private LocalDate dob;
 
     @Column(name = "height")
     private Integer height;
@@ -78,19 +78,19 @@ public class UserDemographic {
         this.id = id;
     }
 
-    public ZonedDateTime getCreateDate() {
+    public LocalDate getCreateDate() {
         return createDate;
     }
 
-    public void setCreateDate(ZonedDateTime createDate) {
+    public void setCreateDate(LocalDate createDate) {
         this.createDate = createDate;
     }
 
-    public ZonedDateTime getLastLogin() {
+    public LocalDate getLastLogin() {
         return lastLogin;
     }
 
-    public void setLastLogin(ZonedDateTime lastLogin) {
+    public void setLastLogin(LocalDate lastLogin) {
         this.lastLogin = lastLogin;
     }
 
@@ -118,11 +118,11 @@ public class UserDemographic {
         this.gender = gender;
     }
 
-    public ZonedDateTime getDob() {
+    public LocalDate getDob() {
         return dob;
     }
 
-    public void setDob(ZonedDateTime dob) {
+    public void setDob(LocalDate dob) {
         this.dob = dob;
     }
 

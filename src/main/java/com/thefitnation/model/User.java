@@ -62,7 +62,7 @@ public class User {
     private String resetKey;
 
     @Column(name = "reset_date", nullable = true)
-    private ZonedDateTime resetDate = null;
+    private LocalDate resetDate = null;
 
 
     /* JOINS */
@@ -145,11 +145,11 @@ public class User {
         this.resetKey = resetKey;
     }
 
-    public ZonedDateTime getResetDate() {
+    public LocalDate getResetDate() {
         return resetDate;
     }
 
-    public void setResetDate(ZonedDateTime resetDate) {
+    public void setResetDate(LocalDate resetDate) {
         this.resetDate = resetDate;
     }
 

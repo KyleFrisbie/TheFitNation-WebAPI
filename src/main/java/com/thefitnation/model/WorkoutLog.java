@@ -20,11 +20,11 @@ public class WorkoutLog implements Serializable {
 
     @NotNull
     @Column(name = "created_on", nullable = false)
-    private ZonedDateTime created_on;
+    private LocalDate created_on;
 
     @NotNull
     @Column(name = "last_updated", nullable = false)
-    private ZonedDateTime last_updated;
+    private LocalDate last_updated;
 
     /* Joins */
 
@@ -44,19 +44,19 @@ public class WorkoutLog implements Serializable {
         this.id = id;
     }
 
-    public ZonedDateTime getCreated_on() {
+    public LocalDate getCreated_on() {
         return created_on;
     }
 
-    public void setCreated_on(ZonedDateTime created_on) {
+    public void setCreated_on(LocalDate created_on) {
         this.created_on = created_on;
     }
 
-    public ZonedDateTime getLast_updated() {
+    public LocalDate getLast_updated() {
         return last_updated;
     }
 
-    public void setLast_updated(ZonedDateTime last_updated) {
+    public void setLast_updated(LocalDate last_updated) {
         this.last_updated = last_updated;
     }
 }

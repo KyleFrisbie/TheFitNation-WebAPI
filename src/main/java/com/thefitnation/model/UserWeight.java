@@ -20,7 +20,7 @@ public class UserWeight implements Serializable {
 
     @NotNull
     @Column(name = "weight_date", nullable = false)
-    private ZonedDateTime weight_date;
+    private LocalDate weight_date;
 
     @NotNull
     @Column(name = "weight", nullable = false)
@@ -48,11 +48,11 @@ public class UserWeight implements Serializable {
         this.id = id;
     }
 
-    public ZonedDateTime getWeight_date() {
+    public LocalDate getWeight_date() {
         return weight_date;
     }
 
-    public void setWeight_date(ZonedDateTime weight_date) {
+    public void setWeight_date(LocalDate weight_date) {
         this.weight_date = weight_date;
     }
 
