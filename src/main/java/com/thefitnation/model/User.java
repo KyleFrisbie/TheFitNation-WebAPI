@@ -2,6 +2,7 @@ package com.thefitnation.model;
 
 import com.thefitnation.model.enumeration.*;
 import java.time.*;
+import java.util.*;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 
@@ -64,6 +65,10 @@ public class User {
     @OneToOne
     @JoinColumn(name = "cred_id")
     private UserCredential userCredential;
+
+
+    @OneToMany(mappedBy = "user")
+    private List<UserWeight> userBodyWeight;
 
 
     /* Constructors */

@@ -29,6 +29,12 @@ public class UserWeight implements Serializable {
 
     /* Joins */
 
+
+    @ManyToOne
+    @JoinColumn(name = "userId")
+    private User user;
+
+
     /* Constructor */
 
     protected UserWeight() { /* Required by Spring Boot */ }
