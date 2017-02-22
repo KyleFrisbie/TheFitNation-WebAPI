@@ -1,4 +1,4 @@
-package com.thefitnation.model.enumeration;
+package com.thefitnation.model;
 
 import java.io.*;
 import javax.persistence.*;
@@ -30,6 +30,11 @@ public class Address implements Serializable {
     private String zip;
 
     /* Joins */
+
+
+    /* Constructor */
+
+    public Address() { /* Required by Spring Boot */ }
 
 
 

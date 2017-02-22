@@ -9,7 +9,7 @@ import javax.validation.constraints.*;
  * Created by michael on 2/19/17.
  */
 @Entity
-@Table(name = "exercise")
+@Table(name = "muscle")
 public class Muscle implements Serializable {
 
     private static final long serialVersionUID = 1L;

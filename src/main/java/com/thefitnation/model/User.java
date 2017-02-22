@@ -1,100 +1,99 @@
 package com.thefitnation.model;
 
-import com.fasterxml.jackson.annotation.*;
+import com.thefitnation.model.enumeration.*;
 import java.time.*;
-import java.util.*;
 import javax.persistence.*;
 import javax.validation.constraints.*;
-import org.hibernate.validator.constraints.*;
 
 /**
  * Created by michael on 2/19/17.
  */
 @Entity
-@Table(name="user")
 public class User {
 
     private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    @Column(name = "user_id")
+    private Long userId;
 
     @NotNull
-    @Size(min = 1, max = 50)
-    @Column(length = 50, unique = true, nullable = false)
-    private String login;
+    @Column(name = "created_on", nullable = false)
+    private LocalDate createDate;
 
-    @JsonIgnore
     @NotNull
-    @Size(min = 60, max = 60)
-    @Column(name = "password_hash",length = 60)
-    private String password;
+    @Column(name = "last_login", nullable = false)
+    private LocalDate lastLogin;
 
-    @Size(max = 50)
-    @Column(name = "first_name", length = 50)
+    @NotNull
+    @Column(name = "first_name", nullable = false)
     private String firstName;
 
-    @Size(max = 50)
-    @Column(name = "last_name", length = 50)
+    @NotNull
+    @Column(name = "last_name", nullable = false)
     private String lastName;
 
-    @Email
-    @Size(max = 100)
-    @Column(length = 100, unique = true)
-    private String email;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "gender")
+    private Gender gender;
 
     @NotNull
-    @Column(nullable = false)
-    private boolean activated = false;
+    @Column(name = "dob", nullable = false)
+    private LocalDate dob;
 
-    @Size(min = 2, max = 5)
-    @Column(name = "lang_key", length = 5)
-    private String langKey;
+    @Column(name = "height")
+    private Integer height;
 
-    @Size(max = 20)
-    @Column(name = "activation_key", length = 20)
-    @JsonIgnore
-    private String activationKey;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "skill_level")
+    private SkillLevel skillLevel;
 
-    @Size(max = 20)
-    @Column(name = "reset_key", length = 20)
-    private String resetKey;
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    @Column(name = "unit_of_measure", nullable = false)
+    private UnitOfMeasure units;
 
-    @Column(name = "reset_date", nullable = true)
-    private LocalDate resetDate = null;
+    @NotNull
+    @Column(name = "is_active", nullable = false)
+    private Boolean isActive;
 
 
     /* JOINS */
-    @OneToOne(mappedBy = "user")
-    private UserDemographic userDemographic;
 
 
+    /* Constructors */
+
+    private User() { /* Required by Spring Boot */ }
 
     /* Mutator */
-    public Long getId() {
-        return id;
+
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public Long getUserId() {
+        return userId;
     }
 
-    public String getLogin() {
-        return login;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
-    //Lowercase the login before saving it in database
-    public void setLogin(String login) {
-        this.login = login.toLowerCase(Locale.ENGLISH);
+    public LocalDate getCreateDate() {
+        return createDate;
     }
 
-    public String getPassword() {
-        return password;
+    public void setCreateDate(LocalDate createDate) {
+        this.createDate = createDate;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public LocalDate getLastLogin() {
+        return lastLogin;
+    }
+
+    public void setLastLogin(LocalDate lastLogin) {
+        this.lastLogin = lastLogin;
     }
 
     public String getFirstName() {
@@ -113,51 +112,53 @@ public class User {
         this.lastName = lastName;
     }
 
-    public String getEmail() {
-        return email;
+    public Gender getGender() {
+        return gender;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setGender(Gender gender) {
+        this.gender = gender;
     }
 
-    public boolean getActivated() {
-        return activated;
+    public LocalDate getDob() {
+        return dob;
     }
 
-    public void setActivated(boolean activated) {
-        this.activated = activated;
+    public void setDob(LocalDate dob) {
+        this.dob = dob;
     }
 
-    public String getActivationKey() {
-        return activationKey;
+    public Integer getHeight() {
+        return height;
     }
 
-    public void setActivationKey(String activationKey) {
-        this.activationKey = activationKey;
+    public void setHeight(Integer height) {
+        this.height = height;
     }
 
-    public String getResetKey() {
-        return resetKey;
+    public SkillLevel getSkillLevel() {
+        return skillLevel;
     }
 
-    public void setResetKey(String resetKey) {
-        this.resetKey = resetKey;
+    public void setSkillLevel(SkillLevel skillLevel) {
+        this.skillLevel = skillLevel;
     }
 
-    public LocalDate getResetDate() {
-        return resetDate;
+    public UnitOfMeasure getUnits() {
+        return units;
     }
 
-    public void setResetDate(LocalDate resetDate) {
-        this.resetDate = resetDate;
+    public void setUnits(UnitOfMeasure units) {
+        this.units = units;
     }
 
-    public String getLangKey() {
-        return langKey;
+    public Boolean getActive() {
+        return isActive;
     }
 
-    public void setLangKey(String langKey) {
-        this.langKey = langKey;
+    public void setActive(Boolean active) {
+        isActive = active;
     }
+
+
 }

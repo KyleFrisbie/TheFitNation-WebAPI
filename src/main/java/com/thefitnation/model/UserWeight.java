@@ -16,7 +16,7 @@ public class UserWeight implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private Long weightId;
 
     @NotNull
     @Column(name = "weight_date", nullable = false)
@@ -26,13 +26,12 @@ public class UserWeight implements Serializable {
     @Column(name = "weight", nullable = false)
     private Float weight;
 
-    @ManyToOne
-    @NotNull
-    private UserDemographic userDemographic;
-
 
     /* Joins */
 
+    /* Constructor */
+
+    protected UserWeight() { /* Required by Spring Boot */ }
 
     /* Mutator */
 
@@ -40,12 +39,12 @@ public class UserWeight implements Serializable {
         return serialVersionUID;
     }
 
-    public Long getId() {
-        return id;
+    public Long getWeightId() {
+        return weightId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setWeightId(Long weightId) {
+        this.weightId = weightId;
     }
 
     public LocalDate getWeight_date() {
@@ -64,11 +63,4 @@ public class UserWeight implements Serializable {
         this.weight = weight;
     }
 
-    public UserDemographic getUserDemographic() {
-        return userDemographic;
-    }
-
-    public void setUserDemographic(UserDemographic userDemographic) {
-        this.userDemographic = userDemographic;
-    }
 }

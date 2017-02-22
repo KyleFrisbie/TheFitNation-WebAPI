@@ -1,4 +1,4 @@
-package com.thefitnation.model.enumeration;
+package com.thefitnation.model;
 
 import java.io.*;
 import javax.persistence.*;
@@ -26,6 +26,11 @@ public class Gym implements Serializable {
     private String location;
 
     /* JOINS */
+
+
+    /* Constructor */
+
+    public Gym() { /* Required by Spring Boot */ }
 
 
 

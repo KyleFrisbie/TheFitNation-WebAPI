@@ -1,6 +1,5 @@
 package com.thefitnation.model;
 
-import com.thefitnation.model.enumeration.*;
 import java.io.*;
 import javax.persistence.*;
 
@@ -15,6 +14,7 @@ public class Location implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "location_id")
     private Long id;
 
     @Column(name = "longitude", nullable = false)
@@ -28,6 +28,9 @@ public class Location implements Serializable {
 
     /* Joins */
 
+    /* Constructor */
+
+    public Location() { /* Required by Spring Boot */ }
 
 
 

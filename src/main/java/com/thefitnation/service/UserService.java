@@ -1,7 +1,5 @@
 package com.thefitnation.service;
 
-import com.thefitnation.repository.*;
-import org.springframework.beans.factory.annotation.*;
 import org.springframework.stereotype.*;
 
 /**
@@ -10,14 +8,14 @@ import org.springframework.stereotype.*;
 @Service
 public class UserService {
 
-    private final UserDao userDao;
-    private final UserDemographicDao userDemographicDao;
-
-
-    @Autowired
-    public UserService(UserDao userDao, UserDemographicDao userDemographicDao) {
-        this.userDao = userDao;
-        this.userDemographicDao = userDemographicDao;
-    }
+//    private final UserDao userDao;
+//    private final UserDemographicDao userDemographicDao;
+//
+//
+//    @Autowired
+//    public UserService(UserDao userDao, UserDemographicDao userDemographicDao) {
+//        this.userDao = userDao;
+//        this.userDemographicDao = userDemographicDao;
+//    }
 
 }
