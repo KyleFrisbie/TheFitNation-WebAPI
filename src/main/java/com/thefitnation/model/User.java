@@ -61,12 +61,24 @@ public class User {
 
     /* JOINS */
 
+    @OneToOne
+    @JoinColumn(name = "cred_id")
+    private UserCredential userCredential;
+
 
     /* Constructors */
 
     private User() { /* Required by Spring Boot */ }
 
     /* Mutator */
+
+    public UserCredential getUserCredential() {
+        return userCredential;
+    }
+
+    public void setUserCredential(UserCredential userCredential) {
+        this.userCredential = userCredential;
+    }
 
     public static long getSerialVersionUID() {
         return serialVersionUID;

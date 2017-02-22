@@ -17,8 +17,8 @@ public class UserCredential {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "user_id")
-    private Long userId;
+    @Column(name = "cred_id")
+    private Long cred_id;
 
     @NotNull
     @Column(nullable = false)
@@ -71,12 +71,22 @@ public class UserCredential {
 
     /* JOINS */
 
+    @OneToOne(mappedBy = "userCredential")
+    private User user;
 
     /* Constructors */
 
     protected UserCredential() { /* Required by Spring Boot */ }
 
     /* Mutator */
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 
     public LocalDate getCreateDate() {
         return createDate;
@@ -90,12 +100,12 @@ public class UserCredential {
         return serialVersionUID;
     }
 
-    public Long getUserId() {
-        return userId;
+    public Long getCred_id() {
+        return cred_id;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void setCred_id(Long cred_id) {
+        this.cred_id = cred_id;
     }
 
     public boolean isActivated() {
