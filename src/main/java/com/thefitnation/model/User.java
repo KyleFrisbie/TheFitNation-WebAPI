@@ -80,6 +80,22 @@ public class User {
 
     /* Mutator */
 
+    public List<UserWeight> getUserBodyWeight() {
+        return userBodyWeight;
+    }
+
+    public void setUserBodyWeight(List<UserWeight> userBodyWeight) {
+        this.userBodyWeight = userBodyWeight;
+    }
+
+    public Set<Gym> getGyms() {
+        return gyms;
+    }
+
+    public void setGyms(Set<Gym> gyms) {
+        this.gyms = gyms;
+    }
+
     public UserCredential getUserCredential() {
         return userCredential;
     }

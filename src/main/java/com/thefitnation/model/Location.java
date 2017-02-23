@@ -23,10 +23,13 @@ public class Location implements Serializable {
     @Column(name = "latitude", nullable = false)
     private Double latitude;
 
-    @Column(name = "address")
-    private Address address;
-
     /* Joins */
+// TODO: 2/22/17 join address to location
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "gymId")
+    private Gym gym;
+
 
     /* Constructor */
 
@@ -35,6 +38,14 @@ public class Location implements Serializable {
 
 
     /* Mutator */
+
+    public Gym getGym() {
+        return gym;
+    }
+
+    public void setGym(Gym gym) {
+        this.gym = gym;
+    }
 
     public static long getSerialVersionUID() {
         return serialVersionUID;
@@ -64,11 +75,4 @@ public class Location implements Serializable {
         this.latitude = latitude;
     }
 
-    public Address getAddress() {
-        return address;
-    }
-
-    public void setAddress(Address address) {
-        this.address = address;
-    }
 }

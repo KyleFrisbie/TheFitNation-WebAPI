@@ -12,7 +12,8 @@ public class Address implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    @Column(name = "address_id")
+    private Long addressId;
 
     @Column(name = "streetAddress1")
     private String streetAddress1;
@@ -31,7 +32,6 @@ public class Address implements Serializable {
 
     /* Joins */
 
-
     /* Constructor */
 
     public Address() { /* Required by Spring Boot */ }
@@ -45,12 +45,12 @@ public class Address implements Serializable {
         return serialVersionUID;
     }
 
-    public Long getId() {
-        return id;
+    public Long getAddressId() {
+        return addressId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setAddressId(Long addressId) {
+        this.addressId = addressId;
     }
 
     public String getStreetAddress1() {

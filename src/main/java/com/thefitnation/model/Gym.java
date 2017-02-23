@@ -32,7 +32,10 @@ public class Gym implements Serializable {
     @JoinTable(name="User_Gym",
             joinColumns=  @JoinColumn(name="userId"),
             inverseJoinColumns= @JoinColumn(name="gymId"))
-    Set<Gym> users;
+    private Set<Gym> users;
+
+    @OneToMany(mappedBy = "id", cascade = CascadeType.ALL)
+    private Set<Location> gymLocations;
 
     /* Constructor */
 
@@ -41,6 +44,22 @@ public class Gym implements Serializable {
 
 
     /* Mutator */
+
+    public Set<Gym> getUsers() {
+        return users;
+    }
+
+    public void setUsers(Set<Gym> users) {
+        this.users = users;
+    }
+
+    public Set<Location> getGymLocations() {
+        return gymLocations;
+    }
+
+    public void setGymLocations(Set<Location> gymLocations) {
+        this.gymLocations = gymLocations;
+    }
 
     public static long getSerialVersionUID() {
         return serialVersionUID;
