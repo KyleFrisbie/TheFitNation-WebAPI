@@ -66,9 +66,12 @@ public class User {
     @JoinColumn(name = "cred_id")
     private UserCredential userCredential;
 
-
     @OneToMany(mappedBy = "user")
     private List<UserWeight> userBodyWeight;
+
+
+    @ManyToMany(mappedBy="users",fetch=FetchType.EAGER)
+    private Set<Gym> gyms;
 
 
     /* Constructors */

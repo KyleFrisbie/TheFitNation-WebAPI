@@ -1,6 +1,7 @@
 package com.thefitnation.model;
 
 import java.io.*;
+import java.util.*;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 
@@ -15,7 +16,7 @@ public class Gym implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private Long gymId;
 
     @NotNull
     @Column(name = "name", nullable = false)
@@ -27,6 +28,11 @@ public class Gym implements Serializable {
 
     /* JOINS */
 
+    @ManyToMany(fetch=FetchType.EAGER)
+    @JoinTable(name="User_Gym",
+            joinColumns=  @JoinColumn(name="userId"),
+            inverseJoinColumns= @JoinColumn(name="gymId"))
+    Set<Gym> users;
 
     /* Constructor */
 
@@ -40,12 +46,12 @@ public class Gym implements Serializable {
         return serialVersionUID;
     }
 
-    public Long getId() {
-        return id;
+    public Long getGymId() {
+        return gymId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setGymId(Long gymId) {
+        this.gymId = gymId;
     }
 
     public String getName() {
