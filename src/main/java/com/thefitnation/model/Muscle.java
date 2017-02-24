@@ -41,34 +41,81 @@ public class Muscle implements Serializable {
 
     /* Constructors */
 
+    /**
+     *
+     */
     public Muscle() { /* Required By Jpa */ }
 
     /* Mutator */
 
+    /**
+     *
+     * @return
+     */
+    public List<PrescribedExercise> getExerciseList() {
+        return exerciseList;
+    }
+
+    /**
+     *
+     * @param exerciseList
+     */
+    public void setExerciseList(List<PrescribedExercise> exerciseList) {
+        this.exerciseList = exerciseList;
+    }
+
+    /**
+     *
+     * @return
+     */
     public static long getSerialVersionUID() {
         return serialVersionUID;
     }
 
+    /**
+     *
+     * @return
+     */
     public Long getId() {
         return id;
     }
 
+    /**
+     *
+     * @param id
+     */
     public void setId(Long id) {
         this.id = id;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     *
+     * @param name
+     */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     *
+     * @return
+     */
     public BodyPart getBodyPart() {
         return bodyPart;
     }
 
+    /**
+     *
+     * @param bodyPart
+     */
     public void setBodyPart(BodyPart bodyPart) {
         this.bodyPart = bodyPart;
     }

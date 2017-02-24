@@ -58,6 +58,22 @@ public class PrescribedExercise implements Serializable {
      *
      * @return
      */
+    public Set<Muscle> getMuscles() {
+        return muscles;
+    }
+
+    /**
+     *
+     * @param muscles
+     */
+    public void setMuscles(Set<Muscle> muscles) {
+        this.muscles = muscles;
+    }
+
+    /**
+     *
+     * @return
+     */
     public PrescribedExerciseInstance getPrescribedExerciseInstance() {
         return prescribedExerciseInstance;
     }
