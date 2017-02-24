@@ -51,7 +51,8 @@ public class PrescribedWorkoutInstance implements Serializable {
     @OneToMany(mappedBy = "prescribedWorkoutInstance", targetEntity = PrescribedExerciseInstance.class)
     private List<PrescribedExerciseInstance> prescribedExerciseInstance;
 
-
+    @ManyToMany(mappedBy = "workoutInstance")
+    private List<UserWorkoutInstance> userWorkoutInstances;
 
     /* Constructors */
 

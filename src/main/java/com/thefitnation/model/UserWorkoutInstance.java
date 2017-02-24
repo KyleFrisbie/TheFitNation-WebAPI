@@ -42,7 +42,9 @@ public class UserWorkoutInstance implements Serializable {
     @OneToMany(mappedBy = "workoutInstance")
     private List<UserExerciseInstance> exercises;
 
-
+    @ManyToOne
+    @JoinColumn(name = "instance_id")
+    private PrescribedWorkoutInstance workoutInstance;
 
 
     /* Constructors */

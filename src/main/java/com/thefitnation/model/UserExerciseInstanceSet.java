@@ -42,8 +42,9 @@ public class UserExerciseInstanceSet implements Serializable {
     @JoinColumn(name = "exercise_id")
     private UserExerciseInstance exerciseInstance;
 
-
-
+    @ManyToOne
+    @JoinColumn(name = "prescribed_set_id")
+    private PrescribedExerciseSet exerciseSet;
 
 
     /* Constructors */

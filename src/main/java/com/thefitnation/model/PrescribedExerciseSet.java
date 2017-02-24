@@ -1,5 +1,6 @@
 package com.thefitnation.model;
 
+import java.util.*;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 
@@ -43,7 +44,8 @@ public class PrescribedExerciseSet {
     @JoinColumn(name = "exercise_instance_id")
     private PrescribedExerciseInstance prescribedExerciseInstance;
 
-
+    @OneToMany(mappedBy = "exerciseSet")
+    private List<UserExerciseInstanceSet> userExerciseInstanceSets;
 
     /* Constructors */
 
