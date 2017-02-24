@@ -4,7 +4,11 @@ import java.io.*;
 import javax.persistence.*;
 
 /**
+ * <p></p>
  * Created by michael on 2/19/17.
+ * @author michael menard
+ * @version 0.1.0
+ * @since 2/19/17
  */
 @Entity
 @Table(name = "exercise_instance_set")

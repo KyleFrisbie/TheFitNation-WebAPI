@@ -54,6 +54,9 @@ public class PrescribedWorkoutTemplate implements Serializable {
     @OneToMany(mappedBy = "prescribedWorkoutTemplate")
     private List<PrescribedWorkoutInstance> prescribedWorkoutInstances;
 
+    @OneToMany(mappedBy = "prescribedWorkoutTemplate")
+    private List<UserWorkoutTemplate> userWorkoutTemplates;
+
 
 
     /* Constructors */
@@ -70,6 +73,21 @@ public class PrescribedWorkoutTemplate implements Serializable {
 
     /* Mutator */
 
+    /**
+     *
+     * @return
+     */
+    public List<UserWorkoutTemplate> getUserWorkoutTemplates() {
+        return userWorkoutTemplates;
+    }
+
+    /**
+     *
+     * @param userWorkoutTemplates
+     */
+    public void setUserWorkoutTemplates(List<UserWorkoutTemplate> userWorkoutTemplates) {
+        this.userWorkoutTemplates = userWorkoutTemplates;
+    }
 
     /**
      *

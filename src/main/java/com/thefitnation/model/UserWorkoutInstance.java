@@ -36,7 +36,7 @@ public class UserWorkoutInstance implements Serializable {
     /* Joins */
 
     @ManyToOne
-    @JoinColumn(name = "template_id")
+    @JoinColumn(name = "user_template_id")
     private UserWorkoutTemplate workoutTemplate;
 
     @OneToMany(mappedBy = "workoutInstance")

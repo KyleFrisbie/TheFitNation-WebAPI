@@ -21,7 +21,7 @@ public class UserWorkoutTemplate implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "template_id")
+    @Column(name = "user_template_id")
     private Long id;
 
     @NotNull
@@ -45,6 +45,12 @@ public class UserWorkoutTemplate implements Serializable {
     @OneToMany(mappedBy = "workoutTemplate")
     private List<UserWorkoutInstance> workouts;
 
+    @ManyToOne
+    @JoinColumn(name = "template_id")
+    private PrescribedWorkoutTemplate prescribedWorkoutTemplate;
+
+
+
 
     /* Constructors */
 
@@ -55,6 +61,22 @@ public class UserWorkoutTemplate implements Serializable {
 
 
     /* Mutator */
+
+    /**
+     *
+     * @return
+     */
+    public PrescribedWorkoutTemplate getPrescribedWorkoutTemplate() {
+        return prescribedWorkoutTemplate;
+    }
+
+    /**
+     *
+     * @param prescribedWorkoutTemplate
+     */
+    public void setPrescribedWorkoutTemplate(PrescribedWorkoutTemplate prescribedWorkoutTemplate) {
+        this.prescribedWorkoutTemplate = prescribedWorkoutTemplate;
+    }
 
     /**
      *
