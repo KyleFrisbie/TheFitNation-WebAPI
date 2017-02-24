@@ -6,7 +6,11 @@ import javax.persistence.*;
 import javax.validation.constraints.*;
 
 /**
+ * <p></p>
  * Created by michael on 2/19/17.
+ * @author michael menard
+ * @version 0.1.0
+ * @since 2/19/17
  */
 @Entity
 @Table(name = "gym")
@@ -45,46 +49,90 @@ public class Gym implements Serializable {
 
     /* Mutator */
 
+    /**
+     *
+     * @return
+     */
     public Set<Gym> getUsers() {
         return users;
     }
 
+    /**
+     *
+     * @param users
+     */
     public void setUsers(Set<Gym> users) {
         this.users = users;
     }
 
+    /**
+     *
+     * @return
+     */
     public Set<Location> getGymLocations() {
         return gymLocations;
     }
 
+    /**
+     *
+     * @param gymLocations
+     */
     public void setGymLocations(Set<Location> gymLocations) {
         this.gymLocations = gymLocations;
     }
 
+    /**
+     *
+     * @return
+     */
     public static long getSerialVersionUID() {
         return serialVersionUID;
     }
 
+    /**
+     *
+     * @return
+     */
     public Long getGymId() {
         return gymId;
     }
 
+    /**
+     *
+     * @param gymId
+     */
     public void setGymId(Long gymId) {
         this.gymId = gymId;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     *
+     * @param name
+     */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getLocation() {
         return location;
     }
 
+    /**
+     *
+     * @param location
+     */
     public void setLocation(String location) {
         this.location = location;
     }

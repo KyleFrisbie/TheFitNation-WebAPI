@@ -6,7 +6,11 @@ import javax.persistence.*;
 import javax.validation.constraints.*;
 
 /**
+ * <p></p>
  * Created by michael on 2/19/17.
+ * @author michael menard
+ * @version 0.1.0
+ * @since 2/19/17
  */
 @Entity
 @Table(name = "user_workout_instance")

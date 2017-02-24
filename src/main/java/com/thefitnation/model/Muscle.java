@@ -2,11 +2,16 @@ package com.thefitnation.model;
 
 import com.thefitnation.model.enumeration.*;
 import java.io.*;
+import java.util.*;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 
 /**
+ * <p></p>
  * Created by michael on 2/19/17.
+ * @author michael menard
+ * @version 0.1.0
+ * @since 2/19/17
  */
 @Entity
 @Table(name = "muscle")
@@ -16,6 +21,7 @@ public class Muscle implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "muscle_id")
     private Long id;
 
     @NotNull
@@ -27,8 +33,15 @@ public class Muscle implements Serializable {
 
     /* Joins */
 
-    // TODO: 2/19/17 many-to-many with exercise
+    @ManyToMany
+    @JoinTable(name="exercise_muscle",
+            joinColumns=  @JoinColumn(name="exercise_id"),
+            inverseJoinColumns= @JoinColumn(name="muscle_id"))
+    private List<PrescribedExercise> exerciseList;
 
+    /* Constructors */
+
+    public Muscle() { /* Required By Jpa */ }
 
     /* Mutator */
 
