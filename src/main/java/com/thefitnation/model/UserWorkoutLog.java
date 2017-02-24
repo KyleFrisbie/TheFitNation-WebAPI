@@ -2,20 +2,26 @@ package com.thefitnation.model;
 
 import java.io.*;
 import java.time.*;
+import java.util.*;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 
 /**
+ * <p></p>
  * Created by michael on 2/19/17.
+ * @author michael menard
+ * @version 0.1.0
+ * @since 2/19/17
  */
 @Entity
-@Table(name = "workout_log")
-public class WorkoutLog implements Serializable {
+@Table(name = "user_workout_log")
+public class UserWorkoutLog implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "log_id")
     private Long id;
 
     @NotNull
@@ -28,9 +34,40 @@ public class WorkoutLog implements Serializable {
 
     /* Joins */
 
+    @OneToOne(mappedBy = "workoutLog")
+    private User user;
+
+    @OneToMany(mappedBy = "workoutLog")
+    private List<UserWorkoutTemplate> workoutTemplates;
+
+
+
+
+
+
+    /* Constructors */
+
+    public UserWorkoutLog() { /* Required by Jpa */ }
+
 
 
     /* Mutator */
+
+    public List<UserWorkoutTemplate> getWorkoutTemplates() {
+        return workoutTemplates;
+    }
+
+    public void setWorkoutTemplates(List<UserWorkoutTemplate> workoutTemplates) {
+        this.workoutTemplates = workoutTemplates;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 
     public static long getSerialVersionUID() {
         return serialVersionUID;

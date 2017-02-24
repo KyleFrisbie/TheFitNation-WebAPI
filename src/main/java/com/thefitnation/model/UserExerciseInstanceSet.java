@@ -8,12 +8,13 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "exercise_instance_set")
-public class ExerciseInstanceSet implements Serializable {
+public class UserExerciseInstanceSet implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "set_id")
     private Long id;
 
     @Column(name = "exercise_type")
@@ -32,6 +33,20 @@ public class ExerciseInstanceSet implements Serializable {
     private Long rest;
 
     /* Joins */
+
+    @ManyToOne
+    @JoinColumn(name = "exercise_id")
+    private UserExerciseInstance exerciseInstance;
+
+
+
+
+
+    /* Constructors */
+
+    public UserExerciseInstanceSet() { /* Required by Jpa */}
+
+
 
 
 

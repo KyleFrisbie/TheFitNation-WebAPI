@@ -2,6 +2,7 @@ package com.thefitnation.model;
 
 import java.io.*;
 import java.time.*;
+import java.util.*;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 
@@ -21,6 +22,7 @@ public class UserWorkoutInstance implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "workout_id")
     private Long id;
 
     @NotNull
@@ -33,9 +35,40 @@ public class UserWorkoutInstance implements Serializable {
 
     /* Joins */
 
+    @ManyToOne
+    @JoinColumn(name = "template_id")
+    private UserWorkoutTemplate workoutTemplate;
+
+    @OneToMany(mappedBy = "workoutInstance")
+    private List<UserExerciseInstance> exercises;
+
+
+
+
+    /* Constructors */
+
+    public UserWorkoutInstance() { /*Required by Jpa */ }
+
+
 
 
     /* Mutator */
+
+    public List<UserExerciseInstance> getExercises() {
+        return exercises;
+    }
+
+    public void setExercises(List<UserExerciseInstance> exercises) {
+        this.exercises = exercises;
+    }
+
+    public UserWorkoutTemplate getWorkoutTemplate() {
+        return workoutTemplate;
+    }
+
+    public void setWorkoutTemplate(UserWorkoutTemplate workoutTemplate) {
+        this.workoutTemplate = workoutTemplate;
+    }
 
     public static long getSerialVersionUID() {
         return serialVersionUID;

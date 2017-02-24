@@ -81,6 +81,9 @@ public class User {
     @OneToMany(mappedBy = "user", targetEntity = PrescribedWorkoutTemplate.class)
     private List<PrescribedWorkoutTemplate> usersWorkoutTemplate;
 
+    @OneToOne
+    @JoinColumn(name = "log_id")
+    private UserWorkoutLog workoutLog;
 
 
     /* Constructors */
@@ -91,6 +94,22 @@ public class User {
 
 
     /* Mutator */
+
+    /**
+     *
+     * @return
+     */
+    public UserWorkoutLog getWorkoutLog() {
+        return workoutLog;
+    }
+
+    /**
+     *
+     * @param workoutLog
+     */
+    public void setWorkoutLog(UserWorkoutLog workoutLog) {
+        this.workoutLog = workoutLog;
+    }
 
     /**
      *
