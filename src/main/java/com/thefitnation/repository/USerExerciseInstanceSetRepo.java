@@ -11,6 +11,5 @@ import org.springframework.stereotype.Repository;
  * @since 2/24/17.
  */
 @Repository
-public interface MuscleRepo extends PagingAndSortingRepository<Muscle, Long> {
-
+public interface USerExerciseInstanceSetRepo extends PagingAndSortingRepository<UserExerciseInstanceSet, Long> {
 }
