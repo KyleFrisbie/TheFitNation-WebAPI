@@ -46,6 +46,11 @@ public class Muscle implements Serializable {
      */
     public Muscle() { /* Required By Jpa */ }
 
+    public Muscle(String name, BodyPart part) {
+        this.name = name;
+        this.bodyPart = part;
+    }
+
     /* Mutator */
 
     /**

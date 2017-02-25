@@ -1,5 +1,7 @@
 package com.thefitnation.service;
 
+import com.thefitnation.repository.*;
+import org.springframework.beans.factory.annotation.*;
 import org.springframework.stereotype.*;
 
 /**
@@ -8,14 +10,18 @@ import org.springframework.stereotype.*;
 @Service
 public class UserService {
 
-//    private final UserDao userDao;
-//    private final UserDemographicDao userDemographicDao;
-//
-//
-//    @Autowired
-//    public UserService(UserDao userDao, UserDemographicDao userDemographicDao) {
-//        this.userDao = userDao;
-//        this.userDemographicDao = userDemographicDao;
-//    }
+    private final UserRepo userRepo;
+    private final UserCredentialRepo userDemographicDao;
+    private final UserWeightRepo userWeightRepo;
+
+    @Autowired
+    public UserService(UserRepo userRepo, UserCredentialRepo userDemographicDao,
+                       UserWeightRepo userWeightRepo) {
+        this.userRepo = userRepo;
+        this.userDemographicDao = userDemographicDao;
+        this.userWeightRepo = userWeightRepo;
+    }
+
+
 
 }
