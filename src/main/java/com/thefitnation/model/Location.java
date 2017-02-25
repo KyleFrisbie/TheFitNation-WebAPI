@@ -29,10 +29,6 @@ public class Location implements Serializable {
 
     /* Joins */
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "gymId")
-    private Gym gym;
-
     @OneToOne
     @JoinColumn(name = "address_id")
     private Address address;
@@ -54,20 +50,12 @@ public class Location implements Serializable {
 
     /* Mutator */
 
-    /**
-     *
-     * @return
-     */
-    public Gym getGym() {
-        return gym;
+    public Address getAddress() {
+        return address;
     }
 
-    /**
-     *
-     * @param gym
-     */
-    public void setGym(Gym gym) {
-        this.gym = gym;
+    public void setAddress(Address address) {
+        this.address = address;
     }
 
     /**

@@ -20,11 +20,16 @@ public class Gym implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "gym_id")
     private Long gymId;
 
     @NotNull
     @Column(name = "name", nullable = false)
     private String name;
+
+
+
+
 
     /* JOINS */
 
@@ -34,8 +39,9 @@ public class Gym implements Serializable {
             inverseJoinColumns= @JoinColumn(name="gymId"))
     private Set<Gym> users;
 
-    @OneToMany(mappedBy = "id", cascade = CascadeType.ALL)
-    private Set<Location> gymLocations;
+    @OneToOne
+    @JoinColumn(name = "location_id")
+    private Location gymLocation;
 
     /* Constructor */
 
@@ -64,20 +70,12 @@ public class Gym implements Serializable {
         this.users = users;
     }
 
-    /**
-     *
-     * @return
-     */
-    public Set<Location> getGymLocations() {
-        return gymLocations;
+    public Location getGymLocation() {
+        return gymLocation;
     }
 
-    /**
-     *
-     * @param gymLocations
-     */
-    public void setGymLocations(Set<Location> gymLocations) {
-        this.gymLocations = gymLocations;
+    public void setGymLocation(Location gymLocation) {
+        this.gymLocation = gymLocation;
     }
 
     /**
