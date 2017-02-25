@@ -26,10 +26,6 @@ public class Gym implements Serializable {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @NotNull
-    @Column(name = "location", nullable = false)
-    private String location;
-
     /* JOINS */
 
     @ManyToMany(fetch=FetchType.EAGER)
@@ -45,6 +41,9 @@ public class Gym implements Serializable {
 
     public Gym() { /* Required by Spring Boot */ }
 
+    public Gym(String name){
+        this.name = name;
+    }
 
 
     /* Mutator */
@@ -119,21 +118,5 @@ public class Gym implements Serializable {
      */
     public void setName(String name) {
         this.name = name;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public String getLocation() {
-        return location;
-    }
-
-    /**
-     *
-     * @param location
-     */
-    public void setLocation(String location) {
-        this.location = location;
     }
 }

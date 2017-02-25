@@ -46,6 +46,10 @@ public class Location implements Serializable {
 
     public Location() { /* Required by Jpa */ }
 
+    public Location(Long latitude, Long longitude, Address address) {
+
+    }
+
 
 
     /* Mutator */

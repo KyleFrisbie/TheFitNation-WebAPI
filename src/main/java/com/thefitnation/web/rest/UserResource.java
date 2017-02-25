@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 /**
  * Created by michael on 2/19/17.
  */
-@RestController(value = "/api/v1")
+@RestController(value = "/api/v1/user")
 public class UserResource {
 
 
@@ -17,6 +17,5 @@ public class UserResource {
     public UserResource(UserService userService) {
         this.userService = userService;
     }
-
 
 }

@@ -21,5 +21,4 @@ public class GymService {
         this.addressRepo = addressRepo;
     }
 
-
 }
