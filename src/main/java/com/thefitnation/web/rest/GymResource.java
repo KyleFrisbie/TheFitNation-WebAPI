@@ -50,7 +50,7 @@ public class GymResource {
     @RequestMapping(value = "/create",method = RequestMethod.POST)
     public ResponseEntity<Gym> createGym(@Valid @RequestBody Gym gym) throws URISyntaxException {
 //        log.debug("REST request to save Gym : {}", gym);
-        return gymService.createGymWithLocaitonAndAddress(gym);
+        return gymService.createGymWithLocationAndAddress(gym);
     }
 
 

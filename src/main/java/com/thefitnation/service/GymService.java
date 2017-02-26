@@ -27,7 +27,6 @@ public class GymService {
         this.addressRepo = addressRepo;
     }
 
-
     public Gym findGyByIdForUser(Long id) {
         return gymRepo.findOne(id);
     }
@@ -36,12 +35,10 @@ public class GymService {
         return gymRepo.findAll();
     }
 
-    public ResponseEntity<Gym> createGymWithLocaitonAndAddress(@Valid @RequestBody Gym gym) {
+    public ResponseEntity<Gym> createGymWithLocationAndAddress(@Valid @RequestBody Gym gym) {
         if (gym.getGymId() != null) {
             return new ResponseEntity<>(gym, HttpStatus.I_AM_A_TEAPOT);
         }
-
-
 
         Location location = gym.getGymLocation();
         Address a = addressRepo.save(location.getAddress());
