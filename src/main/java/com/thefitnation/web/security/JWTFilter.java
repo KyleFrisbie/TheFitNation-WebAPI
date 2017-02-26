@@ -2,11 +2,15 @@ package com.thefitnation.web.security;
 
 import com.nimbusds.jwt.JWT;
 import com.nimbusds.jwt.JWTParser;
-import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.InsufficientAuthenticationException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.util.Assert;
 import org.springframework.web.filter.GenericFilterBean;
+import org.springframework.security.core.context.SecurityContextHolder;
 
-import javax.naming.AuthenticationException;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
@@ -58,7 +62,7 @@ public class JWTFilter extends GenericFilterBean {
                 SecurityContextHolder.getContext().setAuthentication(auth);
                 chain.doFilter(request, response);
             } catch (ParseException e) {
-                throw new InvalidTokenException("Invalid token");
+//                throw new InvalidTokenException("Invalid token");
             }
         } catch (AuthenticationException e) {
             SecurityContextHolder.clearContext();

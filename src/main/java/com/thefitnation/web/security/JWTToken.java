@@ -1,6 +1,7 @@
 package com.thefitnation.web.security;
 
 import com.nimbusds.jwt.JWT;
+import com.nimbusds.ReadOnlyJWTClaimsSet;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
