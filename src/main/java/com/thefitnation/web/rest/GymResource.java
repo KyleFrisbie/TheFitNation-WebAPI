@@ -53,8 +53,6 @@ public class GymResource {
         return gymService.createGymWithLocationAndAddress(gym);
     }
 
-
-
     // TODO: 2/25/17 update a single gym using put
     // TODO: 2/25/17 delete to delete gym
 
