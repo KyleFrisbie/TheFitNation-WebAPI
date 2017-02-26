@@ -88,7 +88,7 @@ public class User {
 
     /* Constructors */
 
-    private User() { /* Required by Spring Boot */ }
+    public User() { /* Required by Spring Boot */ }
 
 
 
