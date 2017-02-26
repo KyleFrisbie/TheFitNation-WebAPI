@@ -21,6 +21,7 @@ public class UserResource {
         this.userService = userService;
     }
 
+    // TODO: 2/26/2017 route only works on /users/, needs to work on /users
     @GetMapping(path = "/")
     public ResponseEntity<Iterable<User>> getAllUsers() {
         return userService.getAllUsers();
