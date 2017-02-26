@@ -2,6 +2,7 @@ package com.thefitnation.service;
 
 import com.thefitnation.model.*;
 import com.thefitnation.repository.*;
+import org.slf4j.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.boot.*;
 import org.springframework.stereotype.*;
@@ -11,7 +12,7 @@ import org.springframework.stereotype.*;
  */
 @Service
 public class TestDataLoader implements CommandLineRunner {
-
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     private final MuscleRepo muscleRepo;
     private final GymRepo gymRepo;

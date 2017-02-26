@@ -4,16 +4,23 @@ import com.thefitnation.model.*;
 import com.thefitnation.service.*;
 import java.net.*;
 import javax.validation.*;
+import org.slf4j.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
 /**
+ * <p></p>
  * Created by michael on 2/19/17.
+ * @author michael menard
+ * @version 0.1.0
+ * @since 2/19/17
  */
 @RestController
 @RequestMapping("/api/v1/gym")
 public class GymResource {
+
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     private final GymService gymService;
 
@@ -35,7 +42,7 @@ public class GymResource {
     }
 
     /**
-     *<p></p>
+     *<p>Generated a Gym object and stored it in the DB.</p>
      * @param gym the gym to create
      * @return the ResponseEntity with status 201 (Created) and with body the new gym, or with status 400 (Bad Request) if the gym has already an ID
      * @throws URISyntaxException if the Location URI syntax is incorrect

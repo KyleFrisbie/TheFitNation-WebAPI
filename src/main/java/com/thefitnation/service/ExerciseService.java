@@ -1,6 +1,7 @@
 package com.thefitnation.service;
 
 import com.thefitnation.repository.*;
+import org.slf4j.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.stereotype.*;
 
@@ -9,6 +10,8 @@ import org.springframework.stereotype.*;
  */
 @Service
 public class ExerciseService {
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
+
 
     private final PrescribedExerciseRepo prescribedExerciseRepo;
 
