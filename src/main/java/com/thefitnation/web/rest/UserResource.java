@@ -21,16 +21,19 @@ public class UserResource {
         this.userService = userService;
     }
 
+    // TODO: 2/28/2017 cant get all users on /user, must use /user/
     @GetMapping(path = "/")
     public ResponseEntity<Iterable<User>> getAllUsers() {
         return userService.getAllUsers();
     }
 
+    // TODO: 2/28/2017 error with getAllUsers on "/" and findOneUserById on "/{id}"
 //    @GetMapping(path = "/{id}")
 //    ResponseEntity<User> findOneUserById(@PathVariable Long id) {
 //        return null;
 //    }
 
+    // TODO: 2/28/2017 cannot create user, LocalDate constructor error
     @PostMapping(path = "/create")
     public ResponseEntity<User> createUser(@RequestBody User user) throws URISyntaxException {
         return userService.createUser(user);
