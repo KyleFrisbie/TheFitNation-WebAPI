@@ -2,6 +2,7 @@ package com.thefitnation.service;
 
 import com.thefitnation.model.User;
 import com.thefitnation.repository.*;
+import org.slf4j.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,7 @@ import java.time.LocalDate;
  */
 @Service
 public class UserService {
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     private final UserRepo userRepo;
     private final UserCredentialRepo userDemographicDao;

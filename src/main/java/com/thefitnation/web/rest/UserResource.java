@@ -2,6 +2,7 @@ package com.thefitnation.web.rest;
 
 import com.thefitnation.model.User;
 import com.thefitnation.service.*;
+import org.slf4j.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,9 +12,8 @@ import javax.validation.Valid;
 import java.net.URISyntaxException;
 
 @RestController
-@RequestMapping("/api/v1/users")
+@RequestMapping("/api/v1/user")
 public class UserResource {
-
     private final UserService userService;
 
     @Autowired
