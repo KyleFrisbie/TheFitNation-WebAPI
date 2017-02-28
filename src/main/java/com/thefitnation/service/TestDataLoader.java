@@ -8,6 +8,7 @@ import com.thefitnation.repository.*;
 import org.slf4j.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.boot.*;
+import org.springframework.context.annotation.*;
 import org.springframework.stereotype.*;
 
 import java.time.LocalDate;
@@ -16,6 +17,7 @@ import java.time.LocalDate;
  * Created by michael on 2/24/17.
  */
 @Service
+@Profile("dev")
 public class TestDataLoader implements CommandLineRunner {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
