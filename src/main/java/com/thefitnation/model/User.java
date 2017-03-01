@@ -14,7 +14,8 @@ import javax.validation.constraints.*;
  * @since 2/19/17
  */
 @Entity
-@Table(name = "user")
+// TODO: 2/28/2017 unable to create a table called "user" 
+@Table(name = "base_user")
 public class User {
 
     private static final long serialVersionUID = 1L;
@@ -88,10 +89,7 @@ public class User {
 
     /* Constructors */
 
-    private User() { /* Required by Spring Boot */ }
-
-
-
+    public User() { /* Required by Spring Boot */ }
 
     /* Mutator */
 
