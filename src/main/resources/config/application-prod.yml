@@ -40,10 +40,16 @@ spring:
         jcache:
             config: ehcache.xml
     mail:
-        host: localhost
-        port: 25
-        username:
-        password:
+        host: smtp.sendgrid.net
+        port: 587
+        username: apikey
+        password: ${SENDGRID_API_KEY}
+        protocol: smtp
+        tls: true
+        properties.mail.smtp:
+            auth: true
+            starttls.enable: true
+            ssl.trust: smtp.sendgrid.net
     thymeleaf:
         cache: true
 
