@@ -1,0 +1,61 @@
+{
+    "fluentMethods": true,
+    "relationships": [
+        {
+            "relationshipName": "userDemographic",
+            "otherEntityName": "userDemographic",
+            "relationshipType": "many-to-one",
+            "relationshipValidateRules": [
+                "required"
+            ],
+            "otherEntityField": "last_name"
+        },
+        {
+            "relationshipName": "workoutInstance",
+            "otherEntityName": "workoutInstance",
+            "relationshipType": "one-to-many",
+            "otherEntityRelationshipName": "workoutTemplate"
+        },
+        {
+            "relationshipName": "userWorkoutTemplate",
+            "otherEntityName": "userWorkoutTemplate",
+            "relationshipType": "one-to-many",
+            "otherEntityRelationshipName": "workoutTemplate"
+        }
+    ],
+    "fields": [
+        {
+            "fieldName": "name",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "created_on",
+            "fieldType": "ZonedDateTime",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "last_updated",
+            "fieldType": "ZonedDateTime",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "is_private",
+            "fieldType": "Boolean",
+            "fieldValidateRules": [
+                "required"
+            ]
+        }
+    ],
+    "changelogDate": "20170203230115",
+    "dto": "no",
+    "service": "serviceClass",
+    "entityTableName": "workout_template",
+    "pagination": "infinite-scroll"
+}

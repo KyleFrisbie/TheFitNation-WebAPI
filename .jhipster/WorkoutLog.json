@@ -1,0 +1,39 @@
+{
+    "fluentMethods": true,
+    "relationships": [
+        {
+            "relationshipName": "userDemographic",
+            "otherEntityName": "userDemographic",
+            "relationshipType": "one-to-one",
+            "ownerSide": false,
+            "otherEntityRelationshipName": "workoutLog"
+        },
+        {
+            "relationshipName": "userWorkoutTemplate",
+            "otherEntityName": "userWorkoutTemplate",
+            "relationshipType": "one-to-many",
+            "otherEntityRelationshipName": "workoutLog"
+        }
+    ],
+    "fields": [
+        {
+            "fieldName": "created_on",
+            "fieldType": "ZonedDateTime",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "last_updated",
+            "fieldType": "ZonedDateTime",
+            "fieldValidateRules": [
+                "required"
+            ]
+        }
+    ],
+    "changelogDate": "20170203231338",
+    "dto": "no",
+    "service": "serviceClass",
+    "entityTableName": "workout_log",
+    "pagination": "infinite-scroll"
+}

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <!--
+        Added the constraints for entity Gym.
+    -->
+    <changeSet id="20170203225728-2" author="jhipster">
+        
+        <addForeignKeyConstraint baseColumnNames="gyms_id"
+                                 baseTableName="gym_user_demographic"
+                                 constraintName="fk_gym_user_demographic_gyms_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="gym"/>
+        <addForeignKeyConstraint baseColumnNames="user_demographics_id"
+                                 baseTableName="gym_user_demographic"
+                                 constraintName="fk_gym_user_demographic_user_demographics_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="user_demographic"/>
+        
+    </changeSet>
+</databaseChangeLog>

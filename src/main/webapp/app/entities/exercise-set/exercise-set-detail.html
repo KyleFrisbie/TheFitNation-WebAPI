@@ -1,0 +1,39 @@
+
+<div>
+    <h2><span>Exercise Set</span> {{vm.exerciseSet.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="dl-horizontal jh-entity-details">
+        <dt><span data-translate="theFitNationApp.exerciseSet.order_number">Order Number</span></dt>
+        <dd>
+            <span>{{vm.exerciseSet.order_number}}</span>
+        </dd>
+        <dt><span>Reps</span></dt>
+        <dd>
+            <span>{{vm.exerciseSet.reps}}</span>
+        </dd>
+        <dt><span>Weight</span></dt>
+        <dd>
+            <span>{{vm.exerciseSet.weight}}</span>
+        </dd>
+        <dt><span>Rest</span></dt>
+        <dd>
+            <span>{{vm.exerciseSet.rest}}</span>
+        </dd>
+        <dt><span>Exercise</span></dt>
+        <dd>
+            <a ui-sref="exercise-detail({id:vm.exerciseSet.exercise.id})">{{vm.exerciseSet.exercise.name}}</a>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            ui-sref="{{ vm.previousState }}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span> Back</span>
+    </button>
+
+    <button type="button" ui-sref="exercise-set-detail.edit({id:vm.exerciseSet.id})" class="btn btn-primary">
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="hidden-xs hidden-sm"> Edit</span>
+    </button>
+</div>
