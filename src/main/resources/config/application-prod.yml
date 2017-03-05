@@ -76,7 +76,7 @@ jhipster:
             maxBytesLocalHeap: 256M
     mail: # specific JHipster mail property, for standard properties see MailProperties
         from: TheFitNation@localhost
-        baseUrl: http://www.the-fit-nation.com # Modify according to your server's URL
+        baseUrl: http://the-fit-nation.com # Modify according to your server's URL
     metrics: # DropWizard Metrics configuration, used by MetricsConfiguration
         jmx.enabled: true
         graphite:
