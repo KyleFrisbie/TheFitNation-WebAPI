@@ -35,10 +35,16 @@ spring:
             hibernate.generate_statistics: false
             hibernate.cache.region.factory_class: io.github.jhipster.config.jcache.NoDefaultJCacheRegionFactory
     mail:
-        host: localhost
-        port: 25
-        username:
-        password:
+        host: smtp.sendgrid.net
+        port: 587
+        username: apikey
+        password: ${SENDGRID_API_KEY}
+        protocol: smtp
+        tls: true
+        properties.mail.smtp:
+            auth: true
+            starttls.enable: true
+            ssl.trust: smtp.sendgrid.net
     thymeleaf:
         cache: true
 
@@ -86,7 +92,7 @@ jhipster:
             max-entries: 1000 # Number of objects in each cache entry
     mail: # specific JHipster mail property, for standard properties see MailProperties
         from: TheFitNation@localhost
-        base-url: http://my-server-url-to-change # Modify according to your server's URL
+        base-url: http://www.the-fit-nation.com
     metrics: # DropWizard Metrics configuration, used by MetricsConfiguration
         jmx.enabled: true
         graphite:

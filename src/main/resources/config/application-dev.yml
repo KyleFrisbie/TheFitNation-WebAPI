@@ -26,7 +26,7 @@ spring:
         serialization.indent_output: true
     datasource:
         type: com.zaxxer.hikari.HikariDataSource
-        url: jdbc:postgresql://localhost:5432/TheFitNation
+        url: jdbc:postgresql://localhost:5432/TheFitNationDev
         username: TheFitNation
         password:
     jpa:
@@ -40,10 +40,16 @@ spring:
             hibernate.generate_statistics: true
             hibernate.cache.region.factory_class: io.github.jhipster.config.jcache.NoDefaultJCacheRegionFactory
     mail:
-        host: localhost
-        port: 25
-        username:
-        password:
+        host: smtp.sendgrid.net
+        port: 587
+        username: apikey
+        password: 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
+        protocol: smtp
+        tls: true
+        properties.mail.smtp:
+            auth: true
+            starttls.enable: true
+            ssl.trust: smtp.sendgrid.net
     messages:
         cache-seconds: 1
     thymeleaf:
