@@ -30,6 +30,7 @@
     "nativeLanguage": "en",
     "languages": [
       "en"
-    ]
+    ],
+    "herokuAppName": "the-fit-nation-dev"
   }
 }
