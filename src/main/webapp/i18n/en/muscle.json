@@ -16,8 +16,8 @@
                 "title": "Muscle"
             },
             "name": "Name",
-            "bodyPart": "Body Part",
-            "exercise": "Exercise"
+            "exercise": "Exercise",
+            "bodyPart": "Body Part"
         }
     }
 }

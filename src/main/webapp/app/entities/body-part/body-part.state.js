@@ -9,17 +9,17 @@
 
     function stateConfig($stateProvider) {
         $stateProvider
-        .state('muscle', {
+        .state('body-part', {
             parent: 'entity',
-            url: '/muscle?page&sort&search',
+            url: '/body-part?page&sort&search',
             data: {
                 authorities: ['ROLE_USER'],
-                pageTitle: 'theFitNationApp.muscle.home.title'
+                pageTitle: 'theFitNationApp.bodyPart.home.title'
             },
             views: {
                 'content@': {
-                    templateUrl: 'app/entities/muscle/muscles.html',
-                    controller: 'MuscleController',
+                    templateUrl: 'app/entities/body-part/body-parts.html',
+                    controller: 'BodyPartController',
                     controllerAs: 'vm'
                 }
             },
@@ -45,37 +45,37 @@
                     };
                 }],
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
-                    $translatePartialLoader.addPart('muscle');
+                    $translatePartialLoader.addPart('bodyPart');
                     $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }]
             }
         })
-        .state('muscle-detail', {
-            parent: 'muscle',
-            url: '/muscle/{id}',
+        .state('body-part-detail', {
+            parent: 'body-part',
+            url: '/body-part/{id}',
             data: {
                 authorities: ['ROLE_USER'],
-                pageTitle: 'theFitNationApp.muscle.detail.title'
+                pageTitle: 'theFitNationApp.bodyPart.detail.title'
             },
             views: {
                 'content@': {
-                    templateUrl: 'app/entities/muscle/muscle-detail.html',
-                    controller: 'MuscleDetailController',
+                    templateUrl: 'app/entities/body-part/body-part-detail.html',
+                    controller: 'BodyPartDetailController',
                     controllerAs: 'vm'
                 }
             },
             resolve: {
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
-                    $translatePartialLoader.addPart('muscle');
+                    $translatePartialLoader.addPart('bodyPart');
                     return $translate.refresh();
                 }],
-                entity: ['$stateParams', 'Muscle', function($stateParams, Muscle) {
-                    return Muscle.get({id : $stateParams.id}).$promise;
+                entity: ['$stateParams', 'BodyPart', function($stateParams, BodyPart) {
+                    return BodyPart.get({id : $stateParams.id}).$promise;
                 }],
                 previousState: ["$state", function ($state) {
                     var currentStateData = {
-                        name: $state.current.name || 'muscle',
+                        name: $state.current.name || 'body-part',
                         params: $state.params,
                         url: $state.href($state.current.name, $state.params)
                     };
@@ -83,22 +83,22 @@
                 }]
             }
         })
-        .state('muscle-detail.edit', {
-            parent: 'muscle-detail',
+        .state('body-part-detail.edit', {
+            parent: 'body-part-detail',
             url: '/detail/edit',
             data: {
                 authorities: ['ROLE_USER']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
-                    templateUrl: 'app/entities/muscle/muscle-dialog.html',
-                    controller: 'MuscleDialogController',
+                    templateUrl: 'app/entities/body-part/body-part-dialog.html',
+                    controller: 'BodyPartDialogController',
                     controllerAs: 'vm',
                     backdrop: 'static',
                     size: 'lg',
                     resolve: {
-                        entity: ['Muscle', function(Muscle) {
-                            return Muscle.get({id : $stateParams.id}).$promise;
+                        entity: ['BodyPart', function(BodyPart) {
+                            return BodyPart.get({id : $stateParams.id}).$promise;
                         }]
                     }
                 }).result.then(function() {
@@ -108,16 +108,16 @@
                 });
             }]
         })
-        .state('muscle.new', {
-            parent: 'muscle',
+        .state('body-part.new', {
+            parent: 'body-part',
             url: '/new',
             data: {
                 authorities: ['ROLE_USER']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
-                    templateUrl: 'app/entities/muscle/muscle-dialog.html',
-                    controller: 'MuscleDialogController',
+                    templateUrl: 'app/entities/body-part/body-part-dialog.html',
+                    controller: 'BodyPartDialogController',
                     controllerAs: 'vm',
                     backdrop: 'static',
                     size: 'lg',
@@ -130,56 +130,56 @@
                         }
                     }
                 }).result.then(function() {
-                    $state.go('muscle', null, { reload: 'muscle' });
+                    $state.go('body-part', null, { reload: 'body-part' });
                 }, function() {
-                    $state.go('muscle');
+                    $state.go('body-part');
                 });
             }]
         })
-        .state('muscle.edit', {
-            parent: 'muscle',
+        .state('body-part.edit', {
+            parent: 'body-part',
             url: '/{id}/edit',
             data: {
                 authorities: ['ROLE_USER']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
-                    templateUrl: 'app/entities/muscle/muscle-dialog.html',
-                    controller: 'MuscleDialogController',
+                    templateUrl: 'app/entities/body-part/body-part-dialog.html',
+                    controller: 'BodyPartDialogController',
                     controllerAs: 'vm',
                     backdrop: 'static',
                     size: 'lg',
                     resolve: {
-                        entity: ['Muscle', function(Muscle) {
-                            return Muscle.get({id : $stateParams.id}).$promise;
+                        entity: ['BodyPart', function(BodyPart) {
+                            return BodyPart.get({id : $stateParams.id}).$promise;
                         }]
                     }
                 }).result.then(function() {
-                    $state.go('muscle', null, { reload: 'muscle' });
+                    $state.go('body-part', null, { reload: 'body-part' });
                 }, function() {
                     $state.go('^');
                 });
             }]
         })
-        .state('muscle.delete', {
-            parent: 'muscle',
+        .state('body-part.delete', {
+            parent: 'body-part',
             url: '/{id}/delete',
             data: {
                 authorities: ['ROLE_USER']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
-                    templateUrl: 'app/entities/muscle/muscle-delete-dialog.html',
-                    controller: 'MuscleDeleteController',
+                    templateUrl: 'app/entities/body-part/body-part-delete-dialog.html',
+                    controller: 'BodyPartDeleteController',
                     controllerAs: 'vm',
                     size: 'md',
                     resolve: {
-                        entity: ['Muscle', function(Muscle) {
-                            return Muscle.get({id : $stateParams.id}).$promise;
+                        entity: ['BodyPart', function(BodyPart) {
+                            return BodyPart.get({id : $stateParams.id}).$promise;
                         }]
                     }
                 }).result.then(function() {
-                    $state.go('muscle', null, { reload: 'muscle' });
+                    $state.go('body-part', null, { reload: 'body-part' });
                 }, function() {
                     $state.go('^');
                 });

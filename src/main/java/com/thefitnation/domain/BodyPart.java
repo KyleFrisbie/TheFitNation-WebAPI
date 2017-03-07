@@ -7,17 +7,15 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.Objects;
 
 /**
- * A Muscle.
+ * A BodyPart.
  */
 @Entity
-@Table(name = "muscle")
+@Table(name = "body_part")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class Muscle implements Serializable {
+public class BodyPart implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -30,15 +28,9 @@ public class Muscle implements Serializable {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @ManyToMany(mappedBy = "muscles")
+    @OneToOne(mappedBy = "bodyPart")
     @JsonIgnore
-    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    private Set<Exercise> exercises = new HashSet<>();
-
-    @OneToOne(optional = false)
-    @NotNull
-    @JoinColumn(unique = true)
-    private BodyPart bodyPart;
+    private Muscle muscle;
 
     public Long getId() {
         return id;
@@ -52,7 +44,7 @@ public class Muscle implements Serializable {
         return name;
     }
 
-    public Muscle name(String name) {
+    public BodyPart name(String name) {
         this.name = name;
         return this;
     }
@@ -61,42 +53,17 @@ public class Muscle implements Serializable {
         this.name = name;
     }
 
-    public Set<Exercise> getExercises() {
-        return exercises;
+    public Muscle getMuscle() {
+        return muscle;
     }
 
-    public Muscle exercises(Set<Exercise> exercises) {
-        this.exercises = exercises;
+    public BodyPart muscle(Muscle muscle) {
+        this.muscle = muscle;
         return this;
     }
 
-    public Muscle addExercise(Exercise exercise) {
-        this.exercises.add(exercise);
-        exercise.getMuscles().add(this);
-        return this;
-    }
-
-    public Muscle removeExercise(Exercise exercise) {
-        this.exercises.remove(exercise);
-        exercise.getMuscles().remove(this);
-        return this;
-    }
-
-    public void setExercises(Set<Exercise> exercises) {
-        this.exercises = exercises;
-    }
-
-    public BodyPart getBodyPart() {
-        return bodyPart;
-    }
-
-    public Muscle bodyPart(BodyPart bodyPart) {
-        this.bodyPart = bodyPart;
-        return this;
-    }
-
-    public void setBodyPart(BodyPart bodyPart) {
-        this.bodyPart = bodyPart;
+    public void setMuscle(Muscle muscle) {
+        this.muscle = muscle;
     }
 
     @Override
@@ -107,11 +74,11 @@ public class Muscle implements Serializable {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        Muscle muscle = (Muscle) o;
-        if (muscle.id == null || id == null) {
+        BodyPart bodyPart = (BodyPart) o;
+        if (bodyPart.id == null || id == null) {
             return false;
         }
-        return Objects.equals(id, muscle.id);
+        return Objects.equals(id, bodyPart.id);
     }
 
     @Override
@@ -121,7 +88,7 @@ public class Muscle implements Serializable {
 
     @Override
     public String toString() {
-        return "Muscle{" +
+        return "BodyPart{" +
             "id=" + id +
             ", name='" + name + "'" +
             '}';

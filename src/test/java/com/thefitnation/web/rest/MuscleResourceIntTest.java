@@ -3,6 +3,7 @@ package com.thefitnation.web.rest;
 import com.thefitnation.TheFitNationApp;
 
 import com.thefitnation.domain.Muscle;
+import com.thefitnation.domain.BodyPart;
 import com.thefitnation.repository.MuscleRepository;
 import com.thefitnation.service.MuscleService;
 import com.thefitnation.service.dto.MuscleDTO;
@@ -31,7 +32,6 @@ import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import com.thefitnation.domain.enumeration.BodyPart;
 /**
  * Test class for the MuscleResource REST controller.
  *
@@ -43,9 +43,6 @@ public class MuscleResourceIntTest {
 
     private static final String DEFAULT_NAME = "AAAAAAAAAA";
     private static final String UPDATED_NAME = "BBBBBBBBBB";
-
-    private static final BodyPart DEFAULT_BODY_PART = BodyPart.Shoulders;
-    private static final BodyPart UPDATED_BODY_PART = BodyPart.Chest;
 
     @Autowired
     private MuscleRepository muscleRepository;
@@ -90,8 +87,12 @@ public class MuscleResourceIntTest {
      */
     public static Muscle createEntity(EntityManager em) {
         Muscle muscle = new Muscle()
-                .name(DEFAULT_NAME)
-                .bodyPart(DEFAULT_BODY_PART);
+                .name(DEFAULT_NAME);
+        // Add required entity
+        BodyPart bodyPart = BodyPartResourceIntTest.createEntity(em);
+        em.persist(bodyPart);
+        em.flush();
+        muscle.setBodyPart(bodyPart);
         return muscle;
     }
 
@@ -118,7 +119,6 @@ public class MuscleResourceIntTest {
         assertThat(muscleList).hasSize(databaseSizeBeforeCreate + 1);
         Muscle testMuscle = muscleList.get(muscleList.size() - 1);
         assertThat(testMuscle.getName()).isEqualTo(DEFAULT_NAME);
-        assertThat(testMuscle.getBodyPart()).isEqualTo(DEFAULT_BODY_PART);
     }
 
     @Test
@@ -163,25 +163,6 @@ public class MuscleResourceIntTest {
 
     @Test
     @Transactional
-    public void checkBodyPartIsRequired() throws Exception {
-        int databaseSizeBeforeTest = muscleRepository.findAll().size();
-        // set the field null
-        muscle.setBodyPart(null);
-
-        // Create the Muscle, which fails.
-        MuscleDTO muscleDTO = muscleMapper.muscleToMuscleDTO(muscle);
-
-        restMuscleMockMvc.perform(post("/api/muscles")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(muscleDTO)))
-            .andExpect(status().isBadRequest());
-
-        List<Muscle> muscleList = muscleRepository.findAll();
-        assertThat(muscleList).hasSize(databaseSizeBeforeTest);
-    }
-
-    @Test
-    @Transactional
     public void getAllMuscles() throws Exception {
         // Initialize the database
         muscleRepository.saveAndFlush(muscle);
@@ -191,8 +172,7 @@ public class MuscleResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(muscle.getId().intValue())))
-            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
-            .andExpect(jsonPath("$.[*].bodyPart").value(hasItem(DEFAULT_BODY_PART.toString())));
+            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())));
     }
 
     @Test
@@ -206,8 +186,7 @@ public class MuscleResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(muscle.getId().intValue()))
-            .andExpect(jsonPath("$.name").value(DEFAULT_NAME.toString()))
-            .andExpect(jsonPath("$.bodyPart").value(DEFAULT_BODY_PART.toString()));
+            .andExpect(jsonPath("$.name").value(DEFAULT_NAME.toString()));
     }
 
     @Test
@@ -228,8 +207,7 @@ public class MuscleResourceIntTest {
         // Update the muscle
         Muscle updatedMuscle = muscleRepository.findOne(muscle.getId());
         updatedMuscle
-                .name(UPDATED_NAME)
-                .bodyPart(UPDATED_BODY_PART);
+                .name(UPDATED_NAME);
         MuscleDTO muscleDTO = muscleMapper.muscleToMuscleDTO(updatedMuscle);
 
         restMuscleMockMvc.perform(put("/api/muscles")
@@ -242,7 +220,6 @@ public class MuscleResourceIntTest {
         assertThat(muscleList).hasSize(databaseSizeBeforeUpdate);
         Muscle testMuscle = muscleList.get(muscleList.size() - 1);
         assertThat(testMuscle.getName()).isEqualTo(UPDATED_NAME);
-        assertThat(testMuscle.getBodyPart()).isEqualTo(UPDATED_BODY_PART);
     }
 
     @Test

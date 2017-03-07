@@ -8,18 +8,14 @@ import java.util.Set;
 import java.util.Objects;
 
 /**
- * A DTO for the Muscle entity.
+ * A DTO for the BodyPart entity.
  */
-public class MuscleDTO implements Serializable {
+public class BodyPartDTO implements Serializable {
 
     private Long id;
 
     @NotNull
     private String name;
-
-    private Long bodyPartId;
-
-    private String bodyPartName;
 
     public Long getId() {
         return id;
@@ -36,22 +32,6 @@ public class MuscleDTO implements Serializable {
         this.name = name;
     }
 
-    public Long getBodyPartId() {
-        return bodyPartId;
-    }
-
-    public void setBodyPartId(Long bodyPartId) {
-        this.bodyPartId = bodyPartId;
-    }
-
-    public String getBodyPartName() {
-        return bodyPartName;
-    }
-
-    public void setBodyPartName(String bodyPartName) {
-        this.bodyPartName = bodyPartName;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -61,9 +41,9 @@ public class MuscleDTO implements Serializable {
             return false;
         }
 
-        MuscleDTO muscleDTO = (MuscleDTO) o;
+        BodyPartDTO bodyPartDTO = (BodyPartDTO) o;
 
-        if ( ! Objects.equals(id, muscleDTO.id)) { return false; }
+        if ( ! Objects.equals(id, bodyPartDTO.id)) { return false; }
 
         return true;
     }
@@ -75,7 +55,7 @@ public class MuscleDTO implements Serializable {
 
     @Override
     public String toString() {
-        return "MuscleDTO{" +
+        return "BodyPartDTO{" +
             "id=" + id +
             ", name='" + name + "'" +
             '}';

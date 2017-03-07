@@ -7,20 +7,23 @@
             "relationshipType": "many-to-many",
             "ownerSide": false,
             "otherEntityRelationshipName": "muscle"
+        },
+        {
+            "relationshipName": "bodyPart",
+            "otherEntityName": "bodyPart",
+            "relationshipType": "one-to-one",
+            "relationshipValidateRules": [
+                "required"
+            ],
+            "otherEntityField": "name",
+            "ownerSide": true,
+            "otherEntityRelationshipName": "muscle"
         }
     ],
     "fields": [
         {
             "fieldName": "name",
             "fieldType": "String",
-            "fieldValidateRules": [
-                "required"
-            ]
-        },
-        {
-            "fieldName": "bodyPart",
-            "fieldType": "BodyPart",
-            "fieldValues": "Shoulders, Chest, Back, LowerBack, Abs, Legs",
             "fieldValidateRules": [
                 "required"
             ]

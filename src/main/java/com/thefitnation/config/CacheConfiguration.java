@@ -75,6 +75,7 @@ public class CacheConfiguration {
             cm.createCache(com.thefitnation.domain.UserExerciseInstance.class.getName() + ".userExerciseInstanceSets", jcacheConfiguration);
             cm.createCache(com.thefitnation.domain.UserExerciseInstanceSet.class.getName(), jcacheConfiguration);
             cm.createCache(com.thefitnation.domain.Location.class.getName(), jcacheConfiguration);
+            cm.createCache(com.thefitnation.domain.BodyPart.class.getName(), jcacheConfiguration);
             // jhipster-needle-ehcache-add-entry
         };
     }

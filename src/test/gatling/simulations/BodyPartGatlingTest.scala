@@ -10,9 +10,9 @@ import org.slf4j.LoggerFactory
 import scala.concurrent.duration._
 
 /**
- * Performance test for the Muscle entity.
+ * Performance test for the BodyPart entity.
  */
-class MuscleGatlingTest extends Simulation {
+class BodyPartGatlingTest extends Simulation {
 
     val context: LoggerContext = LoggerFactory.getILoggerFactory.asInstanceOf[LoggerContext]
     // Log all HTTP requests
@@ -48,7 +48,7 @@ class MuscleGatlingTest extends Simulation {
         "Authorization" -> "Bearer ${access_token}"
     )
 
-    val scn = scenario("Test the Muscle entity")
+    val scn = scenario("Test the BodyPart entity")
         .exec(http("First unauthenticated request")
         .get("/api/account")
         .headers(headers_http)
@@ -72,26 +72,26 @@ class MuscleGatlingTest extends Simulation {
         .check(status.is(200)))
         .pause(10)
         .repeat(2) {
-            exec(http("Get all muscles")
-            .get("/api/muscles")
+            exec(http("Get all bodyParts")
+            .get("/api/body-parts")
             .headers(headers_http_authenticated)
             .check(status.is(200)))
             .pause(10 seconds, 20 seconds)
-            .exec(http("Create new muscle")
-            .post("/api/muscles")
+            .exec(http("Create new bodyPart")
+            .post("/api/body-parts")
             .headers(headers_http_authenticated)
             .body(StringBody("""{"id":null, "name":"SAMPLE_TEXT"}""")).asJSON
             .check(status.is(201))
-            .check(headerRegex("Location", "(.*)").saveAs("new_muscle_url"))).exitHereIfFailed
+            .check(headerRegex("Location", "(.*)").saveAs("new_bodyPart_url"))).exitHereIfFailed
             .pause(10)
             .repeat(5) {
-                exec(http("Get created muscle")
-                .get("${new_muscle_url}")
+                exec(http("Get created bodyPart")
+                .get("${new_bodyPart_url}")
                 .headers(headers_http_authenticated))
                 .pause(10)
             }
-            .exec(http("Delete created muscle")
-            .delete("${new_muscle_url}")
+            .exec(http("Delete created bodyPart")
+            .delete("${new_bodyPart_url}")
             .headers(headers_http_authenticated))
             .pause(10)
         }

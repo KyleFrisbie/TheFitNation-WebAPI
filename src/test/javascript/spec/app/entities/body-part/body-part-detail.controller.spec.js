@@ -2,9 +2,9 @@
 
 describe('Controller Tests', function() {
 
-    describe('Muscle Management Detail Controller', function() {
+    describe('BodyPart Management Detail Controller', function() {
         var $scope, $rootScope;
-        var MockEntity, MockPreviousState, MockMuscle, MockExercise, MockBodyPart;
+        var MockEntity, MockPreviousState, MockBodyPart, MockMuscle;
         var createController;
 
         beforeEach(inject(function($injector) {
@@ -12,9 +12,8 @@ describe('Controller Tests', function() {
             $scope = $rootScope.$new();
             MockEntity = jasmine.createSpy('MockEntity');
             MockPreviousState = jasmine.createSpy('MockPreviousState');
-            MockMuscle = jasmine.createSpy('MockMuscle');
-            MockExercise = jasmine.createSpy('MockExercise');
             MockBodyPart = jasmine.createSpy('MockBodyPart');
+            MockMuscle = jasmine.createSpy('MockMuscle');
             
 
             var locals = {
@@ -22,19 +21,18 @@ describe('Controller Tests', function() {
                 '$rootScope': $rootScope,
                 'entity': MockEntity,
                 'previousState': MockPreviousState,
-                'Muscle': MockMuscle,
-                'Exercise': MockExercise,
-                'BodyPart': MockBodyPart
+                'BodyPart': MockBodyPart,
+                'Muscle': MockMuscle
             };
             createController = function() {
-                $injector.get('$controller')("MuscleDetailController", locals);
+                $injector.get('$controller')("BodyPartDetailController", locals);
             };
         }));
 
 
         describe('Root Scope Listening', function() {
             it('Unregisters root scope listener upon scope destruction', function() {
-                var eventType = 'theFitNationApp:muscleUpdate';
+                var eventType = 'theFitNationApp:bodyPartUpdate';
 
                 createController();
                 expect($rootScope.$$listenerCount[eventType]).toEqual(1);

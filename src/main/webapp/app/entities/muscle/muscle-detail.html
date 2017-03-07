@@ -10,7 +10,7 @@
         </dd>
         <dt><span data-translate="theFitNationApp.muscle.bodyPart">Body Part</span></dt>
         <dd>
-            <span data-translate="{{'theFitNationApp.BodyPart.' + vm.muscle.bodyPart}}">{{vm.muscle.bodyPart}}</span>
+            <a ui-sref="body-part-detail({id:vm.muscle.bodyPartId})">{{vm.muscle.bodyPartName}}</a>
         </dd>
     </dl>
 

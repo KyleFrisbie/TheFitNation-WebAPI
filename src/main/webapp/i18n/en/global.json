@@ -24,6 +24,7 @@
                 "userExerciseInstance": "User Exercise Instance",
                 "userExerciseInstanceSet": "User Exercise Instance Set",
                 "location": "Location",
+                "bodyPart": "Body Part",
                 "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
             },
             "account": {
