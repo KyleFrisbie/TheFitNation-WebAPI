@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <!--
+        Added the constraints for entity UserDemographic.
+    -->
+    <changeSet id="20170307015737-2" author="jhipster">
+        
+        <addForeignKeyConstraint baseColumnNames="user_id"
+                                 baseTableName="user_demographic"
+                                 constraintName="fk_user_demographic_user_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="jhi_user"/>
+
+        <addForeignKeyConstraint baseColumnNames="user_demographics_id"
+                                 baseTableName="user_demographic_gym"
+                                 constraintName="fk_user_demographic_gym_user_demographics_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="user_demographic"/>
+        <addForeignKeyConstraint baseColumnNames="gyms_id"
+                                 baseTableName="user_demographic_gym"
+                                 constraintName="fk_user_demographic_gym_gyms_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="gym"/>
+        
+        <addForeignKeyConstraint baseColumnNames="skill_level_id"
+                                 baseTableName="user_demographic"
+                                 constraintName="fk_user_demographic_skill_level_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="skill_level"/>
+
+    </changeSet>
+</databaseChangeLog>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <!--
+        Added the constraints for entity Muscle.
+    -->
+    <changeSet id="20170307030316-2" author="jhipster">
+        
+        <addForeignKeyConstraint baseColumnNames="body_part_id"
+                                 baseTableName="muscle"
+                                 constraintName="fk_muscle_body_part_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="body_part"/>
+
+    </changeSet>
+</databaseChangeLog>

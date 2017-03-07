@@ -1,12 +1,12 @@
 package com.thefitnation.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
-import com.thefitnation.domain.Gym;
 import com.thefitnation.service.GymService;
 import com.thefitnation.web.rest.util.HeaderUtil;
 import com.thefitnation.web.rest.util.PaginationUtil;
-
+import com.thefitnation.service.dto.GymDTO;
 import io.swagger.annotations.ApiParam;
+import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -16,12 +16,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.inject.Inject;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * REST controller for managing Gym.
@@ -31,49 +32,54 @@ import java.util.Optional;
 public class GymResource {
 
     private final Logger log = LoggerFactory.getLogger(GymResource.class);
+
+    private static final String ENTITY_NAME = "gym";
         
-    @Inject
-    private GymService gymService;
+    private final GymService gymService;
+
+    public GymResource(GymService gymService) {
+        this.gymService = gymService;
+    }
 
     /**
      * POST  /gyms : Create a new gym.
      *
-     * @param gym the gym to create
-     * @return the ResponseEntity with status 201 (Created) and with body the new gym, or with status 400 (Bad Request) if the gym has already an ID
+     * @param gymDTO the gymDTO to create
+     * @return the ResponseEntity with status 201 (Created) and with body the new gymDTO, or with status 400 (Bad Request) if the gym has already an ID
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PostMapping("/gyms")
     @Timed
-    public ResponseEntity<Gym> createGym(@Valid @RequestBody Gym gym) throws URISyntaxException {
-        log.debug("REST request to save Gym : {}", gym);
-        if (gym.getId() != null) {
-            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("gym", "idexists", "A new gym cannot already have an ID")).body(null);
+    public ResponseEntity<GymDTO> createGym(@Valid @RequestBody GymDTO gymDTO) throws URISyntaxException {
+        log.debug("REST request to save Gym : {}", gymDTO);
+        if (gymDTO.getId() != null) {
+            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new gym cannot already have an ID")).body(null);
         }
-        Gym result = gymService.save(gym);
+        GymDTO result = gymService.save(gymDTO);
         return ResponseEntity.created(new URI("/api/gyms/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert("gym", result.getId().toString()))
+            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
     }
 
     /**
      * PUT  /gyms : Updates an existing gym.
      *
-     * @param gym the gym to update
-     * @return the ResponseEntity with status 200 (OK) and with body the updated gym,
-     * or with status 400 (Bad Request) if the gym is not valid,
-     * or with status 500 (Internal Server Error) if the gym couldnt be updated
+     * @param gymDTO the gymDTO to update
+     * @return the ResponseEntity with status 200 (OK) and with body the updated gymDTO,
+     * or with status 400 (Bad Request) if the gymDTO is not valid,
+     * or with status 500 (Internal Server Error) if the gymDTO couldnt be updated
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PutMapping("/gyms")
     @Timed
-    public ResponseEntity<Gym> updateGym(@Valid @RequestBody Gym gym) throws URISyntaxException {
-        log.debug("REST request to update Gym : {}", gym);
-        if (gym.getId() == null) {
-            return createGym(gym);
+    public ResponseEntity<GymDTO> updateGym(@Valid @RequestBody GymDTO gymDTO) throws URISyntaxException {
+        log.debug("REST request to update Gym : {}", gymDTO);
+        if (gymDTO.getId() == null) {
+            return createGym(gymDTO);
         }
-        Gym result = gymService.save(gym);
+        GymDTO result = gymService.save(gymDTO);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert("gym", gym.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, gymDTO.getId().toString()))
             .body(result);
     }
 
@@ -86,10 +92,10 @@ public class GymResource {
      */
     @GetMapping("/gyms")
     @Timed
-    public ResponseEntity<List<Gym>> getAllGyms(@ApiParam Pageable pageable)
+    public ResponseEntity<List<GymDTO>> getAllGyms(@ApiParam Pageable pageable)
         throws URISyntaxException {
         log.debug("REST request to get a page of Gyms");
-        Page<Gym> page = gymService.findAll(pageable);
+        Page<GymDTO> page = gymService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/gyms");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
@@ -97,25 +103,21 @@ public class GymResource {
     /**
      * GET  /gyms/:id : get the "id" gym.
      *
-     * @param id the id of the gym to retrieve
-     * @return the ResponseEntity with status 200 (OK) and with body the gym, or with status 404 (Not Found)
+     * @param id the id of the gymDTO to retrieve
+     * @return the ResponseEntity with status 200 (OK) and with body the gymDTO, or with status 404 (Not Found)
      */
     @GetMapping("/gyms/{id}")
     @Timed
-    public ResponseEntity<Gym> getGym(@PathVariable Long id) {
+    public ResponseEntity<GymDTO> getGym(@PathVariable Long id) {
         log.debug("REST request to get Gym : {}", id);
-        Gym gym = gymService.findOne(id);
-        return Optional.ofNullable(gym)
-            .map(result -> new ResponseEntity<>(
-                result,
-                HttpStatus.OK))
-            .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        GymDTO gymDTO = gymService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(gymDTO));
     }
 
     /**
      * DELETE  /gyms/:id : delete the "id" gym.
      *
-     * @param id the id of the gym to delete
+     * @param id the id of the gymDTO to delete
      * @return the ResponseEntity with status 200 (OK)
      */
     @DeleteMapping("/gyms/{id}")
@@ -123,7 +125,7 @@ public class GymResource {
     public ResponseEntity<Void> deleteGym(@PathVariable Long id) {
         log.debug("REST request to delete Gym : {}", id);
         gymService.delete(id);
-        return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("gym", id.toString())).build();
+        return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 
 }

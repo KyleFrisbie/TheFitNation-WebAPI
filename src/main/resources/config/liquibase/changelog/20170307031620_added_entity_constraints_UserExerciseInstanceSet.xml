@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <!--
+        Added the constraints for entity UserExerciseInstanceSet.
+    -->
+    <changeSet id="20170307031620-2" author="jhipster">
+        
+        <addForeignKeyConstraint baseColumnNames="user_exercise_instance_id"
+                                 baseTableName="user_exercise_instance_set"
+                                 constraintName="fk_user_exercise_instance_set_user_exercise_instance_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="user_exercise_instance"/>
+
+        <addForeignKeyConstraint baseColumnNames="exercise_instance_set_id"
+                                 baseTableName="user_exercise_instance_set"
+                                 constraintName="fk_user_exercise_instance_set_exercise_instance_set_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="exercise_instance_set"/>
+
+    </changeSet>
+</databaseChangeLog>

@@ -17,31 +17,42 @@
             "otherEntityField": "name"
         },
         {
-            "relationshipName": "userExercise",
-            "otherEntityName": "userExercise",
+            "relationshipName": "userExerciseInstance",
+            "otherEntityName": "userExerciseInstance",
             "relationshipType": "one-to-many",
             "otherEntityRelationshipName": "userWorkoutInstance"
         }
     ],
     "fields": [
         {
-            "fieldName": "created_on",
-            "fieldType": "ZonedDateTime",
+            "fieldName": "createdOn",
+            "fieldType": "LocalDate",
             "fieldValidateRules": [
                 "required"
             ]
         },
         {
-            "fieldName": "was_completed",
+            "fieldName": "lastUpdated",
+            "fieldType": "LocalDate",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "wasCompleted",
             "fieldType": "Boolean",
             "fieldValidateRules": [
                 "required"
             ]
+        },
+        {
+            "fieldName": "notes",
+            "fieldType": "String"
         }
     ],
-    "changelogDate": "20170203231753",
-    "dto": "no",
+    "changelogDate": "20170307031053",
+    "dto": "mapstruct",
     "service": "serviceClass",
     "entityTableName": "user_workout_instance",
-    "pagination": "infinite-scroll"
+    "pagination": "pagination"
 }

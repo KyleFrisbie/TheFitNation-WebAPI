@@ -11,10 +11,10 @@
         $stateProvider
         .state('user-workout-instance', {
             parent: 'entity',
-            url: '/user-workout-instance',
+            url: '/user-workout-instance?page&sort&search',
             data: {
                 authorities: ['ROLE_USER'],
-                pageTitle: 'UserWorkoutInstances'
+                pageTitle: 'theFitNationApp.userWorkoutInstance.home.title'
             },
             views: {
                 'content@': {
@@ -23,15 +23,40 @@
                     controllerAs: 'vm'
                 }
             },
+            params: {
+                page: {
+                    value: '1',
+                    squash: true
+                },
+                sort: {
+                    value: 'id,asc',
+                    squash: true
+                },
+                search: null
+            },
             resolve: {
+                pagingParams: ['$stateParams', 'PaginationUtil', function ($stateParams, PaginationUtil) {
+                    return {
+                        page: PaginationUtil.parsePage($stateParams.page),
+                        sort: $stateParams.sort,
+                        predicate: PaginationUtil.parsePredicate($stateParams.sort),
+                        ascending: PaginationUtil.parseAscending($stateParams.sort),
+                        search: $stateParams.search
+                    };
+                }],
+                translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
+                    $translatePartialLoader.addPart('userWorkoutInstance');
+                    $translatePartialLoader.addPart('global');
+                    return $translate.refresh();
+                }]
             }
         })
         .state('user-workout-instance-detail', {
-            parent: 'entity',
+            parent: 'user-workout-instance',
             url: '/user-workout-instance/{id}',
             data: {
                 authorities: ['ROLE_USER'],
-                pageTitle: 'UserWorkoutInstance'
+                pageTitle: 'theFitNationApp.userWorkoutInstance.detail.title'
             },
             views: {
                 'content@': {
@@ -41,6 +66,10 @@
                 }
             },
             resolve: {
+                translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
+                    $translatePartialLoader.addPart('userWorkoutInstance');
+                    return $translate.refresh();
+                }],
                 entity: ['$stateParams', 'UserWorkoutInstance', function($stateParams, UserWorkoutInstance) {
                     return UserWorkoutInstance.get({id : $stateParams.id}).$promise;
                 }],
@@ -95,8 +124,10 @@
                     resolve: {
                         entity: function () {
                             return {
-                                created_on: null,
-                                was_completed: false,
+                                createdOn: null,
+                                lastUpdated: null,
+                                wasCompleted: false,
+                                notes: null,
                                 id: null
                             };
                         }

@@ -2,6 +2,8 @@ package com.thefitnation.service;
 
 import com.thefitnation.domain.UserWeight;
 import com.thefitnation.repository.UserWeightRepository;
+import com.thefitnation.service.dto.UserWeightDTO;
+import com.thefitnation.service.mapper.UserWeightMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -9,8 +11,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
-import javax.inject.Inject;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Service Implementation for managing UserWeight.
@@ -21,18 +24,26 @@ public class UserWeightService {
 
     private final Logger log = LoggerFactory.getLogger(UserWeightService.class);
     
-    @Inject
-    private UserWeightRepository userWeightRepository;
+    private final UserWeightRepository userWeightRepository;
+
+    private final UserWeightMapper userWeightMapper;
+
+    public UserWeightService(UserWeightRepository userWeightRepository, UserWeightMapper userWeightMapper) {
+        this.userWeightRepository = userWeightRepository;
+        this.userWeightMapper = userWeightMapper;
+    }
 
     /**
      * Save a userWeight.
      *
-     * @param userWeight the entity to save
+     * @param userWeightDTO the entity to save
      * @return the persisted entity
      */
-    public UserWeight save(UserWeight userWeight) {
-        log.debug("Request to save UserWeight : {}", userWeight);
-        UserWeight result = userWeightRepository.save(userWeight);
+    public UserWeightDTO save(UserWeightDTO userWeightDTO) {
+        log.debug("Request to save UserWeight : {}", userWeightDTO);
+        UserWeight userWeight = userWeightMapper.userWeightDTOToUserWeight(userWeightDTO);
+        userWeight = userWeightRepository.save(userWeight);
+        UserWeightDTO result = userWeightMapper.userWeightToUserWeightDTO(userWeight);
         return result;
     }
 
@@ -42,11 +53,11 @@ public class UserWeightService {
      *  @param pageable the pagination information
      *  @return the list of entities
      */
-    @Transactional(readOnly = true) 
-    public Page<UserWeight> findAll(Pageable pageable) {
+    @Transactional(readOnly = true)
+    public Page<UserWeightDTO> findAll(Pageable pageable) {
         log.debug("Request to get all UserWeights");
         Page<UserWeight> result = userWeightRepository.findAll(pageable);
-        return result;
+        return result.map(userWeight -> userWeightMapper.userWeightToUserWeightDTO(userWeight));
     }
 
     /**
@@ -55,11 +66,12 @@ public class UserWeightService {
      *  @param id the id of the entity
      *  @return the entity
      */
-    @Transactional(readOnly = true) 
-    public UserWeight findOne(Long id) {
+    @Transactional(readOnly = true)
+    public UserWeightDTO findOne(Long id) {
         log.debug("Request to get UserWeight : {}", id);
         UserWeight userWeight = userWeightRepository.findOne(id);
-        return userWeight;
+        UserWeightDTO userWeightDTO = userWeightMapper.userWeightToUserWeightDTO(userWeight);
+        return userWeightDTO;
     }
 
     /**

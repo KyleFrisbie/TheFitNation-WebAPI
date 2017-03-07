@@ -1,0 +1,108 @@
+
+<form name="editForm" role="form" novalidate ng-submit="vm.save()" show-validation>
+
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                ng-click="vm.clear()">&times;</button>
+        <h4 class="modal-title" id="myUserExerciseInstanceSetLabel" data-translate="theFitNationApp.userExerciseInstanceSet.home.createOrEditLabel">Create or edit a User Exercise Instance Set</h4>
+    </div>
+    <div class="modal-body">
+        <jhi-alert-error></jhi-alert-error>
+        <div class="form-group" ng-show="vm.userExerciseInstanceSet.id">
+            <label for="id" data-translate="global.field.id">ID</label>
+            <input type="text" class="form-control" id="id" name="id"
+                    ng-model="vm.userExerciseInstanceSet.id" readonly />
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="theFitNationApp.userExerciseInstanceSet.orderNumber" for="field_orderNumber">Order Number</label>
+            <input type="number" class="form-control" name="orderNumber" id="field_orderNumber"
+                    ng-model="vm.userExerciseInstanceSet.orderNumber"
+                    required min="1"/>
+            <div ng-show="editForm.orderNumber.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.orderNumber.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.orderNumber.$error.min" data-translate="entity.validation.min" translate-value-min="1">
+                    This field should be at least 1.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.orderNumber.$error.number" data-translate="entity.validation.number">
+                    This field should be a number.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="theFitNationApp.userExerciseInstanceSet.repQuantity" for="field_repQuantity">Rep Quantity</label>
+            <input type="number" class="form-control" name="repQuantity" id="field_repQuantity"
+                    ng-model="vm.userExerciseInstanceSet.repQuantity"
+                    required/>
+            <div ng-show="editForm.repQuantity.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.repQuantity.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.repQuantity.$error.number" data-translate="entity.validation.number">
+                    This field should be a number.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="theFitNationApp.userExerciseInstanceSet.effortQuantity" for="field_effortQuantity">Effort Quantity</label>
+            <input type="number" class="form-control" name="effortQuantity" id="field_effortQuantity"
+                    ng-model="vm.userExerciseInstanceSet.effortQuantity"
+                    required/>
+            <div ng-show="editForm.effortQuantity.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.effortQuantity.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.effortQuantity.$error.number" data-translate="entity.validation.number">
+                    This field should be a number.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="theFitNationApp.userExerciseInstanceSet.restTime" for="field_restTime">Rest Time</label>
+            <input type="number" class="form-control" name="restTime" id="field_restTime"
+                    ng-model="vm.userExerciseInstanceSet.restTime"
+                    />
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="theFitNationApp.userExerciseInstanceSet.notes" for="field_notes">Notes</label>
+            <input type="text" class="form-control" name="notes" id="field_notes"
+                    ng-model="vm.userExerciseInstanceSet.notes"
+                    />
+        </div>
+
+        <div class="form-group">
+            <label data-translate="theFitNationApp.userExerciseInstanceSet.userExerciseInstance" for="field_userExerciseInstance">User Exercise Instance</label>
+            <select class="form-control" id="field_userExerciseInstance" name="userExerciseInstance" ng-model="vm.userExerciseInstanceSet.userExerciseInstanceId" ng-options="userExerciseInstance.id as userExerciseInstance.id for userExerciseInstance in vm.userexerciseinstances"             required>
+                <option value=""></option>
+            </select>
+        </div>
+        <div ng-show="editForm.userExerciseInstance.$invalid">
+            <p class="help-block"
+                ng-show="editForm.userExerciseInstance.$error.required" data-translate="entity.validation.required">
+                This field is required.
+            </p>
+        </div>
+        <div class="form-group">
+            <label data-translate="theFitNationApp.userExerciseInstanceSet.exerciseInstanceSet" for="field_exerciseInstanceSet">Exercise Instance Set</label>
+            <select class="form-control" id="field_exerciseInstanceSet" name="exerciseInstanceSet" ng-model="vm.userExerciseInstanceSet.exerciseInstanceSetId" ng-options="exerciseInstanceSet.id as exerciseInstanceSet.id for exerciseInstanceSet in vm.exerciseinstancesets"            >
+                <option value=""></option>
+            </select>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="vm.clear()">
+            <span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span data-translate="entity.action.cancel">Cancel</span>
+        </button>
+        <button type="submit" ng-disabled="editForm.$invalid || vm.isSaving" class="btn btn-primary">
+            <span class="glyphicon glyphicon-save"></span>&nbsp;<span data-translate="entity.action.save">Save</span>
+        </button>
+    </div>
+</form>

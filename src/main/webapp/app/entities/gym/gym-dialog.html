@@ -4,51 +4,57 @@
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
                 ng-click="vm.clear()">&times;</button>
-        <h4 class="modal-title" id="myGymLabel">Create or edit a Gym</h4>
+        <h4 class="modal-title" id="myGymLabel" data-translate="theFitNationApp.gym.home.createOrEditLabel">Create or edit a Gym</h4>
     </div>
     <div class="modal-body">
         <jhi-alert-error></jhi-alert-error>
         <div class="form-group" ng-show="vm.gym.id">
-            <label for="id">ID</label>
+            <label for="id" data-translate="global.field.id">ID</label>
             <input type="text" class="form-control" id="id" name="id"
                     ng-model="vm.gym.id" readonly />
         </div>
         <div class="form-group">
-            <label class="control-label" for="field_name">Name</label>
+            <label class="control-label" data-translate="theFitNationApp.gym.name" for="field_name">Name</label>
             <input type="text" class="form-control" name="name" id="field_name"
                     ng-model="vm.gym.name"
-                    required />
+                    required ng-minlength="1"/>
             <div ng-show="editForm.name.$invalid">
                 <p class="help-block"
-                    ng-show="editForm.name.$error.required">
+                    ng-show="editForm.name.$error.required" data-translate="entity.validation.required">
                     This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.name.$error.minlength" data-translate="entity.validation.minlength" translate-value-min="1">
+                    This field is required to be at least 1 characters.
                 </p>
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label" for="field_location">Location</label>
-            <input type="text" class="form-control" name="location" id="field_location"
-                    ng-model="vm.gym.location"
-                    required />
-            <div ng-show="editForm.location.$invalid">
-                <p class="help-block"
-                    ng-show="editForm.location.$error.required">
-                    This field is required.
-                </p>
-            </div>
+            <label class="control-label" data-translate="theFitNationApp.gym.notes" for="field_notes">Notes</label>
+            <input type="text" class="form-control" name="notes" id="field_notes"
+                    ng-model="vm.gym.notes"
+                    />
         </div>
 
         <div class="form-group">
-            <label for="field_userDemographic">User Demographic</label>
-            <select class="form-control" id="field_userDemographic" multiple name="userDemographic" ng-model="vm.gym.userDemographics" ng-options="userDemographic as userDemographic.last_name for userDemographic in vm.userdemographics track by userDemographic.id"></select>
+            <label data-translate="theFitNationApp.gym.location" for="field_location">Location</label>
+            <select class="form-control" id="field_location" name="location" ng-model="vm.gym.locationId" ng-options="location.id as location.id for location in vm.locations | orderBy:'id'" required>
+                <option value=""></option>
+            </select>
+        </div>
+        <div ng-show="editForm.location.$invalid">
+            <p class="help-block"
+                ng-show="editForm.location.$error.required" data-translate="entity.validation.required">
+                This field is required.
+            </p>
         </div>
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="vm.clear()">
-            <span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span>Cancel</span>
+            <span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span data-translate="entity.action.cancel">Cancel</span>
         </button>
         <button type="submit" ng-disabled="editForm.$invalid || vm.isSaving" class="btn btn-primary">
-            <span class="glyphicon glyphicon-save"></span>&nbsp;<span>Save</span>
+            <span class="glyphicon glyphicon-save"></span>&nbsp;<span data-translate="entity.action.save">Save</span>
         </button>
     </div>
 </form>

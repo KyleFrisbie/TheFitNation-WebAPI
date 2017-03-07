@@ -80,7 +80,7 @@ class GymGatlingTest extends Simulation {
             .exec(http("Create new gym")
             .post("/api/gyms")
             .headers(headers_http_authenticated)
-            .body(StringBody("""{"id":null, "name":"SAMPLE_TEXT", "location":"SAMPLE_TEXT"}""")).asJSON
+            .body(StringBody("""{"id":null, "name":"SAMPLE_TEXT", "notes":"SAMPLE_TEXT"}""")).asJSON
             .check(status.is(201))
             .check(headerRegex("Location", "(.*)").saveAs("new_gym_url"))).exitHereIfFailed
             .pause(10)

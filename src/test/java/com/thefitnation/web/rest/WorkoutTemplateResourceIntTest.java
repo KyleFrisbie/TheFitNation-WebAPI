@@ -4,32 +4,32 @@ import com.thefitnation.TheFitNationApp;
 
 import com.thefitnation.domain.WorkoutTemplate;
 import com.thefitnation.domain.UserDemographic;
+import com.thefitnation.domain.SkillLevel;
 import com.thefitnation.repository.WorkoutTemplateRepository;
 import com.thefitnation.service.WorkoutTemplateService;
+import com.thefitnation.service.dto.WorkoutTemplateDTO;
+import com.thefitnation.service.mapper.WorkoutTemplateMapper;
+import com.thefitnation.web.rest.errors.ExceptionTranslator;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import java.time.Instant;
-import java.time.ZonedDateTime;
-import java.time.ZoneOffset;
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.List;
 
-import static com.thefitnation.web.rest.TestUtil.sameInstant;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -47,28 +47,37 @@ public class WorkoutTemplateResourceIntTest {
     private static final String DEFAULT_NAME = "AAAAAAAAAA";
     private static final String UPDATED_NAME = "BBBBBBBBBB";
 
-    private static final ZonedDateTime DEFAULT_CREATED_ON = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
-    private static final ZonedDateTime UPDATED_CREATED_ON = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
+    private static final LocalDate DEFAULT_CREATED_ON = LocalDate.ofEpochDay(0L);
+    private static final LocalDate UPDATED_CREATED_ON = LocalDate.now(ZoneId.systemDefault());
 
-    private static final ZonedDateTime DEFAULT_LAST_UPDATED = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
-    private static final ZonedDateTime UPDATED_LAST_UPDATED = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
+    private static final LocalDate DEFAULT_LAST_UPDATED = LocalDate.ofEpochDay(0L);
+    private static final LocalDate UPDATED_LAST_UPDATED = LocalDate.now(ZoneId.systemDefault());
 
     private static final Boolean DEFAULT_IS_PRIVATE = false;
     private static final Boolean UPDATED_IS_PRIVATE = true;
 
-    @Inject
+    private static final String DEFAULT_NOTES = "AAAAAAAAAA";
+    private static final String UPDATED_NOTES = "BBBBBBBBBB";
+
+    @Autowired
     private WorkoutTemplateRepository workoutTemplateRepository;
 
-    @Inject
+    @Autowired
+    private WorkoutTemplateMapper workoutTemplateMapper;
+
+    @Autowired
     private WorkoutTemplateService workoutTemplateService;
 
-    @Inject
+    @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
 
-    @Inject
+    @Autowired
     private PageableHandlerMethodArgumentResolver pageableArgumentResolver;
 
-    @Inject
+    @Autowired
+    private ExceptionTranslator exceptionTranslator;
+
+    @Autowired
     private EntityManager em;
 
     private MockMvc restWorkoutTemplateMockMvc;
@@ -78,10 +87,10 @@ public class WorkoutTemplateResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        WorkoutTemplateResource workoutTemplateResource = new WorkoutTemplateResource();
-        ReflectionTestUtils.setField(workoutTemplateResource, "workoutTemplateService", workoutTemplateService);
+        WorkoutTemplateResource workoutTemplateResource = new WorkoutTemplateResource(workoutTemplateService);
         this.restWorkoutTemplateMockMvc = MockMvcBuilders.standaloneSetup(workoutTemplateResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
+            .setControllerAdvice(exceptionTranslator)
             .setMessageConverters(jacksonMessageConverter).build();
     }
 
@@ -94,14 +103,20 @@ public class WorkoutTemplateResourceIntTest {
     public static WorkoutTemplate createEntity(EntityManager em) {
         WorkoutTemplate workoutTemplate = new WorkoutTemplate()
                 .name(DEFAULT_NAME)
-                .created_on(DEFAULT_CREATED_ON)
-                .last_updated(DEFAULT_LAST_UPDATED)
-                .is_private(DEFAULT_IS_PRIVATE);
+                .createdOn(DEFAULT_CREATED_ON)
+                .lastUpdated(DEFAULT_LAST_UPDATED)
+                .isPrivate(DEFAULT_IS_PRIVATE)
+                .notes(DEFAULT_NOTES);
         // Add required entity
         UserDemographic userDemographic = UserDemographicResourceIntTest.createEntity(em);
         em.persist(userDemographic);
         em.flush();
         workoutTemplate.setUserDemographic(userDemographic);
+        // Add required entity
+        SkillLevel skillLevel = SkillLevelResourceIntTest.createEntity(em);
+        em.persist(skillLevel);
+        em.flush();
+        workoutTemplate.setSkillLevel(skillLevel);
         return workoutTemplate;
     }
 
@@ -116,10 +131,11 @@ public class WorkoutTemplateResourceIntTest {
         int databaseSizeBeforeCreate = workoutTemplateRepository.findAll().size();
 
         // Create the WorkoutTemplate
+        WorkoutTemplateDTO workoutTemplateDTO = workoutTemplateMapper.workoutTemplateToWorkoutTemplateDTO(workoutTemplate);
 
         restWorkoutTemplateMockMvc.perform(post("/api/workout-templates")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(workoutTemplate)))
+            .content(TestUtil.convertObjectToJsonBytes(workoutTemplateDTO)))
             .andExpect(status().isCreated());
 
         // Validate the WorkoutTemplate in the database
@@ -127,9 +143,10 @@ public class WorkoutTemplateResourceIntTest {
         assertThat(workoutTemplateList).hasSize(databaseSizeBeforeCreate + 1);
         WorkoutTemplate testWorkoutTemplate = workoutTemplateList.get(workoutTemplateList.size() - 1);
         assertThat(testWorkoutTemplate.getName()).isEqualTo(DEFAULT_NAME);
-        assertThat(testWorkoutTemplate.getCreated_on()).isEqualTo(DEFAULT_CREATED_ON);
-        assertThat(testWorkoutTemplate.getLast_updated()).isEqualTo(DEFAULT_LAST_UPDATED);
-        assertThat(testWorkoutTemplate.isIs_private()).isEqualTo(DEFAULT_IS_PRIVATE);
+        assertThat(testWorkoutTemplate.getCreatedOn()).isEqualTo(DEFAULT_CREATED_ON);
+        assertThat(testWorkoutTemplate.getLastUpdated()).isEqualTo(DEFAULT_LAST_UPDATED);
+        assertThat(testWorkoutTemplate.isIsPrivate()).isEqualTo(DEFAULT_IS_PRIVATE);
+        assertThat(testWorkoutTemplate.getNotes()).isEqualTo(DEFAULT_NOTES);
     }
 
     @Test
@@ -140,11 +157,12 @@ public class WorkoutTemplateResourceIntTest {
         // Create the WorkoutTemplate with an existing ID
         WorkoutTemplate existingWorkoutTemplate = new WorkoutTemplate();
         existingWorkoutTemplate.setId(1L);
+        WorkoutTemplateDTO existingWorkoutTemplateDTO = workoutTemplateMapper.workoutTemplateToWorkoutTemplateDTO(existingWorkoutTemplate);
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restWorkoutTemplateMockMvc.perform(post("/api/workout-templates")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(existingWorkoutTemplate)))
+            .content(TestUtil.convertObjectToJsonBytes(existingWorkoutTemplateDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the Alice in the database
@@ -160,10 +178,11 @@ public class WorkoutTemplateResourceIntTest {
         workoutTemplate.setName(null);
 
         // Create the WorkoutTemplate, which fails.
+        WorkoutTemplateDTO workoutTemplateDTO = workoutTemplateMapper.workoutTemplateToWorkoutTemplateDTO(workoutTemplate);
 
         restWorkoutTemplateMockMvc.perform(post("/api/workout-templates")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(workoutTemplate)))
+            .content(TestUtil.convertObjectToJsonBytes(workoutTemplateDTO)))
             .andExpect(status().isBadRequest());
 
         List<WorkoutTemplate> workoutTemplateList = workoutTemplateRepository.findAll();
@@ -172,16 +191,17 @@ public class WorkoutTemplateResourceIntTest {
 
     @Test
     @Transactional
-    public void checkCreated_onIsRequired() throws Exception {
+    public void checkCreatedOnIsRequired() throws Exception {
         int databaseSizeBeforeTest = workoutTemplateRepository.findAll().size();
         // set the field null
-        workoutTemplate.setCreated_on(null);
+        workoutTemplate.setCreatedOn(null);
 
         // Create the WorkoutTemplate, which fails.
+        WorkoutTemplateDTO workoutTemplateDTO = workoutTemplateMapper.workoutTemplateToWorkoutTemplateDTO(workoutTemplate);
 
         restWorkoutTemplateMockMvc.perform(post("/api/workout-templates")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(workoutTemplate)))
+            .content(TestUtil.convertObjectToJsonBytes(workoutTemplateDTO)))
             .andExpect(status().isBadRequest());
 
         List<WorkoutTemplate> workoutTemplateList = workoutTemplateRepository.findAll();
@@ -190,16 +210,17 @@ public class WorkoutTemplateResourceIntTest {
 
     @Test
     @Transactional
-    public void checkLast_updatedIsRequired() throws Exception {
+    public void checkLastUpdatedIsRequired() throws Exception {
         int databaseSizeBeforeTest = workoutTemplateRepository.findAll().size();
         // set the field null
-        workoutTemplate.setLast_updated(null);
+        workoutTemplate.setLastUpdated(null);
 
         // Create the WorkoutTemplate, which fails.
+        WorkoutTemplateDTO workoutTemplateDTO = workoutTemplateMapper.workoutTemplateToWorkoutTemplateDTO(workoutTemplate);
 
         restWorkoutTemplateMockMvc.perform(post("/api/workout-templates")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(workoutTemplate)))
+            .content(TestUtil.convertObjectToJsonBytes(workoutTemplateDTO)))
             .andExpect(status().isBadRequest());
 
         List<WorkoutTemplate> workoutTemplateList = workoutTemplateRepository.findAll();
@@ -208,16 +229,17 @@ public class WorkoutTemplateResourceIntTest {
 
     @Test
     @Transactional
-    public void checkIs_privateIsRequired() throws Exception {
+    public void checkIsPrivateIsRequired() throws Exception {
         int databaseSizeBeforeTest = workoutTemplateRepository.findAll().size();
         // set the field null
-        workoutTemplate.setIs_private(null);
+        workoutTemplate.setIsPrivate(null);
 
         // Create the WorkoutTemplate, which fails.
+        WorkoutTemplateDTO workoutTemplateDTO = workoutTemplateMapper.workoutTemplateToWorkoutTemplateDTO(workoutTemplate);
 
         restWorkoutTemplateMockMvc.perform(post("/api/workout-templates")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(workoutTemplate)))
+            .content(TestUtil.convertObjectToJsonBytes(workoutTemplateDTO)))
             .andExpect(status().isBadRequest());
 
         List<WorkoutTemplate> workoutTemplateList = workoutTemplateRepository.findAll();
@@ -236,9 +258,10 @@ public class WorkoutTemplateResourceIntTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(workoutTemplate.getId().intValue())))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
-            .andExpect(jsonPath("$.[*].created_on").value(hasItem(sameInstant(DEFAULT_CREATED_ON))))
-            .andExpect(jsonPath("$.[*].last_updated").value(hasItem(sameInstant(DEFAULT_LAST_UPDATED))))
-            .andExpect(jsonPath("$.[*].is_private").value(hasItem(DEFAULT_IS_PRIVATE.booleanValue())));
+            .andExpect(jsonPath("$.[*].createdOn").value(hasItem(DEFAULT_CREATED_ON.toString())))
+            .andExpect(jsonPath("$.[*].lastUpdated").value(hasItem(DEFAULT_LAST_UPDATED.toString())))
+            .andExpect(jsonPath("$.[*].isPrivate").value(hasItem(DEFAULT_IS_PRIVATE.booleanValue())))
+            .andExpect(jsonPath("$.[*].notes").value(hasItem(DEFAULT_NOTES.toString())));
     }
 
     @Test
@@ -253,9 +276,10 @@ public class WorkoutTemplateResourceIntTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(workoutTemplate.getId().intValue()))
             .andExpect(jsonPath("$.name").value(DEFAULT_NAME.toString()))
-            .andExpect(jsonPath("$.created_on").value(sameInstant(DEFAULT_CREATED_ON)))
-            .andExpect(jsonPath("$.last_updated").value(sameInstant(DEFAULT_LAST_UPDATED)))
-            .andExpect(jsonPath("$.is_private").value(DEFAULT_IS_PRIVATE.booleanValue()));
+            .andExpect(jsonPath("$.createdOn").value(DEFAULT_CREATED_ON.toString()))
+            .andExpect(jsonPath("$.lastUpdated").value(DEFAULT_LAST_UPDATED.toString()))
+            .andExpect(jsonPath("$.isPrivate").value(DEFAULT_IS_PRIVATE.booleanValue()))
+            .andExpect(jsonPath("$.notes").value(DEFAULT_NOTES.toString()));
     }
 
     @Test
@@ -270,21 +294,22 @@ public class WorkoutTemplateResourceIntTest {
     @Transactional
     public void updateWorkoutTemplate() throws Exception {
         // Initialize the database
-        workoutTemplateService.save(workoutTemplate);
-
+        workoutTemplateRepository.saveAndFlush(workoutTemplate);
         int databaseSizeBeforeUpdate = workoutTemplateRepository.findAll().size();
 
         // Update the workoutTemplate
         WorkoutTemplate updatedWorkoutTemplate = workoutTemplateRepository.findOne(workoutTemplate.getId());
         updatedWorkoutTemplate
                 .name(UPDATED_NAME)
-                .created_on(UPDATED_CREATED_ON)
-                .last_updated(UPDATED_LAST_UPDATED)
-                .is_private(UPDATED_IS_PRIVATE);
+                .createdOn(UPDATED_CREATED_ON)
+                .lastUpdated(UPDATED_LAST_UPDATED)
+                .isPrivate(UPDATED_IS_PRIVATE)
+                .notes(UPDATED_NOTES);
+        WorkoutTemplateDTO workoutTemplateDTO = workoutTemplateMapper.workoutTemplateToWorkoutTemplateDTO(updatedWorkoutTemplate);
 
         restWorkoutTemplateMockMvc.perform(put("/api/workout-templates")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(updatedWorkoutTemplate)))
+            .content(TestUtil.convertObjectToJsonBytes(workoutTemplateDTO)))
             .andExpect(status().isOk());
 
         // Validate the WorkoutTemplate in the database
@@ -292,9 +317,10 @@ public class WorkoutTemplateResourceIntTest {
         assertThat(workoutTemplateList).hasSize(databaseSizeBeforeUpdate);
         WorkoutTemplate testWorkoutTemplate = workoutTemplateList.get(workoutTemplateList.size() - 1);
         assertThat(testWorkoutTemplate.getName()).isEqualTo(UPDATED_NAME);
-        assertThat(testWorkoutTemplate.getCreated_on()).isEqualTo(UPDATED_CREATED_ON);
-        assertThat(testWorkoutTemplate.getLast_updated()).isEqualTo(UPDATED_LAST_UPDATED);
-        assertThat(testWorkoutTemplate.isIs_private()).isEqualTo(UPDATED_IS_PRIVATE);
+        assertThat(testWorkoutTemplate.getCreatedOn()).isEqualTo(UPDATED_CREATED_ON);
+        assertThat(testWorkoutTemplate.getLastUpdated()).isEqualTo(UPDATED_LAST_UPDATED);
+        assertThat(testWorkoutTemplate.isIsPrivate()).isEqualTo(UPDATED_IS_PRIVATE);
+        assertThat(testWorkoutTemplate.getNotes()).isEqualTo(UPDATED_NOTES);
     }
 
     @Test
@@ -303,11 +329,12 @@ public class WorkoutTemplateResourceIntTest {
         int databaseSizeBeforeUpdate = workoutTemplateRepository.findAll().size();
 
         // Create the WorkoutTemplate
+        WorkoutTemplateDTO workoutTemplateDTO = workoutTemplateMapper.workoutTemplateToWorkoutTemplateDTO(workoutTemplate);
 
         // If the entity doesn't have an ID, it will be created instead of just being updated
         restWorkoutTemplateMockMvc.perform(put("/api/workout-templates")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(workoutTemplate)))
+            .content(TestUtil.convertObjectToJsonBytes(workoutTemplateDTO)))
             .andExpect(status().isCreated());
 
         // Validate the WorkoutTemplate in the database
@@ -319,8 +346,7 @@ public class WorkoutTemplateResourceIntTest {
     @Transactional
     public void deleteWorkoutTemplate() throws Exception {
         // Initialize the database
-        workoutTemplateService.save(workoutTemplate);
-
+        workoutTemplateRepository.saveAndFlush(workoutTemplate);
         int databaseSizeBeforeDelete = workoutTemplateRepository.findAll().size();
 
         // Get the workoutTemplate
@@ -331,5 +357,10 @@ public class WorkoutTemplateResourceIntTest {
         // Validate the database is empty
         List<WorkoutTemplate> workoutTemplateList = workoutTemplateRepository.findAll();
         assertThat(workoutTemplateList).hasSize(databaseSizeBeforeDelete - 1);
+    }
+
+    @Test
+    public void equalsVerifier() throws Exception {
+        TestUtil.equalsVerifier(WorkoutTemplate.class);
     }
 }

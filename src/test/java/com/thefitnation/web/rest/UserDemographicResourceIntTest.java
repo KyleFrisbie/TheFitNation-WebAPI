@@ -3,39 +3,39 @@ package com.thefitnation.web.rest;
 import com.thefitnation.TheFitNationApp;
 
 import com.thefitnation.domain.UserDemographic;
+import com.thefitnation.domain.User;
+import com.thefitnation.domain.SkillLevel;
 import com.thefitnation.repository.UserDemographicRepository;
 import com.thefitnation.service.UserDemographicService;
+import com.thefitnation.service.dto.UserDemographicDTO;
+import com.thefitnation.service.mapper.UserDemographicMapper;
+import com.thefitnation.web.rest.errors.ExceptionTranslator;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import java.time.Instant;
-import java.time.ZonedDateTime;
-import java.time.ZoneOffset;
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.List;
 
-import static com.thefitnation.web.rest.TestUtil.sameInstant;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.thefitnation.domain.enumeration.Gender;
-import com.thefitnation.domain.enumeration.SkillLevel;
 import com.thefitnation.domain.enumeration.UnitOfMeasure;
 /**
  * Test class for the UserDemographicResource REST controller.
@@ -46,49 +46,43 @@ import com.thefitnation.domain.enumeration.UnitOfMeasure;
 @SpringBootTest(classes = TheFitNationApp.class)
 public class UserDemographicResourceIntTest {
 
-    private static final ZonedDateTime DEFAULT_CREATED_ON = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
-    private static final ZonedDateTime UPDATED_CREATED_ON = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
+    private static final LocalDate DEFAULT_CREATED_ON = LocalDate.ofEpochDay(0L);
+    private static final LocalDate UPDATED_CREATED_ON = LocalDate.now(ZoneId.systemDefault());
 
-    private static final ZonedDateTime DEFAULT_LAST_LOGIN = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
-    private static final ZonedDateTime UPDATED_LAST_LOGIN = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
-
-    private static final String DEFAULT_FIRST_NAME = "AAAAAAAAAA";
-    private static final String UPDATED_FIRST_NAME = "BBBBBBBBBB";
-
-    private static final String DEFAULT_LAST_NAME = "AAAAAAAAAA";
-    private static final String UPDATED_LAST_NAME = "BBBBBBBBBB";
+    private static final LocalDate DEFAULT_LAST_LOGIN = LocalDate.ofEpochDay(0L);
+    private static final LocalDate UPDATED_LAST_LOGIN = LocalDate.now(ZoneId.systemDefault());
 
     private static final Gender DEFAULT_GENDER = Gender.Male;
     private static final Gender UPDATED_GENDER = Gender.Female;
 
-    private static final ZonedDateTime DEFAULT_DOB = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
-    private static final ZonedDateTime UPDATED_DOB = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
+    private static final LocalDate DEFAULT_DATE_OF_BIRTH = LocalDate.ofEpochDay(0L);
+    private static final LocalDate UPDATED_DATE_OF_BIRTH = LocalDate.now(ZoneId.systemDefault());
 
-    private static final Integer DEFAULT_HEIGHT = 1;
-    private static final Integer UPDATED_HEIGHT = 2;
-
-    private static final SkillLevel DEFAULT_SKILL_LEVEL = SkillLevel.Beginner;
-    private static final SkillLevel UPDATED_SKILL_LEVEL = SkillLevel.Intermediate;
+    private static final Float DEFAULT_HEIGHT = 1F;
+    private static final Float UPDATED_HEIGHT = 2F;
 
     private static final UnitOfMeasure DEFAULT_UNIT_OF_MEASURE = UnitOfMeasure.Imperial;
     private static final UnitOfMeasure UPDATED_UNIT_OF_MEASURE = UnitOfMeasure.Metric;
 
-    private static final Boolean DEFAULT_IS_ACTIVE = false;
-    private static final Boolean UPDATED_IS_ACTIVE = true;
-
-    @Inject
+    @Autowired
     private UserDemographicRepository userDemographicRepository;
 
-    @Inject
+    @Autowired
+    private UserDemographicMapper userDemographicMapper;
+
+    @Autowired
     private UserDemographicService userDemographicService;
 
-    @Inject
+    @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
 
-    @Inject
+    @Autowired
     private PageableHandlerMethodArgumentResolver pageableArgumentResolver;
 
-    @Inject
+    @Autowired
+    private ExceptionTranslator exceptionTranslator;
+
+    @Autowired
     private EntityManager em;
 
     private MockMvc restUserDemographicMockMvc;
@@ -98,10 +92,10 @@ public class UserDemographicResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        UserDemographicResource userDemographicResource = new UserDemographicResource();
-        ReflectionTestUtils.setField(userDemographicResource, "userDemographicService", userDemographicService);
+        UserDemographicResource userDemographicResource = new UserDemographicResource(userDemographicService);
         this.restUserDemographicMockMvc = MockMvcBuilders.standaloneSetup(userDemographicResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
+            .setControllerAdvice(exceptionTranslator)
             .setMessageConverters(jacksonMessageConverter).build();
     }
 
@@ -113,16 +107,22 @@ public class UserDemographicResourceIntTest {
      */
     public static UserDemographic createEntity(EntityManager em) {
         UserDemographic userDemographic = new UserDemographic()
-                .created_on(DEFAULT_CREATED_ON)
-                .last_login(DEFAULT_LAST_LOGIN)
-                .first_name(DEFAULT_FIRST_NAME)
-                .last_name(DEFAULT_LAST_NAME)
+                .createdOn(DEFAULT_CREATED_ON)
+                .lastLogin(DEFAULT_LAST_LOGIN)
                 .gender(DEFAULT_GENDER)
-                .dob(DEFAULT_DOB)
+                .dateOfBirth(DEFAULT_DATE_OF_BIRTH)
                 .height(DEFAULT_HEIGHT)
-                .skill_level(DEFAULT_SKILL_LEVEL)
-                .unit_of_measure(DEFAULT_UNIT_OF_MEASURE)
-                .is_active(DEFAULT_IS_ACTIVE);
+                .unitOfMeasure(DEFAULT_UNIT_OF_MEASURE);
+        // Add required entity
+        User user = UserResourceIntTest.createEntity(em);
+        em.persist(user);
+        em.flush();
+        userDemographic.setUser(user);
+        // Add required entity
+        SkillLevel skillLevel = SkillLevelResourceIntTest.createEntity(em);
+        em.persist(skillLevel);
+        em.flush();
+        userDemographic.setSkillLevel(skillLevel);
         return userDemographic;
     }
 
@@ -137,26 +137,23 @@ public class UserDemographicResourceIntTest {
         int databaseSizeBeforeCreate = userDemographicRepository.findAll().size();
 
         // Create the UserDemographic
+        UserDemographicDTO userDemographicDTO = userDemographicMapper.userDemographicToUserDemographicDTO(userDemographic);
 
         restUserDemographicMockMvc.perform(post("/api/user-demographics")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(userDemographic)))
+            .content(TestUtil.convertObjectToJsonBytes(userDemographicDTO)))
             .andExpect(status().isCreated());
 
         // Validate the UserDemographic in the database
         List<UserDemographic> userDemographicList = userDemographicRepository.findAll();
         assertThat(userDemographicList).hasSize(databaseSizeBeforeCreate + 1);
         UserDemographic testUserDemographic = userDemographicList.get(userDemographicList.size() - 1);
-        assertThat(testUserDemographic.getCreated_on()).isEqualTo(DEFAULT_CREATED_ON);
-        assertThat(testUserDemographic.getLast_login()).isEqualTo(DEFAULT_LAST_LOGIN);
-        assertThat(testUserDemographic.getFirst_name()).isEqualTo(DEFAULT_FIRST_NAME);
-        assertThat(testUserDemographic.getLast_name()).isEqualTo(DEFAULT_LAST_NAME);
+        assertThat(testUserDemographic.getCreatedOn()).isEqualTo(DEFAULT_CREATED_ON);
+        assertThat(testUserDemographic.getLastLogin()).isEqualTo(DEFAULT_LAST_LOGIN);
         assertThat(testUserDemographic.getGender()).isEqualTo(DEFAULT_GENDER);
-        assertThat(testUserDemographic.getDob()).isEqualTo(DEFAULT_DOB);
+        assertThat(testUserDemographic.getDateOfBirth()).isEqualTo(DEFAULT_DATE_OF_BIRTH);
         assertThat(testUserDemographic.getHeight()).isEqualTo(DEFAULT_HEIGHT);
-        assertThat(testUserDemographic.getSkill_level()).isEqualTo(DEFAULT_SKILL_LEVEL);
-        assertThat(testUserDemographic.getUnit_of_measure()).isEqualTo(DEFAULT_UNIT_OF_MEASURE);
-        assertThat(testUserDemographic.isIs_active()).isEqualTo(DEFAULT_IS_ACTIVE);
+        assertThat(testUserDemographic.getUnitOfMeasure()).isEqualTo(DEFAULT_UNIT_OF_MEASURE);
     }
 
     @Test
@@ -167,11 +164,12 @@ public class UserDemographicResourceIntTest {
         // Create the UserDemographic with an existing ID
         UserDemographic existingUserDemographic = new UserDemographic();
         existingUserDemographic.setId(1L);
+        UserDemographicDTO existingUserDemographicDTO = userDemographicMapper.userDemographicToUserDemographicDTO(existingUserDemographic);
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restUserDemographicMockMvc.perform(post("/api/user-demographics")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(existingUserDemographic)))
+            .content(TestUtil.convertObjectToJsonBytes(existingUserDemographicDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the Alice in the database
@@ -181,16 +179,17 @@ public class UserDemographicResourceIntTest {
 
     @Test
     @Transactional
-    public void checkCreated_onIsRequired() throws Exception {
+    public void checkCreatedOnIsRequired() throws Exception {
         int databaseSizeBeforeTest = userDemographicRepository.findAll().size();
         // set the field null
-        userDemographic.setCreated_on(null);
+        userDemographic.setCreatedOn(null);
 
         // Create the UserDemographic, which fails.
+        UserDemographicDTO userDemographicDTO = userDemographicMapper.userDemographicToUserDemographicDTO(userDemographic);
 
         restUserDemographicMockMvc.perform(post("/api/user-demographics")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(userDemographic)))
+            .content(TestUtil.convertObjectToJsonBytes(userDemographicDTO)))
             .andExpect(status().isBadRequest());
 
         List<UserDemographic> userDemographicList = userDemographicRepository.findAll();
@@ -199,16 +198,17 @@ public class UserDemographicResourceIntTest {
 
     @Test
     @Transactional
-    public void checkLast_loginIsRequired() throws Exception {
+    public void checkLastLoginIsRequired() throws Exception {
         int databaseSizeBeforeTest = userDemographicRepository.findAll().size();
         // set the field null
-        userDemographic.setLast_login(null);
+        userDemographic.setLastLogin(null);
 
         // Create the UserDemographic, which fails.
+        UserDemographicDTO userDemographicDTO = userDemographicMapper.userDemographicToUserDemographicDTO(userDemographic);
 
         restUserDemographicMockMvc.perform(post("/api/user-demographics")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(userDemographic)))
+            .content(TestUtil.convertObjectToJsonBytes(userDemographicDTO)))
             .andExpect(status().isBadRequest());
 
         List<UserDemographic> userDemographicList = userDemographicRepository.findAll();
@@ -217,16 +217,17 @@ public class UserDemographicResourceIntTest {
 
     @Test
     @Transactional
-    public void checkFirst_nameIsRequired() throws Exception {
+    public void checkDateOfBirthIsRequired() throws Exception {
         int databaseSizeBeforeTest = userDemographicRepository.findAll().size();
         // set the field null
-        userDemographic.setFirst_name(null);
+        userDemographic.setDateOfBirth(null);
 
         // Create the UserDemographic, which fails.
+        UserDemographicDTO userDemographicDTO = userDemographicMapper.userDemographicToUserDemographicDTO(userDemographic);
 
         restUserDemographicMockMvc.perform(post("/api/user-demographics")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(userDemographic)))
+            .content(TestUtil.convertObjectToJsonBytes(userDemographicDTO)))
             .andExpect(status().isBadRequest());
 
         List<UserDemographic> userDemographicList = userDemographicRepository.findAll();
@@ -235,70 +236,17 @@ public class UserDemographicResourceIntTest {
 
     @Test
     @Transactional
-    public void checkLast_nameIsRequired() throws Exception {
+    public void checkUnitOfMeasureIsRequired() throws Exception {
         int databaseSizeBeforeTest = userDemographicRepository.findAll().size();
         // set the field null
-        userDemographic.setLast_name(null);
+        userDemographic.setUnitOfMeasure(null);
 
         // Create the UserDemographic, which fails.
+        UserDemographicDTO userDemographicDTO = userDemographicMapper.userDemographicToUserDemographicDTO(userDemographic);
 
         restUserDemographicMockMvc.perform(post("/api/user-demographics")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(userDemographic)))
-            .andExpect(status().isBadRequest());
-
-        List<UserDemographic> userDemographicList = userDemographicRepository.findAll();
-        assertThat(userDemographicList).hasSize(databaseSizeBeforeTest);
-    }
-
-    @Test
-    @Transactional
-    public void checkDobIsRequired() throws Exception {
-        int databaseSizeBeforeTest = userDemographicRepository.findAll().size();
-        // set the field null
-        userDemographic.setDob(null);
-
-        // Create the UserDemographic, which fails.
-
-        restUserDemographicMockMvc.perform(post("/api/user-demographics")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(userDemographic)))
-            .andExpect(status().isBadRequest());
-
-        List<UserDemographic> userDemographicList = userDemographicRepository.findAll();
-        assertThat(userDemographicList).hasSize(databaseSizeBeforeTest);
-    }
-
-    @Test
-    @Transactional
-    public void checkUnit_of_measureIsRequired() throws Exception {
-        int databaseSizeBeforeTest = userDemographicRepository.findAll().size();
-        // set the field null
-        userDemographic.setUnit_of_measure(null);
-
-        // Create the UserDemographic, which fails.
-
-        restUserDemographicMockMvc.perform(post("/api/user-demographics")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(userDemographic)))
-            .andExpect(status().isBadRequest());
-
-        List<UserDemographic> userDemographicList = userDemographicRepository.findAll();
-        assertThat(userDemographicList).hasSize(databaseSizeBeforeTest);
-    }
-
-    @Test
-    @Transactional
-    public void checkIs_activeIsRequired() throws Exception {
-        int databaseSizeBeforeTest = userDemographicRepository.findAll().size();
-        // set the field null
-        userDemographic.setIs_active(null);
-
-        // Create the UserDemographic, which fails.
-
-        restUserDemographicMockMvc.perform(post("/api/user-demographics")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(userDemographic)))
+            .content(TestUtil.convertObjectToJsonBytes(userDemographicDTO)))
             .andExpect(status().isBadRequest());
 
         List<UserDemographic> userDemographicList = userDemographicRepository.findAll();
@@ -316,16 +264,12 @@ public class UserDemographicResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(userDemographic.getId().intValue())))
-            .andExpect(jsonPath("$.[*].created_on").value(hasItem(sameInstant(DEFAULT_CREATED_ON))))
-            .andExpect(jsonPath("$.[*].last_login").value(hasItem(sameInstant(DEFAULT_LAST_LOGIN))))
-            .andExpect(jsonPath("$.[*].first_name").value(hasItem(DEFAULT_FIRST_NAME.toString())))
-            .andExpect(jsonPath("$.[*].last_name").value(hasItem(DEFAULT_LAST_NAME.toString())))
+            .andExpect(jsonPath("$.[*].createdOn").value(hasItem(DEFAULT_CREATED_ON.toString())))
+            .andExpect(jsonPath("$.[*].lastLogin").value(hasItem(DEFAULT_LAST_LOGIN.toString())))
             .andExpect(jsonPath("$.[*].gender").value(hasItem(DEFAULT_GENDER.toString())))
-            .andExpect(jsonPath("$.[*].dob").value(hasItem(sameInstant(DEFAULT_DOB))))
-            .andExpect(jsonPath("$.[*].height").value(hasItem(DEFAULT_HEIGHT)))
-            .andExpect(jsonPath("$.[*].skill_level").value(hasItem(DEFAULT_SKILL_LEVEL.toString())))
-            .andExpect(jsonPath("$.[*].unit_of_measure").value(hasItem(DEFAULT_UNIT_OF_MEASURE.toString())))
-            .andExpect(jsonPath("$.[*].is_active").value(hasItem(DEFAULT_IS_ACTIVE.booleanValue())));
+            .andExpect(jsonPath("$.[*].dateOfBirth").value(hasItem(DEFAULT_DATE_OF_BIRTH.toString())))
+            .andExpect(jsonPath("$.[*].height").value(hasItem(DEFAULT_HEIGHT.doubleValue())))
+            .andExpect(jsonPath("$.[*].unitOfMeasure").value(hasItem(DEFAULT_UNIT_OF_MEASURE.toString())));
     }
 
     @Test
@@ -339,16 +283,12 @@ public class UserDemographicResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(userDemographic.getId().intValue()))
-            .andExpect(jsonPath("$.created_on").value(sameInstant(DEFAULT_CREATED_ON)))
-            .andExpect(jsonPath("$.last_login").value(sameInstant(DEFAULT_LAST_LOGIN)))
-            .andExpect(jsonPath("$.first_name").value(DEFAULT_FIRST_NAME.toString()))
-            .andExpect(jsonPath("$.last_name").value(DEFAULT_LAST_NAME.toString()))
+            .andExpect(jsonPath("$.createdOn").value(DEFAULT_CREATED_ON.toString()))
+            .andExpect(jsonPath("$.lastLogin").value(DEFAULT_LAST_LOGIN.toString()))
             .andExpect(jsonPath("$.gender").value(DEFAULT_GENDER.toString()))
-            .andExpect(jsonPath("$.dob").value(sameInstant(DEFAULT_DOB)))
-            .andExpect(jsonPath("$.height").value(DEFAULT_HEIGHT))
-            .andExpect(jsonPath("$.skill_level").value(DEFAULT_SKILL_LEVEL.toString()))
-            .andExpect(jsonPath("$.unit_of_measure").value(DEFAULT_UNIT_OF_MEASURE.toString()))
-            .andExpect(jsonPath("$.is_active").value(DEFAULT_IS_ACTIVE.booleanValue()));
+            .andExpect(jsonPath("$.dateOfBirth").value(DEFAULT_DATE_OF_BIRTH.toString()))
+            .andExpect(jsonPath("$.height").value(DEFAULT_HEIGHT.doubleValue()))
+            .andExpect(jsonPath("$.unitOfMeasure").value(DEFAULT_UNIT_OF_MEASURE.toString()));
     }
 
     @Test
@@ -363,43 +303,35 @@ public class UserDemographicResourceIntTest {
     @Transactional
     public void updateUserDemographic() throws Exception {
         // Initialize the database
-        userDemographicService.save(userDemographic);
-
+        userDemographicRepository.saveAndFlush(userDemographic);
         int databaseSizeBeforeUpdate = userDemographicRepository.findAll().size();
 
         // Update the userDemographic
         UserDemographic updatedUserDemographic = userDemographicRepository.findOne(userDemographic.getId());
         updatedUserDemographic
-                .created_on(UPDATED_CREATED_ON)
-                .last_login(UPDATED_LAST_LOGIN)
-                .first_name(UPDATED_FIRST_NAME)
-                .last_name(UPDATED_LAST_NAME)
+                .createdOn(UPDATED_CREATED_ON)
+                .lastLogin(UPDATED_LAST_LOGIN)
                 .gender(UPDATED_GENDER)
-                .dob(UPDATED_DOB)
+                .dateOfBirth(UPDATED_DATE_OF_BIRTH)
                 .height(UPDATED_HEIGHT)
-                .skill_level(UPDATED_SKILL_LEVEL)
-                .unit_of_measure(UPDATED_UNIT_OF_MEASURE)
-                .is_active(UPDATED_IS_ACTIVE);
+                .unitOfMeasure(UPDATED_UNIT_OF_MEASURE);
+        UserDemographicDTO userDemographicDTO = userDemographicMapper.userDemographicToUserDemographicDTO(updatedUserDemographic);
 
         restUserDemographicMockMvc.perform(put("/api/user-demographics")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(updatedUserDemographic)))
+            .content(TestUtil.convertObjectToJsonBytes(userDemographicDTO)))
             .andExpect(status().isOk());
 
         // Validate the UserDemographic in the database
         List<UserDemographic> userDemographicList = userDemographicRepository.findAll();
         assertThat(userDemographicList).hasSize(databaseSizeBeforeUpdate);
         UserDemographic testUserDemographic = userDemographicList.get(userDemographicList.size() - 1);
-        assertThat(testUserDemographic.getCreated_on()).isEqualTo(UPDATED_CREATED_ON);
-        assertThat(testUserDemographic.getLast_login()).isEqualTo(UPDATED_LAST_LOGIN);
-        assertThat(testUserDemographic.getFirst_name()).isEqualTo(UPDATED_FIRST_NAME);
-        assertThat(testUserDemographic.getLast_name()).isEqualTo(UPDATED_LAST_NAME);
+        assertThat(testUserDemographic.getCreatedOn()).isEqualTo(UPDATED_CREATED_ON);
+        assertThat(testUserDemographic.getLastLogin()).isEqualTo(UPDATED_LAST_LOGIN);
         assertThat(testUserDemographic.getGender()).isEqualTo(UPDATED_GENDER);
-        assertThat(testUserDemographic.getDob()).isEqualTo(UPDATED_DOB);
+        assertThat(testUserDemographic.getDateOfBirth()).isEqualTo(UPDATED_DATE_OF_BIRTH);
         assertThat(testUserDemographic.getHeight()).isEqualTo(UPDATED_HEIGHT);
-        assertThat(testUserDemographic.getSkill_level()).isEqualTo(UPDATED_SKILL_LEVEL);
-        assertThat(testUserDemographic.getUnit_of_measure()).isEqualTo(UPDATED_UNIT_OF_MEASURE);
-        assertThat(testUserDemographic.isIs_active()).isEqualTo(UPDATED_IS_ACTIVE);
+        assertThat(testUserDemographic.getUnitOfMeasure()).isEqualTo(UPDATED_UNIT_OF_MEASURE);
     }
 
     @Test
@@ -408,11 +340,12 @@ public class UserDemographicResourceIntTest {
         int databaseSizeBeforeUpdate = userDemographicRepository.findAll().size();
 
         // Create the UserDemographic
+        UserDemographicDTO userDemographicDTO = userDemographicMapper.userDemographicToUserDemographicDTO(userDemographic);
 
         // If the entity doesn't have an ID, it will be created instead of just being updated
         restUserDemographicMockMvc.perform(put("/api/user-demographics")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(userDemographic)))
+            .content(TestUtil.convertObjectToJsonBytes(userDemographicDTO)))
             .andExpect(status().isCreated());
 
         // Validate the UserDemographic in the database
@@ -424,8 +357,7 @@ public class UserDemographicResourceIntTest {
     @Transactional
     public void deleteUserDemographic() throws Exception {
         // Initialize the database
-        userDemographicService.save(userDemographic);
-
+        userDemographicRepository.saveAndFlush(userDemographic);
         int databaseSizeBeforeDelete = userDemographicRepository.findAll().size();
 
         // Get the userDemographic
@@ -436,5 +368,10 @@ public class UserDemographicResourceIntTest {
         // Validate the database is empty
         List<UserDemographic> userDemographicList = userDemographicRepository.findAll();
         assertThat(userDemographicList).hasSize(databaseSizeBeforeDelete - 1);
+    }
+
+    @Test
+    public void equalsVerifier() throws Exception {
+        TestUtil.equalsVerifier(UserDemographic.class);
     }
 }

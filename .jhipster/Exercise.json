@@ -2,10 +2,18 @@
     "fluentMethods": true,
     "relationships": [
         {
-            "relationshipName": "workoutInstance",
-            "otherEntityName": "workoutInstance",
-            "relationshipType": "many-to-many",
-            "ownerSide": false,
+            "relationshipName": "skillLevel",
+            "otherEntityName": "skillLevel",
+            "relationshipType": "many-to-one",
+            "relationshipValidateRules": [
+                "required"
+            ],
+            "otherEntityField": "level"
+        },
+        {
+            "relationshipName": "exerciseInstance",
+            "otherEntityName": "exerciseInstance",
+            "relationshipType": "one-to-many",
             "otherEntityRelationshipName": "exercise"
         },
         {
@@ -20,16 +28,13 @@
             "otherEntityRelationshipName": "exercise"
         },
         {
-            "relationshipName": "exerciseSet",
-            "otherEntityName": "exerciseSet",
-            "relationshipType": "one-to-many",
-            "otherEntityRelationshipName": "exercise"
-        },
-        {
-            "relationshipName": "userExercise",
-            "otherEntityName": "userExercise",
-            "relationshipType": "one-to-many",
-            "otherEntityRelationshipName": "exercise"
+            "relationshipName": "exerciseFamily",
+            "otherEntityName": "exerciseFamily",
+            "relationshipType": "many-to-one",
+            "relationshipValidateRules": [
+                "required"
+            ],
+            "otherEntityField": "name"
         }
     ],
     "fields": [
@@ -41,14 +46,17 @@
             ]
         },
         {
-            "fieldName": "exercise_type",
-            "fieldType": "ExerciseType",
-            "fieldValues": "BodyWeight, Cable, Machine, FreeWeight, Stretch"
+            "fieldName": "imageUri",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "notes",
+            "fieldType": "String"
         }
     ],
-    "changelogDate": "20170203230958",
-    "dto": "no",
+    "changelogDate": "20170307030114",
+    "dto": "mapstruct",
     "service": "serviceClass",
     "entityTableName": "exercise",
-    "pagination": "infinite-scroll"
+    "pagination": "pagination"
 }

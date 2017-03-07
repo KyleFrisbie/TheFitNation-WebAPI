@@ -7,7 +7,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.io.Serializable;
-import java.time.ZonedDateTime;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Objects;
@@ -23,18 +23,26 @@ public class UserWorkoutInstance implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
+    @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
 
     @NotNull
     @Column(name = "created_on", nullable = false)
-    private ZonedDateTime created_on;
+    private LocalDate createdOn;
+
+    @NotNull
+    @Column(name = "last_updated", nullable = false)
+    private LocalDate lastUpdated;
 
     @NotNull
     @Column(name = "was_completed", nullable = false)
-    private Boolean was_completed;
+    private Boolean wasCompleted;
 
-    @ManyToOne
+    @Column(name = "notes")
+    private String notes;
+
+    @ManyToOne(optional = false)
     @NotNull
     private UserWorkoutTemplate userWorkoutTemplate;
 
@@ -44,7 +52,7 @@ public class UserWorkoutInstance implements Serializable {
     @OneToMany(mappedBy = "userWorkoutInstance")
     @JsonIgnore
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    private Set<UserExercise> userExercises = new HashSet<>();
+    private Set<UserExerciseInstance> userExerciseInstances = new HashSet<>();
 
     public Long getId() {
         return id;
@@ -54,30 +62,56 @@ public class UserWorkoutInstance implements Serializable {
         this.id = id;
     }
 
-    public ZonedDateTime getCreated_on() {
-        return created_on;
+    public LocalDate getCreatedOn() {
+        return createdOn;
     }
 
-    public UserWorkoutInstance created_on(ZonedDateTime created_on) {
-        this.created_on = created_on;
+    public UserWorkoutInstance createdOn(LocalDate createdOn) {
+        this.createdOn = createdOn;
         return this;
     }
 
-    public void setCreated_on(ZonedDateTime created_on) {
-        this.created_on = created_on;
+    public void setCreatedOn(LocalDate createdOn) {
+        this.createdOn = createdOn;
     }
 
-    public Boolean isWas_completed() {
-        return was_completed;
+    public LocalDate getLastUpdated() {
+        return lastUpdated;
     }
 
-    public UserWorkoutInstance was_completed(Boolean was_completed) {
-        this.was_completed = was_completed;
+    public UserWorkoutInstance lastUpdated(LocalDate lastUpdated) {
+        this.lastUpdated = lastUpdated;
         return this;
     }
 
-    public void setWas_completed(Boolean was_completed) {
-        this.was_completed = was_completed;
+    public void setLastUpdated(LocalDate lastUpdated) {
+        this.lastUpdated = lastUpdated;
+    }
+
+    public Boolean isWasCompleted() {
+        return wasCompleted;
+    }
+
+    public UserWorkoutInstance wasCompleted(Boolean wasCompleted) {
+        this.wasCompleted = wasCompleted;
+        return this;
+    }
+
+    public void setWasCompleted(Boolean wasCompleted) {
+        this.wasCompleted = wasCompleted;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public UserWorkoutInstance notes(String notes) {
+        this.notes = notes;
+        return this;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
     }
 
     public UserWorkoutTemplate getUserWorkoutTemplate() {
@@ -106,29 +140,29 @@ public class UserWorkoutInstance implements Serializable {
         this.workoutInstance = workoutInstance;
     }
 
-    public Set<UserExercise> getUserExercises() {
-        return userExercises;
+    public Set<UserExerciseInstance> getUserExerciseInstances() {
+        return userExerciseInstances;
     }
 
-    public UserWorkoutInstance userExercises(Set<UserExercise> userExercises) {
-        this.userExercises = userExercises;
+    public UserWorkoutInstance userExerciseInstances(Set<UserExerciseInstance> userExerciseInstances) {
+        this.userExerciseInstances = userExerciseInstances;
         return this;
     }
 
-    public UserWorkoutInstance addUserExercise(UserExercise userExercise) {
-        userExercises.add(userExercise);
-        userExercise.setUserWorkoutInstance(this);
+    public UserWorkoutInstance addUserExerciseInstance(UserExerciseInstance userExerciseInstance) {
+        this.userExerciseInstances.add(userExerciseInstance);
+        userExerciseInstance.setUserWorkoutInstance(this);
         return this;
     }
 
-    public UserWorkoutInstance removeUserExercise(UserExercise userExercise) {
-        userExercises.remove(userExercise);
-        userExercise.setUserWorkoutInstance(null);
+    public UserWorkoutInstance removeUserExerciseInstance(UserExerciseInstance userExerciseInstance) {
+        this.userExerciseInstances.remove(userExerciseInstance);
+        userExerciseInstance.setUserWorkoutInstance(null);
         return this;
     }
 
-    public void setUserExercises(Set<UserExercise> userExercises) {
-        this.userExercises = userExercises;
+    public void setUserExerciseInstances(Set<UserExerciseInstance> userExerciseInstances) {
+        this.userExerciseInstances = userExerciseInstances;
     }
 
     @Override
@@ -155,8 +189,10 @@ public class UserWorkoutInstance implements Serializable {
     public String toString() {
         return "UserWorkoutInstance{" +
             "id=" + id +
-            ", created_on='" + created_on + "'" +
-            ", was_completed='" + was_completed + "'" +
+            ", createdOn='" + createdOn + "'" +
+            ", lastUpdated='" + lastUpdated + "'" +
+            ", wasCompleted='" + wasCompleted + "'" +
+            ", notes='" + notes + "'" +
             '}';
     }
 }

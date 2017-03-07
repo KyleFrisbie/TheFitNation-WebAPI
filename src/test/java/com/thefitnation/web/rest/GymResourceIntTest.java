@@ -3,24 +3,27 @@ package com.thefitnation.web.rest;
 import com.thefitnation.TheFitNationApp;
 
 import com.thefitnation.domain.Gym;
+import com.thefitnation.domain.Location;
 import com.thefitnation.repository.GymRepository;
 import com.thefitnation.service.GymService;
+import com.thefitnation.service.dto.GymDTO;
+import com.thefitnation.service.mapper.GymMapper;
+import com.thefitnation.web.rest.errors.ExceptionTranslator;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import java.util.List;
 
@@ -41,22 +44,28 @@ public class GymResourceIntTest {
     private static final String DEFAULT_NAME = "AAAAAAAAAA";
     private static final String UPDATED_NAME = "BBBBBBBBBB";
 
-    private static final String DEFAULT_LOCATION = "AAAAAAAAAA";
-    private static final String UPDATED_LOCATION = "BBBBBBBBBB";
+    private static final String DEFAULT_NOTES = "AAAAAAAAAA";
+    private static final String UPDATED_NOTES = "BBBBBBBBBB";
 
-    @Inject
+    @Autowired
     private GymRepository gymRepository;
 
-    @Inject
+    @Autowired
+    private GymMapper gymMapper;
+
+    @Autowired
     private GymService gymService;
 
-    @Inject
+    @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
 
-    @Inject
+    @Autowired
     private PageableHandlerMethodArgumentResolver pageableArgumentResolver;
 
-    @Inject
+    @Autowired
+    private ExceptionTranslator exceptionTranslator;
+
+    @Autowired
     private EntityManager em;
 
     private MockMvc restGymMockMvc;
@@ -66,10 +75,10 @@ public class GymResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        GymResource gymResource = new GymResource();
-        ReflectionTestUtils.setField(gymResource, "gymService", gymService);
+        GymResource gymResource = new GymResource(gymService);
         this.restGymMockMvc = MockMvcBuilders.standaloneSetup(gymResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
+            .setControllerAdvice(exceptionTranslator)
             .setMessageConverters(jacksonMessageConverter).build();
     }
 
@@ -82,7 +91,12 @@ public class GymResourceIntTest {
     public static Gym createEntity(EntityManager em) {
         Gym gym = new Gym()
                 .name(DEFAULT_NAME)
-                .location(DEFAULT_LOCATION);
+                .notes(DEFAULT_NOTES);
+        // Add required entity
+        Location location = LocationResourceIntTest.createEntity(em);
+        em.persist(location);
+        em.flush();
+        gym.setLocation(location);
         return gym;
     }
 
@@ -97,10 +111,11 @@ public class GymResourceIntTest {
         int databaseSizeBeforeCreate = gymRepository.findAll().size();
 
         // Create the Gym
+        GymDTO gymDTO = gymMapper.gymToGymDTO(gym);
 
         restGymMockMvc.perform(post("/api/gyms")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(gym)))
+            .content(TestUtil.convertObjectToJsonBytes(gymDTO)))
             .andExpect(status().isCreated());
 
         // Validate the Gym in the database
@@ -108,7 +123,7 @@ public class GymResourceIntTest {
         assertThat(gymList).hasSize(databaseSizeBeforeCreate + 1);
         Gym testGym = gymList.get(gymList.size() - 1);
         assertThat(testGym.getName()).isEqualTo(DEFAULT_NAME);
-        assertThat(testGym.getLocation()).isEqualTo(DEFAULT_LOCATION);
+        assertThat(testGym.getNotes()).isEqualTo(DEFAULT_NOTES);
     }
 
     @Test
@@ -119,11 +134,12 @@ public class GymResourceIntTest {
         // Create the Gym with an existing ID
         Gym existingGym = new Gym();
         existingGym.setId(1L);
+        GymDTO existingGymDTO = gymMapper.gymToGymDTO(existingGym);
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restGymMockMvc.perform(post("/api/gyms")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(existingGym)))
+            .content(TestUtil.convertObjectToJsonBytes(existingGymDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the Alice in the database
@@ -139,28 +155,11 @@ public class GymResourceIntTest {
         gym.setName(null);
 
         // Create the Gym, which fails.
+        GymDTO gymDTO = gymMapper.gymToGymDTO(gym);
 
         restGymMockMvc.perform(post("/api/gyms")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(gym)))
-            .andExpect(status().isBadRequest());
-
-        List<Gym> gymList = gymRepository.findAll();
-        assertThat(gymList).hasSize(databaseSizeBeforeTest);
-    }
-
-    @Test
-    @Transactional
-    public void checkLocationIsRequired() throws Exception {
-        int databaseSizeBeforeTest = gymRepository.findAll().size();
-        // set the field null
-        gym.setLocation(null);
-
-        // Create the Gym, which fails.
-
-        restGymMockMvc.perform(post("/api/gyms")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(gym)))
+            .content(TestUtil.convertObjectToJsonBytes(gymDTO)))
             .andExpect(status().isBadRequest());
 
         List<Gym> gymList = gymRepository.findAll();
@@ -179,7 +178,7 @@ public class GymResourceIntTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(gym.getId().intValue())))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
-            .andExpect(jsonPath("$.[*].location").value(hasItem(DEFAULT_LOCATION.toString())));
+            .andExpect(jsonPath("$.[*].notes").value(hasItem(DEFAULT_NOTES.toString())));
     }
 
     @Test
@@ -194,7 +193,7 @@ public class GymResourceIntTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(gym.getId().intValue()))
             .andExpect(jsonPath("$.name").value(DEFAULT_NAME.toString()))
-            .andExpect(jsonPath("$.location").value(DEFAULT_LOCATION.toString()));
+            .andExpect(jsonPath("$.notes").value(DEFAULT_NOTES.toString()));
     }
 
     @Test
@@ -209,19 +208,19 @@ public class GymResourceIntTest {
     @Transactional
     public void updateGym() throws Exception {
         // Initialize the database
-        gymService.save(gym);
-
+        gymRepository.saveAndFlush(gym);
         int databaseSizeBeforeUpdate = gymRepository.findAll().size();
 
         // Update the gym
         Gym updatedGym = gymRepository.findOne(gym.getId());
         updatedGym
                 .name(UPDATED_NAME)
-                .location(UPDATED_LOCATION);
+                .notes(UPDATED_NOTES);
+        GymDTO gymDTO = gymMapper.gymToGymDTO(updatedGym);
 
         restGymMockMvc.perform(put("/api/gyms")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(updatedGym)))
+            .content(TestUtil.convertObjectToJsonBytes(gymDTO)))
             .andExpect(status().isOk());
 
         // Validate the Gym in the database
@@ -229,7 +228,7 @@ public class GymResourceIntTest {
         assertThat(gymList).hasSize(databaseSizeBeforeUpdate);
         Gym testGym = gymList.get(gymList.size() - 1);
         assertThat(testGym.getName()).isEqualTo(UPDATED_NAME);
-        assertThat(testGym.getLocation()).isEqualTo(UPDATED_LOCATION);
+        assertThat(testGym.getNotes()).isEqualTo(UPDATED_NOTES);
     }
 
     @Test
@@ -238,11 +237,12 @@ public class GymResourceIntTest {
         int databaseSizeBeforeUpdate = gymRepository.findAll().size();
 
         // Create the Gym
+        GymDTO gymDTO = gymMapper.gymToGymDTO(gym);
 
         // If the entity doesn't have an ID, it will be created instead of just being updated
         restGymMockMvc.perform(put("/api/gyms")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(gym)))
+            .content(TestUtil.convertObjectToJsonBytes(gymDTO)))
             .andExpect(status().isCreated());
 
         // Validate the Gym in the database
@@ -254,8 +254,7 @@ public class GymResourceIntTest {
     @Transactional
     public void deleteGym() throws Exception {
         // Initialize the database
-        gymService.save(gym);
-
+        gymRepository.saveAndFlush(gym);
         int databaseSizeBeforeDelete = gymRepository.findAll().size();
 
         // Get the gym
@@ -266,5 +265,10 @@ public class GymResourceIntTest {
         // Validate the database is empty
         List<Gym> gymList = gymRepository.findAll();
         assertThat(gymList).hasSize(databaseSizeBeforeDelete - 1);
+    }
+
+    @Test
+    public void equalsVerifier() throws Exception {
+        TestUtil.equalsVerifier(Gym.class);
     }
 }

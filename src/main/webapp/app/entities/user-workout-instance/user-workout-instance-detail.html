@@ -1,35 +1,43 @@
 
 <div>
-    <h2><span>User Workout Instance</span> {{vm.userWorkoutInstance.id}}</h2>
+    <h2><span data-translate="theFitNationApp.userWorkoutInstance.detail.title">User Workout Instance</span> {{vm.userWorkoutInstance.id}}</h2>
     <hr>
     <jhi-alert-error></jhi-alert-error>
-    <dl class="dl-horizontal jh-entity-details">
-        <dt><span data-translate="theFitNationApp.userWorkoutInstance.created_on">Created On</span></dt>
+    <dl class="row jh-entity-details">
+        <dt><span data-translate="theFitNationApp.userWorkoutInstance.createdOn">Created On</span></dt>
         <dd>
-            <span>{{vm.userWorkoutInstance.created_on | date:'medium'}}</span>
+            <span>{{vm.userWorkoutInstance.createdOn | date:'mediumDate'}}</span>
         </dd>
-        <dt><span data-translate="theFitNationApp.userWorkoutInstance.was_completed">Was Completed</span></dt>
+        <dt><span data-translate="theFitNationApp.userWorkoutInstance.lastUpdated">Last Updated</span></dt>
         <dd>
-            <span>{{vm.userWorkoutInstance.was_completed}}</span>
+            <span>{{vm.userWorkoutInstance.lastUpdated | date:'mediumDate'}}</span>
         </dd>
-        <dt><span>User Workout Template</span></dt>
+        <dt><span data-translate="theFitNationApp.userWorkoutInstance.wasCompleted">Was Completed</span></dt>
         <dd>
-            <a ui-sref="user-workout-template-detail({id:vm.userWorkoutInstance.userWorkoutTemplate.id})">{{vm.userWorkoutInstance.userWorkoutTemplate.id}}</a>
+            <span>{{vm.userWorkoutInstance.wasCompleted}}</span>
         </dd>
-        <dt><span>Workout Instance</span></dt>
+        <dt><span data-translate="theFitNationApp.userWorkoutInstance.notes">Notes</span></dt>
         <dd>
-            <a ui-sref="workout-instance-detail({id:vm.userWorkoutInstance.workoutInstance.id})">{{vm.userWorkoutInstance.workoutInstance.name}}</a>
+            <span>{{vm.userWorkoutInstance.notes}}</span>
+        </dd>
+        <dt><span data-translate="theFitNationApp.userWorkoutInstance.userWorkoutTemplate">User Workout Template</span></dt>
+        <dd>
+            <a ui-sref="user-workout-template-detail({id:vm.userWorkoutInstance.userWorkoutTemplateId})">{{vm.userWorkoutInstance.userWorkoutTemplateId}}</a>
+        </dd>
+        <dt><span data-translate="theFitNationApp.userWorkoutInstance.workoutInstance">Workout Instance</span></dt>
+        <dd>
+            <a ui-sref="workout-instance-detail({id:vm.userWorkoutInstance.workoutInstanceId})">{{vm.userWorkoutInstance.workoutInstanceName}}</a>
         </dd>
     </dl>
 
     <button type="submit"
             ui-sref="{{ vm.previousState }}"
             class="btn btn-info">
-        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span> Back</span>
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
     </button>
 
     <button type="button" ui-sref="user-workout-instance-detail.edit({id:vm.userWorkoutInstance.id})" class="btn btn-primary">
         <span class="glyphicon glyphicon-pencil"></span>
-        <span class="hidden-xs hidden-sm"> Edit</span>
+        <span class="hidden-sm-down" data-translate="entity.action.edit"> Edit</span>
     </button>
 </div>

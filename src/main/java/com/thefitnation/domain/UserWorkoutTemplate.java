@@ -7,7 +7,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.io.Serializable;
-import java.time.ZonedDateTime;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Objects;
@@ -23,23 +23,26 @@ public class UserWorkoutTemplate implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
+    @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
 
     @NotNull
     @Column(name = "created_on", nullable = false)
-    private ZonedDateTime created_on;
+    private LocalDate createdOn;
 
     @NotNull
     @Column(name = "last_updated", nullable = false)
-    private ZonedDateTime last_updated;
+    private LocalDate lastUpdated;
+
+    @Column(name = "notes")
+    private String notes;
+
+    @ManyToOne(optional = false)
+    @NotNull
+    private UserDemographic userDemographic;
 
     @ManyToOne
-    @NotNull
-    private WorkoutLog workoutLog;
-
-    @ManyToOne
-    @NotNull
     private WorkoutTemplate workoutTemplate;
 
     @OneToMany(mappedBy = "userWorkoutTemplate")
@@ -55,43 +58,56 @@ public class UserWorkoutTemplate implements Serializable {
         this.id = id;
     }
 
-    public ZonedDateTime getCreated_on() {
-        return created_on;
+    public LocalDate getCreatedOn() {
+        return createdOn;
     }
 
-    public UserWorkoutTemplate created_on(ZonedDateTime created_on) {
-        this.created_on = created_on;
+    public UserWorkoutTemplate createdOn(LocalDate createdOn) {
+        this.createdOn = createdOn;
         return this;
     }
 
-    public void setCreated_on(ZonedDateTime created_on) {
-        this.created_on = created_on;
+    public void setCreatedOn(LocalDate createdOn) {
+        this.createdOn = createdOn;
     }
 
-    public ZonedDateTime getLast_updated() {
-        return last_updated;
+    public LocalDate getLastUpdated() {
+        return lastUpdated;
     }
 
-    public UserWorkoutTemplate last_updated(ZonedDateTime last_updated) {
-        this.last_updated = last_updated;
+    public UserWorkoutTemplate lastUpdated(LocalDate lastUpdated) {
+        this.lastUpdated = lastUpdated;
         return this;
     }
 
-    public void setLast_updated(ZonedDateTime last_updated) {
-        this.last_updated = last_updated;
+    public void setLastUpdated(LocalDate lastUpdated) {
+        this.lastUpdated = lastUpdated;
     }
 
-    public WorkoutLog getWorkoutLog() {
-        return workoutLog;
+    public String getNotes() {
+        return notes;
     }
 
-    public UserWorkoutTemplate workoutLog(WorkoutLog workoutLog) {
-        this.workoutLog = workoutLog;
+    public UserWorkoutTemplate notes(String notes) {
+        this.notes = notes;
         return this;
     }
 
-    public void setWorkoutLog(WorkoutLog workoutLog) {
-        this.workoutLog = workoutLog;
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
+
+    public UserDemographic getUserDemographic() {
+        return userDemographic;
+    }
+
+    public UserWorkoutTemplate userDemographic(UserDemographic userDemographic) {
+        this.userDemographic = userDemographic;
+        return this;
+    }
+
+    public void setUserDemographic(UserDemographic userDemographic) {
+        this.userDemographic = userDemographic;
     }
 
     public WorkoutTemplate getWorkoutTemplate() {
@@ -117,13 +133,13 @@ public class UserWorkoutTemplate implements Serializable {
     }
 
     public UserWorkoutTemplate addUserWorkoutInstance(UserWorkoutInstance userWorkoutInstance) {
-        userWorkoutInstances.add(userWorkoutInstance);
+        this.userWorkoutInstances.add(userWorkoutInstance);
         userWorkoutInstance.setUserWorkoutTemplate(this);
         return this;
     }
 
     public UserWorkoutTemplate removeUserWorkoutInstance(UserWorkoutInstance userWorkoutInstance) {
-        userWorkoutInstances.remove(userWorkoutInstance);
+        this.userWorkoutInstances.remove(userWorkoutInstance);
         userWorkoutInstance.setUserWorkoutTemplate(null);
         return this;
     }
@@ -156,8 +172,9 @@ public class UserWorkoutTemplate implements Serializable {
     public String toString() {
         return "UserWorkoutTemplate{" +
             "id=" + id +
-            ", created_on='" + created_on + "'" +
-            ", last_updated='" + last_updated + "'" +
+            ", createdOn='" + createdOn + "'" +
+            ", lastUpdated='" + lastUpdated + "'" +
+            ", notes='" + notes + "'" +
             '}';
     }
 }

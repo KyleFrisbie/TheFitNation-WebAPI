@@ -5,27 +5,23 @@
         .module('theFitNationApp')
         .controller('MuscleController', MuscleController);
 
-    MuscleController.$inject = ['$scope', '$state', 'Muscle', 'ParseLinks', 'AlertService', 'paginationConstants'];
+    MuscleController.$inject = ['$state', 'Muscle', 'ParseLinks', 'AlertService', 'paginationConstants', 'pagingParams'];
 
-    function MuscleController ($scope, $state, Muscle, ParseLinks, AlertService, paginationConstants) {
+    function MuscleController($state, Muscle, ParseLinks, AlertService, paginationConstants, pagingParams) {
+
         var vm = this;
 
-        vm.muscles = [];
         vm.loadPage = loadPage;
+        vm.predicate = pagingParams.predicate;
+        vm.reverse = pagingParams.ascending;
+        vm.transition = transition;
         vm.itemsPerPage = paginationConstants.itemsPerPage;
-        vm.page = 0;
-        vm.links = {
-            last: 0
-        };
-        vm.predicate = 'id';
-        vm.reset = reset;
-        vm.reverse = true;
 
         loadAll();
 
         function loadAll () {
             Muscle.query({
-                page: vm.page,
+                page: pagingParams.page - 1,
                 size: vm.itemsPerPage,
                 sort: sort()
             }, onSuccess, onError);
@@ -36,29 +32,29 @@
                 }
                 return result;
             }
-
             function onSuccess(data, headers) {
                 vm.links = ParseLinks.parse(headers('link'));
                 vm.totalItems = headers('X-Total-Count');
-                for (var i = 0; i < data.length; i++) {
-                    vm.muscles.push(data[i]);
-                }
+                vm.queryCount = vm.totalItems;
+                vm.muscles = data;
+                vm.page = pagingParams.page;
             }
-
             function onError(error) {
                 AlertService.error(error.data.message);
             }
         }
 
-        function reset () {
-            vm.page = 0;
-            vm.muscles = [];
-            loadAll();
-        }
-
         function loadPage(page) {
             vm.page = page;
-            loadAll();
+            vm.transition();
+        }
+
+        function transition() {
+            $state.transitionTo($state.$current, {
+                page: vm.page,
+                sort: vm.predicate + ',' + (vm.reverse ? 'asc' : 'desc'),
+                search: vm.currentSearch
+            });
         }
     }
 })();

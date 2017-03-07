@@ -8,13 +8,13 @@
             "relationshipValidateRules": [
                 "required"
             ],
-            "otherEntityField": "last_name"
+            "otherEntityField": "id"
         }
     ],
     "fields": [
         {
-            "fieldName": "weight_date",
-            "fieldType": "ZonedDateTime",
+            "fieldName": "weightDate",
+            "fieldType": "LocalDate",
             "fieldValidateRules": [
                 "required"
             ]
@@ -23,13 +23,15 @@
             "fieldName": "weight",
             "fieldType": "Float",
             "fieldValidateRules": [
-                "required"
-            ]
+                "required",
+                "min"
+            ],
+            "fieldValidateRulesMin": "1"
         }
     ],
-    "changelogDate": "20170203225632",
-    "dto": "no",
+    "changelogDate": "20170307020906",
+    "dto": "mapstruct",
     "service": "serviceClass",
     "entityTableName": "user_weight",
-    "pagination": "infinite-scroll"
+    "pagination": "pagination"
 }

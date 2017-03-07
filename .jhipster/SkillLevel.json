@@ -1,0 +1,18 @@
+{
+    "fluentMethods": true,
+    "relationships": [],
+    "fields": [
+        {
+            "fieldName": "level",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required"
+            ]
+        }
+    ],
+    "changelogDate": "20170307024133",
+    "dto": "mapstruct",
+    "service": "serviceClass",
+    "entityTableName": "skill_level",
+    "pagination": "pagination"
+}

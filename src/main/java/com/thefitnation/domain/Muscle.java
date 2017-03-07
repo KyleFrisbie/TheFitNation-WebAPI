@@ -22,7 +22,8 @@ public class Muscle implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
+    @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
 
     @NotNull
@@ -33,6 +34,11 @@ public class Muscle implements Serializable {
     @JsonIgnore
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<Exercise> exercises = new HashSet<>();
+
+    @OneToOne(optional = false)
+    @NotNull
+    @JoinColumn(unique = true)
+    private BodyPart bodyPart;
 
     public Long getId() {
         return id;
@@ -65,19 +71,32 @@ public class Muscle implements Serializable {
     }
 
     public Muscle addExercise(Exercise exercise) {
-        exercises.add(exercise);
+        this.exercises.add(exercise);
         exercise.getMuscles().add(this);
         return this;
     }
 
     public Muscle removeExercise(Exercise exercise) {
-        exercises.remove(exercise);
+        this.exercises.remove(exercise);
         exercise.getMuscles().remove(this);
         return this;
     }
 
     public void setExercises(Set<Exercise> exercises) {
         this.exercises = exercises;
+    }
+
+    public BodyPart getBodyPart() {
+        return bodyPart;
+    }
+
+    public Muscle bodyPart(BodyPart bodyPart) {
+        this.bodyPart = bodyPart;
+        return this;
+    }
+
+    public void setBodyPart(BodyPart bodyPart) {
+        this.bodyPart = bodyPart;
     }
 
     @Override

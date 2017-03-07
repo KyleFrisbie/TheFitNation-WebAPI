@@ -7,6 +7,17 @@
             "relationshipType": "many-to-many",
             "ownerSide": false,
             "otherEntityRelationshipName": "muscle"
+        },
+        {
+            "relationshipName": "bodyPart",
+            "otherEntityName": "bodyPart",
+            "relationshipType": "one-to-one",
+            "relationshipValidateRules": [
+                "required"
+            ],
+            "otherEntityField": "name",
+            "ownerSide": true,
+            "otherEntityRelationshipName": "muscle"
         }
     ],
     "fields": [
@@ -18,9 +29,9 @@
             ]
         }
     ],
-    "changelogDate": "20170203224443",
-    "dto": "no",
+    "changelogDate": "20170307030316",
+    "dto": "mapstruct",
     "service": "serviceClass",
     "entityTableName": "muscle",
-    "pagination": "infinite-scroll"
+    "pagination": "pagination"
 }

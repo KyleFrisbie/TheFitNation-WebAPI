@@ -2,6 +2,8 @@ package com.thefitnation.service;
 
 import com.thefitnation.domain.WorkoutTemplate;
 import com.thefitnation.repository.WorkoutTemplateRepository;
+import com.thefitnation.service.dto.WorkoutTemplateDTO;
+import com.thefitnation.service.mapper.WorkoutTemplateMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -9,8 +11,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
-import javax.inject.Inject;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Service Implementation for managing WorkoutTemplate.
@@ -21,18 +24,26 @@ public class WorkoutTemplateService {
 
     private final Logger log = LoggerFactory.getLogger(WorkoutTemplateService.class);
     
-    @Inject
-    private WorkoutTemplateRepository workoutTemplateRepository;
+    private final WorkoutTemplateRepository workoutTemplateRepository;
+
+    private final WorkoutTemplateMapper workoutTemplateMapper;
+
+    public WorkoutTemplateService(WorkoutTemplateRepository workoutTemplateRepository, WorkoutTemplateMapper workoutTemplateMapper) {
+        this.workoutTemplateRepository = workoutTemplateRepository;
+        this.workoutTemplateMapper = workoutTemplateMapper;
+    }
 
     /**
      * Save a workoutTemplate.
      *
-     * @param workoutTemplate the entity to save
+     * @param workoutTemplateDTO the entity to save
      * @return the persisted entity
      */
-    public WorkoutTemplate save(WorkoutTemplate workoutTemplate) {
-        log.debug("Request to save WorkoutTemplate : {}", workoutTemplate);
-        WorkoutTemplate result = workoutTemplateRepository.save(workoutTemplate);
+    public WorkoutTemplateDTO save(WorkoutTemplateDTO workoutTemplateDTO) {
+        log.debug("Request to save WorkoutTemplate : {}", workoutTemplateDTO);
+        WorkoutTemplate workoutTemplate = workoutTemplateMapper.workoutTemplateDTOToWorkoutTemplate(workoutTemplateDTO);
+        workoutTemplate = workoutTemplateRepository.save(workoutTemplate);
+        WorkoutTemplateDTO result = workoutTemplateMapper.workoutTemplateToWorkoutTemplateDTO(workoutTemplate);
         return result;
     }
 
@@ -42,11 +53,11 @@ public class WorkoutTemplateService {
      *  @param pageable the pagination information
      *  @return the list of entities
      */
-    @Transactional(readOnly = true) 
-    public Page<WorkoutTemplate> findAll(Pageable pageable) {
+    @Transactional(readOnly = true)
+    public Page<WorkoutTemplateDTO> findAll(Pageable pageable) {
         log.debug("Request to get all WorkoutTemplates");
         Page<WorkoutTemplate> result = workoutTemplateRepository.findAll(pageable);
-        return result;
+        return result.map(workoutTemplate -> workoutTemplateMapper.workoutTemplateToWorkoutTemplateDTO(workoutTemplate));
     }
 
     /**
@@ -55,11 +66,12 @@ public class WorkoutTemplateService {
      *  @param id the id of the entity
      *  @return the entity
      */
-    @Transactional(readOnly = true) 
-    public WorkoutTemplate findOne(Long id) {
+    @Transactional(readOnly = true)
+    public WorkoutTemplateDTO findOne(Long id) {
         log.debug("Request to get WorkoutTemplate : {}", id);
         WorkoutTemplate workoutTemplate = workoutTemplateRepository.findOne(id);
-        return workoutTemplate;
+        WorkoutTemplateDTO workoutTemplateDTO = workoutTemplateMapper.workoutTemplateToWorkoutTemplateDTO(workoutTemplate);
+        return workoutTemplateDTO;
     }
 
     /**

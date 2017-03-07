@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>TheFitNation</title>
     <meta name="description" content="">
+    <meta name="google" value="notranslate">
     <meta name="viewport" content="width=device-width">
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
     <!-- build:css content/css/vendor.css -->
@@ -29,7 +30,7 @@
         </div>
 
         <div class="footer" ng-cloak>
-            <p>This is your footer</p>
+            <p data-translate="footer">This is your footer</p>
         </div>
     </div>
 
@@ -46,17 +47,22 @@
     <!-- build:js app/vendor.js -->
     <!-- bower:js -->
     <script src="bower_components/jquery/dist/jquery.js"></script>
-    <script src="bower_components/json3/lib/json3.js"></script>
     <script src="bower_components/messageformat/messageformat.js"></script>
+    <script src="bower_components/json3/lib/json3.js"></script>
     <script src="bower_components/angular/angular.js"></script>
     <script src="bower_components/angular-aria/angular-aria.js"></script>
     <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
     <script src="bower_components/angular-cache-buster/angular-cache-buster.js"></script>
     <script src="bower_components/angular-cookies/angular-cookies.js"></script>
+    <script src="bower_components/angular-dynamic-locale/src/tmhDynamicLocale.js"></script>
     <script src="bower_components/ngstorage/ngStorage.js"></script>
     <script src="bower_components/angular-loading-bar/build/loading-bar.js"></script>
     <script src="bower_components/angular-resource/angular-resource.js"></script>
     <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
+    <script src="bower_components/angular-translate/angular-translate.js"></script>
+    <script src="bower_components/angular-translate-interpolation-messageformat/angular-translate-interpolation-messageformat.js"></script>
+    <script src="bower_components/angular-translate-loader-partial/angular-translate-loader-partial.js"></script>
+    <script src="bower_components/angular-translate-storage-cookie/angular-translate-storage-cookie.js"></script>
     <script src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
     <script src="bower_components/bootstrap-ui-datetime-picker/dist/datetime-picker.js"></script>
     <script src="bower_components/ng-file-upload/ng-file-upload.js"></script>
@@ -82,6 +88,7 @@
     <script src="app/services/auth/activate.service.js"></script>
     <script src="app/services/auth/account.service.js"></script>
     <script src="app/layouts/navbar/navbar.controller.js"></script>
+    <script src="app/layouts/navbar/active-menu.directive.js"></script>
     <script src="app/layouts/error/error.state.js"></script>
     <script src="app/home/home.state.js"></script>
     <script src="app/home/home.controller.js"></script>
@@ -91,12 +98,6 @@
     <script src="app/entities/workout-template/workout-template.state.js"></script>
     <script src="app/entities/workout-template/workout-template.service.js"></script>
     <script src="app/entities/workout-template/workout-template.controller.js"></script>
-    <script src="app/entities/workout-log/workout-log-dialog.controller.js"></script>
-    <script src="app/entities/workout-log/workout-log-detail.controller.js"></script>
-    <script src="app/entities/workout-log/workout-log-delete-dialog.controller.js"></script>
-    <script src="app/entities/workout-log/workout-log.state.js"></script>
-    <script src="app/entities/workout-log/workout-log.service.js"></script>
-    <script src="app/entities/workout-log/workout-log.controller.js"></script>
     <script src="app/entities/workout-instance/workout-instance-dialog.controller.js"></script>
     <script src="app/entities/workout-instance/workout-instance-detail.controller.js"></script>
     <script src="app/entities/workout-instance/workout-instance-delete-dialog.controller.js"></script>
@@ -121,42 +122,72 @@
     <script src="app/entities/user-weight/user-weight.state.js"></script>
     <script src="app/entities/user-weight/user-weight.service.js"></script>
     <script src="app/entities/user-weight/user-weight.controller.js"></script>
-    <script src="app/entities/user-exercise-set/user-exercise-set-dialog.controller.js"></script>
-    <script src="app/entities/user-exercise-set/user-exercise-set-detail.controller.js"></script>
-    <script src="app/entities/user-exercise-set/user-exercise-set-delete-dialog.controller.js"></script>
-    <script src="app/entities/user-exercise-set/user-exercise-set.state.js"></script>
-    <script src="app/entities/user-exercise-set/user-exercise-set.service.js"></script>
-    <script src="app/entities/user-exercise-set/user-exercise-set.controller.js"></script>
-    <script src="app/entities/user-exercise/user-exercise-dialog.controller.js"></script>
-    <script src="app/entities/user-exercise/user-exercise-detail.controller.js"></script>
-    <script src="app/entities/user-exercise/user-exercise-delete-dialog.controller.js"></script>
-    <script src="app/entities/user-exercise/user-exercise.state.js"></script>
-    <script src="app/entities/user-exercise/user-exercise.service.js"></script>
-    <script src="app/entities/user-exercise/user-exercise.controller.js"></script>
+    <script src="app/entities/user-exercise-instance-set/user-exercise-instance-set-dialog.controller.js"></script>
+    <script src="app/entities/user-exercise-instance-set/user-exercise-instance-set-detail.controller.js"></script>
+    <script src="app/entities/user-exercise-instance-set/user-exercise-instance-set-delete-dialog.controller.js"></script>
+    <script src="app/entities/user-exercise-instance-set/user-exercise-instance-set.state.js"></script>
+    <script src="app/entities/user-exercise-instance-set/user-exercise-instance-set.service.js"></script>
+    <script src="app/entities/user-exercise-instance-set/user-exercise-instance-set.controller.js"></script>
+    <script src="app/entities/user-exercise-instance/user-exercise-instance-dialog.controller.js"></script>
+    <script src="app/entities/user-exercise-instance/user-exercise-instance-detail.controller.js"></script>
+    <script src="app/entities/user-exercise-instance/user-exercise-instance-delete-dialog.controller.js"></script>
+    <script src="app/entities/user-exercise-instance/user-exercise-instance.state.js"></script>
+    <script src="app/entities/user-exercise-instance/user-exercise-instance.service.js"></script>
+    <script src="app/entities/user-exercise-instance/user-exercise-instance.controller.js"></script>
     <script src="app/entities/user-demographic/user-demographic-dialog.controller.js"></script>
     <script src="app/entities/user-demographic/user-demographic-detail.controller.js"></script>
     <script src="app/entities/user-demographic/user-demographic-delete-dialog.controller.js"></script>
     <script src="app/entities/user-demographic/user-demographic.state.js"></script>
     <script src="app/entities/user-demographic/user-demographic.service.js"></script>
     <script src="app/entities/user-demographic/user-demographic.controller.js"></script>
+    <script src="app/entities/unit/unit-dialog.controller.js"></script>
+    <script src="app/entities/unit/unit-detail.controller.js"></script>
+    <script src="app/entities/unit/unit-delete-dialog.controller.js"></script>
+    <script src="app/entities/unit/unit.state.js"></script>
+    <script src="app/entities/unit/unit.service.js"></script>
+    <script src="app/entities/unit/unit.controller.js"></script>
+    <script src="app/entities/skill-level/skill-level-dialog.controller.js"></script>
+    <script src="app/entities/skill-level/skill-level-detail.controller.js"></script>
+    <script src="app/entities/skill-level/skill-level-delete-dialog.controller.js"></script>
+    <script src="app/entities/skill-level/skill-level.state.js"></script>
+    <script src="app/entities/skill-level/skill-level.service.js"></script>
+    <script src="app/entities/skill-level/skill-level.controller.js"></script>
     <script src="app/entities/muscle/muscle-dialog.controller.js"></script>
     <script src="app/entities/muscle/muscle-detail.controller.js"></script>
     <script src="app/entities/muscle/muscle-delete-dialog.controller.js"></script>
     <script src="app/entities/muscle/muscle.state.js"></script>
     <script src="app/entities/muscle/muscle.service.js"></script>
     <script src="app/entities/muscle/muscle.controller.js"></script>
+    <script src="app/entities/location/location-dialog.controller.js"></script>
+    <script src="app/entities/location/location-detail.controller.js"></script>
+    <script src="app/entities/location/location-delete-dialog.controller.js"></script>
+    <script src="app/entities/location/location.state.js"></script>
+    <script src="app/entities/location/location.service.js"></script>
+    <script src="app/entities/location/location.controller.js"></script>
     <script src="app/entities/gym/gym-dialog.controller.js"></script>
     <script src="app/entities/gym/gym-detail.controller.js"></script>
     <script src="app/entities/gym/gym-delete-dialog.controller.js"></script>
     <script src="app/entities/gym/gym.state.js"></script>
     <script src="app/entities/gym/gym.service.js"></script>
     <script src="app/entities/gym/gym.controller.js"></script>
-    <script src="app/entities/exercise-set/exercise-set-dialog.controller.js"></script>
-    <script src="app/entities/exercise-set/exercise-set-detail.controller.js"></script>
-    <script src="app/entities/exercise-set/exercise-set-delete-dialog.controller.js"></script>
-    <script src="app/entities/exercise-set/exercise-set.state.js"></script>
-    <script src="app/entities/exercise-set/exercise-set.service.js"></script>
-    <script src="app/entities/exercise-set/exercise-set.controller.js"></script>
+    <script src="app/entities/exercise-instance-set/exercise-instance-set-dialog.controller.js"></script>
+    <script src="app/entities/exercise-instance-set/exercise-instance-set-detail.controller.js"></script>
+    <script src="app/entities/exercise-instance-set/exercise-instance-set-delete-dialog.controller.js"></script>
+    <script src="app/entities/exercise-instance-set/exercise-instance-set.state.js"></script>
+    <script src="app/entities/exercise-instance-set/exercise-instance-set.service.js"></script>
+    <script src="app/entities/exercise-instance-set/exercise-instance-set.controller.js"></script>
+    <script src="app/entities/exercise-instance/exercise-instance-dialog.controller.js"></script>
+    <script src="app/entities/exercise-instance/exercise-instance-detail.controller.js"></script>
+    <script src="app/entities/exercise-instance/exercise-instance-delete-dialog.controller.js"></script>
+    <script src="app/entities/exercise-instance/exercise-instance.state.js"></script>
+    <script src="app/entities/exercise-instance/exercise-instance.service.js"></script>
+    <script src="app/entities/exercise-instance/exercise-instance.controller.js"></script>
+    <script src="app/entities/exercise-family/exercise-family-dialog.controller.js"></script>
+    <script src="app/entities/exercise-family/exercise-family-detail.controller.js"></script>
+    <script src="app/entities/exercise-family/exercise-family-delete-dialog.controller.js"></script>
+    <script src="app/entities/exercise-family/exercise-family.state.js"></script>
+    <script src="app/entities/exercise-family/exercise-family.service.js"></script>
+    <script src="app/entities/exercise-family/exercise-family.controller.js"></script>
     <script src="app/entities/exercise/exercise-dialog.controller.js"></script>
     <script src="app/entities/exercise/exercise-detail.controller.js"></script>
     <script src="app/entities/exercise/exercise-delete-dialog.controller.js"></script>
@@ -164,6 +195,18 @@
     <script src="app/entities/exercise/exercise.service.js"></script>
     <script src="app/entities/exercise/exercise.controller.js"></script>
     <script src="app/entities/entity.state.js"></script>
+    <script src="app/entities/body-part/body-part-dialog.controller.js"></script>
+    <script src="app/entities/body-part/body-part-detail.controller.js"></script>
+    <script src="app/entities/body-part/body-part-delete-dialog.controller.js"></script>
+    <script src="app/entities/body-part/body-part.state.js"></script>
+    <script src="app/entities/body-part/body-part.service.js"></script>
+    <script src="app/entities/body-part/body-part.controller.js"></script>
+    <script src="app/entities/address/address-dialog.controller.js"></script>
+    <script src="app/entities/address/address-detail.controller.js"></script>
+    <script src="app/entities/address/address-delete-dialog.controller.js"></script>
+    <script src="app/entities/address/address.state.js"></script>
+    <script src="app/entities/address/address.service.js"></script>
+    <script src="app/entities/address/address.controller.js"></script>
     <script src="app/components/util/truncate-words.filter.js"></script>
     <script src="app/components/util/truncate-characters.filter.js"></script>
     <script src="app/components/util/sort-by.directive.js"></script>
@@ -177,6 +220,10 @@
     <script src="app/components/util/base64.service.js"></script>
     <script src="app/components/login/login.service.js"></script>
     <script src="app/components/login/login.controller.js"></script>
+    <script src="app/components/language/language.service.js"></script>
+    <script src="app/components/language/language.filter.js"></script>
+    <script src="app/components/language/language.controller.js"></script>
+    <script src="app/components/language/language.constants.js"></script>
     <script src="app/components/form/show-validation.directive.js"></script>
     <script src="app/components/form/pagination.constants.js"></script>
     <script src="app/components/form/minbytes.directive.js"></script>
@@ -188,9 +235,12 @@
     <script src="app/blocks/interceptor/errorhandler.interceptor.js"></script>
     <script src="app/blocks/interceptor/auth-expired.interceptor.js"></script>
     <script src="app/blocks/interceptor/auth.interceptor.js"></script>
+    <script src="app/blocks/handlers/translation.handler.js"></script>
     <script src="app/blocks/handlers/state.handler.js"></script>
     <script src="app/blocks/config/uib-pagination.config.js"></script>
     <script src="app/blocks/config/uib-pager.config.js"></script>
+    <script src="app/blocks/config/translation-storage.provider.js"></script>
+    <script src="app/blocks/config/translation.config.js"></script>
     <script src="app/blocks/config/localstorage.config.js"></script>
     <script src="app/blocks/config/http.config.js"></script>
     <script src="app/blocks/config/compile.config.js"></script>

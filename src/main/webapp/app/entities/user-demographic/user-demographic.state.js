@@ -11,10 +11,10 @@
         $stateProvider
         .state('user-demographic', {
             parent: 'entity',
-            url: '/user-demographic',
+            url: '/user-demographic?page&sort&search',
             data: {
                 authorities: ['ROLE_USER'],
-                pageTitle: 'UserDemographics'
+                pageTitle: 'theFitNationApp.userDemographic.home.title'
             },
             views: {
                 'content@': {
@@ -23,15 +23,42 @@
                     controllerAs: 'vm'
                 }
             },
+            params: {
+                page: {
+                    value: '1',
+                    squash: true
+                },
+                sort: {
+                    value: 'id,asc',
+                    squash: true
+                },
+                search: null
+            },
             resolve: {
+                pagingParams: ['$stateParams', 'PaginationUtil', function ($stateParams, PaginationUtil) {
+                    return {
+                        page: PaginationUtil.parsePage($stateParams.page),
+                        sort: $stateParams.sort,
+                        predicate: PaginationUtil.parsePredicate($stateParams.sort),
+                        ascending: PaginationUtil.parseAscending($stateParams.sort),
+                        search: $stateParams.search
+                    };
+                }],
+                translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
+                    $translatePartialLoader.addPart('userDemographic');
+                    $translatePartialLoader.addPart('gender');
+                    $translatePartialLoader.addPart('unitOfMeasure');
+                    $translatePartialLoader.addPart('global');
+                    return $translate.refresh();
+                }]
             }
         })
         .state('user-demographic-detail', {
-            parent: 'entity',
+            parent: 'user-demographic',
             url: '/user-demographic/{id}',
             data: {
                 authorities: ['ROLE_USER'],
-                pageTitle: 'UserDemographic'
+                pageTitle: 'theFitNationApp.userDemographic.detail.title'
             },
             views: {
                 'content@': {
@@ -41,6 +68,12 @@
                 }
             },
             resolve: {
+                translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
+                    $translatePartialLoader.addPart('userDemographic');
+                    $translatePartialLoader.addPart('gender');
+                    $translatePartialLoader.addPart('unitOfMeasure');
+                    return $translate.refresh();
+                }],
                 entity: ['$stateParams', 'UserDemographic', function($stateParams, UserDemographic) {
                     return UserDemographic.get({id : $stateParams.id}).$promise;
                 }],
@@ -95,16 +128,12 @@
                     resolve: {
                         entity: function () {
                             return {
-                                created_on: null,
-                                last_login: null,
-                                first_name: null,
-                                last_name: null,
+                                createdOn: null,
+                                lastLogin: null,
                                 gender: null,
-                                dob: null,
+                                dateOfBirth: null,
                                 height: null,
-                                skill_level: null,
-                                unit_of_measure: null,
-                                is_active: false,
+                                unitOfMeasure: null,
                                 id: null
                             };
                         }

@@ -3,7 +3,6 @@ package com.thefitnation.repository;
 import com.thefitnation.domain.WorkoutInstance;
 
 import org.springframework.data.jpa.repository.*;
-import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -12,11 +11,5 @@ import java.util.List;
  */
 @SuppressWarnings("unused")
 public interface WorkoutInstanceRepository extends JpaRepository<WorkoutInstance,Long> {
-
-    @Query("select distinct workoutInstance from WorkoutInstance workoutInstance left join fetch workoutInstance.exercises")
-    List<WorkoutInstance> findAllWithEagerRelationships();
-
-    @Query("select workoutInstance from WorkoutInstance workoutInstance left join fetch workoutInstance.exercises where workoutInstance.id =:id")
-    WorkoutInstance findOneWithEagerRelationships(@Param("id") Long id);
 
 }

@@ -7,7 +7,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.io.Serializable;
-import java.time.ZonedDateTime;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Objects;
@@ -23,26 +23,31 @@ public class WorkoutTemplate implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
+    @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
 
     @NotNull
+    @Size(min = 1)
     @Column(name = "name", nullable = false)
     private String name;
 
     @NotNull
     @Column(name = "created_on", nullable = false)
-    private ZonedDateTime created_on;
+    private LocalDate createdOn;
 
     @NotNull
     @Column(name = "last_updated", nullable = false)
-    private ZonedDateTime last_updated;
+    private LocalDate lastUpdated;
 
     @NotNull
     @Column(name = "is_private", nullable = false)
-    private Boolean is_private;
+    private Boolean isPrivate;
 
-    @ManyToOne
+    @Column(name = "notes")
+    private String notes;
+
+    @ManyToOne(optional = false)
     @NotNull
     private UserDemographic userDemographic;
 
@@ -55,6 +60,10 @@ public class WorkoutTemplate implements Serializable {
     @JsonIgnore
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<UserWorkoutTemplate> userWorkoutTemplates = new HashSet<>();
+
+    @ManyToOne(optional = false)
+    @NotNull
+    private SkillLevel skillLevel;
 
     public Long getId() {
         return id;
@@ -77,43 +86,56 @@ public class WorkoutTemplate implements Serializable {
         this.name = name;
     }
 
-    public ZonedDateTime getCreated_on() {
-        return created_on;
+    public LocalDate getCreatedOn() {
+        return createdOn;
     }
 
-    public WorkoutTemplate created_on(ZonedDateTime created_on) {
-        this.created_on = created_on;
+    public WorkoutTemplate createdOn(LocalDate createdOn) {
+        this.createdOn = createdOn;
         return this;
     }
 
-    public void setCreated_on(ZonedDateTime created_on) {
-        this.created_on = created_on;
+    public void setCreatedOn(LocalDate createdOn) {
+        this.createdOn = createdOn;
     }
 
-    public ZonedDateTime getLast_updated() {
-        return last_updated;
+    public LocalDate getLastUpdated() {
+        return lastUpdated;
     }
 
-    public WorkoutTemplate last_updated(ZonedDateTime last_updated) {
-        this.last_updated = last_updated;
+    public WorkoutTemplate lastUpdated(LocalDate lastUpdated) {
+        this.lastUpdated = lastUpdated;
         return this;
     }
 
-    public void setLast_updated(ZonedDateTime last_updated) {
-        this.last_updated = last_updated;
+    public void setLastUpdated(LocalDate lastUpdated) {
+        this.lastUpdated = lastUpdated;
     }
 
-    public Boolean isIs_private() {
-        return is_private;
+    public Boolean isIsPrivate() {
+        return isPrivate;
     }
 
-    public WorkoutTemplate is_private(Boolean is_private) {
-        this.is_private = is_private;
+    public WorkoutTemplate isPrivate(Boolean isPrivate) {
+        this.isPrivate = isPrivate;
         return this;
     }
 
-    public void setIs_private(Boolean is_private) {
-        this.is_private = is_private;
+    public void setIsPrivate(Boolean isPrivate) {
+        this.isPrivate = isPrivate;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public WorkoutTemplate notes(String notes) {
+        this.notes = notes;
+        return this;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
     }
 
     public UserDemographic getUserDemographic() {
@@ -139,13 +161,13 @@ public class WorkoutTemplate implements Serializable {
     }
 
     public WorkoutTemplate addWorkoutInstance(WorkoutInstance workoutInstance) {
-        workoutInstances.add(workoutInstance);
+        this.workoutInstances.add(workoutInstance);
         workoutInstance.setWorkoutTemplate(this);
         return this;
     }
 
     public WorkoutTemplate removeWorkoutInstance(WorkoutInstance workoutInstance) {
-        workoutInstances.remove(workoutInstance);
+        this.workoutInstances.remove(workoutInstance);
         workoutInstance.setWorkoutTemplate(null);
         return this;
     }
@@ -164,19 +186,32 @@ public class WorkoutTemplate implements Serializable {
     }
 
     public WorkoutTemplate addUserWorkoutTemplate(UserWorkoutTemplate userWorkoutTemplate) {
-        userWorkoutTemplates.add(userWorkoutTemplate);
+        this.userWorkoutTemplates.add(userWorkoutTemplate);
         userWorkoutTemplate.setWorkoutTemplate(this);
         return this;
     }
 
     public WorkoutTemplate removeUserWorkoutTemplate(UserWorkoutTemplate userWorkoutTemplate) {
-        userWorkoutTemplates.remove(userWorkoutTemplate);
+        this.userWorkoutTemplates.remove(userWorkoutTemplate);
         userWorkoutTemplate.setWorkoutTemplate(null);
         return this;
     }
 
     public void setUserWorkoutTemplates(Set<UserWorkoutTemplate> userWorkoutTemplates) {
         this.userWorkoutTemplates = userWorkoutTemplates;
+    }
+
+    public SkillLevel getSkillLevel() {
+        return skillLevel;
+    }
+
+    public WorkoutTemplate skillLevel(SkillLevel skillLevel) {
+        this.skillLevel = skillLevel;
+        return this;
+    }
+
+    public void setSkillLevel(SkillLevel skillLevel) {
+        this.skillLevel = skillLevel;
     }
 
     @Override
@@ -204,9 +239,10 @@ public class WorkoutTemplate implements Serializable {
         return "WorkoutTemplate{" +
             "id=" + id +
             ", name='" + name + "'" +
-            ", created_on='" + created_on + "'" +
-            ", last_updated='" + last_updated + "'" +
-            ", is_private='" + is_private + "'" +
+            ", createdOn='" + createdOn + "'" +
+            ", lastUpdated='" + lastUpdated + "'" +
+            ", isPrivate='" + isPrivate + "'" +
+            ", notes='" + notes + "'" +
             '}';
     }
 }

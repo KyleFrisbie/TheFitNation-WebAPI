@@ -11,10 +11,10 @@
         $stateProvider
         .state('gym', {
             parent: 'entity',
-            url: '/gym',
+            url: '/gym?page&sort&search',
             data: {
                 authorities: ['ROLE_USER'],
-                pageTitle: 'Gyms'
+                pageTitle: 'theFitNationApp.gym.home.title'
             },
             views: {
                 'content@': {
@@ -23,15 +23,40 @@
                     controllerAs: 'vm'
                 }
             },
+            params: {
+                page: {
+                    value: '1',
+                    squash: true
+                },
+                sort: {
+                    value: 'id,asc',
+                    squash: true
+                },
+                search: null
+            },
             resolve: {
+                pagingParams: ['$stateParams', 'PaginationUtil', function ($stateParams, PaginationUtil) {
+                    return {
+                        page: PaginationUtil.parsePage($stateParams.page),
+                        sort: $stateParams.sort,
+                        predicate: PaginationUtil.parsePredicate($stateParams.sort),
+                        ascending: PaginationUtil.parseAscending($stateParams.sort),
+                        search: $stateParams.search
+                    };
+                }],
+                translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
+                    $translatePartialLoader.addPart('gym');
+                    $translatePartialLoader.addPart('global');
+                    return $translate.refresh();
+                }]
             }
         })
         .state('gym-detail', {
-            parent: 'entity',
+            parent: 'gym',
             url: '/gym/{id}',
             data: {
                 authorities: ['ROLE_USER'],
-                pageTitle: 'Gym'
+                pageTitle: 'theFitNationApp.gym.detail.title'
             },
             views: {
                 'content@': {
@@ -41,6 +66,10 @@
                 }
             },
             resolve: {
+                translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
+                    $translatePartialLoader.addPart('gym');
+                    return $translate.refresh();
+                }],
                 entity: ['$stateParams', 'Gym', function($stateParams, Gym) {
                     return Gym.get({id : $stateParams.id}).$promise;
                 }],
@@ -96,7 +125,7 @@
                         entity: function () {
                             return {
                                 name: null,
-                                location: null,
+                                notes: null,
                                 id: null
                             };
                         }

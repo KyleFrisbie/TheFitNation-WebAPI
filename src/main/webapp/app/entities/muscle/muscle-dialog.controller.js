@@ -5,15 +5,24 @@
         .module('theFitNationApp')
         .controller('MuscleDialogController', MuscleDialogController);
 
-    MuscleDialogController.$inject = ['$timeout', '$scope', '$stateParams', '$uibModalInstance', 'entity', 'Muscle', 'Exercise'];
+    MuscleDialogController.$inject = ['$timeout', '$scope', '$stateParams', '$uibModalInstance', '$q', 'entity', 'Muscle', 'Exercise', 'BodyPart'];
 
-    function MuscleDialogController ($timeout, $scope, $stateParams, $uibModalInstance, entity, Muscle, Exercise) {
+    function MuscleDialogController ($timeout, $scope, $stateParams, $uibModalInstance, $q, entity, Muscle, Exercise, BodyPart) {
         var vm = this;
 
         vm.muscle = entity;
         vm.clear = clear;
         vm.save = save;
         vm.exercises = Exercise.query();
+        vm.bodyparts = BodyPart.query({filter: 'muscle-is-null'});
+        $q.all([vm.muscle.$promise, vm.bodyparts.$promise]).then(function() {
+            if (!vm.muscle.bodyPartId) {
+                return $q.reject();
+            }
+            return BodyPart.get({id : vm.muscle.bodyPartId}).$promise;
+        }).then(function(bodyPart) {
+            vm.bodyparts.push(bodyPart);
+        });
 
         $timeout(function (){
             angular.element('.form-group:eq(1)>input').focus();

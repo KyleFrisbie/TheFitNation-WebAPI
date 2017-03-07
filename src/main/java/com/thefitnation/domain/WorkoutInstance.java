@@ -7,7 +7,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.io.Serializable;
-import java.time.ZonedDateTime;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Objects;
@@ -23,30 +23,33 @@ public class WorkoutInstance implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
+    @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
 
-    @NotNull
-    @Column(name = "name", nullable = false)
+    @Column(name = "name")
     private String name;
 
     @NotNull
-    @Column(name = "last_updated", nullable = false)
-    private ZonedDateTime last_updated;
+    @Column(name = "created_on", nullable = false)
+    private LocalDate createdOn;
 
     @NotNull
-    @Column(name = "created_on", nullable = false)
-    private ZonedDateTime created_on;
+    @Column(name = "last_updated", nullable = false)
+    private LocalDate lastUpdated;
 
     @Column(name = "rest_between_instances")
-    private Integer rest_between_instances;
+    private Float restBetweenInstances;
 
     @NotNull
     @Min(value = 1)
     @Column(name = "order_number", nullable = false)
-    private Integer order_number;
+    private Integer orderNumber;
 
-    @ManyToOne
+    @Column(name = "notes")
+    private String notes;
+
+    @ManyToOne(optional = false)
     @NotNull
     private WorkoutTemplate workoutTemplate;
 
@@ -55,13 +58,10 @@ public class WorkoutInstance implements Serializable {
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<UserWorkoutInstance> userWorkoutInstances = new HashSet<>();
 
-    @ManyToMany
+    @OneToMany(mappedBy = "workoutInstance")
+    @JsonIgnore
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    @NotNull
-    @JoinTable(name = "workout_instance_exercise",
-               joinColumns = @JoinColumn(name="workout_instances_id", referencedColumnName="ID"),
-               inverseJoinColumns = @JoinColumn(name="exercises_id", referencedColumnName="ID"))
-    private Set<Exercise> exercises = new HashSet<>();
+    private Set<ExerciseInstance> exerciseInstances = new HashSet<>();
 
     public Long getId() {
         return id;
@@ -84,56 +84,69 @@ public class WorkoutInstance implements Serializable {
         this.name = name;
     }
 
-    public ZonedDateTime getLast_updated() {
-        return last_updated;
+    public LocalDate getCreatedOn() {
+        return createdOn;
     }
 
-    public WorkoutInstance last_updated(ZonedDateTime last_updated) {
-        this.last_updated = last_updated;
+    public WorkoutInstance createdOn(LocalDate createdOn) {
+        this.createdOn = createdOn;
         return this;
     }
 
-    public void setLast_updated(ZonedDateTime last_updated) {
-        this.last_updated = last_updated;
+    public void setCreatedOn(LocalDate createdOn) {
+        this.createdOn = createdOn;
     }
 
-    public ZonedDateTime getCreated_on() {
-        return created_on;
+    public LocalDate getLastUpdated() {
+        return lastUpdated;
     }
 
-    public WorkoutInstance created_on(ZonedDateTime created_on) {
-        this.created_on = created_on;
+    public WorkoutInstance lastUpdated(LocalDate lastUpdated) {
+        this.lastUpdated = lastUpdated;
         return this;
     }
 
-    public void setCreated_on(ZonedDateTime created_on) {
-        this.created_on = created_on;
+    public void setLastUpdated(LocalDate lastUpdated) {
+        this.lastUpdated = lastUpdated;
     }
 
-    public Integer getRest_between_instances() {
-        return rest_between_instances;
+    public Float getRestBetweenInstances() {
+        return restBetweenInstances;
     }
 
-    public WorkoutInstance rest_between_instances(Integer rest_between_instances) {
-        this.rest_between_instances = rest_between_instances;
+    public WorkoutInstance restBetweenInstances(Float restBetweenInstances) {
+        this.restBetweenInstances = restBetweenInstances;
         return this;
     }
 
-    public void setRest_between_instances(Integer rest_between_instances) {
-        this.rest_between_instances = rest_between_instances;
+    public void setRestBetweenInstances(Float restBetweenInstances) {
+        this.restBetweenInstances = restBetweenInstances;
     }
 
-    public Integer getOrder_number() {
-        return order_number;
+    public Integer getOrderNumber() {
+        return orderNumber;
     }
 
-    public WorkoutInstance order_number(Integer order_number) {
-        this.order_number = order_number;
+    public WorkoutInstance orderNumber(Integer orderNumber) {
+        this.orderNumber = orderNumber;
         return this;
     }
 
-    public void setOrder_number(Integer order_number) {
-        this.order_number = order_number;
+    public void setOrderNumber(Integer orderNumber) {
+        this.orderNumber = orderNumber;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public WorkoutInstance notes(String notes) {
+        this.notes = notes;
+        return this;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
     }
 
     public WorkoutTemplate getWorkoutTemplate() {
@@ -159,13 +172,13 @@ public class WorkoutInstance implements Serializable {
     }
 
     public WorkoutInstance addUserWorkoutInstance(UserWorkoutInstance userWorkoutInstance) {
-        userWorkoutInstances.add(userWorkoutInstance);
+        this.userWorkoutInstances.add(userWorkoutInstance);
         userWorkoutInstance.setWorkoutInstance(this);
         return this;
     }
 
     public WorkoutInstance removeUserWorkoutInstance(UserWorkoutInstance userWorkoutInstance) {
-        userWorkoutInstances.remove(userWorkoutInstance);
+        this.userWorkoutInstances.remove(userWorkoutInstance);
         userWorkoutInstance.setWorkoutInstance(null);
         return this;
     }
@@ -174,29 +187,29 @@ public class WorkoutInstance implements Serializable {
         this.userWorkoutInstances = userWorkoutInstances;
     }
 
-    public Set<Exercise> getExercises() {
-        return exercises;
+    public Set<ExerciseInstance> getExerciseInstances() {
+        return exerciseInstances;
     }
 
-    public WorkoutInstance exercises(Set<Exercise> exercises) {
-        this.exercises = exercises;
+    public WorkoutInstance exerciseInstances(Set<ExerciseInstance> exerciseInstances) {
+        this.exerciseInstances = exerciseInstances;
         return this;
     }
 
-    public WorkoutInstance addExercise(Exercise exercise) {
-        exercises.add(exercise);
-        exercise.getWorkoutInstances().add(this);
+    public WorkoutInstance addExerciseInstance(ExerciseInstance exerciseInstance) {
+        this.exerciseInstances.add(exerciseInstance);
+        exerciseInstance.setWorkoutInstance(this);
         return this;
     }
 
-    public WorkoutInstance removeExercise(Exercise exercise) {
-        exercises.remove(exercise);
-        exercise.getWorkoutInstances().remove(this);
+    public WorkoutInstance removeExerciseInstance(ExerciseInstance exerciseInstance) {
+        this.exerciseInstances.remove(exerciseInstance);
+        exerciseInstance.setWorkoutInstance(null);
         return this;
     }
 
-    public void setExercises(Set<Exercise> exercises) {
-        this.exercises = exercises;
+    public void setExerciseInstances(Set<ExerciseInstance> exerciseInstances) {
+        this.exerciseInstances = exerciseInstances;
     }
 
     @Override
@@ -224,10 +237,11 @@ public class WorkoutInstance implements Serializable {
         return "WorkoutInstance{" +
             "id=" + id +
             ", name='" + name + "'" +
-            ", last_updated='" + last_updated + "'" +
-            ", created_on='" + created_on + "'" +
-            ", rest_between_instances='" + rest_between_instances + "'" +
-            ", order_number='" + order_number + "'" +
+            ", createdOn='" + createdOn + "'" +
+            ", lastUpdated='" + lastUpdated + "'" +
+            ", restBetweenInstances='" + restBetweenInstances + "'" +
+            ", orderNumber='" + orderNumber + "'" +
+            ", notes='" + notes + "'" +
             '}';
     }
 }

@@ -1,39 +1,47 @@
 
 <div>
-    <h2><span>Workout Template</span> {{vm.workoutTemplate.id}}</h2>
+    <h2><span data-translate="theFitNationApp.workoutTemplate.detail.title">Workout Template</span> {{vm.workoutTemplate.id}}</h2>
     <hr>
     <jhi-alert-error></jhi-alert-error>
-    <dl class="dl-horizontal jh-entity-details">
-        <dt><span>Name</span></dt>
+    <dl class="row jh-entity-details">
+        <dt><span data-translate="theFitNationApp.workoutTemplate.name">Name</span></dt>
         <dd>
             <span>{{vm.workoutTemplate.name}}</span>
         </dd>
-        <dt><span data-translate="theFitNationApp.workoutTemplate.created_on">Created On</span></dt>
+        <dt><span data-translate="theFitNationApp.workoutTemplate.createdOn">Created On</span></dt>
         <dd>
-            <span>{{vm.workoutTemplate.created_on | date:'medium'}}</span>
+            <span>{{vm.workoutTemplate.createdOn | date:'mediumDate'}}</span>
         </dd>
-        <dt><span data-translate="theFitNationApp.workoutTemplate.last_updated">Last Updated</span></dt>
+        <dt><span data-translate="theFitNationApp.workoutTemplate.lastUpdated">Last Updated</span></dt>
         <dd>
-            <span>{{vm.workoutTemplate.last_updated | date:'medium'}}</span>
+            <span>{{vm.workoutTemplate.lastUpdated | date:'mediumDate'}}</span>
         </dd>
-        <dt><span data-translate="theFitNationApp.workoutTemplate.is_private">Is Private</span></dt>
+        <dt><span data-translate="theFitNationApp.workoutTemplate.isPrivate">Is Private</span></dt>
         <dd>
-            <span>{{vm.workoutTemplate.is_private}}</span>
+            <span>{{vm.workoutTemplate.isPrivate}}</span>
         </dd>
-        <dt><span>User Demographic</span></dt>
+        <dt><span data-translate="theFitNationApp.workoutTemplate.notes">Notes</span></dt>
         <dd>
-            <a ui-sref="user-demographic-detail({id:vm.workoutTemplate.userDemographic.id})">{{vm.workoutTemplate.userDemographic.last_name}}</a>
+            <span>{{vm.workoutTemplate.notes}}</span>
+        </dd>
+        <dt><span data-translate="theFitNationApp.workoutTemplate.userDemographic">User Demographic</span></dt>
+        <dd>
+            <a ui-sref="user-demographic-detail({id:vm.workoutTemplate.userDemographicId})">{{vm.workoutTemplate.userDemographicId}}</a>
+        </dd>
+        <dt><span data-translate="theFitNationApp.workoutTemplate.skillLevel">Skill Level</span></dt>
+        <dd>
+            <a ui-sref="skill-level-detail({id:vm.workoutTemplate.skillLevelId})">{{vm.workoutTemplate.skillLevelLevel}}</a>
         </dd>
     </dl>
 
     <button type="submit"
             ui-sref="{{ vm.previousState }}"
             class="btn btn-info">
-        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span> Back</span>
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
     </button>
 
     <button type="button" ui-sref="workout-template-detail.edit({id:vm.workoutTemplate.id})" class="btn btn-primary">
         <span class="glyphicon glyphicon-pencil"></span>
-        <span class="hidden-xs hidden-sm"> Edit</span>
+        <span class="hidden-sm-down" data-translate="entity.action.edit"> Edit</span>
     </button>
 </div>

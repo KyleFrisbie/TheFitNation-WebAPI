@@ -11,10 +11,10 @@
         $stateProvider
         .state('exercise', {
             parent: 'entity',
-            url: '/exercise',
+            url: '/exercise?page&sort&search',
             data: {
                 authorities: ['ROLE_USER'],
-                pageTitle: 'Exercises'
+                pageTitle: 'theFitNationApp.exercise.home.title'
             },
             views: {
                 'content@': {
@@ -23,15 +23,40 @@
                     controllerAs: 'vm'
                 }
             },
+            params: {
+                page: {
+                    value: '1',
+                    squash: true
+                },
+                sort: {
+                    value: 'id,asc',
+                    squash: true
+                },
+                search: null
+            },
             resolve: {
+                pagingParams: ['$stateParams', 'PaginationUtil', function ($stateParams, PaginationUtil) {
+                    return {
+                        page: PaginationUtil.parsePage($stateParams.page),
+                        sort: $stateParams.sort,
+                        predicate: PaginationUtil.parsePredicate($stateParams.sort),
+                        ascending: PaginationUtil.parseAscending($stateParams.sort),
+                        search: $stateParams.search
+                    };
+                }],
+                translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
+                    $translatePartialLoader.addPart('exercise');
+                    $translatePartialLoader.addPart('global');
+                    return $translate.refresh();
+                }]
             }
         })
         .state('exercise-detail', {
-            parent: 'entity',
+            parent: 'exercise',
             url: '/exercise/{id}',
             data: {
                 authorities: ['ROLE_USER'],
-                pageTitle: 'Exercise'
+                pageTitle: 'theFitNationApp.exercise.detail.title'
             },
             views: {
                 'content@': {
@@ -41,6 +66,10 @@
                 }
             },
             resolve: {
+                translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
+                    $translatePartialLoader.addPart('exercise');
+                    return $translate.refresh();
+                }],
                 entity: ['$stateParams', 'Exercise', function($stateParams, Exercise) {
                     return Exercise.get({id : $stateParams.id}).$promise;
                 }],
@@ -96,7 +125,8 @@
                         entity: function () {
                             return {
                                 name: null,
-                                exercise_type: null,
+                                imageUri: null,
+                                notes: null,
                                 id: null
                             };
                         }

@@ -1,0 +1,37 @@
+{
+    "fluentMethods": true,
+    "relationships": [
+        {
+            "relationshipName": "userWorkoutInstance",
+            "otherEntityName": "userWorkoutInstance",
+            "relationshipType": "many-to-one",
+            "relationshipValidateRules": [
+                "required"
+            ],
+            "otherEntityField": "id"
+        },
+        {
+            "relationshipName": "exerciseInstance",
+            "otherEntityName": "exerciseInstance",
+            "relationshipType": "many-to-one",
+            "otherEntityField": "id"
+        },
+        {
+            "relationshipName": "userExerciseInstanceSet",
+            "otherEntityName": "userExerciseInstanceSet",
+            "relationshipType": "one-to-many",
+            "otherEntityRelationshipName": "userExerciseInstance"
+        }
+    ],
+    "fields": [
+        {
+            "fieldName": "notes",
+            "fieldType": "String"
+        }
+    ],
+    "changelogDate": "20170307031238",
+    "dto": "mapstruct",
+    "service": "serviceClass",
+    "entityTableName": "user_exercise_instance",
+    "pagination": "pagination"
+}

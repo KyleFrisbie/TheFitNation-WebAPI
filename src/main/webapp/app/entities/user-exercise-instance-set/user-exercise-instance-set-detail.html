@@ -1,0 +1,47 @@
+
+<div>
+    <h2><span data-translate="theFitNationApp.userExerciseInstanceSet.detail.title">User Exercise Instance Set</span> {{vm.userExerciseInstanceSet.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row jh-entity-details">
+        <dt><span data-translate="theFitNationApp.userExerciseInstanceSet.orderNumber">Order Number</span></dt>
+        <dd>
+            <span>{{vm.userExerciseInstanceSet.orderNumber}}</span>
+        </dd>
+        <dt><span data-translate="theFitNationApp.userExerciseInstanceSet.repQuantity">Rep Quantity</span></dt>
+        <dd>
+            <span>{{vm.userExerciseInstanceSet.repQuantity}}</span>
+        </dd>
+        <dt><span data-translate="theFitNationApp.userExerciseInstanceSet.effortQuantity">Effort Quantity</span></dt>
+        <dd>
+            <span>{{vm.userExerciseInstanceSet.effortQuantity}}</span>
+        </dd>
+        <dt><span data-translate="theFitNationApp.userExerciseInstanceSet.restTime">Rest Time</span></dt>
+        <dd>
+            <span>{{vm.userExerciseInstanceSet.restTime}}</span>
+        </dd>
+        <dt><span data-translate="theFitNationApp.userExerciseInstanceSet.notes">Notes</span></dt>
+        <dd>
+            <span>{{vm.userExerciseInstanceSet.notes}}</span>
+        </dd>
+        <dt><span data-translate="theFitNationApp.userExerciseInstanceSet.userExerciseInstance">User Exercise Instance</span></dt>
+        <dd>
+            <a ui-sref="user-exercise-instance-detail({id:vm.userExerciseInstanceSet.userExerciseInstanceId})">{{vm.userExerciseInstanceSet.userExerciseInstanceId}}</a>
+        </dd>
+        <dt><span data-translate="theFitNationApp.userExerciseInstanceSet.exerciseInstanceSet">Exercise Instance Set</span></dt>
+        <dd>
+            <a ui-sref="exercise-instance-set-detail({id:vm.userExerciseInstanceSet.exerciseInstanceSetId})">{{vm.userExerciseInstanceSet.exerciseInstanceSetId}}</a>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            ui-sref="{{ vm.previousState }}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button" ui-sref="user-exercise-instance-set-detail.edit({id:vm.userExerciseInstanceSet.id})" class="btn btn-primary">
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="hidden-sm-down" data-translate="entity.action.edit"> Edit</span>
+    </button>
+</div>

@@ -4,33 +4,31 @@ import com.thefitnation.TheFitNationApp;
 
 import com.thefitnation.domain.WorkoutInstance;
 import com.thefitnation.domain.WorkoutTemplate;
-import com.thefitnation.domain.Exercise;
 import com.thefitnation.repository.WorkoutInstanceRepository;
 import com.thefitnation.service.WorkoutInstanceService;
+import com.thefitnation.service.dto.WorkoutInstanceDTO;
+import com.thefitnation.service.mapper.WorkoutInstanceMapper;
+import com.thefitnation.web.rest.errors.ExceptionTranslator;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import java.time.Instant;
-import java.time.ZonedDateTime;
-import java.time.ZoneOffset;
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.List;
 
-import static com.thefitnation.web.rest.TestUtil.sameInstant;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -48,31 +46,40 @@ public class WorkoutInstanceResourceIntTest {
     private static final String DEFAULT_NAME = "AAAAAAAAAA";
     private static final String UPDATED_NAME = "BBBBBBBBBB";
 
-    private static final ZonedDateTime DEFAULT_LAST_UPDATED = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
-    private static final ZonedDateTime UPDATED_LAST_UPDATED = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
+    private static final LocalDate DEFAULT_CREATED_ON = LocalDate.ofEpochDay(0L);
+    private static final LocalDate UPDATED_CREATED_ON = LocalDate.now(ZoneId.systemDefault());
 
-    private static final ZonedDateTime DEFAULT_CREATED_ON = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
-    private static final ZonedDateTime UPDATED_CREATED_ON = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
+    private static final LocalDate DEFAULT_LAST_UPDATED = LocalDate.ofEpochDay(0L);
+    private static final LocalDate UPDATED_LAST_UPDATED = LocalDate.now(ZoneId.systemDefault());
 
-    private static final Integer DEFAULT_REST_BETWEEN_INSTANCES = 1;
-    private static final Integer UPDATED_REST_BETWEEN_INSTANCES = 2;
+    private static final Float DEFAULT_REST_BETWEEN_INSTANCES = 1F;
+    private static final Float UPDATED_REST_BETWEEN_INSTANCES = 2F;
 
     private static final Integer DEFAULT_ORDER_NUMBER = 1;
     private static final Integer UPDATED_ORDER_NUMBER = 2;
 
-    @Inject
+    private static final String DEFAULT_NOTES = "AAAAAAAAAA";
+    private static final String UPDATED_NOTES = "BBBBBBBBBB";
+
+    @Autowired
     private WorkoutInstanceRepository workoutInstanceRepository;
 
-    @Inject
+    @Autowired
+    private WorkoutInstanceMapper workoutInstanceMapper;
+
+    @Autowired
     private WorkoutInstanceService workoutInstanceService;
 
-    @Inject
+    @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
 
-    @Inject
+    @Autowired
     private PageableHandlerMethodArgumentResolver pageableArgumentResolver;
 
-    @Inject
+    @Autowired
+    private ExceptionTranslator exceptionTranslator;
+
+    @Autowired
     private EntityManager em;
 
     private MockMvc restWorkoutInstanceMockMvc;
@@ -82,10 +89,10 @@ public class WorkoutInstanceResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        WorkoutInstanceResource workoutInstanceResource = new WorkoutInstanceResource();
-        ReflectionTestUtils.setField(workoutInstanceResource, "workoutInstanceService", workoutInstanceService);
+        WorkoutInstanceResource workoutInstanceResource = new WorkoutInstanceResource(workoutInstanceService);
         this.restWorkoutInstanceMockMvc = MockMvcBuilders.standaloneSetup(workoutInstanceResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
+            .setControllerAdvice(exceptionTranslator)
             .setMessageConverters(jacksonMessageConverter).build();
     }
 
@@ -98,20 +105,16 @@ public class WorkoutInstanceResourceIntTest {
     public static WorkoutInstance createEntity(EntityManager em) {
         WorkoutInstance workoutInstance = new WorkoutInstance()
                 .name(DEFAULT_NAME)
-                .last_updated(DEFAULT_LAST_UPDATED)
-                .created_on(DEFAULT_CREATED_ON)
-                .rest_between_instances(DEFAULT_REST_BETWEEN_INSTANCES)
-                .order_number(DEFAULT_ORDER_NUMBER);
+                .createdOn(DEFAULT_CREATED_ON)
+                .lastUpdated(DEFAULT_LAST_UPDATED)
+                .restBetweenInstances(DEFAULT_REST_BETWEEN_INSTANCES)
+                .orderNumber(DEFAULT_ORDER_NUMBER)
+                .notes(DEFAULT_NOTES);
         // Add required entity
         WorkoutTemplate workoutTemplate = WorkoutTemplateResourceIntTest.createEntity(em);
         em.persist(workoutTemplate);
         em.flush();
         workoutInstance.setWorkoutTemplate(workoutTemplate);
-        // Add required entity
-        Exercise exercise = ExerciseResourceIntTest.createEntity(em);
-        em.persist(exercise);
-        em.flush();
-        workoutInstance.getExercises().add(exercise);
         return workoutInstance;
     }
 
@@ -126,10 +129,11 @@ public class WorkoutInstanceResourceIntTest {
         int databaseSizeBeforeCreate = workoutInstanceRepository.findAll().size();
 
         // Create the WorkoutInstance
+        WorkoutInstanceDTO workoutInstanceDTO = workoutInstanceMapper.workoutInstanceToWorkoutInstanceDTO(workoutInstance);
 
         restWorkoutInstanceMockMvc.perform(post("/api/workout-instances")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(workoutInstance)))
+            .content(TestUtil.convertObjectToJsonBytes(workoutInstanceDTO)))
             .andExpect(status().isCreated());
 
         // Validate the WorkoutInstance in the database
@@ -137,10 +141,11 @@ public class WorkoutInstanceResourceIntTest {
         assertThat(workoutInstanceList).hasSize(databaseSizeBeforeCreate + 1);
         WorkoutInstance testWorkoutInstance = workoutInstanceList.get(workoutInstanceList.size() - 1);
         assertThat(testWorkoutInstance.getName()).isEqualTo(DEFAULT_NAME);
-        assertThat(testWorkoutInstance.getLast_updated()).isEqualTo(DEFAULT_LAST_UPDATED);
-        assertThat(testWorkoutInstance.getCreated_on()).isEqualTo(DEFAULT_CREATED_ON);
-        assertThat(testWorkoutInstance.getRest_between_instances()).isEqualTo(DEFAULT_REST_BETWEEN_INSTANCES);
-        assertThat(testWorkoutInstance.getOrder_number()).isEqualTo(DEFAULT_ORDER_NUMBER);
+        assertThat(testWorkoutInstance.getCreatedOn()).isEqualTo(DEFAULT_CREATED_ON);
+        assertThat(testWorkoutInstance.getLastUpdated()).isEqualTo(DEFAULT_LAST_UPDATED);
+        assertThat(testWorkoutInstance.getRestBetweenInstances()).isEqualTo(DEFAULT_REST_BETWEEN_INSTANCES);
+        assertThat(testWorkoutInstance.getOrderNumber()).isEqualTo(DEFAULT_ORDER_NUMBER);
+        assertThat(testWorkoutInstance.getNotes()).isEqualTo(DEFAULT_NOTES);
     }
 
     @Test
@@ -151,11 +156,12 @@ public class WorkoutInstanceResourceIntTest {
         // Create the WorkoutInstance with an existing ID
         WorkoutInstance existingWorkoutInstance = new WorkoutInstance();
         existingWorkoutInstance.setId(1L);
+        WorkoutInstanceDTO existingWorkoutInstanceDTO = workoutInstanceMapper.workoutInstanceToWorkoutInstanceDTO(existingWorkoutInstance);
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restWorkoutInstanceMockMvc.perform(post("/api/workout-instances")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(existingWorkoutInstance)))
+            .content(TestUtil.convertObjectToJsonBytes(existingWorkoutInstanceDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the Alice in the database
@@ -165,16 +171,17 @@ public class WorkoutInstanceResourceIntTest {
 
     @Test
     @Transactional
-    public void checkNameIsRequired() throws Exception {
+    public void checkCreatedOnIsRequired() throws Exception {
         int databaseSizeBeforeTest = workoutInstanceRepository.findAll().size();
         // set the field null
-        workoutInstance.setName(null);
+        workoutInstance.setCreatedOn(null);
 
         // Create the WorkoutInstance, which fails.
+        WorkoutInstanceDTO workoutInstanceDTO = workoutInstanceMapper.workoutInstanceToWorkoutInstanceDTO(workoutInstance);
 
         restWorkoutInstanceMockMvc.perform(post("/api/workout-instances")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(workoutInstance)))
+            .content(TestUtil.convertObjectToJsonBytes(workoutInstanceDTO)))
             .andExpect(status().isBadRequest());
 
         List<WorkoutInstance> workoutInstanceList = workoutInstanceRepository.findAll();
@@ -183,16 +190,17 @@ public class WorkoutInstanceResourceIntTest {
 
     @Test
     @Transactional
-    public void checkLast_updatedIsRequired() throws Exception {
+    public void checkLastUpdatedIsRequired() throws Exception {
         int databaseSizeBeforeTest = workoutInstanceRepository.findAll().size();
         // set the field null
-        workoutInstance.setLast_updated(null);
+        workoutInstance.setLastUpdated(null);
 
         // Create the WorkoutInstance, which fails.
+        WorkoutInstanceDTO workoutInstanceDTO = workoutInstanceMapper.workoutInstanceToWorkoutInstanceDTO(workoutInstance);
 
         restWorkoutInstanceMockMvc.perform(post("/api/workout-instances")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(workoutInstance)))
+            .content(TestUtil.convertObjectToJsonBytes(workoutInstanceDTO)))
             .andExpect(status().isBadRequest());
 
         List<WorkoutInstance> workoutInstanceList = workoutInstanceRepository.findAll();
@@ -201,34 +209,17 @@ public class WorkoutInstanceResourceIntTest {
 
     @Test
     @Transactional
-    public void checkCreated_onIsRequired() throws Exception {
+    public void checkOrderNumberIsRequired() throws Exception {
         int databaseSizeBeforeTest = workoutInstanceRepository.findAll().size();
         // set the field null
-        workoutInstance.setCreated_on(null);
+        workoutInstance.setOrderNumber(null);
 
         // Create the WorkoutInstance, which fails.
+        WorkoutInstanceDTO workoutInstanceDTO = workoutInstanceMapper.workoutInstanceToWorkoutInstanceDTO(workoutInstance);
 
         restWorkoutInstanceMockMvc.perform(post("/api/workout-instances")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(workoutInstance)))
-            .andExpect(status().isBadRequest());
-
-        List<WorkoutInstance> workoutInstanceList = workoutInstanceRepository.findAll();
-        assertThat(workoutInstanceList).hasSize(databaseSizeBeforeTest);
-    }
-
-    @Test
-    @Transactional
-    public void checkOrder_numberIsRequired() throws Exception {
-        int databaseSizeBeforeTest = workoutInstanceRepository.findAll().size();
-        // set the field null
-        workoutInstance.setOrder_number(null);
-
-        // Create the WorkoutInstance, which fails.
-
-        restWorkoutInstanceMockMvc.perform(post("/api/workout-instances")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(workoutInstance)))
+            .content(TestUtil.convertObjectToJsonBytes(workoutInstanceDTO)))
             .andExpect(status().isBadRequest());
 
         List<WorkoutInstance> workoutInstanceList = workoutInstanceRepository.findAll();
@@ -247,10 +238,11 @@ public class WorkoutInstanceResourceIntTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(workoutInstance.getId().intValue())))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
-            .andExpect(jsonPath("$.[*].last_updated").value(hasItem(sameInstant(DEFAULT_LAST_UPDATED))))
-            .andExpect(jsonPath("$.[*].created_on").value(hasItem(sameInstant(DEFAULT_CREATED_ON))))
-            .andExpect(jsonPath("$.[*].rest_between_instances").value(hasItem(DEFAULT_REST_BETWEEN_INSTANCES)))
-            .andExpect(jsonPath("$.[*].order_number").value(hasItem(DEFAULT_ORDER_NUMBER)));
+            .andExpect(jsonPath("$.[*].createdOn").value(hasItem(DEFAULT_CREATED_ON.toString())))
+            .andExpect(jsonPath("$.[*].lastUpdated").value(hasItem(DEFAULT_LAST_UPDATED.toString())))
+            .andExpect(jsonPath("$.[*].restBetweenInstances").value(hasItem(DEFAULT_REST_BETWEEN_INSTANCES.doubleValue())))
+            .andExpect(jsonPath("$.[*].orderNumber").value(hasItem(DEFAULT_ORDER_NUMBER)))
+            .andExpect(jsonPath("$.[*].notes").value(hasItem(DEFAULT_NOTES.toString())));
     }
 
     @Test
@@ -265,10 +257,11 @@ public class WorkoutInstanceResourceIntTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(workoutInstance.getId().intValue()))
             .andExpect(jsonPath("$.name").value(DEFAULT_NAME.toString()))
-            .andExpect(jsonPath("$.last_updated").value(sameInstant(DEFAULT_LAST_UPDATED)))
-            .andExpect(jsonPath("$.created_on").value(sameInstant(DEFAULT_CREATED_ON)))
-            .andExpect(jsonPath("$.rest_between_instances").value(DEFAULT_REST_BETWEEN_INSTANCES))
-            .andExpect(jsonPath("$.order_number").value(DEFAULT_ORDER_NUMBER));
+            .andExpect(jsonPath("$.createdOn").value(DEFAULT_CREATED_ON.toString()))
+            .andExpect(jsonPath("$.lastUpdated").value(DEFAULT_LAST_UPDATED.toString()))
+            .andExpect(jsonPath("$.restBetweenInstances").value(DEFAULT_REST_BETWEEN_INSTANCES.doubleValue()))
+            .andExpect(jsonPath("$.orderNumber").value(DEFAULT_ORDER_NUMBER))
+            .andExpect(jsonPath("$.notes").value(DEFAULT_NOTES.toString()));
     }
 
     @Test
@@ -283,22 +276,23 @@ public class WorkoutInstanceResourceIntTest {
     @Transactional
     public void updateWorkoutInstance() throws Exception {
         // Initialize the database
-        workoutInstanceService.save(workoutInstance);
-
+        workoutInstanceRepository.saveAndFlush(workoutInstance);
         int databaseSizeBeforeUpdate = workoutInstanceRepository.findAll().size();
 
         // Update the workoutInstance
         WorkoutInstance updatedWorkoutInstance = workoutInstanceRepository.findOne(workoutInstance.getId());
         updatedWorkoutInstance
                 .name(UPDATED_NAME)
-                .last_updated(UPDATED_LAST_UPDATED)
-                .created_on(UPDATED_CREATED_ON)
-                .rest_between_instances(UPDATED_REST_BETWEEN_INSTANCES)
-                .order_number(UPDATED_ORDER_NUMBER);
+                .createdOn(UPDATED_CREATED_ON)
+                .lastUpdated(UPDATED_LAST_UPDATED)
+                .restBetweenInstances(UPDATED_REST_BETWEEN_INSTANCES)
+                .orderNumber(UPDATED_ORDER_NUMBER)
+                .notes(UPDATED_NOTES);
+        WorkoutInstanceDTO workoutInstanceDTO = workoutInstanceMapper.workoutInstanceToWorkoutInstanceDTO(updatedWorkoutInstance);
 
         restWorkoutInstanceMockMvc.perform(put("/api/workout-instances")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(updatedWorkoutInstance)))
+            .content(TestUtil.convertObjectToJsonBytes(workoutInstanceDTO)))
             .andExpect(status().isOk());
 
         // Validate the WorkoutInstance in the database
@@ -306,10 +300,11 @@ public class WorkoutInstanceResourceIntTest {
         assertThat(workoutInstanceList).hasSize(databaseSizeBeforeUpdate);
         WorkoutInstance testWorkoutInstance = workoutInstanceList.get(workoutInstanceList.size() - 1);
         assertThat(testWorkoutInstance.getName()).isEqualTo(UPDATED_NAME);
-        assertThat(testWorkoutInstance.getLast_updated()).isEqualTo(UPDATED_LAST_UPDATED);
-        assertThat(testWorkoutInstance.getCreated_on()).isEqualTo(UPDATED_CREATED_ON);
-        assertThat(testWorkoutInstance.getRest_between_instances()).isEqualTo(UPDATED_REST_BETWEEN_INSTANCES);
-        assertThat(testWorkoutInstance.getOrder_number()).isEqualTo(UPDATED_ORDER_NUMBER);
+        assertThat(testWorkoutInstance.getCreatedOn()).isEqualTo(UPDATED_CREATED_ON);
+        assertThat(testWorkoutInstance.getLastUpdated()).isEqualTo(UPDATED_LAST_UPDATED);
+        assertThat(testWorkoutInstance.getRestBetweenInstances()).isEqualTo(UPDATED_REST_BETWEEN_INSTANCES);
+        assertThat(testWorkoutInstance.getOrderNumber()).isEqualTo(UPDATED_ORDER_NUMBER);
+        assertThat(testWorkoutInstance.getNotes()).isEqualTo(UPDATED_NOTES);
     }
 
     @Test
@@ -318,11 +313,12 @@ public class WorkoutInstanceResourceIntTest {
         int databaseSizeBeforeUpdate = workoutInstanceRepository.findAll().size();
 
         // Create the WorkoutInstance
+        WorkoutInstanceDTO workoutInstanceDTO = workoutInstanceMapper.workoutInstanceToWorkoutInstanceDTO(workoutInstance);
 
         // If the entity doesn't have an ID, it will be created instead of just being updated
         restWorkoutInstanceMockMvc.perform(put("/api/workout-instances")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(workoutInstance)))
+            .content(TestUtil.convertObjectToJsonBytes(workoutInstanceDTO)))
             .andExpect(status().isCreated());
 
         // Validate the WorkoutInstance in the database
@@ -334,8 +330,7 @@ public class WorkoutInstanceResourceIntTest {
     @Transactional
     public void deleteWorkoutInstance() throws Exception {
         // Initialize the database
-        workoutInstanceService.save(workoutInstance);
-
+        workoutInstanceRepository.saveAndFlush(workoutInstance);
         int databaseSizeBeforeDelete = workoutInstanceRepository.findAll().size();
 
         // Get the workoutInstance
@@ -346,5 +341,10 @@ public class WorkoutInstanceResourceIntTest {
         // Validate the database is empty
         List<WorkoutInstance> workoutInstanceList = workoutInstanceRepository.findAll();
         assertThat(workoutInstanceList).hasSize(databaseSizeBeforeDelete - 1);
+    }
+
+    @Test
+    public void equalsVerifier() throws Exception {
+        TestUtil.equalsVerifier(WorkoutInstance.class);
     }
 }

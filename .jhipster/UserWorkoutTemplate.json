@@ -2,8 +2,8 @@
     "fluentMethods": true,
     "relationships": [
         {
-            "relationshipName": "workoutLog",
-            "otherEntityName": "workoutLog",
+            "relationshipName": "userDemographic",
+            "otherEntityName": "userDemographic",
             "relationshipType": "many-to-one",
             "relationshipValidateRules": [
                 "required"
@@ -14,9 +14,7 @@
             "relationshipName": "workoutTemplate",
             "otherEntityName": "workoutTemplate",
             "relationshipType": "many-to-one",
-            "relationshipValidateRules": [
-                "required"
-            ],
+            "relationshipValidateRules": [],
             "otherEntityField": "name"
         },
         {
@@ -28,23 +26,27 @@
     ],
     "fields": [
         {
-            "fieldName": "created_on",
-            "fieldType": "ZonedDateTime",
+            "fieldName": "createdOn",
+            "fieldType": "LocalDate",
             "fieldValidateRules": [
                 "required"
             ]
         },
         {
-            "fieldName": "last_updated",
-            "fieldType": "ZonedDateTime",
+            "fieldName": "lastUpdated",
+            "fieldType": "LocalDate",
             "fieldValidateRules": [
                 "required"
             ]
+        },
+        {
+            "fieldName": "notes",
+            "fieldType": "String"
         }
     ],
-    "changelogDate": "20170203231533",
-    "dto": "no",
+    "changelogDate": "20170307030538",
+    "dto": "mapstruct",
     "service": "serviceClass",
     "entityTableName": "user_workout_template",
-    "pagination": "infinite-scroll"
+    "pagination": "pagination"
 }

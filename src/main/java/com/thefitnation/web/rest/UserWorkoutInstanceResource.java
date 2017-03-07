@@ -1,12 +1,12 @@
 package com.thefitnation.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
-import com.thefitnation.domain.UserWorkoutInstance;
 import com.thefitnation.service.UserWorkoutInstanceService;
 import com.thefitnation.web.rest.util.HeaderUtil;
 import com.thefitnation.web.rest.util.PaginationUtil;
-
+import com.thefitnation.service.dto.UserWorkoutInstanceDTO;
 import io.swagger.annotations.ApiParam;
+import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -16,12 +16,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.inject.Inject;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * REST controller for managing UserWorkoutInstance.
@@ -31,49 +32,54 @@ import java.util.Optional;
 public class UserWorkoutInstanceResource {
 
     private final Logger log = LoggerFactory.getLogger(UserWorkoutInstanceResource.class);
+
+    private static final String ENTITY_NAME = "userWorkoutInstance";
         
-    @Inject
-    private UserWorkoutInstanceService userWorkoutInstanceService;
+    private final UserWorkoutInstanceService userWorkoutInstanceService;
+
+    public UserWorkoutInstanceResource(UserWorkoutInstanceService userWorkoutInstanceService) {
+        this.userWorkoutInstanceService = userWorkoutInstanceService;
+    }
 
     /**
      * POST  /user-workout-instances : Create a new userWorkoutInstance.
      *
-     * @param userWorkoutInstance the userWorkoutInstance to create
-     * @return the ResponseEntity with status 201 (Created) and with body the new userWorkoutInstance, or with status 400 (Bad Request) if the userWorkoutInstance has already an ID
+     * @param userWorkoutInstanceDTO the userWorkoutInstanceDTO to create
+     * @return the ResponseEntity with status 201 (Created) and with body the new userWorkoutInstanceDTO, or with status 400 (Bad Request) if the userWorkoutInstance has already an ID
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PostMapping("/user-workout-instances")
     @Timed
-    public ResponseEntity<UserWorkoutInstance> createUserWorkoutInstance(@Valid @RequestBody UserWorkoutInstance userWorkoutInstance) throws URISyntaxException {
-        log.debug("REST request to save UserWorkoutInstance : {}", userWorkoutInstance);
-        if (userWorkoutInstance.getId() != null) {
-            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("userWorkoutInstance", "idexists", "A new userWorkoutInstance cannot already have an ID")).body(null);
+    public ResponseEntity<UserWorkoutInstanceDTO> createUserWorkoutInstance(@Valid @RequestBody UserWorkoutInstanceDTO userWorkoutInstanceDTO) throws URISyntaxException {
+        log.debug("REST request to save UserWorkoutInstance : {}", userWorkoutInstanceDTO);
+        if (userWorkoutInstanceDTO.getId() != null) {
+            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new userWorkoutInstance cannot already have an ID")).body(null);
         }
-        UserWorkoutInstance result = userWorkoutInstanceService.save(userWorkoutInstance);
+        UserWorkoutInstanceDTO result = userWorkoutInstanceService.save(userWorkoutInstanceDTO);
         return ResponseEntity.created(new URI("/api/user-workout-instances/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert("userWorkoutInstance", result.getId().toString()))
+            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
     }
 
     /**
      * PUT  /user-workout-instances : Updates an existing userWorkoutInstance.
      *
-     * @param userWorkoutInstance the userWorkoutInstance to update
-     * @return the ResponseEntity with status 200 (OK) and with body the updated userWorkoutInstance,
-     * or with status 400 (Bad Request) if the userWorkoutInstance is not valid,
-     * or with status 500 (Internal Server Error) if the userWorkoutInstance couldnt be updated
+     * @param userWorkoutInstanceDTO the userWorkoutInstanceDTO to update
+     * @return the ResponseEntity with status 200 (OK) and with body the updated userWorkoutInstanceDTO,
+     * or with status 400 (Bad Request) if the userWorkoutInstanceDTO is not valid,
+     * or with status 500 (Internal Server Error) if the userWorkoutInstanceDTO couldnt be updated
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PutMapping("/user-workout-instances")
     @Timed
-    public ResponseEntity<UserWorkoutInstance> updateUserWorkoutInstance(@Valid @RequestBody UserWorkoutInstance userWorkoutInstance) throws URISyntaxException {
-        log.debug("REST request to update UserWorkoutInstance : {}", userWorkoutInstance);
-        if (userWorkoutInstance.getId() == null) {
-            return createUserWorkoutInstance(userWorkoutInstance);
+    public ResponseEntity<UserWorkoutInstanceDTO> updateUserWorkoutInstance(@Valid @RequestBody UserWorkoutInstanceDTO userWorkoutInstanceDTO) throws URISyntaxException {
+        log.debug("REST request to update UserWorkoutInstance : {}", userWorkoutInstanceDTO);
+        if (userWorkoutInstanceDTO.getId() == null) {
+            return createUserWorkoutInstance(userWorkoutInstanceDTO);
         }
-        UserWorkoutInstance result = userWorkoutInstanceService.save(userWorkoutInstance);
+        UserWorkoutInstanceDTO result = userWorkoutInstanceService.save(userWorkoutInstanceDTO);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert("userWorkoutInstance", userWorkoutInstance.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, userWorkoutInstanceDTO.getId().toString()))
             .body(result);
     }
 
@@ -86,10 +92,10 @@ public class UserWorkoutInstanceResource {
      */
     @GetMapping("/user-workout-instances")
     @Timed
-    public ResponseEntity<List<UserWorkoutInstance>> getAllUserWorkoutInstances(@ApiParam Pageable pageable)
+    public ResponseEntity<List<UserWorkoutInstanceDTO>> getAllUserWorkoutInstances(@ApiParam Pageable pageable)
         throws URISyntaxException {
         log.debug("REST request to get a page of UserWorkoutInstances");
-        Page<UserWorkoutInstance> page = userWorkoutInstanceService.findAll(pageable);
+        Page<UserWorkoutInstanceDTO> page = userWorkoutInstanceService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/user-workout-instances");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
@@ -97,25 +103,21 @@ public class UserWorkoutInstanceResource {
     /**
      * GET  /user-workout-instances/:id : get the "id" userWorkoutInstance.
      *
-     * @param id the id of the userWorkoutInstance to retrieve
-     * @return the ResponseEntity with status 200 (OK) and with body the userWorkoutInstance, or with status 404 (Not Found)
+     * @param id the id of the userWorkoutInstanceDTO to retrieve
+     * @return the ResponseEntity with status 200 (OK) and with body the userWorkoutInstanceDTO, or with status 404 (Not Found)
      */
     @GetMapping("/user-workout-instances/{id}")
     @Timed
-    public ResponseEntity<UserWorkoutInstance> getUserWorkoutInstance(@PathVariable Long id) {
+    public ResponseEntity<UserWorkoutInstanceDTO> getUserWorkoutInstance(@PathVariable Long id) {
         log.debug("REST request to get UserWorkoutInstance : {}", id);
-        UserWorkoutInstance userWorkoutInstance = userWorkoutInstanceService.findOne(id);
-        return Optional.ofNullable(userWorkoutInstance)
-            .map(result -> new ResponseEntity<>(
-                result,
-                HttpStatus.OK))
-            .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        UserWorkoutInstanceDTO userWorkoutInstanceDTO = userWorkoutInstanceService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(userWorkoutInstanceDTO));
     }
 
     /**
      * DELETE  /user-workout-instances/:id : delete the "id" userWorkoutInstance.
      *
-     * @param id the id of the userWorkoutInstance to delete
+     * @param id the id of the userWorkoutInstanceDTO to delete
      * @return the ResponseEntity with status 200 (OK)
      */
     @DeleteMapping("/user-workout-instances/{id}")
@@ -123,7 +125,7 @@ public class UserWorkoutInstanceResource {
     public ResponseEntity<Void> deleteUserWorkoutInstance(@PathVariable Long id) {
         log.debug("REST request to delete UserWorkoutInstance : {}", id);
         userWorkoutInstanceService.delete(id);
-        return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("userWorkoutInstance", id.toString())).build();
+        return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 
 }

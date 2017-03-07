@@ -5,9 +5,9 @@
         .module('theFitNationApp')
         .controller('UserDemographicDialogController', UserDemographicDialogController);
 
-    UserDemographicDialogController.$inject = ['$timeout', '$scope', '$stateParams', '$uibModalInstance', '$q', 'entity', 'UserDemographic', 'Gym', 'UserWeight', 'WorkoutLog', 'WorkoutTemplate'];
+    UserDemographicDialogController.$inject = ['$timeout', '$scope', '$stateParams', '$uibModalInstance', '$q', 'entity', 'UserDemographic', 'User', 'Gym', 'UserWeight', 'WorkoutTemplate', 'UserWorkoutTemplate', 'SkillLevel'];
 
-    function UserDemographicDialogController ($timeout, $scope, $stateParams, $uibModalInstance, $q, entity, UserDemographic, Gym, UserWeight, WorkoutLog, WorkoutTemplate) {
+    function UserDemographicDialogController ($timeout, $scope, $stateParams, $uibModalInstance, $q, entity, UserDemographic, User, Gym, UserWeight, WorkoutTemplate, UserWorkoutTemplate, SkillLevel) {
         var vm = this;
 
         vm.userDemographic = entity;
@@ -15,18 +15,12 @@
         vm.datePickerOpenStatus = {};
         vm.openCalendar = openCalendar;
         vm.save = save;
+        vm.users = User.query();
         vm.gyms = Gym.query();
         vm.userweights = UserWeight.query();
-        vm.workoutlogs = WorkoutLog.query({filter: 'userdemographic-is-null'});
-        $q.all([vm.userDemographic.$promise, vm.workoutlogs.$promise]).then(function() {
-            if (!vm.userDemographic.workoutLog || !vm.userDemographic.workoutLog.id) {
-                return $q.reject();
-            }
-            return WorkoutLog.get({id : vm.userDemographic.workoutLog.id}).$promise;
-        }).then(function(workoutLog) {
-            vm.workoutlogs.push(workoutLog);
-        });
         vm.workouttemplates = WorkoutTemplate.query();
+        vm.userworkouttemplates = UserWorkoutTemplate.query();
+        vm.skilllevels = SkillLevel.query();
 
         $timeout(function (){
             angular.element('.form-group:eq(1)>input').focus();
@@ -55,9 +49,9 @@
             vm.isSaving = false;
         }
 
-        vm.datePickerOpenStatus.created_on = false;
-        vm.datePickerOpenStatus.last_login = false;
-        vm.datePickerOpenStatus.dob = false;
+        vm.datePickerOpenStatus.createdOn = false;
+        vm.datePickerOpenStatus.lastLogin = false;
+        vm.datePickerOpenStatus.dateOfBirth = false;
 
         function openCalendar (date) {
             vm.datePickerOpenStatus[date] = true;

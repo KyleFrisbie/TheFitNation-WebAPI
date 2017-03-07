@@ -6,30 +6,29 @@ import com.thefitnation.domain.UserWeight;
 import com.thefitnation.domain.UserDemographic;
 import com.thefitnation.repository.UserWeightRepository;
 import com.thefitnation.service.UserWeightService;
+import com.thefitnation.service.dto.UserWeightDTO;
+import com.thefitnation.service.mapper.UserWeightMapper;
+import com.thefitnation.web.rest.errors.ExceptionTranslator;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import java.time.Instant;
-import java.time.ZonedDateTime;
-import java.time.ZoneOffset;
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.List;
 
-import static com.thefitnation.web.rest.TestUtil.sameInstant;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -44,25 +43,31 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = TheFitNationApp.class)
 public class UserWeightResourceIntTest {
 
-    private static final ZonedDateTime DEFAULT_WEIGHT_DATE = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
-    private static final ZonedDateTime UPDATED_WEIGHT_DATE = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
+    private static final LocalDate DEFAULT_WEIGHT_DATE = LocalDate.ofEpochDay(0L);
+    private static final LocalDate UPDATED_WEIGHT_DATE = LocalDate.now(ZoneId.systemDefault());
 
     private static final Float DEFAULT_WEIGHT = 1F;
     private static final Float UPDATED_WEIGHT = 2F;
 
-    @Inject
+    @Autowired
     private UserWeightRepository userWeightRepository;
 
-    @Inject
+    @Autowired
+    private UserWeightMapper userWeightMapper;
+
+    @Autowired
     private UserWeightService userWeightService;
 
-    @Inject
+    @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
 
-    @Inject
+    @Autowired
     private PageableHandlerMethodArgumentResolver pageableArgumentResolver;
 
-    @Inject
+    @Autowired
+    private ExceptionTranslator exceptionTranslator;
+
+    @Autowired
     private EntityManager em;
 
     private MockMvc restUserWeightMockMvc;
@@ -72,10 +77,10 @@ public class UserWeightResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        UserWeightResource userWeightResource = new UserWeightResource();
-        ReflectionTestUtils.setField(userWeightResource, "userWeightService", userWeightService);
+        UserWeightResource userWeightResource = new UserWeightResource(userWeightService);
         this.restUserWeightMockMvc = MockMvcBuilders.standaloneSetup(userWeightResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
+            .setControllerAdvice(exceptionTranslator)
             .setMessageConverters(jacksonMessageConverter).build();
     }
 
@@ -87,7 +92,7 @@ public class UserWeightResourceIntTest {
      */
     public static UserWeight createEntity(EntityManager em) {
         UserWeight userWeight = new UserWeight()
-                .weight_date(DEFAULT_WEIGHT_DATE)
+                .weightDate(DEFAULT_WEIGHT_DATE)
                 .weight(DEFAULT_WEIGHT);
         // Add required entity
         UserDemographic userDemographic = UserDemographicResourceIntTest.createEntity(em);
@@ -108,17 +113,18 @@ public class UserWeightResourceIntTest {
         int databaseSizeBeforeCreate = userWeightRepository.findAll().size();
 
         // Create the UserWeight
+        UserWeightDTO userWeightDTO = userWeightMapper.userWeightToUserWeightDTO(userWeight);
 
         restUserWeightMockMvc.perform(post("/api/user-weights")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(userWeight)))
+            .content(TestUtil.convertObjectToJsonBytes(userWeightDTO)))
             .andExpect(status().isCreated());
 
         // Validate the UserWeight in the database
         List<UserWeight> userWeightList = userWeightRepository.findAll();
         assertThat(userWeightList).hasSize(databaseSizeBeforeCreate + 1);
         UserWeight testUserWeight = userWeightList.get(userWeightList.size() - 1);
-        assertThat(testUserWeight.getWeight_date()).isEqualTo(DEFAULT_WEIGHT_DATE);
+        assertThat(testUserWeight.getWeightDate()).isEqualTo(DEFAULT_WEIGHT_DATE);
         assertThat(testUserWeight.getWeight()).isEqualTo(DEFAULT_WEIGHT);
     }
 
@@ -130,11 +136,12 @@ public class UserWeightResourceIntTest {
         // Create the UserWeight with an existing ID
         UserWeight existingUserWeight = new UserWeight();
         existingUserWeight.setId(1L);
+        UserWeightDTO existingUserWeightDTO = userWeightMapper.userWeightToUserWeightDTO(existingUserWeight);
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restUserWeightMockMvc.perform(post("/api/user-weights")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(existingUserWeight)))
+            .content(TestUtil.convertObjectToJsonBytes(existingUserWeightDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the Alice in the database
@@ -144,16 +151,17 @@ public class UserWeightResourceIntTest {
 
     @Test
     @Transactional
-    public void checkWeight_dateIsRequired() throws Exception {
+    public void checkWeightDateIsRequired() throws Exception {
         int databaseSizeBeforeTest = userWeightRepository.findAll().size();
         // set the field null
-        userWeight.setWeight_date(null);
+        userWeight.setWeightDate(null);
 
         // Create the UserWeight, which fails.
+        UserWeightDTO userWeightDTO = userWeightMapper.userWeightToUserWeightDTO(userWeight);
 
         restUserWeightMockMvc.perform(post("/api/user-weights")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(userWeight)))
+            .content(TestUtil.convertObjectToJsonBytes(userWeightDTO)))
             .andExpect(status().isBadRequest());
 
         List<UserWeight> userWeightList = userWeightRepository.findAll();
@@ -168,10 +176,11 @@ public class UserWeightResourceIntTest {
         userWeight.setWeight(null);
 
         // Create the UserWeight, which fails.
+        UserWeightDTO userWeightDTO = userWeightMapper.userWeightToUserWeightDTO(userWeight);
 
         restUserWeightMockMvc.perform(post("/api/user-weights")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(userWeight)))
+            .content(TestUtil.convertObjectToJsonBytes(userWeightDTO)))
             .andExpect(status().isBadRequest());
 
         List<UserWeight> userWeightList = userWeightRepository.findAll();
@@ -189,7 +198,7 @@ public class UserWeightResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(userWeight.getId().intValue())))
-            .andExpect(jsonPath("$.[*].weight_date").value(hasItem(sameInstant(DEFAULT_WEIGHT_DATE))))
+            .andExpect(jsonPath("$.[*].weightDate").value(hasItem(DEFAULT_WEIGHT_DATE.toString())))
             .andExpect(jsonPath("$.[*].weight").value(hasItem(DEFAULT_WEIGHT.doubleValue())));
     }
 
@@ -204,7 +213,7 @@ public class UserWeightResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(userWeight.getId().intValue()))
-            .andExpect(jsonPath("$.weight_date").value(sameInstant(DEFAULT_WEIGHT_DATE)))
+            .andExpect(jsonPath("$.weightDate").value(DEFAULT_WEIGHT_DATE.toString()))
             .andExpect(jsonPath("$.weight").value(DEFAULT_WEIGHT.doubleValue()));
     }
 
@@ -220,26 +229,26 @@ public class UserWeightResourceIntTest {
     @Transactional
     public void updateUserWeight() throws Exception {
         // Initialize the database
-        userWeightService.save(userWeight);
-
+        userWeightRepository.saveAndFlush(userWeight);
         int databaseSizeBeforeUpdate = userWeightRepository.findAll().size();
 
         // Update the userWeight
         UserWeight updatedUserWeight = userWeightRepository.findOne(userWeight.getId());
         updatedUserWeight
-                .weight_date(UPDATED_WEIGHT_DATE)
+                .weightDate(UPDATED_WEIGHT_DATE)
                 .weight(UPDATED_WEIGHT);
+        UserWeightDTO userWeightDTO = userWeightMapper.userWeightToUserWeightDTO(updatedUserWeight);
 
         restUserWeightMockMvc.perform(put("/api/user-weights")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(updatedUserWeight)))
+            .content(TestUtil.convertObjectToJsonBytes(userWeightDTO)))
             .andExpect(status().isOk());
 
         // Validate the UserWeight in the database
         List<UserWeight> userWeightList = userWeightRepository.findAll();
         assertThat(userWeightList).hasSize(databaseSizeBeforeUpdate);
         UserWeight testUserWeight = userWeightList.get(userWeightList.size() - 1);
-        assertThat(testUserWeight.getWeight_date()).isEqualTo(UPDATED_WEIGHT_DATE);
+        assertThat(testUserWeight.getWeightDate()).isEqualTo(UPDATED_WEIGHT_DATE);
         assertThat(testUserWeight.getWeight()).isEqualTo(UPDATED_WEIGHT);
     }
 
@@ -249,11 +258,12 @@ public class UserWeightResourceIntTest {
         int databaseSizeBeforeUpdate = userWeightRepository.findAll().size();
 
         // Create the UserWeight
+        UserWeightDTO userWeightDTO = userWeightMapper.userWeightToUserWeightDTO(userWeight);
 
         // If the entity doesn't have an ID, it will be created instead of just being updated
         restUserWeightMockMvc.perform(put("/api/user-weights")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(userWeight)))
+            .content(TestUtil.convertObjectToJsonBytes(userWeightDTO)))
             .andExpect(status().isCreated());
 
         // Validate the UserWeight in the database
@@ -265,8 +275,7 @@ public class UserWeightResourceIntTest {
     @Transactional
     public void deleteUserWeight() throws Exception {
         // Initialize the database
-        userWeightService.save(userWeight);
-
+        userWeightRepository.saveAndFlush(userWeight);
         int databaseSizeBeforeDelete = userWeightRepository.findAll().size();
 
         // Get the userWeight
@@ -277,5 +286,10 @@ public class UserWeightResourceIntTest {
         // Validate the database is empty
         List<UserWeight> userWeightList = userWeightRepository.findAll();
         assertThat(userWeightList).hasSize(databaseSizeBeforeDelete - 1);
+    }
+
+    @Test
+    public void equalsVerifier() throws Exception {
+        TestUtil.equalsVerifier(UserWeight.class);
     }
 }

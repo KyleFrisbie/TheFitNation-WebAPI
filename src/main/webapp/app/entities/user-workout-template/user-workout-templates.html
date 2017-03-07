@@ -1,12 +1,12 @@
 <div>
-    <h2>User Workout Templates</h2>
+    <h2 data-translate="theFitNationApp.userWorkoutTemplate.home.title">User Workout Templates</h2>
     <jhi-alert></jhi-alert>
     <div class="container-fluid">
         <div class="row">
             <div class="col-xs-4 no-padding-left">
                 <button class="btn btn-primary" ui-sref="user-workout-template.new" >
                     <span class="glyphicon glyphicon-plus"></span>
-                    <span >
+                    <span  data-translate="theFitNationApp.userWorkoutTemplate.home.createLabel">
                         Create new User Workout Template
                     </span>
                 </button>
@@ -17,25 +17,27 @@
     <div class="table-responsive">
         <table class="jh-table table table-striped">
             <thead>
-                <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.reset()">
-                    <th jh-sort-by="id"><span>ID</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="created_on"><span data-translate="theFitNationApp.userWorkoutTemplate.created_on">Created On</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="last_updated"><span data-translate="theFitNationApp.userWorkoutTemplate.last_updated">Last Updated</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="workoutLog.id"><span>Workout Log</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="workoutTemplate.name"><span>Workout Template</span> <span class="glyphicon glyphicon-sort"></span></th>
+                <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
+                    <th jh-sort-by="id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="createdOn"><span data-translate="theFitNationApp.userWorkoutTemplate.createdOn">Created On</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="lastUpdated"><span data-translate="theFitNationApp.userWorkoutTemplate.lastUpdated">Last Updated</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="notes"><span data-translate="theFitNationApp.userWorkoutTemplate.notes">Notes</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="userDemographicId"><span data-translate="theFitNationApp.userWorkoutTemplate.userDemographic">User Demographic</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="workoutTemplateName"><span data-translate="theFitNationApp.userWorkoutTemplate.workoutTemplate">Workout Template</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th></th>
                 </tr>
             </thead>
-            <tbody infinite-scroll="vm.loadPage(vm.page + 1)" infinite-scroll-disabled="vm.page >= vm.links['last']">
+            <tbody>
                 <tr ng-repeat="userWorkoutTemplate in vm.userWorkoutTemplates track by userWorkoutTemplate.id">
                     <td><a ui-sref="user-workout-template-detail({id:userWorkoutTemplate.id})">{{userWorkoutTemplate.id}}</a></td>
-                    <td>{{userWorkoutTemplate.created_on | date:'medium'}}</td>
-                    <td>{{userWorkoutTemplate.last_updated | date:'medium'}}</td>
+                        <td>{{userWorkoutTemplate.createdOn | date:'mediumDate'}}</td>
+                        <td>{{userWorkoutTemplate.lastUpdated | date:'mediumDate'}}</td>
+                    <td>{{userWorkoutTemplate.notes}}</td>
                     <td>
-                        <a ui-sref="workout-log-detail({id:userWorkoutTemplate.workoutLog.id})">{{userWorkoutTemplate.workoutLog.id}}</a>
+                        <a ui-sref="user-demographic-detail({id:userWorkoutTemplate.userDemographicId})">{{userWorkoutTemplate.userDemographicId}}</a>
                     </td>
                     <td>
-                        <a ui-sref="workout-template-detail({id:userWorkoutTemplate.workoutTemplate.id})">{{userWorkoutTemplate.workoutTemplate.name}}</a>
+                        <a ui-sref="workout-template-detail({id:userWorkoutTemplate.workoutTemplateId})">{{userWorkoutTemplate.workoutTemplateName}}</a>
                     </td>
                     <td class="text-right">
                         <div class="btn-group flex-btn-group-container">
@@ -43,24 +45,28 @@
                                     ui-sref="user-workout-template-detail({id:userWorkoutTemplate.id})"
                                     class="btn btn-info btn-sm">
                                 <span class="glyphicon glyphicon-eye-open"></span>
-                                <span class="hidden-xs hidden-sm"></span>
+                                <span class="hidden-sm-down" data-translate="entity.action.view"></span>
                             </button>
                             <button type="submit"
                                     ui-sref="user-workout-template.edit({id:userWorkoutTemplate.id})"
                                     class="btn btn-primary btn-sm">
                                 <span class="glyphicon glyphicon-pencil"></span>
-                                <span class="hidden-xs hidden-sm"></span>
+                                <span class="hidden-sm-down" data-translate="entity.action.edit"></span>
                             </button>
                             <button type="submit"
                                     ui-sref="user-workout-template.delete({id:userWorkoutTemplate.id})"
                                     class="btn btn-danger btn-sm">
                                 <span class="glyphicon glyphicon-remove-circle"></span>
-                                <span class="hidden-xs hidden-sm"></span>
+                                <span class="hidden-sm-down" data-translate="entity.action.delete"></span>
                             </button>
                         </div>
                     </td>
                 </tr>
             </tbody>
         </table>
+    </div>
+    <div class="text-center">
+        <jhi-item-count page="vm.page" total="vm.queryCount" items-per-page="vm.itemsPerPage"></jhi-item-count>
+        <uib-pagination class="pagination-sm" total-items="vm.totalItems" items-per-page="vm.itemsPerPage" ng-model="vm.page" ng-change="vm.transition()"></uib-pagination>
     </div>
 </div>

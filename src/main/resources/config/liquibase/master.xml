@@ -5,30 +5,39 @@
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
 
     <include file="classpath:config/liquibase/changelog/00000000000000_initial_schema.xml" relativeToChangelogFile="false"/>
-    <include file="classpath:config/liquibase/changelog/20170203224443_added_entity_Muscle.xml" relativeToChangelogFile="false"/>
-    <include file="classpath:config/liquibase/changelog/20170203225520_added_entity_UserDemographic.xml" relativeToChangelogFile="false"/>
-    <include file="classpath:config/liquibase/changelog/20170203225632_added_entity_UserWeight.xml" relativeToChangelogFile="false"/>
-    <include file="classpath:config/liquibase/changelog/20170203225728_added_entity_Gym.xml" relativeToChangelogFile="false"/>
-    <include file="classpath:config/liquibase/changelog/20170203230115_added_entity_WorkoutTemplate.xml" relativeToChangelogFile="false"/>
-    <include file="classpath:config/liquibase/changelog/20170203230758_added_entity_WorkoutInstance.xml" relativeToChangelogFile="false"/>
-    <include file="classpath:config/liquibase/changelog/20170203230958_added_entity_Exercise.xml" relativeToChangelogFile="false"/>
-    <include file="classpath:config/liquibase/changelog/20170203231214_added_entity_ExerciseSet.xml" relativeToChangelogFile="false"/>
-    <include file="classpath:config/liquibase/changelog/20170203231338_added_entity_WorkoutLog.xml" relativeToChangelogFile="false"/>
-    <include file="classpath:config/liquibase/changelog/20170203231533_added_entity_UserWorkoutTemplate.xml" relativeToChangelogFile="false"/>
-    <include file="classpath:config/liquibase/changelog/20170203231753_added_entity_UserWorkoutInstance.xml" relativeToChangelogFile="false"/>
-    <include file="classpath:config/liquibase/changelog/20170203231942_added_entity_UserExercise.xml" relativeToChangelogFile="false"/>
-    <include file="classpath:config/liquibase/changelog/20170203232134_added_entity_UserExerciseSet.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20170307015737_added_entity_UserDemographic.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20170307020359_added_entity_Gym.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20170307020728_added_entity_Address.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20170307020906_added_entity_UserWeight.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20170307024020_added_entity_WorkoutTemplate.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20170307024133_added_entity_SkillLevel.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20170307024451_added_entity_WorkoutInstance.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20170307024915_added_entity_ExerciseInstance.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20170307025238_added_entity_ExerciseInstanceSet.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20170307025455_added_entity_Unit.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20170307030114_added_entity_Exercise.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20170307030316_added_entity_Muscle.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20170307030538_added_entity_UserWorkoutTemplate.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20170307031053_added_entity_UserWorkoutInstance.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20170307031238_added_entity_UserExerciseInstance.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20170307031620_added_entity_UserExerciseInstanceSet.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20170307031917_added_entity_Location.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20170307041235_added_entity_BodyPart.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20170307043119_added_entity_ExerciseFamily.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
-    <include file="classpath:config/liquibase/changelog/20170203225520_added_entity_constraints_UserDemographic.xml" relativeToChangelogFile="false"/>
-    <include file="classpath:config/liquibase/changelog/20170203225632_added_entity_constraints_UserWeight.xml" relativeToChangelogFile="false"/>
-    <include file="classpath:config/liquibase/changelog/20170203225728_added_entity_constraints_Gym.xml" relativeToChangelogFile="false"/>
-    <include file="classpath:config/liquibase/changelog/20170203230115_added_entity_constraints_WorkoutTemplate.xml" relativeToChangelogFile="false"/>
-    <include file="classpath:config/liquibase/changelog/20170203230758_added_entity_constraints_WorkoutInstance.xml" relativeToChangelogFile="false"/>
-    <include file="classpath:config/liquibase/changelog/20170203230958_added_entity_constraints_Exercise.xml" relativeToChangelogFile="false"/>
-    <include file="classpath:config/liquibase/changelog/20170203231214_added_entity_constraints_ExerciseSet.xml" relativeToChangelogFile="false"/>
-    <include file="classpath:config/liquibase/changelog/20170203231533_added_entity_constraints_UserWorkoutTemplate.xml" relativeToChangelogFile="false"/>
-    <include file="classpath:config/liquibase/changelog/20170203231753_added_entity_constraints_UserWorkoutInstance.xml" relativeToChangelogFile="false"/>
-    <include file="classpath:config/liquibase/changelog/20170203231942_added_entity_constraints_UserExercise.xml" relativeToChangelogFile="false"/>
-    <include file="classpath:config/liquibase/changelog/20170203232134_added_entity_constraints_UserExerciseSet.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20170307015737_added_entity_constraints_UserDemographic.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20170307020359_added_entity_constraints_Gym.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20170307020906_added_entity_constraints_UserWeight.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20170307024020_added_entity_constraints_WorkoutTemplate.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20170307024451_added_entity_constraints_WorkoutInstance.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20170307024915_added_entity_constraints_ExerciseInstance.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20170307025238_added_entity_constraints_ExerciseInstanceSet.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20170307030114_added_entity_constraints_Exercise.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20170307030538_added_entity_constraints_UserWorkoutTemplate.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20170307031053_added_entity_constraints_UserWorkoutInstance.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20170307031238_added_entity_constraints_UserExerciseInstance.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20170307031620_added_entity_constraints_UserExerciseInstanceSet.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20170307031917_added_entity_constraints_Location.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20170307030316_added_entity_constraints_Muscle.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
 </databaseChangeLog>

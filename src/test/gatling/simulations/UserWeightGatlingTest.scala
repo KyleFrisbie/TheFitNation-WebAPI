@@ -80,7 +80,7 @@ class UserWeightGatlingTest extends Simulation {
             .exec(http("Create new userWeight")
             .post("/api/user-weights")
             .headers(headers_http_authenticated)
-            .body(StringBody("""{"id":null, "weight_date":"2020-01-01T00:00:00.000Z", "weight":null}""")).asJSON
+            .body(StringBody("""{"id":null, "weightDate":"2020-01-01T00:00:00.000Z", "weight":null}""")).asJSON
             .check(status.is(201))
             .check(headerRegex("Location", "(.*)").saveAs("new_userWeight_url"))).exitHereIfFailed
             .pause(10)

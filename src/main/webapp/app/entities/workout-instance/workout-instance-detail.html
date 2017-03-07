@@ -1,49 +1,47 @@
 
 <div>
-    <h2><span>Workout Instance</span> {{vm.workoutInstance.id}}</h2>
+    <h2><span data-translate="theFitNationApp.workoutInstance.detail.title">Workout Instance</span> {{vm.workoutInstance.id}}</h2>
     <hr>
     <jhi-alert-error></jhi-alert-error>
-    <dl class="dl-horizontal jh-entity-details">
-        <dt><span>Name</span></dt>
+    <dl class="row jh-entity-details">
+        <dt><span data-translate="theFitNationApp.workoutInstance.name">Name</span></dt>
         <dd>
             <span>{{vm.workoutInstance.name}}</span>
         </dd>
-        <dt><span data-translate="theFitNationApp.workoutInstance.last_updated">Last Updated</span></dt>
+        <dt><span data-translate="theFitNationApp.workoutInstance.createdOn">Created On</span></dt>
         <dd>
-            <span>{{vm.workoutInstance.last_updated | date:'medium'}}</span>
+            <span>{{vm.workoutInstance.createdOn | date:'mediumDate'}}</span>
         </dd>
-        <dt><span data-translate="theFitNationApp.workoutInstance.created_on">Created On</span></dt>
+        <dt><span data-translate="theFitNationApp.workoutInstance.lastUpdated">Last Updated</span></dt>
         <dd>
-            <span>{{vm.workoutInstance.created_on | date:'medium'}}</span>
+            <span>{{vm.workoutInstance.lastUpdated | date:'mediumDate'}}</span>
         </dd>
-        <dt><span data-translate="theFitNationApp.workoutInstance.rest_between_instances">Rest Between Instances</span></dt>
+        <dt><span data-translate="theFitNationApp.workoutInstance.restBetweenInstances">Rest Between Instances</span></dt>
         <dd>
-            <span>{{vm.workoutInstance.rest_between_instances}}</span>
+            <span>{{vm.workoutInstance.restBetweenInstances}}</span>
         </dd>
-        <dt><span data-translate="theFitNationApp.workoutInstance.order_number">Order Number</span></dt>
+        <dt><span data-translate="theFitNationApp.workoutInstance.orderNumber">Order Number</span></dt>
         <dd>
-            <span>{{vm.workoutInstance.order_number}}</span>
+            <span>{{vm.workoutInstance.orderNumber}}</span>
         </dd>
-        <dt><span>Workout Template</span></dt>
+        <dt><span data-translate="theFitNationApp.workoutInstance.notes">Notes</span></dt>
         <dd>
-            <a ui-sref="workout-template-detail({id:vm.workoutInstance.workoutTemplate.id})">{{vm.workoutInstance.workoutTemplate.name}}</a>
+            <span>{{vm.workoutInstance.notes}}</span>
         </dd>
-        <dt><span>Exercise</span></dt>
+        <dt><span data-translate="theFitNationApp.workoutInstance.workoutTemplate">Workout Template</span></dt>
         <dd>
-            <span ng-repeat="exercise in vm.workoutInstance.exercises">
-                <a ui-sref="exercise-detail({id: exercise.id})">{{exercise.name}}</a>{{$last ? '' : ', '}}
-            </span>
+            <a ui-sref="workout-template-detail({id:vm.workoutInstance.workoutTemplateId})">{{vm.workoutInstance.workoutTemplateName}}</a>
         </dd>
     </dl>
 
     <button type="submit"
             ui-sref="{{ vm.previousState }}"
             class="btn btn-info">
-        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span> Back</span>
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
     </button>
 
     <button type="button" ui-sref="workout-instance-detail.edit({id:vm.workoutInstance.id})" class="btn btn-primary">
         <span class="glyphicon glyphicon-pencil"></span>
-        <span class="hidden-xs hidden-sm"> Edit</span>
+        <span class="hidden-sm-down" data-translate="entity.action.edit"> Edit</span>
     </button>
 </div>

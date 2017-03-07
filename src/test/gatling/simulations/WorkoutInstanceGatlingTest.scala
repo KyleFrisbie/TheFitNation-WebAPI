@@ -80,7 +80,7 @@ class WorkoutInstanceGatlingTest extends Simulation {
             .exec(http("Create new workoutInstance")
             .post("/api/workout-instances")
             .headers(headers_http_authenticated)
-            .body(StringBody("""{"id":null, "name":"SAMPLE_TEXT", "last_updated":"2020-01-01T00:00:00.000Z", "created_on":"2020-01-01T00:00:00.000Z", "rest_between_instances":"0", "order_number":"0"}""")).asJSON
+            .body(StringBody("""{"id":null, "name":"SAMPLE_TEXT", "createdOn":"2020-01-01T00:00:00.000Z", "lastUpdated":"2020-01-01T00:00:00.000Z", "restBetweenInstances":null, "orderNumber":"0", "notes":"SAMPLE_TEXT"}""")).asJSON
             .check(status.is(201))
             .check(headerRegex("Location", "(.*)").saveAs("new_workoutInstance_url"))).exitHereIfFailed
             .pause(10)

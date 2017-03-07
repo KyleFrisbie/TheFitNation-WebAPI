@@ -1,12 +1,12 @@
 <div>
-    <h2>User Weights</h2>
+    <h2 data-translate="theFitNationApp.userWeight.home.title">User Weights</h2>
     <jhi-alert></jhi-alert>
     <div class="container-fluid">
         <div class="row">
             <div class="col-xs-4 no-padding-left">
                 <button class="btn btn-primary" ui-sref="user-weight.new" >
                     <span class="glyphicon glyphicon-plus"></span>
-                    <span >
+                    <span  data-translate="theFitNationApp.userWeight.home.createLabel">
                         Create new User Weight
                     </span>
                 </button>
@@ -17,21 +17,21 @@
     <div class="table-responsive">
         <table class="jh-table table table-striped">
             <thead>
-                <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.reset()">
-                    <th jh-sort-by="id"><span>ID</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="weight_date"><span data-translate="theFitNationApp.userWeight.weight_date">Weight Date</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="weight"><span>Weight</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="userDemographic.last_name"><span>User Demographic</span> <span class="glyphicon glyphicon-sort"></span></th>
+                <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
+                    <th jh-sort-by="id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="weightDate"><span data-translate="theFitNationApp.userWeight.weightDate">Weight Date</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="weight"><span data-translate="theFitNationApp.userWeight.weight">Weight</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="userDemographicId"><span data-translate="theFitNationApp.userWeight.userDemographic">User Demographic</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th></th>
                 </tr>
             </thead>
-            <tbody infinite-scroll="vm.loadPage(vm.page + 1)" infinite-scroll-disabled="vm.page >= vm.links['last']">
+            <tbody>
                 <tr ng-repeat="userWeight in vm.userWeights track by userWeight.id">
                     <td><a ui-sref="user-weight-detail({id:userWeight.id})">{{userWeight.id}}</a></td>
-                    <td>{{userWeight.weight_date | date:'medium'}}</td>
+                        <td>{{userWeight.weightDate | date:'mediumDate'}}</td>
                     <td>{{userWeight.weight}}</td>
                     <td>
-                        <a ui-sref="user-demographic-detail({id:userWeight.userDemographic.id})">{{userWeight.userDemographic.last_name}}</a>
+                        <a ui-sref="user-demographic-detail({id:userWeight.userDemographicId})">{{userWeight.userDemographicId}}</a>
                     </td>
                     <td class="text-right">
                         <div class="btn-group flex-btn-group-container">
@@ -39,24 +39,28 @@
                                     ui-sref="user-weight-detail({id:userWeight.id})"
                                     class="btn btn-info btn-sm">
                                 <span class="glyphicon glyphicon-eye-open"></span>
-                                <span class="hidden-xs hidden-sm"></span>
+                                <span class="hidden-sm-down" data-translate="entity.action.view"></span>
                             </button>
                             <button type="submit"
                                     ui-sref="user-weight.edit({id:userWeight.id})"
                                     class="btn btn-primary btn-sm">
                                 <span class="glyphicon glyphicon-pencil"></span>
-                                <span class="hidden-xs hidden-sm"></span>
+                                <span class="hidden-sm-down" data-translate="entity.action.edit"></span>
                             </button>
                             <button type="submit"
                                     ui-sref="user-weight.delete({id:userWeight.id})"
                                     class="btn btn-danger btn-sm">
                                 <span class="glyphicon glyphicon-remove-circle"></span>
-                                <span class="hidden-xs hidden-sm"></span>
+                                <span class="hidden-sm-down" data-translate="entity.action.delete"></span>
                             </button>
                         </div>
                     </td>
                 </tr>
             </tbody>
         </table>
+    </div>
+    <div class="text-center">
+        <jhi-item-count page="vm.page" total="vm.queryCount" items-per-page="vm.itemsPerPage"></jhi-item-count>
+        <uib-pagination class="pagination-sm" total-items="vm.totalItems" items-per-page="vm.itemsPerPage" ng-model="vm.page" ng-change="vm.transition()"></uib-pagination>
     </div>
 </div>

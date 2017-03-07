@@ -17,56 +17,52 @@
             "otherEntityRelationshipName": "workoutInstance"
         },
         {
-            "relationshipName": "exercise",
-            "otherEntityName": "exercise",
-            "relationshipType": "many-to-many",
-            "relationshipValidateRules": [
-                "required"
-            ],
-            "otherEntityField": "name",
-            "ownerSide": true,
+            "relationshipName": "exerciseInstance",
+            "otherEntityName": "exerciseInstance",
+            "relationshipType": "one-to-many",
             "otherEntityRelationshipName": "workoutInstance"
         }
     ],
     "fields": [
         {
             "fieldName": "name",
-            "fieldType": "String",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "createdOn",
+            "fieldType": "LocalDate",
             "fieldValidateRules": [
                 "required"
             ]
         },
         {
-            "fieldName": "last_updated",
-            "fieldType": "ZonedDateTime",
+            "fieldName": "lastUpdated",
+            "fieldType": "LocalDate",
             "fieldValidateRules": [
                 "required"
             ]
         },
         {
-            "fieldName": "created_on",
-            "fieldType": "ZonedDateTime",
-            "fieldValidateRules": [
-                "required"
-            ]
+            "fieldName": "restBetweenInstances",
+            "fieldType": "Float"
         },
         {
-            "fieldName": "rest_between_instances",
-            "fieldType": "Integer"
-        },
-        {
-            "fieldName": "order_number",
+            "fieldName": "orderNumber",
             "fieldType": "Integer",
             "fieldValidateRules": [
                 "required",
                 "min"
             ],
             "fieldValidateRulesMin": "1"
+        },
+        {
+            "fieldName": "notes",
+            "fieldType": "String"
         }
     ],
-    "changelogDate": "20170203230758",
-    "dto": "no",
+    "changelogDate": "20170307024451",
+    "dto": "mapstruct",
     "service": "serviceClass",
     "entityTableName": "workout_instance",
-    "pagination": "infinite-scroll"
+    "pagination": "pagination"
 }

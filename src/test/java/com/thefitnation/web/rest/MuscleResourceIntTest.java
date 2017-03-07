@@ -3,24 +3,27 @@ package com.thefitnation.web.rest;
 import com.thefitnation.TheFitNationApp;
 
 import com.thefitnation.domain.Muscle;
+import com.thefitnation.domain.BodyPart;
 import com.thefitnation.repository.MuscleRepository;
 import com.thefitnation.service.MuscleService;
+import com.thefitnation.service.dto.MuscleDTO;
+import com.thefitnation.service.mapper.MuscleMapper;
+import com.thefitnation.web.rest.errors.ExceptionTranslator;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import java.util.List;
 
@@ -41,19 +44,25 @@ public class MuscleResourceIntTest {
     private static final String DEFAULT_NAME = "AAAAAAAAAA";
     private static final String UPDATED_NAME = "BBBBBBBBBB";
 
-    @Inject
+    @Autowired
     private MuscleRepository muscleRepository;
 
-    @Inject
+    @Autowired
+    private MuscleMapper muscleMapper;
+
+    @Autowired
     private MuscleService muscleService;
 
-    @Inject
+    @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
 
-    @Inject
+    @Autowired
     private PageableHandlerMethodArgumentResolver pageableArgumentResolver;
 
-    @Inject
+    @Autowired
+    private ExceptionTranslator exceptionTranslator;
+
+    @Autowired
     private EntityManager em;
 
     private MockMvc restMuscleMockMvc;
@@ -63,10 +72,10 @@ public class MuscleResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        MuscleResource muscleResource = new MuscleResource();
-        ReflectionTestUtils.setField(muscleResource, "muscleService", muscleService);
+        MuscleResource muscleResource = new MuscleResource(muscleService);
         this.restMuscleMockMvc = MockMvcBuilders.standaloneSetup(muscleResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
+            .setControllerAdvice(exceptionTranslator)
             .setMessageConverters(jacksonMessageConverter).build();
     }
 
@@ -79,6 +88,11 @@ public class MuscleResourceIntTest {
     public static Muscle createEntity(EntityManager em) {
         Muscle muscle = new Muscle()
                 .name(DEFAULT_NAME);
+        // Add required entity
+        BodyPart bodyPart = BodyPartResourceIntTest.createEntity(em);
+        em.persist(bodyPart);
+        em.flush();
+        muscle.setBodyPart(bodyPart);
         return muscle;
     }
 
@@ -93,10 +107,11 @@ public class MuscleResourceIntTest {
         int databaseSizeBeforeCreate = muscleRepository.findAll().size();
 
         // Create the Muscle
+        MuscleDTO muscleDTO = muscleMapper.muscleToMuscleDTO(muscle);
 
         restMuscleMockMvc.perform(post("/api/muscles")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(muscle)))
+            .content(TestUtil.convertObjectToJsonBytes(muscleDTO)))
             .andExpect(status().isCreated());
 
         // Validate the Muscle in the database
@@ -114,11 +129,12 @@ public class MuscleResourceIntTest {
         // Create the Muscle with an existing ID
         Muscle existingMuscle = new Muscle();
         existingMuscle.setId(1L);
+        MuscleDTO existingMuscleDTO = muscleMapper.muscleToMuscleDTO(existingMuscle);
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restMuscleMockMvc.perform(post("/api/muscles")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(existingMuscle)))
+            .content(TestUtil.convertObjectToJsonBytes(existingMuscleDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the Alice in the database
@@ -134,10 +150,11 @@ public class MuscleResourceIntTest {
         muscle.setName(null);
 
         // Create the Muscle, which fails.
+        MuscleDTO muscleDTO = muscleMapper.muscleToMuscleDTO(muscle);
 
         restMuscleMockMvc.perform(post("/api/muscles")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(muscle)))
+            .content(TestUtil.convertObjectToJsonBytes(muscleDTO)))
             .andExpect(status().isBadRequest());
 
         List<Muscle> muscleList = muscleRepository.findAll();
@@ -184,18 +201,18 @@ public class MuscleResourceIntTest {
     @Transactional
     public void updateMuscle() throws Exception {
         // Initialize the database
-        muscleService.save(muscle);
-
+        muscleRepository.saveAndFlush(muscle);
         int databaseSizeBeforeUpdate = muscleRepository.findAll().size();
 
         // Update the muscle
         Muscle updatedMuscle = muscleRepository.findOne(muscle.getId());
         updatedMuscle
                 .name(UPDATED_NAME);
+        MuscleDTO muscleDTO = muscleMapper.muscleToMuscleDTO(updatedMuscle);
 
         restMuscleMockMvc.perform(put("/api/muscles")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(updatedMuscle)))
+            .content(TestUtil.convertObjectToJsonBytes(muscleDTO)))
             .andExpect(status().isOk());
 
         // Validate the Muscle in the database
@@ -211,11 +228,12 @@ public class MuscleResourceIntTest {
         int databaseSizeBeforeUpdate = muscleRepository.findAll().size();
 
         // Create the Muscle
+        MuscleDTO muscleDTO = muscleMapper.muscleToMuscleDTO(muscle);
 
         // If the entity doesn't have an ID, it will be created instead of just being updated
         restMuscleMockMvc.perform(put("/api/muscles")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(muscle)))
+            .content(TestUtil.convertObjectToJsonBytes(muscleDTO)))
             .andExpect(status().isCreated());
 
         // Validate the Muscle in the database
@@ -227,8 +245,7 @@ public class MuscleResourceIntTest {
     @Transactional
     public void deleteMuscle() throws Exception {
         // Initialize the database
-        muscleService.save(muscle);
-
+        muscleRepository.saveAndFlush(muscle);
         int databaseSizeBeforeDelete = muscleRepository.findAll().size();
 
         // Get the muscle
@@ -239,5 +256,10 @@ public class MuscleResourceIntTest {
         // Validate the database is empty
         List<Muscle> muscleList = muscleRepository.findAll();
         assertThat(muscleList).hasSize(databaseSizeBeforeDelete - 1);
+    }
+
+    @Test
+    public void equalsVerifier() throws Exception {
+        TestUtil.equalsVerifier(Muscle.class);
     }
 }

@@ -8,7 +8,7 @@
             "relationshipValidateRules": [
                 "required"
             ],
-            "otherEntityField": "last_name"
+            "otherEntityField": "id"
         },
         {
             "relationshipName": "workoutInstance",
@@ -21,6 +21,15 @@
             "otherEntityName": "userWorkoutTemplate",
             "relationshipType": "one-to-many",
             "otherEntityRelationshipName": "workoutTemplate"
+        },
+        {
+            "relationshipName": "skillLevel",
+            "otherEntityName": "skillLevel",
+            "relationshipType": "many-to-one",
+            "relationshipValidateRules": [
+                "required"
+            ],
+            "otherEntityField": "level"
         }
     ],
     "fields": [
@@ -28,34 +37,40 @@
             "fieldName": "name",
             "fieldType": "String",
             "fieldValidateRules": [
-                "required"
-            ]
+                "required",
+                "minlength"
+            ],
+            "fieldValidateRulesMinlength": "1"
         },
         {
-            "fieldName": "created_on",
-            "fieldType": "ZonedDateTime",
+            "fieldName": "createdOn",
+            "fieldType": "LocalDate",
             "fieldValidateRules": [
                 "required"
             ]
         },
         {
-            "fieldName": "last_updated",
-            "fieldType": "ZonedDateTime",
+            "fieldName": "lastUpdated",
+            "fieldType": "LocalDate",
             "fieldValidateRules": [
                 "required"
             ]
         },
         {
-            "fieldName": "is_private",
+            "fieldName": "isPrivate",
             "fieldType": "Boolean",
             "fieldValidateRules": [
                 "required"
             ]
+        },
+        {
+            "fieldName": "notes",
+            "fieldType": "String"
         }
     ],
-    "changelogDate": "20170203230115",
-    "dto": "no",
+    "changelogDate": "20170307024020",
+    "dto": "mapstruct",
     "service": "serviceClass",
     "entityTableName": "workout_template",
-    "pagination": "infinite-scroll"
+    "pagination": "pagination"
 }

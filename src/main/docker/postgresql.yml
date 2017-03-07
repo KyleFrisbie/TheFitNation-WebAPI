@@ -1,7 +1,6 @@
 version: '2'
 services:
     thefitnation-postgresql:
-        container_name: thefitnation-postgresql
         image: postgres:9.5.4
         # volumes:
         #     - ~/volumes/jhipster/TheFitNation/postgresql/:/var/lib/postgresql/

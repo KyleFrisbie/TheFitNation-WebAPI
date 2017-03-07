@@ -12,7 +12,7 @@
 
 eureka:
     instance:
-        hostname: the-fit-nation.herokuapp.com
+        hostname: the-fit-nation-dev.herokuapp.com
         non-secure-port: 80
         prefer-ip-address: false
     client:

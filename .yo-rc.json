@@ -1,6 +1,6 @@
 {
   "generator-jhipster": {
-    "jhipsterVersion": "3.12.2",
+    "jhipsterVersion": "4.0.7",
     "baseName": "TheFitNation",
     "packageName": "com.thefitnation",
     "packageFolder": "com/thefitnation",
@@ -14,15 +14,23 @@
     "prodDatabaseType": "postgresql",
     "searchEngine": false,
     "messageBroker": false,
+    "serviceDiscoveryType": false,
     "buildTool": "maven",
     "enableSocialSignIn": false,
+    "clientFramework": "angular1",
     "useSass": true,
+    "clientPackageManager": "npm",
     "applicationType": "monolith",
     "testFrameworks": [
       "gatling",
       "cucumber"
     ],
     "jhiPrefix": "jhi",
-    "enableTranslation": false
+    "enableTranslation": true,
+    "nativeLanguage": "en",
+    "languages": [
+      "en"
+    ],
+    "herokuAppName": "the-fit-nation-dev"
   }
 }

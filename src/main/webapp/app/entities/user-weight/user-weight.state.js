@@ -11,10 +11,10 @@
         $stateProvider
         .state('user-weight', {
             parent: 'entity',
-            url: '/user-weight',
+            url: '/user-weight?page&sort&search',
             data: {
                 authorities: ['ROLE_USER'],
-                pageTitle: 'UserWeights'
+                pageTitle: 'theFitNationApp.userWeight.home.title'
             },
             views: {
                 'content@': {
@@ -23,15 +23,40 @@
                     controllerAs: 'vm'
                 }
             },
+            params: {
+                page: {
+                    value: '1',
+                    squash: true
+                },
+                sort: {
+                    value: 'id,asc',
+                    squash: true
+                },
+                search: null
+            },
             resolve: {
+                pagingParams: ['$stateParams', 'PaginationUtil', function ($stateParams, PaginationUtil) {
+                    return {
+                        page: PaginationUtil.parsePage($stateParams.page),
+                        sort: $stateParams.sort,
+                        predicate: PaginationUtil.parsePredicate($stateParams.sort),
+                        ascending: PaginationUtil.parseAscending($stateParams.sort),
+                        search: $stateParams.search
+                    };
+                }],
+                translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
+                    $translatePartialLoader.addPart('userWeight');
+                    $translatePartialLoader.addPart('global');
+                    return $translate.refresh();
+                }]
             }
         })
         .state('user-weight-detail', {
-            parent: 'entity',
+            parent: 'user-weight',
             url: '/user-weight/{id}',
             data: {
                 authorities: ['ROLE_USER'],
-                pageTitle: 'UserWeight'
+                pageTitle: 'theFitNationApp.userWeight.detail.title'
             },
             views: {
                 'content@': {
@@ -41,6 +66,10 @@
                 }
             },
             resolve: {
+                translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
+                    $translatePartialLoader.addPart('userWeight');
+                    return $translate.refresh();
+                }],
                 entity: ['$stateParams', 'UserWeight', function($stateParams, UserWeight) {
                     return UserWeight.get({id : $stateParams.id}).$promise;
                 }],
@@ -95,7 +124,7 @@
                     resolve: {
                         entity: function () {
                             return {
-                                weight_date: null,
+                                weightDate: null,
                                 weight: null,
                                 id: null
                             };

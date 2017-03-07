@@ -24,39 +24,40 @@ public class Exercise implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
+    @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
 
     @NotNull
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "exercise_type")
-    private ExerciseType exercise_type;
+    @Column(name = "image_uri")
+    private String imageUri;
 
-    @ManyToMany(mappedBy = "exercises")
+    @Column(name = "notes")
+    private String notes;
+
+    @ManyToOne(optional = false)
+    @NotNull
+    private SkillLevel skillLevel;
+
+    @OneToMany(mappedBy = "exercise")
     @JsonIgnore
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    private Set<WorkoutInstance> workoutInstances = new HashSet<>();
+    private Set<ExerciseInstance> exerciseInstances = new HashSet<>();
 
     @ManyToMany
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     @NotNull
     @JoinTable(name = "exercise_muscle",
-               joinColumns = @JoinColumn(name="exercises_id", referencedColumnName="ID"),
-               inverseJoinColumns = @JoinColumn(name="muscles_id", referencedColumnName="ID"))
+               joinColumns = @JoinColumn(name="exercises_id", referencedColumnName="id"),
+               inverseJoinColumns = @JoinColumn(name="muscles_id", referencedColumnName="id"))
     private Set<Muscle> muscles = new HashSet<>();
 
-    @OneToMany(mappedBy = "exercise")
-    @JsonIgnore
-    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    private Set<ExerciseSet> exerciseSets = new HashSet<>();
-
-    @OneToMany(mappedBy = "exercise")
-    @JsonIgnore
-    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    private Set<UserExercise> userExercises = new HashSet<>();
+    @ManyToOne(optional = false)
+    @NotNull
+    private ExerciseFamily exerciseFamily;
 
     public Long getId() {
         return id;
@@ -79,42 +80,68 @@ public class Exercise implements Serializable {
         this.name = name;
     }
 
-    public ExerciseType getExercise_type() {
-        return exercise_type;
+    public String getImageUri() {
+        return imageUri;
     }
 
-    public Exercise exercise_type(ExerciseType exercise_type) {
-        this.exercise_type = exercise_type;
+    public Exercise imageUri(String imageUri) {
+        this.imageUri = imageUri;
         return this;
     }
 
-    public void setExercise_type(ExerciseType exercise_type) {
-        this.exercise_type = exercise_type;
+    public void setImageUri(String imageUri) {
+        this.imageUri = imageUri;
     }
 
-    public Set<WorkoutInstance> getWorkoutInstances() {
-        return workoutInstances;
+    public String getNotes() {
+        return notes;
     }
 
-    public Exercise workoutInstances(Set<WorkoutInstance> workoutInstances) {
-        this.workoutInstances = workoutInstances;
+    public Exercise notes(String notes) {
+        this.notes = notes;
         return this;
     }
 
-    public Exercise addWorkoutInstance(WorkoutInstance workoutInstance) {
-        workoutInstances.add(workoutInstance);
-        workoutInstance.getExercises().add(this);
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
+
+    public SkillLevel getSkillLevel() {
+        return skillLevel;
+    }
+
+    public Exercise skillLevel(SkillLevel skillLevel) {
+        this.skillLevel = skillLevel;
         return this;
     }
 
-    public Exercise removeWorkoutInstance(WorkoutInstance workoutInstance) {
-        workoutInstances.remove(workoutInstance);
-        workoutInstance.getExercises().remove(this);
+    public void setSkillLevel(SkillLevel skillLevel) {
+        this.skillLevel = skillLevel;
+    }
+
+    public Set<ExerciseInstance> getExerciseInstances() {
+        return exerciseInstances;
+    }
+
+    public Exercise exerciseInstances(Set<ExerciseInstance> exerciseInstances) {
+        this.exerciseInstances = exerciseInstances;
         return this;
     }
 
-    public void setWorkoutInstances(Set<WorkoutInstance> workoutInstances) {
-        this.workoutInstances = workoutInstances;
+    public Exercise addExerciseInstance(ExerciseInstance exerciseInstance) {
+        this.exerciseInstances.add(exerciseInstance);
+        exerciseInstance.setExercise(this);
+        return this;
+    }
+
+    public Exercise removeExerciseInstance(ExerciseInstance exerciseInstance) {
+        this.exerciseInstances.remove(exerciseInstance);
+        exerciseInstance.setExercise(null);
+        return this;
+    }
+
+    public void setExerciseInstances(Set<ExerciseInstance> exerciseInstances) {
+        this.exerciseInstances = exerciseInstances;
     }
 
     public Set<Muscle> getMuscles() {
@@ -127,13 +154,13 @@ public class Exercise implements Serializable {
     }
 
     public Exercise addMuscle(Muscle muscle) {
-        muscles.add(muscle);
+        this.muscles.add(muscle);
         muscle.getExercises().add(this);
         return this;
     }
 
     public Exercise removeMuscle(Muscle muscle) {
-        muscles.remove(muscle);
+        this.muscles.remove(muscle);
         muscle.getExercises().remove(this);
         return this;
     }
@@ -142,54 +169,17 @@ public class Exercise implements Serializable {
         this.muscles = muscles;
     }
 
-    public Set<ExerciseSet> getExerciseSets() {
-        return exerciseSets;
+    public ExerciseFamily getExerciseFamily() {
+        return exerciseFamily;
     }
 
-    public Exercise exerciseSets(Set<ExerciseSet> exerciseSets) {
-        this.exerciseSets = exerciseSets;
+    public Exercise exerciseFamily(ExerciseFamily exerciseFamily) {
+        this.exerciseFamily = exerciseFamily;
         return this;
     }
 
-    public Exercise addExerciseSet(ExerciseSet exerciseSet) {
-        exerciseSets.add(exerciseSet);
-        exerciseSet.setExercise(this);
-        return this;
-    }
-
-    public Exercise removeExerciseSet(ExerciseSet exerciseSet) {
-        exerciseSets.remove(exerciseSet);
-        exerciseSet.setExercise(null);
-        return this;
-    }
-
-    public void setExerciseSets(Set<ExerciseSet> exerciseSets) {
-        this.exerciseSets = exerciseSets;
-    }
-
-    public Set<UserExercise> getUserExercises() {
-        return userExercises;
-    }
-
-    public Exercise userExercises(Set<UserExercise> userExercises) {
-        this.userExercises = userExercises;
-        return this;
-    }
-
-    public Exercise addUserExercise(UserExercise userExercise) {
-        userExercises.add(userExercise);
-        userExercise.setExercise(this);
-        return this;
-    }
-
-    public Exercise removeUserExercise(UserExercise userExercise) {
-        userExercises.remove(userExercise);
-        userExercise.setExercise(null);
-        return this;
-    }
-
-    public void setUserExercises(Set<UserExercise> userExercises) {
-        this.userExercises = userExercises;
+    public void setExerciseFamily(ExerciseFamily exerciseFamily) {
+        this.exerciseFamily = exerciseFamily;
     }
 
     @Override
@@ -217,7 +207,8 @@ public class Exercise implements Serializable {
         return "Exercise{" +
             "id=" + id +
             ", name='" + name + "'" +
-            ", exercise_type='" + exercise_type + "'" +
+            ", imageUri='" + imageUri + "'" +
+            ", notes='" + notes + "'" +
             '}';
     }
 }

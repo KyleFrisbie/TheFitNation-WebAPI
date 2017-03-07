@@ -1,0 +1,26 @@
+{
+    "theFitNationApp": {
+        "userWorkoutTemplate" : {
+            "home": {
+                "title": "User Workout Templates",
+                "createLabel": "Create a new User Workout Template",
+                "createOrEditLabel": "Create or edit a User Workout Template"
+            },
+            "created": "A new User Workout Template is created with identifier {{ param }}",
+            "updated": "A User Workout Template is updated with identifier {{ param }}",
+            "deleted": "A User Workout Template is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete User Workout Template {{ id }}?"
+            },
+            "detail": {
+                "title": "User Workout Template"
+            },
+            "createdOn": "Created On",
+            "lastUpdated": "Last Updated",
+            "notes": "Notes",
+            "userDemographic": "User Demographic",
+            "workoutTemplate": "Workout Template",
+            "userWorkoutInstance": "User Workout Instance"
+        }
+    }
+}

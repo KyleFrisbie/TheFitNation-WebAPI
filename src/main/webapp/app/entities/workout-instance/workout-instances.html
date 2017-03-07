@@ -1,12 +1,12 @@
 <div>
-    <h2>Workout Instances</h2>
+    <h2 data-translate="theFitNationApp.workoutInstance.home.title">Workout Instances</h2>
     <jhi-alert></jhi-alert>
     <div class="container-fluid">
         <div class="row">
             <div class="col-xs-4 no-padding-left">
                 <button class="btn btn-primary" ui-sref="workout-instance.new" >
                     <span class="glyphicon glyphicon-plus"></span>
-                    <span >
+                    <span  data-translate="theFitNationApp.workoutInstance.home.createLabel">
                         Create new Workout Instance
                     </span>
                 </button>
@@ -17,27 +17,29 @@
     <div class="table-responsive">
         <table class="jh-table table table-striped">
             <thead>
-                <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.reset()">
-                    <th jh-sort-by="id"><span>ID</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="name"><span>Name</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="last_updated"><span data-translate="theFitNationApp.workoutInstance.last_updated">Last Updated</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="created_on"><span data-translate="theFitNationApp.workoutInstance.created_on">Created On</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="rest_between_instances"><span data-translate="theFitNationApp.workoutInstance.rest_between_instances">Rest Between Instances</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="order_number"><span data-translate="theFitNationApp.workoutInstance.order_number">Order Number</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="workoutTemplate.name"><span>Workout Template</span> <span class="glyphicon glyphicon-sort"></span></th>
+                <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
+                    <th jh-sort-by="id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="name"><span data-translate="theFitNationApp.workoutInstance.name">Name</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="createdOn"><span data-translate="theFitNationApp.workoutInstance.createdOn">Created On</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="lastUpdated"><span data-translate="theFitNationApp.workoutInstance.lastUpdated">Last Updated</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="restBetweenInstances"><span data-translate="theFitNationApp.workoutInstance.restBetweenInstances">Rest Between Instances</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="orderNumber"><span data-translate="theFitNationApp.workoutInstance.orderNumber">Order Number</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="notes"><span data-translate="theFitNationApp.workoutInstance.notes">Notes</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="workoutTemplateName"><span data-translate="theFitNationApp.workoutInstance.workoutTemplate">Workout Template</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th></th>
                 </tr>
             </thead>
-            <tbody infinite-scroll="vm.loadPage(vm.page + 1)" infinite-scroll-disabled="vm.page >= vm.links['last']">
+            <tbody>
                 <tr ng-repeat="workoutInstance in vm.workoutInstances track by workoutInstance.id">
                     <td><a ui-sref="workout-instance-detail({id:workoutInstance.id})">{{workoutInstance.id}}</a></td>
                     <td>{{workoutInstance.name}}</td>
-                    <td>{{workoutInstance.last_updated | date:'medium'}}</td>
-                    <td>{{workoutInstance.created_on | date:'medium'}}</td>
-                    <td>{{workoutInstance.rest_between_instances}}</td>
-                    <td>{{workoutInstance.order_number}}</td>
+                        <td>{{workoutInstance.createdOn | date:'mediumDate'}}</td>
+                        <td>{{workoutInstance.lastUpdated | date:'mediumDate'}}</td>
+                    <td>{{workoutInstance.restBetweenInstances}}</td>
+                    <td>{{workoutInstance.orderNumber}}</td>
+                    <td>{{workoutInstance.notes}}</td>
                     <td>
-                        <a ui-sref="workout-template-detail({id:workoutInstance.workoutTemplate.id})">{{workoutInstance.workoutTemplate.name}}</a>
+                        <a ui-sref="workout-template-detail({id:workoutInstance.workoutTemplateId})">{{workoutInstance.workoutTemplateName}}</a>
                     </td>
                     <td class="text-right">
                         <div class="btn-group flex-btn-group-container">
@@ -45,24 +47,28 @@
                                     ui-sref="workout-instance-detail({id:workoutInstance.id})"
                                     class="btn btn-info btn-sm">
                                 <span class="glyphicon glyphicon-eye-open"></span>
-                                <span class="hidden-xs hidden-sm"></span>
+                                <span class="hidden-sm-down" data-translate="entity.action.view"></span>
                             </button>
                             <button type="submit"
                                     ui-sref="workout-instance.edit({id:workoutInstance.id})"
                                     class="btn btn-primary btn-sm">
                                 <span class="glyphicon glyphicon-pencil"></span>
-                                <span class="hidden-xs hidden-sm"></span>
+                                <span class="hidden-sm-down" data-translate="entity.action.edit"></span>
                             </button>
                             <button type="submit"
                                     ui-sref="workout-instance.delete({id:workoutInstance.id})"
                                     class="btn btn-danger btn-sm">
                                 <span class="glyphicon glyphicon-remove-circle"></span>
-                                <span class="hidden-xs hidden-sm"></span>
+                                <span class="hidden-sm-down" data-translate="entity.action.delete"></span>
                             </button>
                         </div>
                     </td>
                 </tr>
             </tbody>
         </table>
+    </div>
+    <div class="text-center">
+        <jhi-item-count page="vm.page" total="vm.queryCount" items-per-page="vm.itemsPerPage"></jhi-item-count>
+        <uib-pagination class="pagination-sm" total-items="vm.totalItems" items-per-page="vm.itemsPerPage" ng-model="vm.page" ng-change="vm.transition()"></uib-pagination>
     </div>
 </div>

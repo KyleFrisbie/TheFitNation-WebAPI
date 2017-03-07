@@ -1,63 +1,57 @@
 
 <div>
-    <h2><span>User Demographic</span> {{vm.userDemographic.id}}</h2>
+    <h2><span data-translate="theFitNationApp.userDemographic.detail.title">User Demographic</span> {{vm.userDemographic.id}}</h2>
     <hr>
     <jhi-alert-error></jhi-alert-error>
-    <dl class="dl-horizontal jh-entity-details">
-        <dt><span data-translate="theFitNationApp.userDemographic.created_on">Created On</span></dt>
+    <dl class="row jh-entity-details">
+        <dt><span data-translate="theFitNationApp.userDemographic.createdOn">Created On</span></dt>
         <dd>
-            <span>{{vm.userDemographic.created_on | date:'medium'}}</span>
+            <span>{{vm.userDemographic.createdOn | date:'mediumDate'}}</span>
         </dd>
-        <dt><span data-translate="theFitNationApp.userDemographic.last_login">Last Login</span></dt>
+        <dt><span data-translate="theFitNationApp.userDemographic.lastLogin">Last Login</span></dt>
         <dd>
-            <span>{{vm.userDemographic.last_login | date:'medium'}}</span>
+            <span>{{vm.userDemographic.lastLogin | date:'mediumDate'}}</span>
         </dd>
-        <dt><span data-translate="theFitNationApp.userDemographic.first_name">First Name</span></dt>
+        <dt><span data-translate="theFitNationApp.userDemographic.gender">Gender</span></dt>
         <dd>
-            <span>{{vm.userDemographic.first_name}}</span>
+            <span data-translate="{{'theFitNationApp.Gender.' + vm.userDemographic.gender}}">{{vm.userDemographic.gender}}</span>
         </dd>
-        <dt><span data-translate="theFitNationApp.userDemographic.last_name">Last Name</span></dt>
+        <dt><span data-translate="theFitNationApp.userDemographic.dateOfBirth">Date Of Birth</span></dt>
         <dd>
-            <span>{{vm.userDemographic.last_name}}</span>
+            <span>{{vm.userDemographic.dateOfBirth | date:'mediumDate'}}</span>
         </dd>
-        <dt><span>Gender</span></dt>
-        <dd>
-            <span>{{vm.userDemographic.gender}}</span>
-        </dd>
-        <dt><span>Dob</span></dt>
-        <dd>
-            <span>{{vm.userDemographic.dob | date:'medium'}}</span>
-        </dd>
-        <dt><span>Height</span></dt>
+        <dt><span data-translate="theFitNationApp.userDemographic.height">Height</span></dt>
         <dd>
             <span>{{vm.userDemographic.height}}</span>
         </dd>
-        <dt><span data-translate="theFitNationApp.userDemographic.skill_level">Skill Level</span></dt>
+        <dt><span data-translate="theFitNationApp.userDemographic.unitOfMeasure">Unit Of Measure</span></dt>
         <dd>
-            <span data-translate="{{'theFitNationApp.SkillLevel.' + vm.userDemographic.skill_level}}">{{vm.userDemographic.skill_level}}</span>
+            <span data-translate="{{'theFitNationApp.UnitOfMeasure.' + vm.userDemographic.unitOfMeasure}}">{{vm.userDemographic.unitOfMeasure}}</span>
         </dd>
-        <dt><span data-translate="theFitNationApp.userDemographic.unit_of_measure">Unit Of Measure</span></dt>
+        <dt><span data-translate="theFitNationApp.userDemographic.user">User</span></dt>
         <dd>
-            <span data-translate="{{'theFitNationApp.UnitOfMeasure.' + vm.userDemographic.unit_of_measure}}">{{vm.userDemographic.unit_of_measure}}</span>
+            {{vm.userDemographic.userLogin}}
         </dd>
-        <dt><span data-translate="theFitNationApp.userDemographic.is_active">Is Active</span></dt>
+        <dt><span data-translate="theFitNationApp.userDemographic.gym">Gym</span></dt>
         <dd>
-            <span>{{vm.userDemographic.is_active}}</span>
+            <span ng-repeat="gym in vm.userDemographic.gyms">
+                <a ui-sref="gym-detail({id: gym.id})">{{gym.name}}</a>{{$last ? '' : ', '}}
+            </span>
         </dd>
-        <dt><span>Workout Log</span></dt>
+        <dt><span data-translate="theFitNationApp.userDemographic.skillLevel">Skill Level</span></dt>
         <dd>
-            <a ui-sref="workout-log-detail({id:vm.userDemographic.workoutLog.id})">{{vm.userDemographic.workoutLog.id}}</a>
+            <a ui-sref="skill-level-detail({id:vm.userDemographic.skillLevelId})">{{vm.userDemographic.skillLevelLevel}}</a>
         </dd>
     </dl>
 
     <button type="submit"
             ui-sref="{{ vm.previousState }}"
             class="btn btn-info">
-        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span> Back</span>
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
     </button>
 
     <button type="button" ui-sref="user-demographic-detail.edit({id:vm.userDemographic.id})" class="btn btn-primary">
         <span class="glyphicon glyphicon-pencil"></span>
-        <span class="hidden-xs hidden-sm"> Edit</span>
+        <span class="hidden-sm-down" data-translate="entity.action.edit"> Edit</span>
     </button>
 </div>

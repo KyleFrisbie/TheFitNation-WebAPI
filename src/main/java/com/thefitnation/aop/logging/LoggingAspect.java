@@ -1,6 +1,6 @@
 package com.thefitnation.aop.logging;
 
-import com.thefitnation.config.Constants;
+import io.github.jhipster.config.JHipsterConstants;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -12,7 +12,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.env.Environment;
 
-import javax.inject.Inject;
 import java.util.Arrays;
 
 /**
@@ -25,15 +24,18 @@ public class LoggingAspect {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-    @Inject
-    private Environment env;
+    private final Environment env;
+
+    public LoggingAspect(Environment env) {
+        this.env = env;
+    }
 
     /**
      * Pointcut that matches all repositories, services and Web REST endpoints.
      */
     @Pointcut("within(com.thefitnation.repository..*) || within(com.thefitnation.service..*) || within(com.thefitnation.web.rest..*)")
     public void loggingPointcut() {
-        // Method is empty as this is just a Poincut, the implementations are in the advices.
+        // Method is empty as this is just a Pointcut, the implementations are in the advices.
     }
 
     /**
@@ -41,7 +43,7 @@ public class LoggingAspect {
      */
     @AfterThrowing(pointcut = "loggingPointcut()", throwing = "e")
     public void logAfterThrowing(JoinPoint joinPoint, Throwable e) {
-        if (env.acceptsProfiles(Constants.SPRING_PROFILE_DEVELOPMENT)) {
+        if (env.acceptsProfiles(JHipsterConstants.SPRING_PROFILE_DEVELOPMENT)) {
             log.error("Exception in {}.{}() with cause = \'{}\' and exception = \'{}\'", joinPoint.getSignature().getDeclaringTypeName(),
                 joinPoint.getSignature().getName(), e.getCause() != null? e.getCause() : "NULL", e.getMessage(), e);
 

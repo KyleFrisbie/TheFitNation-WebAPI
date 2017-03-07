@@ -2,10 +2,22 @@
     "fluentMethods": true,
     "relationships": [
         {
+            "relationshipName": "user",
+            "otherEntityName": "user",
+            "relationshipType": "one-to-one",
+            "relationshipValidateRules": [
+                "required"
+            ],
+            "otherEntityField": "login",
+            "ownerSide": true,
+            "otherEntityRelationshipName": "userDemographic"
+        },
+        {
             "relationshipName": "gym",
             "otherEntityName": "gym",
             "relationshipType": "many-to-many",
-            "ownerSide": false,
+            "otherEntityField": "name",
+            "ownerSide": true,
             "otherEntityRelationshipName": "userDemographic"
         },
         {
@@ -15,45 +27,38 @@
             "otherEntityRelationshipName": "userDemographic"
         },
         {
-            "relationshipName": "workoutLog",
-            "otherEntityName": "workoutLog",
-            "relationshipType": "one-to-one",
-            "otherEntityField": "id",
-            "ownerSide": true,
-            "otherEntityRelationshipName": "userDemographic"
-        },
-        {
             "relationshipName": "workoutTemplate",
             "otherEntityName": "workoutTemplate",
             "relationshipType": "one-to-many",
             "otherEntityRelationshipName": "userDemographic"
+        },
+        {
+            "relationshipName": "userWorkoutTemplate",
+            "otherEntityName": "userWorkoutTemplate",
+            "relationshipType": "one-to-many",
+            "otherEntityRelationshipName": "userDemographic"
+        },
+        {
+            "relationshipName": "skillLevel",
+            "otherEntityName": "skillLevel",
+            "relationshipType": "many-to-one",
+            "relationshipValidateRules": [
+                "required"
+            ],
+            "otherEntityField": "level"
         }
     ],
     "fields": [
         {
-            "fieldName": "created_on",
-            "fieldType": "ZonedDateTime",
+            "fieldName": "createdOn",
+            "fieldType": "LocalDate",
             "fieldValidateRules": [
                 "required"
             ]
         },
         {
-            "fieldName": "last_login",
-            "fieldType": "ZonedDateTime",
-            "fieldValidateRules": [
-                "required"
-            ]
-        },
-        {
-            "fieldName": "first_name",
-            "fieldType": "String",
-            "fieldValidateRules": [
-                "required"
-            ]
-        },
-        {
-            "fieldName": "last_name",
-            "fieldType": "String",
+            "fieldName": "lastLogin",
+            "fieldType": "LocalDate",
             "fieldValidateRules": [
                 "required"
             ]
@@ -64,40 +69,28 @@
             "fieldValues": "Male, Female, Other"
         },
         {
-            "fieldName": "dob",
-            "fieldType": "ZonedDateTime",
+            "fieldName": "dateOfBirth",
+            "fieldType": "LocalDate",
             "fieldValidateRules": [
                 "required"
             ]
         },
         {
             "fieldName": "height",
-            "fieldType": "Integer"
+            "fieldType": "Float"
         },
         {
-            "fieldName": "skill_level",
-            "fieldType": "SkillLevel",
-            "fieldValues": "Beginner, Intermediate, Advanced"
-        },
-        {
-            "fieldName": "unit_of_measure",
+            "fieldName": "unitOfMeasure",
             "fieldType": "UnitOfMeasure",
             "fieldValues": "Imperial, Metric",
             "fieldValidateRules": [
                 "required"
             ]
-        },
-        {
-            "fieldName": "is_active",
-            "fieldType": "Boolean",
-            "fieldValidateRules": [
-                "required"
-            ]
         }
     ],
-    "changelogDate": "20170203225520",
-    "dto": "no",
+    "changelogDate": "20170307015737",
+    "dto": "mapstruct",
     "service": "serviceClass",
     "entityTableName": "user_demographic",
-    "pagination": "infinite-scroll"
+    "pagination": "pagination"
 }

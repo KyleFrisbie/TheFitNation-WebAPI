@@ -1,5 +1,6 @@
 package com.thefitnation.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -21,23 +22,27 @@ public class Gym implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
+    @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
 
     @NotNull
+    @Size(min = 1)
     @Column(name = "name", nullable = false)
     private String name;
 
-    @NotNull
-    @Column(name = "location", nullable = false)
-    private String location;
+    @Column(name = "notes")
+    private String notes;
 
-    @ManyToMany
+    @ManyToMany(mappedBy = "gyms")
+    @JsonIgnore
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    @JoinTable(name = "gym_user_demographic",
-               joinColumns = @JoinColumn(name="gyms_id", referencedColumnName="ID"),
-               inverseJoinColumns = @JoinColumn(name="user_demographics_id", referencedColumnName="ID"))
     private Set<UserDemographic> userDemographics = new HashSet<>();
+
+    @OneToOne(optional = false)
+    @NotNull
+    @JoinColumn(unique = true)
+    private Location location;
 
     public Long getId() {
         return id;
@@ -60,17 +65,17 @@ public class Gym implements Serializable {
         this.name = name;
     }
 
-    public String getLocation() {
-        return location;
+    public String getNotes() {
+        return notes;
     }
 
-    public Gym location(String location) {
-        this.location = location;
+    public Gym notes(String notes) {
+        this.notes = notes;
         return this;
     }
 
-    public void setLocation(String location) {
-        this.location = location;
+    public void setNotes(String notes) {
+        this.notes = notes;
     }
 
     public Set<UserDemographic> getUserDemographics() {
@@ -83,19 +88,32 @@ public class Gym implements Serializable {
     }
 
     public Gym addUserDemographic(UserDemographic userDemographic) {
-        userDemographics.add(userDemographic);
+        this.userDemographics.add(userDemographic);
         userDemographic.getGyms().add(this);
         return this;
     }
 
     public Gym removeUserDemographic(UserDemographic userDemographic) {
-        userDemographics.remove(userDemographic);
+        this.userDemographics.remove(userDemographic);
         userDemographic.getGyms().remove(this);
         return this;
     }
 
     public void setUserDemographics(Set<UserDemographic> userDemographics) {
         this.userDemographics = userDemographics;
+    }
+
+    public Location getLocation() {
+        return location;
+    }
+
+    public Gym location(Location location) {
+        this.location = location;
+        return this;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
     }
 
     @Override
@@ -123,7 +141,7 @@ public class Gym implements Serializable {
         return "Gym{" +
             "id=" + id +
             ", name='" + name + "'" +
-            ", location='" + location + "'" +
+            ", notes='" + notes + "'" +
             '}';
     }
 }

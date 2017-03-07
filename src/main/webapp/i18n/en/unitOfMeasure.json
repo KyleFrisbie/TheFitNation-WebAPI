@@ -1,0 +1,9 @@
+{
+    "theFitNationApp": {
+        "UnitOfMeasure" : {
+            "null": "",
+            "Imperial": "Imperial",
+            "Metric": "Metric"
+        }
+    }
+}

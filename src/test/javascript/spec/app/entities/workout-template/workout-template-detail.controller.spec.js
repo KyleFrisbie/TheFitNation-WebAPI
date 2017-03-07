@@ -4,7 +4,7 @@ describe('Controller Tests', function() {
 
     describe('WorkoutTemplate Management Detail Controller', function() {
         var $scope, $rootScope;
-        var MockEntity, MockPreviousState, MockWorkoutTemplate, MockUserDemographic, MockWorkoutInstance, MockUserWorkoutTemplate;
+        var MockEntity, MockPreviousState, MockWorkoutTemplate, MockUserDemographic, MockWorkoutInstance, MockUserWorkoutTemplate, MockSkillLevel;
         var createController;
 
         beforeEach(inject(function($injector) {
@@ -16,6 +16,7 @@ describe('Controller Tests', function() {
             MockUserDemographic = jasmine.createSpy('MockUserDemographic');
             MockWorkoutInstance = jasmine.createSpy('MockWorkoutInstance');
             MockUserWorkoutTemplate = jasmine.createSpy('MockUserWorkoutTemplate');
+            MockSkillLevel = jasmine.createSpy('MockSkillLevel');
             
 
             var locals = {
@@ -26,7 +27,8 @@ describe('Controller Tests', function() {
                 'WorkoutTemplate': MockWorkoutTemplate,
                 'UserDemographic': MockUserDemographic,
                 'WorkoutInstance': MockWorkoutInstance,
-                'UserWorkoutTemplate': MockUserWorkoutTemplate
+                'UserWorkoutTemplate': MockUserWorkoutTemplate,
+                'SkillLevel': MockSkillLevel
             };
             createController = function() {
                 $injector.get('$controller')("WorkoutTemplateDetailController", locals);

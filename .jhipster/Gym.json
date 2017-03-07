@@ -5,7 +5,17 @@
             "relationshipName": "userDemographic",
             "otherEntityName": "userDemographic",
             "relationshipType": "many-to-many",
-            "otherEntityField": "last_name",
+            "ownerSide": false,
+            "otherEntityRelationshipName": "gym"
+        },
+        {
+            "relationshipName": "location",
+            "otherEntityName": "location",
+            "relationshipType": "one-to-one",
+            "relationshipValidateRules": [
+                "required"
+            ],
+            "otherEntityField": "id",
             "ownerSide": true,
             "otherEntityRelationshipName": "gym"
         }
@@ -15,20 +25,19 @@
             "fieldName": "name",
             "fieldType": "String",
             "fieldValidateRules": [
-                "required"
-            ]
+                "required",
+                "minlength"
+            ],
+            "fieldValidateRulesMinlength": "1"
         },
         {
-            "fieldName": "location",
-            "fieldType": "String",
-            "fieldValidateRules": [
-                "required"
-            ]
+            "fieldName": "notes",
+            "fieldType": "String"
         }
     ],
-    "changelogDate": "20170203225728",
-    "dto": "no",
+    "changelogDate": "20170307020359",
+    "dto": "mapstruct",
     "service": "serviceClass",
     "entityTableName": "gym",
-    "pagination": "infinite-scroll"
+    "pagination": "pagination"
 }

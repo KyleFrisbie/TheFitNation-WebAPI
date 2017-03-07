@@ -1,0 +1,58 @@
+{
+    "fluentMethods": true,
+    "relationships": [
+        {
+            "relationshipName": "exerciseInstance",
+            "otherEntityName": "exerciseInstance",
+            "relationshipType": "many-to-one",
+            "relationshipValidateRules": [
+                "required"
+            ],
+            "otherEntityField": "id"
+        },
+        {
+            "relationshipName": "userExerciseInstanceSet",
+            "otherEntityName": "userExerciseInstanceSet",
+            "relationshipType": "one-to-many",
+            "otherEntityRelationshipName": "exerciseInstanceSet"
+        }
+    ],
+    "fields": [
+        {
+            "fieldName": "orderNumber",
+            "fieldType": "Integer",
+            "fieldValidateRules": [
+                "required",
+                "min"
+            ],
+            "fieldValidateRulesMin": "1"
+        },
+        {
+            "fieldName": "reqQuantity",
+            "fieldType": "Float",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "effortQuantity",
+            "fieldType": "Float",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "restTime",
+            "fieldType": "Float"
+        },
+        {
+            "fieldName": "notes",
+            "fieldType": "String"
+        }
+    ],
+    "changelogDate": "20170307025238",
+    "dto": "mapstruct",
+    "service": "serviceClass",
+    "entityTableName": "exercise_instance_set",
+    "pagination": "pagination"
+}

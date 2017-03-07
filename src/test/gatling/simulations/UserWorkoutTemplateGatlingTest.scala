@@ -80,7 +80,7 @@ class UserWorkoutTemplateGatlingTest extends Simulation {
             .exec(http("Create new userWorkoutTemplate")
             .post("/api/user-workout-templates")
             .headers(headers_http_authenticated)
-            .body(StringBody("""{"id":null, "created_on":"2020-01-01T00:00:00.000Z", "last_updated":"2020-01-01T00:00:00.000Z"}""")).asJSON
+            .body(StringBody("""{"id":null, "createdOn":"2020-01-01T00:00:00.000Z", "lastUpdated":"2020-01-01T00:00:00.000Z", "notes":"SAMPLE_TEXT"}""")).asJSON
             .check(status.is(201))
             .check(headerRegex("Location", "(.*)").saveAs("new_userWorkoutTemplate_url"))).exitHereIfFailed
             .pause(10)

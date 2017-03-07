@@ -6,7 +6,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.io.Serializable;
-import java.time.ZonedDateTime;
+import java.time.LocalDate;
 import java.util.Objects;
 
 /**
@@ -20,18 +20,20 @@ public class UserWeight implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
+    @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
 
     @NotNull
     @Column(name = "weight_date", nullable = false)
-    private ZonedDateTime weight_date;
+    private LocalDate weightDate;
 
     @NotNull
+    @DecimalMin(value = "1")
     @Column(name = "weight", nullable = false)
     private Float weight;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     @NotNull
     private UserDemographic userDemographic;
 
@@ -43,17 +45,17 @@ public class UserWeight implements Serializable {
         this.id = id;
     }
 
-    public ZonedDateTime getWeight_date() {
-        return weight_date;
+    public LocalDate getWeightDate() {
+        return weightDate;
     }
 
-    public UserWeight weight_date(ZonedDateTime weight_date) {
-        this.weight_date = weight_date;
+    public UserWeight weightDate(LocalDate weightDate) {
+        this.weightDate = weightDate;
         return this;
     }
 
-    public void setWeight_date(ZonedDateTime weight_date) {
-        this.weight_date = weight_date;
+    public void setWeightDate(LocalDate weightDate) {
+        this.weightDate = weightDate;
     }
 
     public Float getWeight() {
@@ -106,7 +108,7 @@ public class UserWeight implements Serializable {
     public String toString() {
         return "UserWeight{" +
             "id=" + id +
-            ", weight_date='" + weight_date + "'" +
+            ", weightDate='" + weightDate + "'" +
             ", weight='" + weight + "'" +
             '}';
     }
