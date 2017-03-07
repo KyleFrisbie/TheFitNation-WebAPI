@@ -4,8 +4,7 @@
         {
             "relationshipName": "muscle",
             "otherEntityName": "muscle",
-            "relationshipType": "one-to-one",
-            "ownerSide": false,
+            "relationshipType": "one-to-many",
             "otherEntityRelationshipName": "bodyPart"
         }
     ],

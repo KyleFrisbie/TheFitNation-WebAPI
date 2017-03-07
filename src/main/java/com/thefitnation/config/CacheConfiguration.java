@@ -78,6 +78,7 @@ public class CacheConfiguration {
             cm.createCache(com.thefitnation.domain.BodyPart.class.getName(), jcacheConfiguration);
             cm.createCache(com.thefitnation.domain.ExerciseFamily.class.getName(), jcacheConfiguration);
             cm.createCache(com.thefitnation.domain.ExerciseFamily.class.getName() + ".exercises", jcacheConfiguration);
+            cm.createCache(com.thefitnation.domain.BodyPart.class.getName() + ".muscles", jcacheConfiguration);
             // jhipster-needle-ehcache-add-entry
         };
     }

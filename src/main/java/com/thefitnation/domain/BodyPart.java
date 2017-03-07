@@ -7,6 +7,8 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.Objects;
 
 /**
@@ -28,9 +30,10 @@ public class BodyPart implements Serializable {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @OneToOne(mappedBy = "bodyPart")
+    @OneToMany(mappedBy = "bodyPart")
     @JsonIgnore
-    private Muscle muscle;
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    private Set<Muscle> muscles = new HashSet<>();
 
     public Long getId() {
         return id;
@@ -53,17 +56,29 @@ public class BodyPart implements Serializable {
         this.name = name;
     }
 
-    public Muscle getMuscle() {
-        return muscle;
+    public Set<Muscle> getMuscles() {
+        return muscles;
     }
 
-    public BodyPart muscle(Muscle muscle) {
-        this.muscle = muscle;
+    public BodyPart muscles(Set<Muscle> muscles) {
+        this.muscles = muscles;
         return this;
     }
 
-    public void setMuscle(Muscle muscle) {
-        this.muscle = muscle;
+    public BodyPart addMuscle(Muscle muscle) {
+        this.muscles.add(muscle);
+        muscle.setBodyPart(this);
+        return this;
+    }
+
+    public BodyPart removeMuscle(Muscle muscle) {
+        this.muscles.remove(muscle);
+        muscle.setBodyPart(null);
+        return this;
+    }
+
+    public void setMuscles(Set<Muscle> muscles) {
+        this.muscles = muscles;
     }
 
     @Override

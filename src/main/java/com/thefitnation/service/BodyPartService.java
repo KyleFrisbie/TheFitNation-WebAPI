@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 /**
  * Service Implementation for managing BodyPart.
@@ -59,21 +58,6 @@ public class BodyPartService {
         log.debug("Request to get all BodyParts");
         Page<BodyPart> result = bodyPartRepository.findAll(pageable);
         return result.map(bodyPart -> bodyPartMapper.bodyPartToBodyPartDTO(bodyPart));
-    }
-
-
-    /**
-     *  get all the bodyParts where Muscle is null.
-     *  @return the list of entities
-     */
-    @Transactional(readOnly = true) 
-    public List<BodyPartDTO> findAllWhereMuscleIsNull() {
-        log.debug("Request to get all bodyParts where Muscle is null");
-        return StreamSupport
-            .stream(bodyPartRepository.findAll().spliterator(), false)
-            .filter(bodyPart -> bodyPart.getMuscle() == null)
-            .map(bodyPartMapper::bodyPartToBodyPartDTO)
-            .collect(Collectors.toCollection(LinkedList::new));
     }
 
     /**
