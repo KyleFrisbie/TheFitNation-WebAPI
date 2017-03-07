@@ -23,6 +23,7 @@
     <include file="classpath:config/liquibase/changelog/20170307031620_added_entity_UserExerciseInstanceSet.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170307031917_added_entity_Location.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170307041235_added_entity_BodyPart.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20170307043119_added_entity_ExerciseFamily.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
     <include file="classpath:config/liquibase/changelog/20170307015737_added_entity_constraints_UserDemographic.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170307020359_added_entity_constraints_Gym.xml" relativeToChangelogFile="false"/>

@@ -16,12 +16,12 @@
                 "title": "Exercise"
             },
             "name": "Name",
-            "exerciseFamily": "Exercise Family",
             "imageUri": "Image Uri",
             "notes": "Notes",
             "skillLevel": "Skill Level",
             "exerciseInstance": "Exercise Instance",
-            "muscle": "Muscle"
+            "muscle": "Muscle",
+            "exerciseFamily": "Exercise Family"
         }
     }
 }

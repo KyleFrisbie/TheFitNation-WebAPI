@@ -1,14 +1,22 @@
 {
     "theFitNationApp": {
-        "ExerciseFamily" : {
-            "null": "",
-            "Cable": "Cable",
-            "Barbell": "Barbell",
-            "Dumbbell": "Dumbbell",
-            "Machine": "Machine",
-            "Cardiovascular": "Cardiovascular",
-            "Stretching": "Stretching",
-            "BodyWeight": "BodyWeight"
+        "exerciseFamily" : {
+            "home": {
+                "title": "Exercise Families",
+                "createLabel": "Create a new Exercise Family",
+                "createOrEditLabel": "Create or edit a Exercise Family"
+            },
+            "created": "A new Exercise Family is created with identifier {{ param }}",
+            "updated": "A Exercise Family is updated with identifier {{ param }}",
+            "deleted": "A Exercise Family is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Exercise Family {{ id }}?"
+            },
+            "detail": {
+                "title": "Exercise Family"
+            },
+            "name": "Name",
+            "exercise": "Exercise"
         }
     }
 }

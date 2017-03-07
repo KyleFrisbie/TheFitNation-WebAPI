@@ -8,10 +8,6 @@
         <dd>
             <span>{{vm.exercise.name}}</span>
         </dd>
-        <dt><span data-translate="theFitNationApp.exercise.exerciseFamily">Exercise Family</span></dt>
-        <dd>
-            <span data-translate="{{'theFitNationApp.ExerciseFamily.' + vm.exercise.exerciseFamily}}">{{vm.exercise.exerciseFamily}}</span>
-        </dd>
         <dt><span data-translate="theFitNationApp.exercise.imageUri">Image Uri</span></dt>
         <dd>
             <span>{{vm.exercise.imageUri}}</span>
@@ -29,6 +25,10 @@
             <span ng-repeat="muscle in vm.exercise.muscles">
                 <a ui-sref="muscle-detail({id: muscle.id})">{{muscle.name}}</a>{{$last ? '' : ', '}}
             </span>
+        </dd>
+        <dt><span data-translate="theFitNationApp.exercise.exerciseFamily">Exercise Family</span></dt>
+        <dd>
+            <a ui-sref="exercise-family-detail({id:vm.exercise.exerciseFamilyId})">{{vm.exercise.exerciseFamilyName}}</a>
         </dd>
     </dl>
 

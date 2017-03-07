@@ -5,6 +5,7 @@ import com.thefitnation.TheFitNationApp;
 import com.thefitnation.domain.Exercise;
 import com.thefitnation.domain.SkillLevel;
 import com.thefitnation.domain.Muscle;
+import com.thefitnation.domain.ExerciseFamily;
 import com.thefitnation.repository.ExerciseRepository;
 import com.thefitnation.service.ExerciseService;
 import com.thefitnation.service.dto.ExerciseDTO;
@@ -33,7 +34,6 @@ import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import com.thefitnation.domain.enumeration.ExerciseFamily;
 /**
  * Test class for the ExerciseResource REST controller.
  *
@@ -45,9 +45,6 @@ public class ExerciseResourceIntTest {
 
     private static final String DEFAULT_NAME = "AAAAAAAAAA";
     private static final String UPDATED_NAME = "BBBBBBBBBB";
-
-    private static final ExerciseFamily DEFAULT_EXERCISE_FAMILY = ExerciseFamily.Cable;
-    private static final ExerciseFamily UPDATED_EXERCISE_FAMILY = ExerciseFamily.Barbell;
 
     private static final String DEFAULT_IMAGE_URI = "AAAAAAAAAA";
     private static final String UPDATED_IMAGE_URI = "BBBBBBBBBB";
@@ -99,7 +96,6 @@ public class ExerciseResourceIntTest {
     public static Exercise createEntity(EntityManager em) {
         Exercise exercise = new Exercise()
                 .name(DEFAULT_NAME)
-                .exerciseFamily(DEFAULT_EXERCISE_FAMILY)
                 .imageUri(DEFAULT_IMAGE_URI)
                 .notes(DEFAULT_NOTES);
         // Add required entity
@@ -112,6 +108,11 @@ public class ExerciseResourceIntTest {
         em.persist(muscle);
         em.flush();
         exercise.getMuscles().add(muscle);
+        // Add required entity
+        ExerciseFamily exerciseFamily = ExerciseFamilyResourceIntTest.createEntity(em);
+        em.persist(exerciseFamily);
+        em.flush();
+        exercise.setExerciseFamily(exerciseFamily);
         return exercise;
     }
 
@@ -138,7 +139,6 @@ public class ExerciseResourceIntTest {
         assertThat(exerciseList).hasSize(databaseSizeBeforeCreate + 1);
         Exercise testExercise = exerciseList.get(exerciseList.size() - 1);
         assertThat(testExercise.getName()).isEqualTo(DEFAULT_NAME);
-        assertThat(testExercise.getExerciseFamily()).isEqualTo(DEFAULT_EXERCISE_FAMILY);
         assertThat(testExercise.getImageUri()).isEqualTo(DEFAULT_IMAGE_URI);
         assertThat(testExercise.getNotes()).isEqualTo(DEFAULT_NOTES);
     }
@@ -185,25 +185,6 @@ public class ExerciseResourceIntTest {
 
     @Test
     @Transactional
-    public void checkExerciseFamilyIsRequired() throws Exception {
-        int databaseSizeBeforeTest = exerciseRepository.findAll().size();
-        // set the field null
-        exercise.setExerciseFamily(null);
-
-        // Create the Exercise, which fails.
-        ExerciseDTO exerciseDTO = exerciseMapper.exerciseToExerciseDTO(exercise);
-
-        restExerciseMockMvc.perform(post("/api/exercises")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(exerciseDTO)))
-            .andExpect(status().isBadRequest());
-
-        List<Exercise> exerciseList = exerciseRepository.findAll();
-        assertThat(exerciseList).hasSize(databaseSizeBeforeTest);
-    }
-
-    @Test
-    @Transactional
     public void getAllExercises() throws Exception {
         // Initialize the database
         exerciseRepository.saveAndFlush(exercise);
@@ -214,7 +195,6 @@ public class ExerciseResourceIntTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(exercise.getId().intValue())))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
-            .andExpect(jsonPath("$.[*].exerciseFamily").value(hasItem(DEFAULT_EXERCISE_FAMILY.toString())))
             .andExpect(jsonPath("$.[*].imageUri").value(hasItem(DEFAULT_IMAGE_URI.toString())))
             .andExpect(jsonPath("$.[*].notes").value(hasItem(DEFAULT_NOTES.toString())));
     }
@@ -231,7 +211,6 @@ public class ExerciseResourceIntTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(exercise.getId().intValue()))
             .andExpect(jsonPath("$.name").value(DEFAULT_NAME.toString()))
-            .andExpect(jsonPath("$.exerciseFamily").value(DEFAULT_EXERCISE_FAMILY.toString()))
             .andExpect(jsonPath("$.imageUri").value(DEFAULT_IMAGE_URI.toString()))
             .andExpect(jsonPath("$.notes").value(DEFAULT_NOTES.toString()));
     }
@@ -255,7 +234,6 @@ public class ExerciseResourceIntTest {
         Exercise updatedExercise = exerciseRepository.findOne(exercise.getId());
         updatedExercise
                 .name(UPDATED_NAME)
-                .exerciseFamily(UPDATED_EXERCISE_FAMILY)
                 .imageUri(UPDATED_IMAGE_URI)
                 .notes(UPDATED_NOTES);
         ExerciseDTO exerciseDTO = exerciseMapper.exerciseToExerciseDTO(updatedExercise);
@@ -270,7 +248,6 @@ public class ExerciseResourceIntTest {
         assertThat(exerciseList).hasSize(databaseSizeBeforeUpdate);
         Exercise testExercise = exerciseList.get(exerciseList.size() - 1);
         assertThat(testExercise.getName()).isEqualTo(UPDATED_NAME);
-        assertThat(testExercise.getExerciseFamily()).isEqualTo(UPDATED_EXERCISE_FAMILY);
         assertThat(testExercise.getImageUri()).isEqualTo(UPDATED_IMAGE_URI);
         assertThat(testExercise.getNotes()).isEqualTo(UPDATED_NOTES);
     }

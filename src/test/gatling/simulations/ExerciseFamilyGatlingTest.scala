@@ -10,9 +10,9 @@ import org.slf4j.LoggerFactory
 import scala.concurrent.duration._
 
 /**
- * Performance test for the Exercise entity.
+ * Performance test for the ExerciseFamily entity.
  */
-class ExerciseGatlingTest extends Simulation {
+class ExerciseFamilyGatlingTest extends Simulation {
 
     val context: LoggerContext = LoggerFactory.getILoggerFactory.asInstanceOf[LoggerContext]
     // Log all HTTP requests
@@ -48,7 +48,7 @@ class ExerciseGatlingTest extends Simulation {
         "Authorization" -> "Bearer ${access_token}"
     )
 
-    val scn = scenario("Test the Exercise entity")
+    val scn = scenario("Test the ExerciseFamily entity")
         .exec(http("First unauthenticated request")
         .get("/api/account")
         .headers(headers_http)
@@ -72,26 +72,26 @@ class ExerciseGatlingTest extends Simulation {
         .check(status.is(200)))
         .pause(10)
         .repeat(2) {
-            exec(http("Get all exercises")
-            .get("/api/exercises")
+            exec(http("Get all exerciseFamilies")
+            .get("/api/exercise-families")
             .headers(headers_http_authenticated)
             .check(status.is(200)))
             .pause(10 seconds, 20 seconds)
-            .exec(http("Create new exercise")
-            .post("/api/exercises")
+            .exec(http("Create new exerciseFamily")
+            .post("/api/exercise-families")
             .headers(headers_http_authenticated)
-            .body(StringBody("""{"id":null, "name":"SAMPLE_TEXT", "imageUri":"SAMPLE_TEXT", "notes":"SAMPLE_TEXT"}""")).asJSON
+            .body(StringBody("""{"id":null, "name":"SAMPLE_TEXT"}""")).asJSON
             .check(status.is(201))
-            .check(headerRegex("Location", "(.*)").saveAs("new_exercise_url"))).exitHereIfFailed
+            .check(headerRegex("Location", "(.*)").saveAs("new_exerciseFamily_url"))).exitHereIfFailed
             .pause(10)
             .repeat(5) {
-                exec(http("Get created exercise")
-                .get("${new_exercise_url}")
+                exec(http("Get created exerciseFamily")
+                .get("${new_exerciseFamily_url}")
                 .headers(headers_http_authenticated))
                 .pause(10)
             }
-            .exec(http("Delete created exercise")
-            .delete("${new_exercise_url}")
+            .exec(http("Delete created exerciseFamily")
+            .delete("${new_exerciseFamily_url}")
             .headers(headers_http_authenticated))
             .pause(10)
         }

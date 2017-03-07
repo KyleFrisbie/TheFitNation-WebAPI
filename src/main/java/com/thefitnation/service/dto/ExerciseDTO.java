@@ -6,7 +6,6 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Objects;
-import com.thefitnation.domain.enumeration.ExerciseFamily;
 
 /**
  * A DTO for the Exercise entity.
@@ -18,9 +17,6 @@ public class ExerciseDTO implements Serializable {
     @NotNull
     private String name;
 
-    @NotNull
-    private ExerciseFamily exerciseFamily;
-
     private String imageUri;
 
     private String notes;
@@ -30,6 +26,10 @@ public class ExerciseDTO implements Serializable {
     private String skillLevelLevel;
 
     private Set<MuscleDTO> muscles = new HashSet<>();
+
+    private Long exerciseFamilyId;
+
+    private String exerciseFamilyName;
 
     public Long getId() {
         return id;
@@ -44,13 +44,6 @@ public class ExerciseDTO implements Serializable {
 
     public void setName(String name) {
         this.name = name;
-    }
-    public ExerciseFamily getExerciseFamily() {
-        return exerciseFamily;
-    }
-
-    public void setExerciseFamily(ExerciseFamily exerciseFamily) {
-        this.exerciseFamily = exerciseFamily;
     }
     public String getImageUri() {
         return imageUri;
@@ -91,6 +84,22 @@ public class ExerciseDTO implements Serializable {
         this.muscles = muscles;
     }
 
+    public Long getExerciseFamilyId() {
+        return exerciseFamilyId;
+    }
+
+    public void setExerciseFamilyId(Long exerciseFamilyId) {
+        this.exerciseFamilyId = exerciseFamilyId;
+    }
+
+    public String getExerciseFamilyName() {
+        return exerciseFamilyName;
+    }
+
+    public void setExerciseFamilyName(String exerciseFamilyName) {
+        this.exerciseFamilyName = exerciseFamilyName;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -117,7 +126,6 @@ public class ExerciseDTO implements Serializable {
         return "ExerciseDTO{" +
             "id=" + id +
             ", name='" + name + "'" +
-            ", exerciseFamily='" + exerciseFamily + "'" +
             ", imageUri='" + imageUri + "'" +
             ", notes='" + notes + "'" +
             '}';

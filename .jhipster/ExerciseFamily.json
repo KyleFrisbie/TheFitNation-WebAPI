@@ -1,0 +1,25 @@
+{
+    "fluentMethods": true,
+    "relationships": [
+        {
+            "relationshipName": "exercise",
+            "otherEntityName": "exercise",
+            "relationshipType": "one-to-many",
+            "otherEntityRelationshipName": "exerciseFamily"
+        }
+    ],
+    "fields": [
+        {
+            "fieldName": "name",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required"
+            ]
+        }
+    ],
+    "changelogDate": "20170307043119",
+    "dto": "mapstruct",
+    "service": "serviceClass",
+    "entityTableName": "exercise_family",
+    "pagination": "pagination"
+}

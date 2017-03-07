@@ -2,9 +2,9 @@
 
 describe('Controller Tests', function() {
 
-    describe('Exercise Management Detail Controller', function() {
+    describe('ExerciseFamily Management Detail Controller', function() {
         var $scope, $rootScope;
-        var MockEntity, MockPreviousState, MockExercise, MockSkillLevel, MockExerciseInstance, MockMuscle, MockExerciseFamily;
+        var MockEntity, MockPreviousState, MockExerciseFamily, MockExercise;
         var createController;
 
         beforeEach(inject(function($injector) {
@@ -12,11 +12,8 @@ describe('Controller Tests', function() {
             $scope = $rootScope.$new();
             MockEntity = jasmine.createSpy('MockEntity');
             MockPreviousState = jasmine.createSpy('MockPreviousState');
-            MockExercise = jasmine.createSpy('MockExercise');
-            MockSkillLevel = jasmine.createSpy('MockSkillLevel');
-            MockExerciseInstance = jasmine.createSpy('MockExerciseInstance');
-            MockMuscle = jasmine.createSpy('MockMuscle');
             MockExerciseFamily = jasmine.createSpy('MockExerciseFamily');
+            MockExercise = jasmine.createSpy('MockExercise');
             
 
             var locals = {
@@ -24,21 +21,18 @@ describe('Controller Tests', function() {
                 '$rootScope': $rootScope,
                 'entity': MockEntity,
                 'previousState': MockPreviousState,
-                'Exercise': MockExercise,
-                'SkillLevel': MockSkillLevel,
-                'ExerciseInstance': MockExerciseInstance,
-                'Muscle': MockMuscle,
-                'ExerciseFamily': MockExerciseFamily
+                'ExerciseFamily': MockExerciseFamily,
+                'Exercise': MockExercise
             };
             createController = function() {
-                $injector.get('$controller')("ExerciseDetailController", locals);
+                $injector.get('$controller')("ExerciseFamilyDetailController", locals);
             };
         }));
 
 
         describe('Root Scope Listening', function() {
             it('Unregisters root scope listener upon scope destruction', function() {
-                var eventType = 'theFitNationApp:exerciseUpdate';
+                var eventType = 'theFitNationApp:exerciseFamilyUpdate';
 
                 createController();
                 expect($rootScope.$$listenerCount[eventType]).toEqual(1);

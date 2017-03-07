@@ -26,20 +26,21 @@
             "otherEntityField": "name",
             "ownerSide": true,
             "otherEntityRelationshipName": "exercise"
+        },
+        {
+            "relationshipName": "exerciseFamily",
+            "otherEntityName": "exerciseFamily",
+            "relationshipType": "many-to-one",
+            "relationshipValidateRules": [
+                "required"
+            ],
+            "otherEntityField": "name"
         }
     ],
     "fields": [
         {
             "fieldName": "name",
             "fieldType": "String",
-            "fieldValidateRules": [
-                "required"
-            ]
-        },
-        {
-            "fieldName": "exerciseFamily",
-            "fieldType": "ExerciseFamily",
-            "fieldValues": "Cable, Barbell, Dumbbell, Machine, Cardiovascular, Stretching, BodyWeight",
             "fieldValidateRules": [
                 "required"
             ]

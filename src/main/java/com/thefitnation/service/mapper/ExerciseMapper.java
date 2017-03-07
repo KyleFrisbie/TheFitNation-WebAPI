@@ -14,12 +14,15 @@ public interface ExerciseMapper {
 
     @Mapping(source = "skillLevel.id", target = "skillLevelId")
     @Mapping(source = "skillLevel.level", target = "skillLevelLevel")
+    @Mapping(source = "exerciseFamily.id", target = "exerciseFamilyId")
+    @Mapping(source = "exerciseFamily.name", target = "exerciseFamilyName")
     ExerciseDTO exerciseToExerciseDTO(Exercise exercise);
 
     List<ExerciseDTO> exercisesToExerciseDTOs(List<Exercise> exercises);
 
     @Mapping(source = "skillLevelId", target = "skillLevel")
     @Mapping(target = "exerciseInstances", ignore = true)
+    @Mapping(source = "exerciseFamilyId", target = "exerciseFamily")
     Exercise exerciseDTOToExercise(ExerciseDTO exerciseDTO);
 
     List<Exercise> exerciseDTOsToExercises(List<ExerciseDTO> exerciseDTOs);
@@ -40,5 +43,14 @@ public interface ExerciseMapper {
         Muscle muscle = new Muscle();
         muscle.setId(id);
         return muscle;
+    }
+
+    default ExerciseFamily exerciseFamilyFromId(Long id) {
+        if (id == null) {
+            return null;
+        }
+        ExerciseFamily exerciseFamily = new ExerciseFamily();
+        exerciseFamily.setId(id);
+        return exerciseFamily;
     }
 }

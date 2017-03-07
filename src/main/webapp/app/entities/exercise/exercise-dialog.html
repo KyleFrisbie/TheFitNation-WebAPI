@@ -26,24 +26,6 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label" data-translate="theFitNationApp.exercise.exerciseFamily" for="field_exerciseFamily">Exercise Family</label>
-            <select class="form-control" name="exerciseFamily" ng-model="vm.exercise.exerciseFamily" id="field_exerciseFamily" required>
-                <option value="Cable" data-translate="theFitNationApp.ExerciseFamily.Cable">Cable</option>
-                <option value="Barbell" data-translate="theFitNationApp.ExerciseFamily.Barbell">Barbell</option>
-                <option value="Dumbbell" data-translate="theFitNationApp.ExerciseFamily.Dumbbell">Dumbbell</option>
-                <option value="Machine" data-translate="theFitNationApp.ExerciseFamily.Machine">Machine</option>
-                <option value="Cardiovascular" data-translate="theFitNationApp.ExerciseFamily.Cardiovascular">Cardiovascular</option>
-                <option value="Stretching" data-translate="theFitNationApp.ExerciseFamily.Stretching">Stretching</option>
-                <option value="BodyWeight" data-translate="theFitNationApp.ExerciseFamily.BodyWeight">BodyWeight</option>
-            </select>
-            <div ng-show="editForm.exerciseFamily.$invalid">
-                <p class="help-block"
-                    ng-show="editForm.exerciseFamily.$error.required" data-translate="entity.validation.required">
-                    This field is required.
-                </p>
-            </div>
-        </div>
-        <div class="form-group">
             <label class="control-label" data-translate="theFitNationApp.exercise.imageUri" for="field_imageUri">Image Uri</label>
             <input type="text" class="form-control" name="imageUri" id="field_imageUri"
                     ng-model="vm.exercise.imageUri"
@@ -75,6 +57,18 @@
         <div ng-show="editForm.muscle.$invalid">
             <p class="help-block"
                 ng-show="editForm.muscle.$error.required" data-translate="entity.validation.required">
+                This field is required.
+            </p>
+        </div>
+        <div class="form-group">
+            <label data-translate="theFitNationApp.exercise.exerciseFamily" for="field_exerciseFamily">Exercise Family</label>
+            <select class="form-control" id="field_exerciseFamily" name="exerciseFamily" ng-model="vm.exercise.exerciseFamilyId" ng-options="exerciseFamily.id as exerciseFamily.name for exerciseFamily in vm.exercisefamilies"             required>
+                <option value=""></option>
+            </select>
+        </div>
+        <div ng-show="editForm.exerciseFamily.$invalid">
+            <p class="help-block"
+                ng-show="editForm.exerciseFamily.$error.required" data-translate="entity.validation.required">
                 This field is required.
             </p>
         </div>

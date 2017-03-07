@@ -25,5 +25,11 @@
                                  referencedColumnNames="id"
                                  referencedTableName="muscle"/>
         
+        <addForeignKeyConstraint baseColumnNames="exercise_family_id"
+                                 baseTableName="exercise"
+                                 constraintName="fk_exercise_exercise_family_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="exercise_family"/>
+
     </changeSet>
 </databaseChangeLog>

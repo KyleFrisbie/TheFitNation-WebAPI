@@ -11,8 +11,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.Objects;
 
-import com.thefitnation.domain.enumeration.ExerciseFamily;
-
 /**
  * A Exercise.
  */
@@ -31,11 +29,6 @@ public class Exercise implements Serializable {
     @NotNull
     @Column(name = "name", nullable = false)
     private String name;
-
-    @NotNull
-    @Enumerated(EnumType.STRING)
-    @Column(name = "exercise_family", nullable = false)
-    private ExerciseFamily exerciseFamily;
 
     @Column(name = "image_uri")
     private String imageUri;
@@ -60,6 +53,10 @@ public class Exercise implements Serializable {
                inverseJoinColumns = @JoinColumn(name="muscles_id", referencedColumnName="id"))
     private Set<Muscle> muscles = new HashSet<>();
 
+    @ManyToOne(optional = false)
+    @NotNull
+    private ExerciseFamily exerciseFamily;
+
     public Long getId() {
         return id;
     }
@@ -79,19 +76,6 @@ public class Exercise implements Serializable {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public ExerciseFamily getExerciseFamily() {
-        return exerciseFamily;
-    }
-
-    public Exercise exerciseFamily(ExerciseFamily exerciseFamily) {
-        this.exerciseFamily = exerciseFamily;
-        return this;
-    }
-
-    public void setExerciseFamily(ExerciseFamily exerciseFamily) {
-        this.exerciseFamily = exerciseFamily;
     }
 
     public String getImageUri() {
@@ -183,6 +167,19 @@ public class Exercise implements Serializable {
         this.muscles = muscles;
     }
 
+    public ExerciseFamily getExerciseFamily() {
+        return exerciseFamily;
+    }
+
+    public Exercise exerciseFamily(ExerciseFamily exerciseFamily) {
+        this.exerciseFamily = exerciseFamily;
+        return this;
+    }
+
+    public void setExerciseFamily(ExerciseFamily exerciseFamily) {
+        this.exerciseFamily = exerciseFamily;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -208,7 +205,6 @@ public class Exercise implements Serializable {
         return "Exercise{" +
             "id=" + id +
             ", name='" + name + "'" +
-            ", exerciseFamily='" + exerciseFamily + "'" +
             ", imageUri='" + imageUri + "'" +
             ", notes='" + notes + "'" +
             '}';

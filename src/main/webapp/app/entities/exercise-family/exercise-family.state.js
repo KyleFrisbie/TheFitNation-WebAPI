@@ -9,17 +9,17 @@
 
     function stateConfig($stateProvider) {
         $stateProvider
-        .state('exercise', {
+        .state('exercise-family', {
             parent: 'entity',
-            url: '/exercise?page&sort&search',
+            url: '/exercise-family?page&sort&search',
             data: {
                 authorities: ['ROLE_USER'],
-                pageTitle: 'theFitNationApp.exercise.home.title'
+                pageTitle: 'theFitNationApp.exerciseFamily.home.title'
             },
             views: {
                 'content@': {
-                    templateUrl: 'app/entities/exercise/exercises.html',
-                    controller: 'ExerciseController',
+                    templateUrl: 'app/entities/exercise-family/exercise-families.html',
+                    controller: 'ExerciseFamilyController',
                     controllerAs: 'vm'
                 }
             },
@@ -45,37 +45,37 @@
                     };
                 }],
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
-                    $translatePartialLoader.addPart('exercise');
+                    $translatePartialLoader.addPart('exerciseFamily');
                     $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }]
             }
         })
-        .state('exercise-detail', {
-            parent: 'exercise',
-            url: '/exercise/{id}',
+        .state('exercise-family-detail', {
+            parent: 'exercise-family',
+            url: '/exercise-family/{id}',
             data: {
                 authorities: ['ROLE_USER'],
-                pageTitle: 'theFitNationApp.exercise.detail.title'
+                pageTitle: 'theFitNationApp.exerciseFamily.detail.title'
             },
             views: {
                 'content@': {
-                    templateUrl: 'app/entities/exercise/exercise-detail.html',
-                    controller: 'ExerciseDetailController',
+                    templateUrl: 'app/entities/exercise-family/exercise-family-detail.html',
+                    controller: 'ExerciseFamilyDetailController',
                     controllerAs: 'vm'
                 }
             },
             resolve: {
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
-                    $translatePartialLoader.addPart('exercise');
+                    $translatePartialLoader.addPart('exerciseFamily');
                     return $translate.refresh();
                 }],
-                entity: ['$stateParams', 'Exercise', function($stateParams, Exercise) {
-                    return Exercise.get({id : $stateParams.id}).$promise;
+                entity: ['$stateParams', 'ExerciseFamily', function($stateParams, ExerciseFamily) {
+                    return ExerciseFamily.get({id : $stateParams.id}).$promise;
                 }],
                 previousState: ["$state", function ($state) {
                     var currentStateData = {
-                        name: $state.current.name || 'exercise',
+                        name: $state.current.name || 'exercise-family',
                         params: $state.params,
                         url: $state.href($state.current.name, $state.params)
                     };
@@ -83,22 +83,22 @@
                 }]
             }
         })
-        .state('exercise-detail.edit', {
-            parent: 'exercise-detail',
+        .state('exercise-family-detail.edit', {
+            parent: 'exercise-family-detail',
             url: '/detail/edit',
             data: {
                 authorities: ['ROLE_USER']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
-                    templateUrl: 'app/entities/exercise/exercise-dialog.html',
-                    controller: 'ExerciseDialogController',
+                    templateUrl: 'app/entities/exercise-family/exercise-family-dialog.html',
+                    controller: 'ExerciseFamilyDialogController',
                     controllerAs: 'vm',
                     backdrop: 'static',
                     size: 'lg',
                     resolve: {
-                        entity: ['Exercise', function(Exercise) {
-                            return Exercise.get({id : $stateParams.id}).$promise;
+                        entity: ['ExerciseFamily', function(ExerciseFamily) {
+                            return ExerciseFamily.get({id : $stateParams.id}).$promise;
                         }]
                     }
                 }).result.then(function() {
@@ -108,16 +108,16 @@
                 });
             }]
         })
-        .state('exercise.new', {
-            parent: 'exercise',
+        .state('exercise-family.new', {
+            parent: 'exercise-family',
             url: '/new',
             data: {
                 authorities: ['ROLE_USER']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
-                    templateUrl: 'app/entities/exercise/exercise-dialog.html',
-                    controller: 'ExerciseDialogController',
+                    templateUrl: 'app/entities/exercise-family/exercise-family-dialog.html',
+                    controller: 'ExerciseFamilyDialogController',
                     controllerAs: 'vm',
                     backdrop: 'static',
                     size: 'lg',
@@ -125,63 +125,61 @@
                         entity: function () {
                             return {
                                 name: null,
-                                imageUri: null,
-                                notes: null,
                                 id: null
                             };
                         }
                     }
                 }).result.then(function() {
-                    $state.go('exercise', null, { reload: 'exercise' });
+                    $state.go('exercise-family', null, { reload: 'exercise-family' });
                 }, function() {
-                    $state.go('exercise');
+                    $state.go('exercise-family');
                 });
             }]
         })
-        .state('exercise.edit', {
-            parent: 'exercise',
+        .state('exercise-family.edit', {
+            parent: 'exercise-family',
             url: '/{id}/edit',
             data: {
                 authorities: ['ROLE_USER']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
-                    templateUrl: 'app/entities/exercise/exercise-dialog.html',
-                    controller: 'ExerciseDialogController',
+                    templateUrl: 'app/entities/exercise-family/exercise-family-dialog.html',
+                    controller: 'ExerciseFamilyDialogController',
                     controllerAs: 'vm',
                     backdrop: 'static',
                     size: 'lg',
                     resolve: {
-                        entity: ['Exercise', function(Exercise) {
-                            return Exercise.get({id : $stateParams.id}).$promise;
+                        entity: ['ExerciseFamily', function(ExerciseFamily) {
+                            return ExerciseFamily.get({id : $stateParams.id}).$promise;
                         }]
                     }
                 }).result.then(function() {
-                    $state.go('exercise', null, { reload: 'exercise' });
+                    $state.go('exercise-family', null, { reload: 'exercise-family' });
                 }, function() {
                     $state.go('^');
                 });
             }]
         })
-        .state('exercise.delete', {
-            parent: 'exercise',
+        .state('exercise-family.delete', {
+            parent: 'exercise-family',
             url: '/{id}/delete',
             data: {
                 authorities: ['ROLE_USER']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
-                    templateUrl: 'app/entities/exercise/exercise-delete-dialog.html',
-                    controller: 'ExerciseDeleteController',
+                    templateUrl: 'app/entities/exercise-family/exercise-family-delete-dialog.html',
+                    controller: 'ExerciseFamilyDeleteController',
                     controllerAs: 'vm',
                     size: 'md',
                     resolve: {
-                        entity: ['Exercise', function(Exercise) {
-                            return Exercise.get({id : $stateParams.id}).$promise;
+                        entity: ['ExerciseFamily', function(ExerciseFamily) {
+                            return ExerciseFamily.get({id : $stateParams.id}).$promise;
                         }]
                     }
                 }).result.then(function() {
-                    $state.go('exercise', null, { reload: 'exercise' });
+                    $state.go('exercise-family', null, { reload: 'exercise-family' });
                 }, function() {
                     $state.go('^');
                 });
