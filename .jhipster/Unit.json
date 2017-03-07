@@ -4,8 +4,7 @@
     "fields": [
         {
             "fieldName": "name",
-            "fieldType": "Units",
-            "fieldValues": "Repetitions, Time, DistanceMeters, DistanceMiles, DistanceFeet",
+            "fieldType": "String",
             "fieldValidateRules": [
                 "required"
             ]

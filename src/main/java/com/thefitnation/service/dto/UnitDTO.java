@@ -4,7 +4,6 @@ package com.thefitnation.service.dto;
 import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.Objects;
-import com.thefitnation.domain.enumeration.Units;
 
 /**
  * A DTO for the Unit entity.
@@ -14,7 +13,7 @@ public class UnitDTO implements Serializable {
     private Long id;
 
     @NotNull
-    private Units name;
+    private String name;
 
     public Long getId() {
         return id;
@@ -23,11 +22,11 @@ public class UnitDTO implements Serializable {
     public void setId(Long id) {
         this.id = id;
     }
-    public Units getName() {
+    public String getName() {
         return name;
     }
 
-    public void setName(Units name) {
+    public void setName(String name) {
         this.name = name;
     }
 

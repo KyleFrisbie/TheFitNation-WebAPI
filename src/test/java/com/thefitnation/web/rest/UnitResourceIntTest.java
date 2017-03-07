@@ -31,7 +31,6 @@ import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import com.thefitnation.domain.enumeration.Units;
 /**
  * Test class for the UnitResource REST controller.
  *
@@ -41,8 +40,8 @@ import com.thefitnation.domain.enumeration.Units;
 @SpringBootTest(classes = TheFitNationApp.class)
 public class UnitResourceIntTest {
 
-    private static final Units DEFAULT_NAME = Units.Repetitions;
-    private static final Units UPDATED_NAME = Units.Time;
+    private static final String DEFAULT_NAME = "AAAAAAAAAA";
+    private static final String UPDATED_NAME = "BBBBBBBBBB";
 
     @Autowired
     private UnitRepository unitRepository;

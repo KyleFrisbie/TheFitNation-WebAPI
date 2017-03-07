@@ -46,7 +46,6 @@
                 }],
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('unit');
-                    $translatePartialLoader.addPart('units');
                     $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }]
@@ -69,7 +68,6 @@
             resolve: {
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('unit');
-                    $translatePartialLoader.addPart('units');
                     return $translate.refresh();
                 }],
                 entity: ['$stateParams', 'Unit', function($stateParams, Unit) {

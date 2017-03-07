@@ -15,13 +15,9 @@
         </div>
         <div class="form-group">
             <label class="control-label" data-translate="theFitNationApp.unit.name" for="field_name">Name</label>
-            <select class="form-control" name="name" ng-model="vm.unit.name" id="field_name" required>
-                <option value="Repetitions" data-translate="theFitNationApp.Units.Repetitions">Repetitions</option>
-                <option value="Time" data-translate="theFitNationApp.Units.Time">Time</option>
-                <option value="DistanceMeters" data-translate="theFitNationApp.Units.DistanceMeters">DistanceMeters</option>
-                <option value="DistanceMiles" data-translate="theFitNationApp.Units.DistanceMiles">DistanceMiles</option>
-                <option value="DistanceFeet" data-translate="theFitNationApp.Units.DistanceFeet">DistanceFeet</option>
-            </select>
+            <input type="text" class="form-control" name="name" id="field_name"
+                    ng-model="vm.unit.name"
+                    required/>
             <div ng-show="editForm.name.$invalid">
                 <p class="help-block"
                     ng-show="editForm.name.$error.required" data-translate="entity.validation.required">

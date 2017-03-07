@@ -26,7 +26,7 @@
             <tbody>
                 <tr ng-repeat="unit in vm.units track by unit.id">
                     <td><a ui-sref="unit-detail({id:unit.id})">{{unit.id}}</a></td>
-                    <td data-translate="{{'theFitNationApp.Units.' + unit.name}}">{{unit.name}}</td>
+                    <td>{{unit.name}}</td>
                     <td class="text-right">
                         <div class="btn-group flex-btn-group-container">
                             <button type="submit"

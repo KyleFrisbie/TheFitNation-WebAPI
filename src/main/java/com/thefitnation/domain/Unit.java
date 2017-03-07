@@ -8,8 +8,6 @@ import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.Objects;
 
-import com.thefitnation.domain.enumeration.Units;
-
 /**
  * A Unit.
  */
@@ -26,9 +24,8 @@ public class Unit implements Serializable {
     private Long id;
 
     @NotNull
-    @Enumerated(EnumType.STRING)
     @Column(name = "name", nullable = false)
-    private Units name;
+    private String name;
 
     public Long getId() {
         return id;
@@ -38,16 +35,16 @@ public class Unit implements Serializable {
         this.id = id;
     }
 
-    public Units getName() {
+    public String getName() {
         return name;
     }
 
-    public Unit name(Units name) {
+    public Unit name(String name) {
         this.name = name;
         return this;
     }
 
-    public void setName(Units name) {
+    public void setName(String name) {
         this.name = name;
     }
 
