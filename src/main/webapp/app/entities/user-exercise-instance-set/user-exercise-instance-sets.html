@@ -1,0 +1,76 @@
+<div>
+    <h2 data-translate="theFitNationApp.userExerciseInstanceSet.home.title">User Exercise Instance Sets</h2>
+    <jhi-alert></jhi-alert>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-4 no-padding-left">
+                <button class="btn btn-primary" ui-sref="user-exercise-instance-set.new" >
+                    <span class="glyphicon glyphicon-plus"></span>
+                    <span  data-translate="theFitNationApp.userExerciseInstanceSet.home.createLabel">
+                        Create new User Exercise Instance Set
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <br/>
+    <div class="table-responsive">
+        <table class="jh-table table table-striped">
+            <thead>
+                <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
+                    <th jh-sort-by="id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="orderNumber"><span data-translate="theFitNationApp.userExerciseInstanceSet.orderNumber">Order Number</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="repQuantity"><span data-translate="theFitNationApp.userExerciseInstanceSet.repQuantity">Rep Quantity</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="effortQuantity"><span data-translate="theFitNationApp.userExerciseInstanceSet.effortQuantity">Effort Quantity</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="restTime"><span data-translate="theFitNationApp.userExerciseInstanceSet.restTime">Rest Time</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="notes"><span data-translate="theFitNationApp.userExerciseInstanceSet.notes">Notes</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="userExerciseInstanceId"><span data-translate="theFitNationApp.userExerciseInstanceSet.userExerciseInstance">User Exercise Instance</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="exerciseInstanceSetId"><span data-translate="theFitNationApp.userExerciseInstanceSet.exerciseInstanceSet">Exercise Instance Set</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="userExerciseInstanceSet in vm.userExerciseInstanceSets track by userExerciseInstanceSet.id">
+                    <td><a ui-sref="user-exercise-instance-set-detail({id:userExerciseInstanceSet.id})">{{userExerciseInstanceSet.id}}</a></td>
+                    <td>{{userExerciseInstanceSet.orderNumber}}</td>
+                    <td>{{userExerciseInstanceSet.repQuantity}}</td>
+                    <td>{{userExerciseInstanceSet.effortQuantity}}</td>
+                    <td>{{userExerciseInstanceSet.restTime}}</td>
+                    <td>{{userExerciseInstanceSet.notes}}</td>
+                    <td>
+                        <a ui-sref="user-exercise-instance-detail({id:userExerciseInstanceSet.userExerciseInstanceId})">{{userExerciseInstanceSet.userExerciseInstanceId}}</a>
+                    </td>
+                    <td>
+                        <a ui-sref="exercise-instance-set-detail({id:userExerciseInstanceSet.exerciseInstanceSetId})">{{userExerciseInstanceSet.exerciseInstanceSetId}}</a>
+                    </td>
+                    <td class="text-right">
+                        <div class="btn-group flex-btn-group-container">
+                            <button type="submit"
+                                    ui-sref="user-exercise-instance-set-detail({id:userExerciseInstanceSet.id})"
+                                    class="btn btn-info btn-sm">
+                                <span class="glyphicon glyphicon-eye-open"></span>
+                                <span class="hidden-sm-down" data-translate="entity.action.view"></span>
+                            </button>
+                            <button type="submit"
+                                    ui-sref="user-exercise-instance-set.edit({id:userExerciseInstanceSet.id})"
+                                    class="btn btn-primary btn-sm">
+                                <span class="glyphicon glyphicon-pencil"></span>
+                                <span class="hidden-sm-down" data-translate="entity.action.edit"></span>
+                            </button>
+                            <button type="submit"
+                                    ui-sref="user-exercise-instance-set.delete({id:userExerciseInstanceSet.id})"
+                                    class="btn btn-danger btn-sm">
+                                <span class="glyphicon glyphicon-remove-circle"></span>
+                                <span class="hidden-sm-down" data-translate="entity.action.delete"></span>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="text-center">
+        <jhi-item-count page="vm.page" total="vm.queryCount" items-per-page="vm.itemsPerPage"></jhi-item-count>
+        <uib-pagination class="pagination-sm" total-items="vm.totalItems" items-per-page="vm.itemsPerPage" ng-model="vm.page" ng-change="vm.transition()"></uib-pagination>
+    </div>
+</div>

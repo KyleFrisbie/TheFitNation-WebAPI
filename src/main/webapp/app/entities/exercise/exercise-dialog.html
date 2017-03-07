@@ -1,0 +1,90 @@
+
+<form name="editForm" role="form" novalidate ng-submit="vm.save()" show-validation>
+
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                ng-click="vm.clear()">&times;</button>
+        <h4 class="modal-title" id="myExerciseLabel" data-translate="theFitNationApp.exercise.home.createOrEditLabel">Create or edit a Exercise</h4>
+    </div>
+    <div class="modal-body">
+        <jhi-alert-error></jhi-alert-error>
+        <div class="form-group" ng-show="vm.exercise.id">
+            <label for="id" data-translate="global.field.id">ID</label>
+            <input type="text" class="form-control" id="id" name="id"
+                    ng-model="vm.exercise.id" readonly />
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="theFitNationApp.exercise.name" for="field_name">Name</label>
+            <input type="text" class="form-control" name="name" id="field_name"
+                    ng-model="vm.exercise.name"
+                    required/>
+            <div ng-show="editForm.name.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.name.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="theFitNationApp.exercise.exerciseFamily" for="field_exerciseFamily">Exercise Family</label>
+            <select class="form-control" name="exerciseFamily" ng-model="vm.exercise.exerciseFamily" id="field_exerciseFamily" required>
+                <option value="Cable" data-translate="theFitNationApp.ExerciseFamily.Cable">Cable</option>
+                <option value="Barbell" data-translate="theFitNationApp.ExerciseFamily.Barbell">Barbell</option>
+                <option value="Dumbbell" data-translate="theFitNationApp.ExerciseFamily.Dumbbell">Dumbbell</option>
+                <option value="Machine" data-translate="theFitNationApp.ExerciseFamily.Machine">Machine</option>
+                <option value="Cardiovascular" data-translate="theFitNationApp.ExerciseFamily.Cardiovascular">Cardiovascular</option>
+                <option value="Stretching" data-translate="theFitNationApp.ExerciseFamily.Stretching">Stretching</option>
+                <option value="BodyWeight" data-translate="theFitNationApp.ExerciseFamily.BodyWeight">BodyWeight</option>
+            </select>
+            <div ng-show="editForm.exerciseFamily.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.exerciseFamily.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="theFitNationApp.exercise.imageUri" for="field_imageUri">Image Uri</label>
+            <input type="text" class="form-control" name="imageUri" id="field_imageUri"
+                    ng-model="vm.exercise.imageUri"
+                    />
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="theFitNationApp.exercise.notes" for="field_notes">Notes</label>
+            <input type="text" class="form-control" name="notes" id="field_notes"
+                    ng-model="vm.exercise.notes"
+                    />
+        </div>
+
+        <div class="form-group">
+            <label data-translate="theFitNationApp.exercise.skillLevel" for="field_skillLevel">Skill Level</label>
+            <select class="form-control" id="field_skillLevel" name="skillLevel" ng-model="vm.exercise.skillLevelId" ng-options="skillLevel.id as skillLevel.level for skillLevel in vm.skilllevels"             required>
+                <option value=""></option>
+            </select>
+        </div>
+        <div ng-show="editForm.skillLevel.$invalid">
+            <p class="help-block"
+                ng-show="editForm.skillLevel.$error.required" data-translate="entity.validation.required">
+                This field is required.
+            </p>
+        </div>
+        <div class="form-group">
+            <label data-translate="theFitNationApp.exercise.muscle" for="field_muscle">Muscle</label>
+            <select class="form-control" id="field_muscle" multiple name="muscle" ng-model="vm.exercise.muscles" ng-options="muscle as muscle.name for muscle in vm.muscles track by muscle.id" required></select>
+        </div>
+        <div ng-show="editForm.muscle.$invalid">
+            <p class="help-block"
+                ng-show="editForm.muscle.$error.required" data-translate="entity.validation.required">
+                This field is required.
+            </p>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="vm.clear()">
+            <span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span data-translate="entity.action.cancel">Cancel</span>
+        </button>
+        <button type="submit" ng-disabled="editForm.$invalid || vm.isSaving" class="btn btn-primary">
+            <span class="glyphicon glyphicon-save"></span>&nbsp;<span data-translate="entity.action.save">Save</span>
+        </button>
+    </div>
+</form>

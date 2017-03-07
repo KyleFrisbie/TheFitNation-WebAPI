@@ -1,0 +1,78 @@
+<div>
+    <h2 data-translate="theFitNationApp.userDemographic.home.title">User Demographics</h2>
+    <jhi-alert></jhi-alert>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-4 no-padding-left">
+                <button class="btn btn-primary" ui-sref="user-demographic.new" >
+                    <span class="glyphicon glyphicon-plus"></span>
+                    <span  data-translate="theFitNationApp.userDemographic.home.createLabel">
+                        Create new User Demographic
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <br/>
+    <div class="table-responsive">
+        <table class="jh-table table table-striped">
+            <thead>
+                <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
+                    <th jh-sort-by="id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="createdOn"><span data-translate="theFitNationApp.userDemographic.createdOn">Created On</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="lastLogin"><span data-translate="theFitNationApp.userDemographic.lastLogin">Last Login</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="gender"><span data-translate="theFitNationApp.userDemographic.gender">Gender</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="dateOfBirth"><span data-translate="theFitNationApp.userDemographic.dateOfBirth">Date Of Birth</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="height"><span data-translate="theFitNationApp.userDemographic.height">Height</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="unitOfMeasure"><span data-translate="theFitNationApp.userDemographic.unitOfMeasure">Unit Of Measure</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="userLogin"><span data-translate="theFitNationApp.userDemographic.user">User</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="skillLevelLevel"><span data-translate="theFitNationApp.userDemographic.skillLevel">Skill Level</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="userDemographic in vm.userDemographics track by userDemographic.id">
+                    <td><a ui-sref="user-demographic-detail({id:userDemographic.id})">{{userDemographic.id}}</a></td>
+                        <td>{{userDemographic.createdOn | date:'mediumDate'}}</td>
+                        <td>{{userDemographic.lastLogin | date:'mediumDate'}}</td>
+                    <td data-translate="{{'theFitNationApp.Gender.' + userDemographic.gender}}">{{userDemographic.gender}}</td>
+                        <td>{{userDemographic.dateOfBirth | date:'mediumDate'}}</td>
+                    <td>{{userDemographic.height}}</td>
+                    <td data-translate="{{'theFitNationApp.UnitOfMeasure.' + userDemographic.unitOfMeasure}}">{{userDemographic.unitOfMeasure}}</td>
+                    <td>
+                        {{userDemographic.userLogin}}
+                    </td>
+                    <td>
+                        <a ui-sref="skill-level-detail({id:userDemographic.skillLevelId})">{{userDemographic.skillLevelLevel}}</a>
+                    </td>
+                    <td class="text-right">
+                        <div class="btn-group flex-btn-group-container">
+                            <button type="submit"
+                                    ui-sref="user-demographic-detail({id:userDemographic.id})"
+                                    class="btn btn-info btn-sm">
+                                <span class="glyphicon glyphicon-eye-open"></span>
+                                <span class="hidden-sm-down" data-translate="entity.action.view"></span>
+                            </button>
+                            <button type="submit"
+                                    ui-sref="user-demographic.edit({id:userDemographic.id})"
+                                    class="btn btn-primary btn-sm">
+                                <span class="glyphicon glyphicon-pencil"></span>
+                                <span class="hidden-sm-down" data-translate="entity.action.edit"></span>
+                            </button>
+                            <button type="submit"
+                                    ui-sref="user-demographic.delete({id:userDemographic.id})"
+                                    class="btn btn-danger btn-sm">
+                                <span class="glyphicon glyphicon-remove-circle"></span>
+                                <span class="hidden-sm-down" data-translate="entity.action.delete"></span>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="text-center">
+        <jhi-item-count page="vm.page" total="vm.queryCount" items-per-page="vm.itemsPerPage"></jhi-item-count>
+        <uib-pagination class="pagination-sm" total-items="vm.totalItems" items-per-page="vm.itemsPerPage" ng-model="vm.page" ng-change="vm.transition()"></uib-pagination>
+    </div>
+</div>

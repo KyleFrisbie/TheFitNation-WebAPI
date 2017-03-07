@@ -1,0 +1,14 @@
+{
+    "theFitNationApp": {
+        "ExerciseFamily" : {
+            "null": "",
+            "Cable": "Cable",
+            "Barbell": "Barbell",
+            "Dumbbell": "Dumbbell",
+            "Machine": "Machine",
+            "Cardiovascular": "Cardiovascular",
+            "Stretching": "Stretching",
+            "BodyWeight": "BodyWeight"
+        }
+    }
+}

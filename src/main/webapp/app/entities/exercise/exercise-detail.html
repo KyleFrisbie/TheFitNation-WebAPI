@@ -1,0 +1,45 @@
+
+<div>
+    <h2><span data-translate="theFitNationApp.exercise.detail.title">Exercise</span> {{vm.exercise.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row jh-entity-details">
+        <dt><span data-translate="theFitNationApp.exercise.name">Name</span></dt>
+        <dd>
+            <span>{{vm.exercise.name}}</span>
+        </dd>
+        <dt><span data-translate="theFitNationApp.exercise.exerciseFamily">Exercise Family</span></dt>
+        <dd>
+            <span data-translate="{{'theFitNationApp.ExerciseFamily.' + vm.exercise.exerciseFamily}}">{{vm.exercise.exerciseFamily}}</span>
+        </dd>
+        <dt><span data-translate="theFitNationApp.exercise.imageUri">Image Uri</span></dt>
+        <dd>
+            <span>{{vm.exercise.imageUri}}</span>
+        </dd>
+        <dt><span data-translate="theFitNationApp.exercise.notes">Notes</span></dt>
+        <dd>
+            <span>{{vm.exercise.notes}}</span>
+        </dd>
+        <dt><span data-translate="theFitNationApp.exercise.skillLevel">Skill Level</span></dt>
+        <dd>
+            <a ui-sref="skill-level-detail({id:vm.exercise.skillLevelId})">{{vm.exercise.skillLevelLevel}}</a>
+        </dd>
+        <dt><span data-translate="theFitNationApp.exercise.muscle">Muscle</span></dt>
+        <dd>
+            <span ng-repeat="muscle in vm.exercise.muscles">
+                <a ui-sref="muscle-detail({id: muscle.id})">{{muscle.name}}</a>{{$last ? '' : ', '}}
+            </span>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            ui-sref="{{ vm.previousState }}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button" ui-sref="exercise-detail.edit({id:vm.exercise.id})" class="btn btn-primary">
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="hidden-sm-down" data-translate="entity.action.edit"> Edit</span>
+    </button>
+</div>

@@ -1,0 +1,19 @@
+{
+    "fluentMethods": true,
+    "relationships": [],
+    "fields": [
+        {
+            "fieldName": "name",
+            "fieldType": "Units",
+            "fieldValues": "Repetitions, Time, DistanceMeters, DistanceMiles, DistanceFeet",
+            "fieldValidateRules": [
+                "required"
+            ]
+        }
+    ],
+    "changelogDate": "20170307025455",
+    "dto": "mapstruct",
+    "service": "serviceClass",
+    "entityTableName": "unit",
+    "pagination": "pagination"
+}

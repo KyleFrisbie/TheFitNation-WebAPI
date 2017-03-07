@@ -1,0 +1,27 @@
+{
+    "theFitNationApp": {
+        "userExerciseInstanceSet" : {
+            "home": {
+                "title": "User Exercise Instance Sets",
+                "createLabel": "Create a new User Exercise Instance Set",
+                "createOrEditLabel": "Create or edit a User Exercise Instance Set"
+            },
+            "created": "A new User Exercise Instance Set is created with identifier {{ param }}",
+            "updated": "A User Exercise Instance Set is updated with identifier {{ param }}",
+            "deleted": "A User Exercise Instance Set is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete User Exercise Instance Set {{ id }}?"
+            },
+            "detail": {
+                "title": "User Exercise Instance Set"
+            },
+            "orderNumber": "Order Number",
+            "repQuantity": "Rep Quantity",
+            "effortQuantity": "Effort Quantity",
+            "restTime": "Rest Time",
+            "notes": "Notes",
+            "userExerciseInstance": "User Exercise Instance",
+            "exerciseInstanceSet": "Exercise Instance Set"
+        }
+    }
+}

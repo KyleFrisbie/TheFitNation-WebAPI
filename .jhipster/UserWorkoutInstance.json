@@ -1,0 +1,58 @@
+{
+    "fluentMethods": true,
+    "relationships": [
+        {
+            "relationshipName": "userWorkoutTemplate",
+            "otherEntityName": "userWorkoutTemplate",
+            "relationshipType": "many-to-one",
+            "relationshipValidateRules": [
+                "required"
+            ],
+            "otherEntityField": "id"
+        },
+        {
+            "relationshipName": "workoutInstance",
+            "otherEntityName": "workoutInstance",
+            "relationshipType": "many-to-one",
+            "otherEntityField": "name"
+        },
+        {
+            "relationshipName": "userExerciseInstance",
+            "otherEntityName": "userExerciseInstance",
+            "relationshipType": "one-to-many",
+            "otherEntityRelationshipName": "userWorkoutInstance"
+        }
+    ],
+    "fields": [
+        {
+            "fieldName": "createdOn",
+            "fieldType": "LocalDate",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "lastUpdated",
+            "fieldType": "LocalDate",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "wasCompleted",
+            "fieldType": "Boolean",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "notes",
+            "fieldType": "String"
+        }
+    ],
+    "changelogDate": "20170307031053",
+    "dto": "mapstruct",
+    "service": "serviceClass",
+    "entityTableName": "user_workout_instance",
+    "pagination": "pagination"
+}

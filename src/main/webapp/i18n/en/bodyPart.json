@@ -1,0 +1,13 @@
+{
+    "theFitNationApp": {
+        "BodyPart" : {
+            "null": "",
+            "Shoulders": "Shoulders",
+            "Chest": "Chest",
+            "Back": "Back",
+            "LowerBack": "LowerBack",
+            "Abs": "Abs",
+            "Legs": "Legs"
+        }
+    }
+}

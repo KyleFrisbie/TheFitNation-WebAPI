@@ -1,0 +1,96 @@
+{
+    "fluentMethods": true,
+    "relationships": [
+        {
+            "relationshipName": "user",
+            "otherEntityName": "user",
+            "relationshipType": "one-to-one",
+            "relationshipValidateRules": [
+                "required"
+            ],
+            "otherEntityField": "login",
+            "ownerSide": true,
+            "otherEntityRelationshipName": "userDemographic"
+        },
+        {
+            "relationshipName": "gym",
+            "otherEntityName": "gym",
+            "relationshipType": "many-to-many",
+            "otherEntityField": "name",
+            "ownerSide": true,
+            "otherEntityRelationshipName": "userDemographic"
+        },
+        {
+            "relationshipName": "userWeight",
+            "otherEntityName": "userWeight",
+            "relationshipType": "one-to-many",
+            "otherEntityRelationshipName": "userDemographic"
+        },
+        {
+            "relationshipName": "workoutTemplate",
+            "otherEntityName": "workoutTemplate",
+            "relationshipType": "one-to-many",
+            "otherEntityRelationshipName": "userDemographic"
+        },
+        {
+            "relationshipName": "userWorkoutTemplate",
+            "otherEntityName": "userWorkoutTemplate",
+            "relationshipType": "one-to-many",
+            "otherEntityRelationshipName": "userDemographic"
+        },
+        {
+            "relationshipName": "skillLevel",
+            "otherEntityName": "skillLevel",
+            "relationshipType": "many-to-one",
+            "relationshipValidateRules": [
+                "required"
+            ],
+            "otherEntityField": "level"
+        }
+    ],
+    "fields": [
+        {
+            "fieldName": "createdOn",
+            "fieldType": "LocalDate",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "lastLogin",
+            "fieldType": "LocalDate",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "gender",
+            "fieldType": "Gender",
+            "fieldValues": "Male, Female, Other"
+        },
+        {
+            "fieldName": "dateOfBirth",
+            "fieldType": "LocalDate",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "height",
+            "fieldType": "Float"
+        },
+        {
+            "fieldName": "unitOfMeasure",
+            "fieldType": "UnitOfMeasure",
+            "fieldValues": "Imperial, Metric",
+            "fieldValidateRules": [
+                "required"
+            ]
+        }
+    ],
+    "changelogDate": "20170307015737",
+    "dto": "mapstruct",
+    "service": "serviceClass",
+    "entityTableName": "user_demographic",
+    "pagination": "pagination"
+}

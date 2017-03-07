@@ -1,0 +1,108 @@
+
+<form name="editForm" role="form" novalidate ng-submit="vm.save()" show-validation>
+
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                ng-click="vm.clear()">&times;</button>
+        <h4 class="modal-title" id="myWorkoutInstanceLabel" data-translate="theFitNationApp.workoutInstance.home.createOrEditLabel">Create or edit a Workout Instance</h4>
+    </div>
+    <div class="modal-body">
+        <jhi-alert-error></jhi-alert-error>
+        <div class="form-group" ng-show="vm.workoutInstance.id">
+            <label for="id" data-translate="global.field.id">ID</label>
+            <input type="text" class="form-control" id="id" name="id"
+                    ng-model="vm.workoutInstance.id" readonly />
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="theFitNationApp.workoutInstance.name" for="field_name">Name</label>
+            <input type="text" class="form-control" name="name" id="field_name"
+                    ng-model="vm.workoutInstance.name"
+                    />
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="theFitNationApp.workoutInstance.createdOn" for="field_createdOn">Created On</label>
+                <div class="input-group">
+                    <input id="field_createdOn" type="text" class="form-control" name="createdOn" uib-datepicker-popup="{{dateformat}}" ng-model="vm.workoutInstance.createdOn" is-open="vm.datePickerOpenStatus.createdOn"
+                    required/>
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-default" ng-click="vm.openCalendar('createdOn')"><i class="glyphicon glyphicon-calendar"></i></button>
+                    </span>
+                </div>
+            <div ng-show="editForm.createdOn.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.createdOn.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="theFitNationApp.workoutInstance.lastUpdated" for="field_lastUpdated">Last Updated</label>
+                <div class="input-group">
+                    <input id="field_lastUpdated" type="text" class="form-control" name="lastUpdated" uib-datepicker-popup="{{dateformat}}" ng-model="vm.workoutInstance.lastUpdated" is-open="vm.datePickerOpenStatus.lastUpdated"
+                    required/>
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-default" ng-click="vm.openCalendar('lastUpdated')"><i class="glyphicon glyphicon-calendar"></i></button>
+                    </span>
+                </div>
+            <div ng-show="editForm.lastUpdated.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.lastUpdated.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="theFitNationApp.workoutInstance.restBetweenInstances" for="field_restBetweenInstances">Rest Between Instances</label>
+            <input type="number" class="form-control" name="restBetweenInstances" id="field_restBetweenInstances"
+                    ng-model="vm.workoutInstance.restBetweenInstances"
+                    />
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="theFitNationApp.workoutInstance.orderNumber" for="field_orderNumber">Order Number</label>
+            <input type="number" class="form-control" name="orderNumber" id="field_orderNumber"
+                    ng-model="vm.workoutInstance.orderNumber"
+                    required min="1"/>
+            <div ng-show="editForm.orderNumber.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.orderNumber.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.orderNumber.$error.min" data-translate="entity.validation.min" translate-value-min="1">
+                    This field should be at least 1.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.orderNumber.$error.number" data-translate="entity.validation.number">
+                    This field should be a number.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="theFitNationApp.workoutInstance.notes" for="field_notes">Notes</label>
+            <input type="text" class="form-control" name="notes" id="field_notes"
+                    ng-model="vm.workoutInstance.notes"
+                    />
+        </div>
+
+        <div class="form-group">
+            <label data-translate="theFitNationApp.workoutInstance.workoutTemplate" for="field_workoutTemplate">Workout Template</label>
+            <select class="form-control" id="field_workoutTemplate" name="workoutTemplate" ng-model="vm.workoutInstance.workoutTemplateId" ng-options="workoutTemplate.id as workoutTemplate.name for workoutTemplate in vm.workouttemplates"             required>
+                <option value=""></option>
+            </select>
+        </div>
+        <div ng-show="editForm.workoutTemplate.$invalid">
+            <p class="help-block"
+                ng-show="editForm.workoutTemplate.$error.required" data-translate="entity.validation.required">
+                This field is required.
+            </p>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="vm.clear()">
+            <span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span data-translate="entity.action.cancel">Cancel</span>
+        </button>
+        <button type="submit" ng-disabled="editForm.$invalid || vm.isSaving" class="btn btn-primary">
+            <span class="glyphicon glyphicon-save"></span>&nbsp;<span data-translate="entity.action.save">Save</span>
+        </button>
+    </div>
+</form>

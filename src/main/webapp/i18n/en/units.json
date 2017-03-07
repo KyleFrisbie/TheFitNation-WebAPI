@@ -1,0 +1,12 @@
+{
+    "theFitNationApp": {
+        "Units" : {
+            "null": "",
+            "Repetitions": "Repetitions",
+            "Time": "Time",
+            "DistanceMeters": "DistanceMeters",
+            "DistanceMiles": "DistanceMiles",
+            "DistanceFeet": "DistanceFeet"
+        }
+    }
+}

@@ -1,0 +1,29 @@
+{
+    "theFitNationApp": {
+        "workoutInstance" : {
+            "home": {
+                "title": "Workout Instances",
+                "createLabel": "Create a new Workout Instance",
+                "createOrEditLabel": "Create or edit a Workout Instance"
+            },
+            "created": "A new Workout Instance is created with identifier {{ param }}",
+            "updated": "A Workout Instance is updated with identifier {{ param }}",
+            "deleted": "A Workout Instance is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Workout Instance {{ id }}?"
+            },
+            "detail": {
+                "title": "Workout Instance"
+            },
+            "name": "Name",
+            "createdOn": "Created On",
+            "lastUpdated": "Last Updated",
+            "restBetweenInstances": "Rest Between Instances",
+            "orderNumber": "Order Number",
+            "notes": "Notes",
+            "workoutTemplate": "Workout Template",
+            "userWorkoutInstance": "User Workout Instance",
+            "exerciseInstance": "Exercise Instance"
+        }
+    }
+}

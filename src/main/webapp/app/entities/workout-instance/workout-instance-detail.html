@@ -1,0 +1,47 @@
+
+<div>
+    <h2><span data-translate="theFitNationApp.workoutInstance.detail.title">Workout Instance</span> {{vm.workoutInstance.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row jh-entity-details">
+        <dt><span data-translate="theFitNationApp.workoutInstance.name">Name</span></dt>
+        <dd>
+            <span>{{vm.workoutInstance.name}}</span>
+        </dd>
+        <dt><span data-translate="theFitNationApp.workoutInstance.createdOn">Created On</span></dt>
+        <dd>
+            <span>{{vm.workoutInstance.createdOn | date:'mediumDate'}}</span>
+        </dd>
+        <dt><span data-translate="theFitNationApp.workoutInstance.lastUpdated">Last Updated</span></dt>
+        <dd>
+            <span>{{vm.workoutInstance.lastUpdated | date:'mediumDate'}}</span>
+        </dd>
+        <dt><span data-translate="theFitNationApp.workoutInstance.restBetweenInstances">Rest Between Instances</span></dt>
+        <dd>
+            <span>{{vm.workoutInstance.restBetweenInstances}}</span>
+        </dd>
+        <dt><span data-translate="theFitNationApp.workoutInstance.orderNumber">Order Number</span></dt>
+        <dd>
+            <span>{{vm.workoutInstance.orderNumber}}</span>
+        </dd>
+        <dt><span data-translate="theFitNationApp.workoutInstance.notes">Notes</span></dt>
+        <dd>
+            <span>{{vm.workoutInstance.notes}}</span>
+        </dd>
+        <dt><span data-translate="theFitNationApp.workoutInstance.workoutTemplate">Workout Template</span></dt>
+        <dd>
+            <a ui-sref="workout-template-detail({id:vm.workoutInstance.workoutTemplateId})">{{vm.workoutInstance.workoutTemplateName}}</a>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            ui-sref="{{ vm.previousState }}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button" ui-sref="workout-instance-detail.edit({id:vm.workoutInstance.id})" class="btn btn-primary">
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="hidden-sm-down" data-translate="entity.action.edit"> Edit</span>
+    </button>
+</div>

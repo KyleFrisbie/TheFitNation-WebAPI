@@ -7,6 +7,23 @@
             "jhipster-needle-menu-add-element": "JHipster will add additional menu entries here (do not translate!)",
             "entities": {
                 "main": "Entities",
+                "userDemographic": "User Demographic",
+                "gym": "Gym",
+                "address": "Address",
+                "userWeight": "User Weight",
+                "workoutTemplate": "Workout Template",
+                "skillLevel": "Skill Level",
+                "workoutInstance": "Workout Instance",
+                "exerciseInstance": "Exercise Instance",
+                "exerciseInstanceSet": "Exercise Instance Set",
+                "unit": "Unit",
+                "exercise": "Exercise",
+                "muscle": "Muscle",
+                "userWorkoutTemplate": "User Workout Template",
+                "userWorkoutInstance": "User Workout Instance",
+                "userExerciseInstance": "User Exercise Instance",
+                "userExerciseInstanceSet": "User Exercise Instance Set",
+                "location": "Location",
                 "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
             },
             "account": {

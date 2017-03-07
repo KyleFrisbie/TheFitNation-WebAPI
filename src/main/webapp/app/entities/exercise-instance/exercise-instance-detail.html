@@ -1,0 +1,39 @@
+
+<div>
+    <h2><span data-translate="theFitNationApp.exerciseInstance.detail.title">Exercise Instance</span> {{vm.exerciseInstance.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row jh-entity-details">
+        <dt><span data-translate="theFitNationApp.exerciseInstance.notes">Notes</span></dt>
+        <dd>
+            <span>{{vm.exerciseInstance.notes}}</span>
+        </dd>
+        <dt><span data-translate="theFitNationApp.exerciseInstance.workoutInstance">Workout Instance</span></dt>
+        <dd>
+            <a ui-sref="workout-instance-detail({id:vm.exerciseInstance.workoutInstanceId})">{{vm.exerciseInstance.workoutInstanceId}}</a>
+        </dd>
+        <dt><span data-translate="theFitNationApp.exerciseInstance.exercise">Exercise</span></dt>
+        <dd>
+            <a ui-sref="exercise-detail({id:vm.exerciseInstance.exerciseId})">{{vm.exerciseInstance.exerciseName}}</a>
+        </dd>
+        <dt><span data-translate="theFitNationApp.exerciseInstance.repUnit">Rep Unit</span></dt>
+        <dd>
+            <a ui-sref="unit-detail({id:vm.exerciseInstance.repUnitId})">{{vm.exerciseInstance.repUnitName}}</a>
+        </dd>
+        <dt><span data-translate="theFitNationApp.exerciseInstance.effortUnit">Effort Unit</span></dt>
+        <dd>
+            <a ui-sref="unit-detail({id:vm.exerciseInstance.effortUnitId})">{{vm.exerciseInstance.effortUnitName}}</a>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            ui-sref="{{ vm.previousState }}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button" ui-sref="exercise-instance-detail.edit({id:vm.exerciseInstance.id})" class="btn btn-primary">
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="hidden-sm-down" data-translate="entity.action.edit"> Edit</span>
+    </button>
+</div>

@@ -1,0 +1,21 @@
+{
+    "theFitNationApp": {
+        "skillLevel" : {
+            "home": {
+                "title": "Skill Levels",
+                "createLabel": "Create a new Skill Level",
+                "createOrEditLabel": "Create or edit a Skill Level"
+            },
+            "created": "A new Skill Level is created with identifier {{ param }}",
+            "updated": "A Skill Level is updated with identifier {{ param }}",
+            "deleted": "A Skill Level is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Skill Level {{ id }}?"
+            },
+            "detail": {
+                "title": "Skill Level"
+            },
+            "level": "Level"
+        }
+    }
+}

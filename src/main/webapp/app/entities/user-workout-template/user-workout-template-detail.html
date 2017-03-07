@@ -1,0 +1,39 @@
+
+<div>
+    <h2><span data-translate="theFitNationApp.userWorkoutTemplate.detail.title">User Workout Template</span> {{vm.userWorkoutTemplate.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row jh-entity-details">
+        <dt><span data-translate="theFitNationApp.userWorkoutTemplate.createdOn">Created On</span></dt>
+        <dd>
+            <span>{{vm.userWorkoutTemplate.createdOn | date:'mediumDate'}}</span>
+        </dd>
+        <dt><span data-translate="theFitNationApp.userWorkoutTemplate.lastUpdated">Last Updated</span></dt>
+        <dd>
+            <span>{{vm.userWorkoutTemplate.lastUpdated | date:'mediumDate'}}</span>
+        </dd>
+        <dt><span data-translate="theFitNationApp.userWorkoutTemplate.notes">Notes</span></dt>
+        <dd>
+            <span>{{vm.userWorkoutTemplate.notes}}</span>
+        </dd>
+        <dt><span data-translate="theFitNationApp.userWorkoutTemplate.userDemographic">User Demographic</span></dt>
+        <dd>
+            <a ui-sref="user-demographic-detail({id:vm.userWorkoutTemplate.userDemographicId})">{{vm.userWorkoutTemplate.userDemographicId}}</a>
+        </dd>
+        <dt><span data-translate="theFitNationApp.userWorkoutTemplate.workoutTemplate">Workout Template</span></dt>
+        <dd>
+            <a ui-sref="workout-template-detail({id:vm.userWorkoutTemplate.workoutTemplateId})">{{vm.userWorkoutTemplate.workoutTemplateName}}</a>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            ui-sref="{{ vm.previousState }}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button" ui-sref="user-workout-template-detail.edit({id:vm.userWorkoutTemplate.id})" class="btn btn-primary">
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="hidden-sm-down" data-translate="entity.action.edit"> Edit</span>
+    </button>
+</div>

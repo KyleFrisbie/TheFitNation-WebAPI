@@ -1,0 +1,68 @@
+{
+    "fluentMethods": true,
+    "relationships": [
+        {
+            "relationshipName": "workoutTemplate",
+            "otherEntityName": "workoutTemplate",
+            "relationshipType": "many-to-one",
+            "relationshipValidateRules": [
+                "required"
+            ],
+            "otherEntityField": "name"
+        },
+        {
+            "relationshipName": "userWorkoutInstance",
+            "otherEntityName": "userWorkoutInstance",
+            "relationshipType": "one-to-many",
+            "otherEntityRelationshipName": "workoutInstance"
+        },
+        {
+            "relationshipName": "exerciseInstance",
+            "otherEntityName": "exerciseInstance",
+            "relationshipType": "one-to-many",
+            "otherEntityRelationshipName": "workoutInstance"
+        }
+    ],
+    "fields": [
+        {
+            "fieldName": "name",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "createdOn",
+            "fieldType": "LocalDate",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "lastUpdated",
+            "fieldType": "LocalDate",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "restBetweenInstances",
+            "fieldType": "Float"
+        },
+        {
+            "fieldName": "orderNumber",
+            "fieldType": "Integer",
+            "fieldValidateRules": [
+                "required",
+                "min"
+            ],
+            "fieldValidateRulesMin": "1"
+        },
+        {
+            "fieldName": "notes",
+            "fieldType": "String"
+        }
+    ],
+    "changelogDate": "20170307024451",
+    "dto": "mapstruct",
+    "service": "serviceClass",
+    "entityTableName": "workout_instance",
+    "pagination": "pagination"
+}

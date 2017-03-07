@@ -1,0 +1,64 @@
+{
+    "fluentMethods": true,
+    "relationships": [
+        {
+            "relationshipName": "workoutInstance",
+            "otherEntityName": "workoutInstance",
+            "relationshipType": "many-to-one",
+            "relationshipValidateRules": [
+                "required"
+            ],
+            "otherEntityField": "id"
+        },
+        {
+            "relationshipName": "userExerciseInstance",
+            "otherEntityName": "userExerciseInstance",
+            "relationshipType": "one-to-many",
+            "otherEntityRelationshipName": "exerciseInstance"
+        },
+        {
+            "relationshipName": "exerciseInstanceSet",
+            "otherEntityName": "exerciseInstanceSet",
+            "relationshipType": "one-to-many",
+            "otherEntityRelationshipName": "exerciseInstance"
+        },
+        {
+            "relationshipName": "exercise",
+            "otherEntityName": "exercise",
+            "relationshipType": "many-to-one",
+            "relationshipValidateRules": [
+                "required"
+            ],
+            "otherEntityField": "name"
+        },
+        {
+            "relationshipName": "repUnit",
+            "otherEntityName": "unit",
+            "relationshipType": "many-to-one",
+            "relationshipValidateRules": [
+                "required"
+            ],
+            "otherEntityField": "name"
+        },
+        {
+            "relationshipName": "effortUnit",
+            "otherEntityName": "unit",
+            "relationshipType": "many-to-one",
+            "relationshipValidateRules": [
+                "required"
+            ],
+            "otherEntityField": "name"
+        }
+    ],
+    "fields": [
+        {
+            "fieldName": "notes",
+            "fieldType": "String"
+        }
+    ],
+    "changelogDate": "20170307024915",
+    "dto": "mapstruct",
+    "service": "serviceClass",
+    "entityTableName": "exercise_instance",
+    "pagination": "pagination"
+}

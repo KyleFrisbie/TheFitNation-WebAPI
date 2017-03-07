@@ -1,0 +1,27 @@
+
+<div>
+    <h2><span data-translate="theFitNationApp.muscle.detail.title">Muscle</span> {{vm.muscle.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row jh-entity-details">
+        <dt><span data-translate="theFitNationApp.muscle.name">Name</span></dt>
+        <dd>
+            <span>{{vm.muscle.name}}</span>
+        </dd>
+        <dt><span data-translate="theFitNationApp.muscle.bodyPart">Body Part</span></dt>
+        <dd>
+            <span data-translate="{{'theFitNationApp.BodyPart.' + vm.muscle.bodyPart}}">{{vm.muscle.bodyPart}}</span>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            ui-sref="{{ vm.previousState }}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button" ui-sref="muscle-detail.edit({id:vm.muscle.id})" class="btn btn-primary">
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="hidden-sm-down" data-translate="entity.action.edit"> Edit</span>
+    </button>
+</div>

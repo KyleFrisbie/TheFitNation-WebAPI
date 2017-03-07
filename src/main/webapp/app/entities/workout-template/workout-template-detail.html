@@ -1,0 +1,47 @@
+
+<div>
+    <h2><span data-translate="theFitNationApp.workoutTemplate.detail.title">Workout Template</span> {{vm.workoutTemplate.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row jh-entity-details">
+        <dt><span data-translate="theFitNationApp.workoutTemplate.name">Name</span></dt>
+        <dd>
+            <span>{{vm.workoutTemplate.name}}</span>
+        </dd>
+        <dt><span data-translate="theFitNationApp.workoutTemplate.createdOn">Created On</span></dt>
+        <dd>
+            <span>{{vm.workoutTemplate.createdOn | date:'mediumDate'}}</span>
+        </dd>
+        <dt><span data-translate="theFitNationApp.workoutTemplate.lastUpdated">Last Updated</span></dt>
+        <dd>
+            <span>{{vm.workoutTemplate.lastUpdated | date:'mediumDate'}}</span>
+        </dd>
+        <dt><span data-translate="theFitNationApp.workoutTemplate.isPrivate">Is Private</span></dt>
+        <dd>
+            <span>{{vm.workoutTemplate.isPrivate}}</span>
+        </dd>
+        <dt><span data-translate="theFitNationApp.workoutTemplate.notes">Notes</span></dt>
+        <dd>
+            <span>{{vm.workoutTemplate.notes}}</span>
+        </dd>
+        <dt><span data-translate="theFitNationApp.workoutTemplate.userDemographic">User Demographic</span></dt>
+        <dd>
+            <a ui-sref="user-demographic-detail({id:vm.workoutTemplate.userDemographicId})">{{vm.workoutTemplate.userDemographicId}}</a>
+        </dd>
+        <dt><span data-translate="theFitNationApp.workoutTemplate.skillLevel">Skill Level</span></dt>
+        <dd>
+            <a ui-sref="skill-level-detail({id:vm.workoutTemplate.skillLevelId})">{{vm.workoutTemplate.skillLevelLevel}}</a>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            ui-sref="{{ vm.previousState }}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button" ui-sref="workout-template-detail.edit({id:vm.workoutTemplate.id})" class="btn btn-primary">
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="hidden-sm-down" data-translate="entity.action.edit"> Edit</span>
+    </button>
+</div>

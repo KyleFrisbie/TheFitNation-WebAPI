@@ -1,0 +1,31 @@
+
+<div>
+    <h2><span data-translate="theFitNationApp.gym.detail.title">Gym</span> {{vm.gym.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row jh-entity-details">
+        <dt><span data-translate="theFitNationApp.gym.name">Name</span></dt>
+        <dd>
+            <span>{{vm.gym.name}}</span>
+        </dd>
+        <dt><span data-translate="theFitNationApp.gym.notes">Notes</span></dt>
+        <dd>
+            <span>{{vm.gym.notes}}</span>
+        </dd>
+        <dt><span data-translate="theFitNationApp.gym.location">Location</span></dt>
+        <dd>
+            <a ui-sref="location-detail({id:vm.gym.locationId})">{{vm.gym.locationId}}</a>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            ui-sref="{{ vm.previousState }}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button" ui-sref="gym-detail.edit({id:vm.gym.id})" class="btn btn-primary">
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="hidden-sm-down" data-translate="entity.action.edit"> Edit</span>
+    </button>
+</div>
