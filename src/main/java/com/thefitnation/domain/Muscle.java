@@ -35,9 +35,8 @@ public class Muscle implements Serializable {
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<Exercise> exercises = new HashSet<>();
 
-    @OneToOne(optional = false)
+    @ManyToOne(optional = false)
     @NotNull
-    @JoinColumn(unique = true)
     private BodyPart bodyPart;
 
     public Long getId() {

@@ -23,7 +23,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 /**
  * REST controller for managing BodyPart.
@@ -88,19 +87,13 @@ public class BodyPartResource {
      * GET  /body-parts : get all the bodyParts.
      *
      * @param pageable the pagination information
-     * @param filter the filter of the request
      * @return the ResponseEntity with status 200 (OK) and the list of bodyParts in body
      * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
      */
     @GetMapping("/body-parts")
     @Timed
-    public ResponseEntity<List<BodyPartDTO>> getAllBodyParts(@ApiParam Pageable pageable, @RequestParam(required = false) String filter)
+    public ResponseEntity<List<BodyPartDTO>> getAllBodyParts(@ApiParam Pageable pageable)
         throws URISyntaxException {
-        if ("muscle-is-null".equals(filter)) {
-            log.debug("REST request to get all BodyParts where muscle is null");
-            return new ResponseEntity<>(bodyPartService.findAllWhereMuscleIsNull(),
-                    HttpStatus.OK);
-        }
         log.debug("REST request to get a page of BodyParts");
         Page<BodyPartDTO> page = bodyPartService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/body-parts");

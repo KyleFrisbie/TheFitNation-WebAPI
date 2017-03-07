@@ -16,7 +16,7 @@ public interface BodyPartMapper {
 
     List<BodyPartDTO> bodyPartsToBodyPartDTOs(List<BodyPart> bodyParts);
 
-    @Mapping(target = "muscle", ignore = true)
+    @Mapping(target = "muscles", ignore = true)
     BodyPart bodyPartDTOToBodyPart(BodyPartDTO bodyPartDTO);
 
     List<BodyPart> bodyPartDTOsToBodyParts(List<BodyPartDTO> bodyPartDTOs);

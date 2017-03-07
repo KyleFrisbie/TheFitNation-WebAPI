@@ -28,7 +28,7 @@
 
         <div class="form-group">
             <label data-translate="theFitNationApp.muscle.bodyPart" for="field_bodyPart">Body Part</label>
-            <select class="form-control" id="field_bodyPart" name="bodyPart" ng-model="vm.muscle.bodyPartId" ng-options="bodyPart.id as bodyPart.name for bodyPart in vm.bodyparts | orderBy:'id'" required>
+            <select class="form-control" id="field_bodyPart" name="bodyPart" ng-model="vm.muscle.bodyPartId" ng-options="bodyPart.id as bodyPart.name for bodyPart in vm.bodyparts"             required>
                 <option value=""></option>
             </select>
         </div>
