@@ -4,7 +4,6 @@ package com.thefitnation.service.dto;
 import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.Objects;
-import com.thefitnation.domain.enumeration.SkillLevel;
 
 /**
  * A DTO for the SkillLevel entity.
@@ -14,7 +13,7 @@ public class SkillLevelDTO implements Serializable {
     private Long id;
 
     @NotNull
-    private SkillLevel level;
+    private String level;
 
     public Long getId() {
         return id;
@@ -23,11 +22,11 @@ public class SkillLevelDTO implements Serializable {
     public void setId(Long id) {
         this.id = id;
     }
-    public SkillLevel getLevel() {
+    public String getLevel() {
         return level;
     }
 
-    public void setLevel(SkillLevel level) {
+    public void setLevel(String level) {
         this.level = level;
     }
 

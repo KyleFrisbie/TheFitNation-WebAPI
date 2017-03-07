@@ -4,8 +4,7 @@
     "fields": [
         {
             "fieldName": "level",
-            "fieldType": "SkillLevel",
-            "fieldValues": "Beginner, Intermediate, Advanced",
+            "fieldType": "String",
             "fieldValidateRules": [
                 "required"
             ]

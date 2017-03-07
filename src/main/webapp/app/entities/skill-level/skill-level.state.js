@@ -46,7 +46,6 @@
                 }],
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('skillLevel');
-                    $translatePartialLoader.addPart('skillLevel');
                     $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }]
@@ -68,7 +67,6 @@
             },
             resolve: {
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
-                    $translatePartialLoader.addPart('skillLevel');
                     $translatePartialLoader.addPart('skillLevel');
                     return $translate.refresh();
                 }],

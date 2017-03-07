@@ -40,8 +40,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = TheFitNationApp.class)
 public class SkillLevelResourceIntTest {
 
-    private static final com.thefitnation.domain.enumeration.SkillLevel DEFAULT_LEVEL = com.thefitnation.domain.enumeration.SkillLevel.Beginner;
-    private static final com.thefitnation.domain.enumeration.SkillLevel UPDATED_LEVEL = com.thefitnation.domain.enumeration.SkillLevel.Intermediate;
+    private static final String DEFAULT_LEVEL = "AAAAAAAAAA";
+    private static final String UPDATED_LEVEL = "BBBBBBBBBB";
 
     @Autowired
     private SkillLevelRepository skillLevelRepository;

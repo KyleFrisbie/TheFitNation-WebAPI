@@ -80,7 +80,7 @@ class SkillLevelGatlingTest extends Simulation {
             .exec(http("Create new skillLevel")
             .post("/api/skill-levels")
             .headers(headers_http_authenticated)
-            .body(StringBody("""{"id":null, "level":null}""")).asJSON
+            .body(StringBody("""{"id":null, "level":"SAMPLE_TEXT"}""")).asJSON
             .check(status.is(201))
             .check(headerRegex("Location", "(.*)").saveAs("new_skillLevel_url"))).exitHereIfFailed
             .pause(10)

@@ -24,9 +24,8 @@ public class SkillLevel implements Serializable {
     private Long id;
 
     @NotNull
-    @Enumerated(EnumType.STRING)
     @Column(name = "level", nullable = false)
-    private com.thefitnation.domain.enumeration.SkillLevel level;
+    private String level;
 
     public Long getId() {
         return id;
@@ -36,16 +35,16 @@ public class SkillLevel implements Serializable {
         this.id = id;
     }
 
-    public com.thefitnation.domain.enumeration.SkillLevel getLevel() {
+    public String getLevel() {
         return level;
     }
 
-    public SkillLevel level(com.thefitnation.domain.enumeration.SkillLevel level) {
+    public SkillLevel level(String level) {
         this.level = level;
         return this;
     }
 
-    public void setLevel(com.thefitnation.domain.enumeration.SkillLevel level) {
+    public void setLevel(String level) {
         this.level = level;
     }
 

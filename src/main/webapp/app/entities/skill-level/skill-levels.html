@@ -26,7 +26,7 @@
             <tbody>
                 <tr ng-repeat="skillLevel in vm.skillLevels track by skillLevel.id">
                     <td><a ui-sref="skill-level-detail({id:skillLevel.id})">{{skillLevel.id}}</a></td>
-                    <td data-translate="{{'theFitNationApp.SkillLevel.' + skillLevel.level}}">{{skillLevel.level}}</td>
+                    <td>{{skillLevel.level}}</td>
                     <td class="text-right">
                         <div class="btn-group flex-btn-group-container">
                             <button type="submit"
