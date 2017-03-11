@@ -95,7 +95,7 @@ jhipster:
             max-entries: 1000 # Number of objects in each cache entry
     mail: # specific JHipster mail property, for standard properties see MailProperties
         from: TheFitNation@localhost
-        base-url: http://www.the-fit-nation.com
+        base-url: ${BASE_URL}
     metrics: # DropWizard Metrics configuration, used by MetricsConfiguration
         jmx.enabled: true
         graphite:
