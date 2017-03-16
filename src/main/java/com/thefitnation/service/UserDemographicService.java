@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 public class UserDemographicService {
 
     private final Logger log = LoggerFactory.getLogger(UserDemographicService.class);
-    
+
     private final UserDemographicRepository userDemographicRepository;
 
     private final UserDemographicMapper userDemographicMapper;
@@ -49,7 +49,7 @@ public class UserDemographicService {
 
     /**
      *  Get all the userDemographics.
-     *  
+     *
      *  @param pageable the pagination information
      *  @return the list of entities
      */
@@ -70,6 +70,14 @@ public class UserDemographicService {
     public UserDemographicDTO findOne(Long id) {
         log.debug("Request to get UserDemographic : {}", id);
         UserDemographic userDemographic = userDemographicRepository.findOneWithEagerRelationships(id);
+        UserDemographicDTO userDemographicDTO = userDemographicMapper.userDemographicToUserDemographicDTO(userDemographic);
+        return userDemographicDTO;
+    }
+
+    @Transactional(readOnly = true)
+    public UserDemographicDTO findOneByUser(Long id) {
+        log.debug("Request to get UserDemographic by User : {}", id);
+        UserDemographic userDemographic = userDemographicRepository.findOneByUserWithEagerRelationships(id);
         UserDemographicDTO userDemographicDTO = userDemographicMapper.userDemographicToUserDemographicDTO(userDemographic);
         return userDemographicDTO;
     }

@@ -6,6 +6,7 @@ import com.thefitnation.domain.UserDemographic;
 import com.thefitnation.domain.User;
 import com.thefitnation.domain.SkillLevel;
 import com.thefitnation.repository.UserDemographicRepository;
+import com.thefitnation.repository.UserRepository;
 import com.thefitnation.service.UserDemographicService;
 import com.thefitnation.service.dto.UserDemographicDTO;
 import com.thefitnation.service.mapper.UserDemographicMapper;
@@ -68,6 +69,9 @@ public class UserDemographicResourceIntTest {
     private UserDemographicRepository userDemographicRepository;
 
     @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
     private UserDemographicMapper userDemographicMapper;
 
     @Autowired
@@ -92,7 +96,7 @@ public class UserDemographicResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        UserDemographicResource userDemographicResource = new UserDemographicResource(userDemographicService);
+        UserDemographicResource userDemographicResource = new UserDemographicResource(userRepository, userDemographicService);
         this.restUserDemographicMockMvc = MockMvcBuilders.standaloneSetup(userDemographicResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)

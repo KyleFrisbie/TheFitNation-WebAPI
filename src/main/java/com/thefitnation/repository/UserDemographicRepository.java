@@ -19,4 +19,7 @@ public interface UserDemographicRepository extends JpaRepository<UserDemographic
     @Query("select userDemographic from UserDemographic userDemographic left join fetch userDemographic.gyms where userDemographic.id =:id")
     UserDemographic findOneWithEagerRelationships(@Param("id") Long id);
 
+    @Query("select userDemographic from UserDemographic userDemographic left join fetch userDemographic.gyms where userDemographic.user.id =:id")
+    UserDemographic findOneByUserWithEagerRelationships(@Param("id") Long id);
+
 }
