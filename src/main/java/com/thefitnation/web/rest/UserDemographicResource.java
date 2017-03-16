@@ -1,7 +1,11 @@
 package com.thefitnation.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import com.thefitnation.domain.User;
+import com.thefitnation.repository.UserRepository;
+import com.thefitnation.security.SecurityUtils;
 import com.thefitnation.service.UserDemographicService;
+import com.thefitnation.service.dto.UserDTO;
 import com.thefitnation.web.rest.util.HeaderUtil;
 import com.thefitnation.web.rest.util.PaginationUtil;
 import com.thefitnation.service.dto.UserDemographicDTO;
@@ -14,8 +18,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.client.resource.UserRedirectRequiredException;
 import org.springframework.web.bind.annotation.*;
 
+import javax.swing.text.html.Option;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -34,10 +40,13 @@ public class UserDemographicResource {
     private final Logger log = LoggerFactory.getLogger(UserDemographicResource.class);
 
     private static final String ENTITY_NAME = "userDemographic";
-        
+
     private final UserDemographicService userDemographicService;
 
-    public UserDemographicResource(UserDemographicService userDemographicService) {
+    private final UserRepository userRepository;
+
+    public UserDemographicResource(UserRepository userRepository, UserDemographicService userDemographicService) {
+        this.userRepository = userRepository;
         this.userDemographicService = userDemographicService;
     }
 
@@ -74,6 +83,41 @@ public class UserDemographicResource {
     @Timed
     public ResponseEntity<UserDemographicDTO> updateUserDemographic(@Valid @RequestBody UserDemographicDTO userDemographicDTO) throws URISyntaxException {
         log.debug("REST request to update UserDemographic : {}", userDemographicDTO);
+        if (userDemographicDTO.getId() == null) {
+            return createUserDemographic(userDemographicDTO);
+        }
+        UserDemographicDTO result = userDemographicService.save(userDemographicDTO);
+        return ResponseEntity.ok()
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, userDemographicDTO.getId().toString()))
+            .body(result);
+    }
+
+    /***
+     * PUT /user-demographics/byLoggedInUser : Updates a logged in user's userDemographic
+     *
+     * @param userDemographicDTO
+     * @return
+     * @throws URISyntaxException
+     */
+    @PutMapping("/user-demographics/byLoggedInUser")
+    @Timed
+    public ResponseEntity<UserDemographicDTO> updateUserDemographicByLoggedInUser(@Valid @RequestBody UserDemographicDTO userDemographicDTO) throws URISyntaxException {
+        log.debug("REST request to update UserDemographic : {}", userDemographicDTO);
+        Optional<User> user = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin());
+
+        if(!user.isPresent()) {
+            return ResponseEntity.badRequest()
+                .headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "invaliduser", "Unable to find User by token to associate with UserDemographic"))
+                .body(null);
+        }
+        userDemographicDTO.setId(null);
+        userDemographicDTO.setUserId(user.get().getId());
+        UserDemographicDTO foundUserDemographic = userDemographicService.findOneByUser(user.get().getId());
+
+        if(foundUserDemographic != null) {
+            userDemographicDTO.setId(foundUserDemographic.getId());
+        }
+
         if (userDemographicDTO.getId() == null) {
             return createUserDemographic(userDemographicDTO);
         }
