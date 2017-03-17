@@ -375,6 +375,7 @@ public class UserDemographicResourceIntTest {
     }
 
     @Test
+    @Transactional
     public void equalsVerifier() throws Exception {
         TestUtil.equalsVerifier(UserDemographic.class);
     }

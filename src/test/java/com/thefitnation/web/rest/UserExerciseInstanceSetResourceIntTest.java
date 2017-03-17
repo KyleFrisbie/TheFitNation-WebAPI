@@ -333,6 +333,7 @@ public class UserExerciseInstanceSetResourceIntTest {
     }
 
     @Test
+    @Transactional
     public void equalsVerifier() throws Exception {
         TestUtil.equalsVerifier(UserExerciseInstanceSet.class);
     }

@@ -287,6 +287,7 @@ public class LocationResourceIntTest {
     }
 
     @Test
+    @Transactional
     public void equalsVerifier() throws Exception {
         TestUtil.equalsVerifier(Location.class);
     }

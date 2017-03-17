@@ -258,6 +258,7 @@ public class ExerciseInstanceResourceIntTest {
     }
 
     @Test
+    @Transactional
     public void equalsVerifier() throws Exception {
         TestUtil.equalsVerifier(ExerciseInstance.class);
     }

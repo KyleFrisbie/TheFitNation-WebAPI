@@ -259,6 +259,7 @@ public class MuscleResourceIntTest {
     }
 
     @Test
+    @Transactional
     public void equalsVerifier() throws Exception {
         TestUtil.equalsVerifier(Muscle.class);
     }

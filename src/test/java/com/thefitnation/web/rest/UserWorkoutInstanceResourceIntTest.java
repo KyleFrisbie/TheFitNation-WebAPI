@@ -326,6 +326,7 @@ public class UserWorkoutInstanceResourceIntTest {
     }
 
     @Test
+    @Transactional
     public void equalsVerifier() throws Exception {
         TestUtil.equalsVerifier(UserWorkoutInstance.class);
     }
