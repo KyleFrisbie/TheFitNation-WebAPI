@@ -25,6 +25,7 @@ import javax.swing.text.html.Option;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.LocalDate;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -64,6 +65,9 @@ public class UserDemographicResource {
         if (userDemographicDTO.getId() != null) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new userDemographic cannot already have an ID")).body(null);
         }
+
+        userDemographicDTO.setCreatedOn(LocalDate.now());
+
         UserDemographicDTO result = userDemographicService.save(userDemographicDTO);
         return ResponseEntity.created(new URI("/api/user-demographics/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))

@@ -20,6 +20,7 @@ import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.swing.text.html.Option;
 import java.time.ZonedDateTime;
 import java.util.*;
 
@@ -60,19 +61,19 @@ public class UserService {
     }
 
     public Optional<User> completePasswordReset(String newPassword, String key) {
-       log.debug("Reset user password for reset key {}", key);
+        log.debug("Reset user password for reset key {}", key);
 
-       return userRepository.findOneByResetKey(key)
+        return userRepository.findOneByResetKey(key)
             .filter(user -> {
                 ZonedDateTime oneDayAgo = ZonedDateTime.now().minusHours(24);
                 return user.getResetDate().isAfter(oneDayAgo);
-           })
-           .map(user -> {
+            })
+            .map(user -> {
                 user.setPassword(passwordEncoder.encode(newPassword));
                 user.setResetKey(null);
                 user.setResetDate(null);
                 return user;
-           });
+            });
     }
 
     public Optional<User> requestPasswordReset(String mail) {
@@ -86,7 +87,7 @@ public class UserService {
     }
 
     public User createUser(String login, String password, String firstName, String lastName, String email,
-        String imageUrl, String langKey) {
+                           String imageUrl, String langKey) {
 
         User newUser = new User();
         Authority authority = authorityRepository.findOne(AuthoritiesConstants.USER);
@@ -187,6 +188,40 @@ public class UserService {
         });
     }
 
+    /**
+     * Deactivates user by login.
+     *
+     * @param login
+     * @return
+     */
+    public Optional<UserDTO> deactivateUser(String login) {
+        jdbcTokenStore.findTokensByUserName(login).forEach(token ->
+            jdbcTokenStore.removeAccessToken(token));
+        Optional<User> foundUser = userRepository.findOneByLogin(login);
+
+        UserDTO userDTO = new UserDTO(foundUser.get());
+
+        return Optional.of(userRepository
+            .findOne(userDTO.getId()))
+            .map(user -> {
+                user.setLogin(userDTO.getLogin());
+                user.setFirstName(userDTO.getFirstName());
+                user.setLastName(userDTO.getLastName());
+                user.setEmail(userDTO.getEmail());
+                user.setImageUrl(userDTO.getImageUrl());
+                user.setActivated(false);
+                user.setLangKey(userDTO.getLangKey());
+                Set<Authority> managedAuthorities = user.getAuthorities();
+                managedAuthorities.clear();
+                userDTO.getAuthorities().stream()
+                    .map(authorityRepository::findOne)
+                    .forEach(managedAuthorities::add);
+                log.debug("Deactivated User: {}", user);
+                return user;
+            })
+            .map(UserDTO::new);
+    }
+
     public void changePassword(String password) {
         userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin()).ifPresent(user -> {
             String encryptedPassword = passwordEncoder.encode(password);
@@ -195,7 +230,7 @@ public class UserService {
         });
     }
 
-    @Transactional(readOnly = true)    
+    @Transactional(readOnly = true)
     public Page<UserDTO> getAllManagedUsers(Pageable pageable) {
         return userRepository.findAllByLoginNot(pageable, Constants.ANONYMOUS_USER).map(UserDTO::new);
     }

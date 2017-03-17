@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 public class SkillLevelService {
 
     private final Logger log = LoggerFactory.getLogger(SkillLevelService.class);
-    
+
     private final SkillLevelRepository skillLevelRepository;
 
     private final SkillLevelMapper skillLevelMapper;
@@ -49,7 +49,7 @@ public class SkillLevelService {
 
     /**
      *  Get all the skillLevels.
-     *  
+     *
      *  @param pageable the pagination information
      *  @return the list of entities
      */
@@ -73,6 +73,7 @@ public class SkillLevelService {
         SkillLevelDTO skillLevelDTO = skillLevelMapper.skillLevelToSkillLevelDTO(skillLevel);
         return skillLevelDTO;
     }
+
 
     /**
      *  Delete the  skillLevel by id.

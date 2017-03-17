@@ -3,6 +3,7 @@ package com.thefitnation.repository;
 import com.thefitnation.domain.SkillLevel;
 
 import org.springframework.data.jpa.repository.*;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -11,5 +12,4 @@ import java.util.List;
  */
 @SuppressWarnings("unused")
 public interface SkillLevelRepository extends JpaRepository<SkillLevel,Long> {
-
 }

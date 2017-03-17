@@ -7,6 +7,8 @@ import com.thefitnation.repository.AuthorityRepository;
 import com.thefitnation.repository.UserRepository;
 import com.thefitnation.security.AuthoritiesConstants;
 import com.thefitnation.service.MailService;
+import com.thefitnation.service.SkillLevelService;
+import com.thefitnation.service.UserDemographicService;
 import com.thefitnation.service.UserService;
 import com.thefitnation.service.dto.UserDTO;
 import com.thefitnation.web.rest.vm.ManagedUserVM;
@@ -51,8 +53,20 @@ public class AccountResourceIntTest {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private UserDemographicService userDemographicService;
+
+    @Autowired
+    private SkillLevelService skillLevelService;
+
     @Mock
     private UserService mockUserService;
+
+    @Mock
+    private UserDemographicService mockUserDemographicService;
+
+    @Mock
+    private SkillLevelService mockSkillLevelService;
 
     @Mock
     private MailService mockMailService;
@@ -67,10 +81,10 @@ public class AccountResourceIntTest {
         doNothing().when(mockMailService).sendActivationEmail(anyObject());
 
         AccountResource accountResource =
-            new AccountResource(userRepository, userService, mockMailService);
+            new AccountResource(userRepository, userService, userDemographicService, skillLevelService, mockMailService);
 
         AccountResource accountUserMockResource =
-            new AccountResource(userRepository, mockUserService, mockMailService);
+            new AccountResource(userRepository, mockUserService, mockUserDemographicService, mockSkillLevelService, mockMailService);
 
         this.restMvc = MockMvcBuilders.standaloneSetup(accountResource).build();
         this.restUserMockMvc = MockMvcBuilders.standaloneSetup(accountUserMockResource).build();

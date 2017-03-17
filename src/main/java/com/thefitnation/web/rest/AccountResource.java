@@ -3,11 +3,15 @@ package com.thefitnation.web.rest;
 import com.codahale.metrics.annotation.Timed;
 
 import com.thefitnation.domain.User;
+import com.thefitnation.domain.enumeration.UnitOfMeasure;
 import com.thefitnation.repository.UserRepository;
 import com.thefitnation.security.SecurityUtils;
 import com.thefitnation.service.MailService;
+import com.thefitnation.service.SkillLevelService;
+import com.thefitnation.service.UserDemographicService;
 import com.thefitnation.service.UserService;
 import com.thefitnation.service.dto.UserDTO;
+import com.thefitnation.service.dto.UserDemographicDTO;
 import com.thefitnation.web.rest.vm.KeyAndPasswordVM;
 import com.thefitnation.web.rest.vm.ManagedUserVM;
 import com.thefitnation.web.rest.util.HeaderUtil;
@@ -19,10 +23,12 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.time.LocalDate;
 import java.util.*;
 
 /**
@@ -38,13 +44,20 @@ public class AccountResource {
 
     private final UserService userService;
 
+    private final UserDemographicService userDemographicService;
+
+    private final SkillLevelService skillLevelService;
+
     private final MailService mailService;
 
     public AccountResource(UserRepository userRepository, UserService userService,
-            MailService mailService) {
+                           UserDemographicService userDemographicService, SkillLevelService skillLevelService,
+                           MailService mailService) {
 
         this.userRepository = userRepository;
         this.userService = userService;
+        this.userDemographicService = userDemographicService;
+        this.skillLevelService = skillLevelService;
         this.mailService = mailService;
     }
 
@@ -73,6 +86,19 @@ public class AccountResource {
                             managedUserVM.getEmail().toLowerCase(), managedUserVM.getImageUrl(), managedUserVM.getLangKey());
 
                     mailService.sendActivationEmail(user);
+
+                    UserDemographicDTO userDemographicDTO = new UserDemographicDTO();
+
+                    LocalDate now = LocalDate.now();
+                    userDemographicDTO.setCreatedOn(now);
+                    userDemographicDTO.setLastLogin(now);
+                    userDemographicDTO.setDateOfBirth(now);
+                    userDemographicDTO.setUserId(user.getId());
+                    userDemographicDTO.setUnitOfMeasure(UnitOfMeasure.Imperial);
+                    userDemographicDTO.setSkillLevelId(skillLevelService.findOneByName("Beginner").getId());
+
+                    userDemographicService.save(userDemographicDTO);
+
                     return new ResponseEntity<>(HttpStatus.CREATED);
                 })
         );
@@ -139,6 +165,33 @@ public class AccountResource {
                 return new ResponseEntity(HttpStatus.OK);
             })
             .orElseGet(() -> new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR));
+    }
+
+    @GetMapping("/account/deactivate")
+    @Timed
+    public ResponseEntity deactivateAccount() {
+        return Optional.ofNullable(userService.getUserWithAuthorities())
+            .map(user -> new ResponseEntity<>(
+                userService.deactivateUser(user.getLogin()), HttpStatus.OK))
+            .orElse(new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR));
+    }
+
+    @PostMapping(path="/account/reactivate",
+        produces={MediaType.APPLICATION_JSON_VALUE, MediaType.TEXT_PLAIN_VALUE})
+    @Timed
+    public ResponseEntity reactivateAccount(@Valid @RequestBody ManagedUserVM managedUserVM) {
+
+        HttpHeaders textPlainHeaders = new HttpHeaders();
+        textPlainHeaders.setContentType(MediaType.TEXT_PLAIN);
+
+        Optional<User> user = userRepository.findOneByLogin(managedUserVM.getLogin().toLowerCase());
+
+        if(!user.isPresent()) {
+            return new ResponseEntity<>("invalid login", textPlainHeaders, HttpStatus.BAD_REQUEST);
+        }
+
+        mailService.sendActivationEmail(user.get());
+        return new ResponseEntity<>("Reactivation email sent.", textPlainHeaders, HttpStatus.OK);
     }
 
     /**

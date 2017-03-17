@@ -1,0 +1,301 @@
+{
+	"variables": [],
+	"info": {
+		"name": "TheFitNation_Jhipster_Local",
+		"_postman_id": "74fe8df5-044a-4e1b-2604-84084dab24e4",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Account",
+			"description": "",
+			"item": [
+				{
+					"name": "Register New User",
+					"request": {
+						"url": "http://localhost:8080/api/register",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"kyle.l.frisbie@gmail.com\",\r\n  \"langKey\": \"en\",\r\n  \"login\": \"kyle\",\r\n  \"password\": \"kyle\"\r\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Get OAuth2 Token for User",
+					"request": {
+						"url": "http://localhost:8080/oauth/token",
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "username",
+									"value": "user",
+									"type": "text",
+									"enabled": true
+								},
+								{
+									"key": "password",
+									"value": "user",
+									"type": "text",
+									"enabled": true
+								},
+								{
+									"key": "grant_type",
+									"value": "password",
+									"type": "text",
+									"enabled": true
+								},
+								{
+									"key": "scope",
+									"value": "read write",
+									"type": "text",
+									"enabled": true
+								},
+								{
+									"key": "client_secret",
+									"value": "my-secret-token-to-change-in-production",
+									"type": "text",
+									"enabled": true
+								},
+								{
+									"key": "client_id",
+									"value": "TheFitNationapp",
+									"type": "text",
+									"enabled": true
+								},
+								{
+									"key": "submit",
+									"value": "login",
+									"type": "text",
+									"enabled": true
+								}
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Authenticate Bearer Token",
+					"request": {
+						"url": "http://localhost:8080/api/authenticate",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer 1f6055c3-4740-4be5-9b8f-d0f492db6f90",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Update Account",
+					"request": {
+						"url": "http://localhost:8080/api/account",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer 1f6055c3-4740-4be5-9b8f-d0f492db6f90",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": 0,\n  \"activated\": false,\n  \"authorities\": [],\n  \"createdBy\": \"string\",\n  \"createdDate\": \"2017-03-17T20:22:47.313Z\",\n  \"email\": \"email@email.com\",\n  \"firstName\": \"string\",\n  \"imageUrl\": \"string\",\n  \"langKey\": \"string\",\n  \"lastModifiedBy\": \"string\",\n  \"lastModifiedDate\": \"2017-03-17T20:22:47.313Z\",\n  \"lastName\": \"string\",\n  \"login\": \"user\",\n  \"langKey\": \"en\"\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Exercise",
+			"description": "",
+			"item": [
+				{
+					"name": "Create Exercise",
+					"request": {
+						"url": "http://localhost:8080/api/exercises",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer 7bcd1866-5d8c-4053-9fb2-e76e8b4447dd",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\":\"Upright Row\",\n\t\"imageUri\":null,\n\t\"notes\":null,\n\t\"id\":null,\n\t\"skillLevelId\":1351,\n\t\"muscles\":[\n\t\t{\n\t\t\t\"id\":1251,\n\t\t\t\"name\":\"Deltoids\",\n\t\t\t\"bodyPartId\":1201,\n\t\t\t\"bodyPartName\":\"Shoulders\"\n\t\t}\n\t],\n\t\"exerciseFamilyId\":1301\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Gym",
+			"description": "",
+			"item": [
+				{
+					"name": "Get All Gyms",
+					"request": {
+						"url": "http://localhost:8080/api/gyms",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer 1bd770b1-44d0-430f-a4ab-a72673107659",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User",
+			"description": "",
+			"item": [
+				{
+					"name": "Get All Users",
+					"request": {
+						"url": "http://localhost:8080/api/users",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer 7fb202e3-0a48-49ba-a314-110d3f7361a0",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Get User by Login (Like \"admin\", or \"kyle\")",
+					"request": {
+						"url": "http://localhost:8080/api/users/admin",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer 7fb202e3-0a48-49ba-a314-110d3f7361a0",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": "Gets user based on user who owns passed token in message header."
+					},
+					"response": []
+				},
+				{
+					"name": "Create user",
+					"request": {
+						"url": "http://localhost:8080/api/users",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer 4a8cd207-3f0f-4dd0-bea9-0c6a8f1e4ad5",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"id\": null,\n\t\"login\":\" kyle1\",\n\t\"firstName\": \"Kyle\",\n\t\"lastName\": \"Frisbie\",\n\t\"email\": \"kfrisbi1@msudenver.edu\",\n\t\"activated\": true,\n\t\"langKey\": \"en\",\n\t\"createdBy\": null,\n\t\"createdDate\": null,\n\t\"lastModifiedBy\": null,\n\t\"lastModifiedDate\": null,\n\t\"resetDate\": null,\n\t\"resetKey\": null,\n\t\"authorities\": [\n\t\t\"ROLE_USER\"\n\t]\n}"
+						},
+						"description": "Requires Admin profile."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "UserDemographic",
+			"description": "",
+			"item": [
+				{
+					"name": "Update User Demographic by Logged In User",
+					"request": {
+						"url": "http://localhost:8080/api/user-demographics/byLoggedInUser",
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer 1f6055c3-4740-4be5-9b8f-d0f492db6f90",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"id\":2051,\n\t\"createdOn\":\"2012-03-11\",\n\t\"lastLogin\":\"2017-03-11\",\n\t\"gender\":\"Male\",\n\t\"dateOfBirth\":\"2017-03-11\",\n\t\"height\":169,\n\t\"unitOfMeasure\":\"Imperial\",\n\t\"gyms\":[],\n\t\"skillLevelId\":1351,\n\t\"skillLevelLevel\":\"Beginner\"\n}"
+						},
+						"description": "failing"
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

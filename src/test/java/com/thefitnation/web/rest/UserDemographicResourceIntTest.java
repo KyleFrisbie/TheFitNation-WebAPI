@@ -357,6 +357,8 @@ public class UserDemographicResourceIntTest {
         assertThat(userDemographicList).hasSize(databaseSizeBeforeUpdate + 1);
     }
 
+    // TODO: 3/17/2017  Test updateUserDemographicByLoggedInUser
+
     @Test
     @Transactional
     public void deleteUserDemographic() throws Exception {
