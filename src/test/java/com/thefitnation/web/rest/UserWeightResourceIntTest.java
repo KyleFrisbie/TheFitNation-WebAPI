@@ -289,6 +289,7 @@ public class UserWeightResourceIntTest {
     }
 
     @Test
+    @Transactional
     public void equalsVerifier() throws Exception {
         TestUtil.equalsVerifier(UserWeight.class);
     }
