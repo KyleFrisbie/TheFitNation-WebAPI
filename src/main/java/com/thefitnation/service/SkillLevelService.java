@@ -74,6 +74,13 @@ public class SkillLevelService {
         return skillLevelDTO;
     }
 
+    @Transactional(readOnly = true)
+    public SkillLevelDTO findOneByName(String level) {
+        log.debug("Request to get SkillLevel by level: {}", level);
+        SkillLevel skillLevel = skillLevelRepository.findOneByName(level);
+        SkillLevelDTO skillLevelDTO = skillLevelMapper.skillLevelToSkillLevelDTO(skillLevel);
+        return skillLevelDTO;
+    }
 
     /**
      *  Delete the  skillLevel by id.

@@ -12,4 +12,6 @@ import java.util.List;
  */
 @SuppressWarnings("unused")
 public interface SkillLevelRepository extends JpaRepository<SkillLevel,Long> {
+    @Query("select skillLevel from SkillLevel skillLevel where skillLevel.level =:level")
+    SkillLevel findOneByName(@Param("level") String level);
 }
