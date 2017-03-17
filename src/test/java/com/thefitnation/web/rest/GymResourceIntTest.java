@@ -268,6 +268,7 @@ public class GymResourceIntTest {
     }
 
     @Test
+    @Transactional
     public void equalsVerifier() throws Exception {
         TestUtil.equalsVerifier(Gym.class);
     }
