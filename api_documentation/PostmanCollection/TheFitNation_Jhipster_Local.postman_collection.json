@@ -25,7 +25,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"email\": \"kyle.l.frisbie@gmail.com\",\r\n  \"langKey\": \"en\",\r\n  \"login\": \"kyle\",\r\n  \"password\": \"kyle\"\r\n}"
+							"raw": "{\r\n  \"email\": \"snack@pack.com\",\r\n  \"langKey\": \"en\",\r\n  \"login\": \"snack\",\r\n  \"password\": \"snack\"\r\n}"
 						},
 						"description": ""
 					},
@@ -42,13 +42,13 @@
 							"formdata": [
 								{
 									"key": "username",
-									"value": "user",
+									"value": "kyle",
 									"type": "text",
 									"enabled": true
 								},
 								{
 									"key": "password",
-									"value": "user",
+									"value": "kyle",
 									"type": "text",
 									"enabled": true
 								},
@@ -123,13 +123,80 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "Bearer 1f6055c3-4740-4be5-9b8f-d0f492db6f90",
+								"value": "Bearer 5cd017fe-c5c8-4665-8f0a-18cb5acf1ba4",
 								"description": ""
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"id\": 0,\n  \"activated\": false,\n  \"authorities\": [],\n  \"createdBy\": \"string\",\n  \"createdDate\": \"2017-03-17T20:22:47.313Z\",\n  \"email\": \"email@email.com\",\n  \"firstName\": \"string\",\n  \"imageUrl\": \"string\",\n  \"langKey\": \"string\",\n  \"lastModifiedBy\": \"string\",\n  \"lastModifiedDate\": \"2017-03-17T20:22:47.313Z\",\n  \"lastName\": \"string\",\n  \"login\": \"user\",\n  \"langKey\": \"en\"\n}"
+							"raw": "{\n  \"id\": 0,\n  \"activated\": false,\n  \"authorities\":[\"ROLE_USER\",\"ROLE_ADMIN\"],\n  \"createdBy\": \"string\",\n  \"createdDate\": \"2017-03-17T20:22:47.313Z\",\n  \"email\": \"email@email.com\",\n  \"firstName\": \"string\",\n  \"imageUrl\": \"string\",\n  \"langKey\": \"string\",\n  \"lastModifiedBy\": \"string\",\n  \"lastModifiedDate\": \"2017-03-17T20:22:47.313Z\",\n  \"lastName\": \"string\",\n  \"login\": \"user\",\n  \"langKey\": \"en\"\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Change Password",
+					"request": {
+						"url": "http://localhost:8080/api/account/change_password",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Accept",
+								"value": "text/plain",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer 23f0cf96-1701-4e9d-9160-9caf98fd6a5b",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "user"
+						},
+						"description": "For User with Token"
+					},
+					"response": []
+				},
+				{
+					"name": "Deactivate Account",
+					"request": {
+						"url": "http://localhost:8080/api/account/deactivate",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer 0261c668-93e6-426a-a3cb-2497b5c41a06",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": "Based on token"
+					},
+					"response": []
+				},
+				{
+					"name": "Reactivate Account",
+					"request": {
+						"url": "http://localhost:8080/api/account/reactivate",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"kyle.l.frisbie@gmail.com\",\r\n  \"langKey\": \"en\",\r\n  \"login\": \"kyle\",\r\n  \"password\": \"kyle\"\r\n}"
 						},
 						"description": ""
 					},
