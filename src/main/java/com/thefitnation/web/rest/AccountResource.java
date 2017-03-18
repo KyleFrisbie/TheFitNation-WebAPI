@@ -2,6 +2,7 @@ package com.thefitnation.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 
+import com.thefitnation.domain.SkillLevel;
 import com.thefitnation.domain.User;
 import com.thefitnation.domain.enumeration.UnitOfMeasure;
 import com.thefitnation.repository.UserRepository;
@@ -10,6 +11,7 @@ import com.thefitnation.service.MailService;
 import com.thefitnation.service.SkillLevelService;
 import com.thefitnation.service.UserDemographicService;
 import com.thefitnation.service.UserService;
+import com.thefitnation.service.dto.SkillLevelDTO;
 import com.thefitnation.service.dto.UserDTO;
 import com.thefitnation.service.dto.UserDemographicDTO;
 import com.thefitnation.web.rest.vm.KeyAndPasswordVM;
@@ -95,7 +97,14 @@ public class AccountResource {
                     userDemographicDTO.setDateOfBirth(now);
                     userDemographicDTO.setUserId(user.getId());
                     userDemographicDTO.setUnitOfMeasure(UnitOfMeasure.Imperial);
-                    userDemographicDTO.setSkillLevelId(skillLevelService.findOneByName("Beginner").getId());
+
+                    SkillLevelDTO beginnerSkillLevelDTO = skillLevelService.findOneByName("Beginner");
+                    if (beginnerSkillLevelDTO == null) {
+                        beginnerSkillLevelDTO.setLevel("Beginner");
+                        beginnerSkillLevelDTO = skillLevelService.save(beginnerSkillLevelDTO);
+                    }
+
+                    userDemographicDTO.setSkillLevelId(beginnerSkillLevelDTO.getId());
 
                     userDemographicService.save(userDemographicDTO);
 

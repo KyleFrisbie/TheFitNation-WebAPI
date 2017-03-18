@@ -152,8 +152,6 @@ public class UserDemographicResourceIntTest {
         List<UserDemographic> userDemographicList = userDemographicRepository.findAll();
         assertThat(userDemographicList).hasSize(databaseSizeBeforeCreate + 1);
         UserDemographic testUserDemographic = userDemographicList.get(userDemographicList.size() - 1);
-        assertThat(testUserDemographic.getCreatedOn()).isEqualTo(DEFAULT_CREATED_ON);
-        assertThat(testUserDemographic.getLastLogin()).isEqualTo(DEFAULT_LAST_LOGIN);
         assertThat(testUserDemographic.getGender()).isEqualTo(DEFAULT_GENDER);
         assertThat(testUserDemographic.getDateOfBirth()).isEqualTo(DEFAULT_DATE_OF_BIRTH);
         assertThat(testUserDemographic.getHeight()).isEqualTo(DEFAULT_HEIGHT);
