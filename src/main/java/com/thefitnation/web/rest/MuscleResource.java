@@ -1,28 +1,18 @@
 package com.thefitnation.web.rest;
 
-import com.codahale.metrics.annotation.Timed;
-import com.thefitnation.service.MuscleService;
-import com.thefitnation.web.rest.util.HeaderUtil;
-import com.thefitnation.web.rest.util.PaginationUtil;
-import com.thefitnation.service.dto.MuscleDTO;
-import io.swagger.annotations.ApiParam;
-import io.github.jhipster.web.util.ResponseUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import com.codahale.metrics.annotation.*;
+import com.thefitnation.service.*;
+import com.thefitnation.service.dto.*;
+import com.thefitnation.web.rest.util.*;
+import io.github.jhipster.web.util.*;
+import io.swagger.annotations.*;
+import java.net.*;
+import java.util.*;
+import javax.validation.*;
+import org.slf4j.*;
+import org.springframework.data.domain.*;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * REST controller for managing Muscle.
@@ -34,7 +24,7 @@ public class MuscleResource {
     private final Logger log = LoggerFactory.getLogger(MuscleResource.class);
 
     private static final String ENTITY_NAME = "muscle";
-        
+
     private final MuscleService muscleService;
 
     public MuscleResource(MuscleService muscleService) {
@@ -111,6 +101,20 @@ public class MuscleResource {
     public ResponseEntity<MuscleDTO> getMuscle(@PathVariable Long id) {
         log.debug("REST request to get Muscle : {}", id);
         MuscleDTO muscleDTO = muscleService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(muscleDTO));
+    }
+
+    /**
+     * GET  /muscles/:id : get the "id" muscle.
+     *
+     * @param muscleName the id of the muscleDTO to retrieve
+     * @return the ResponseEntity with status 200 (OK) and with body the muscleDTO, or with status 404 (Not Found)
+     */
+    @GetMapping("/muscles/{muscleName}")
+    @Timed
+    public ResponseEntity<MuscleDTO> getMuscle(@PathVariable String muscleName) {
+        log.debug("REST request to get Muscle : {}", muscleName);
+        MuscleDTO muscleDTO = muscleService.findOne(muscleName);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(muscleDTO));
     }
 

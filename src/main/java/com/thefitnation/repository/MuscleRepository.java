@@ -12,4 +12,5 @@ import java.util.List;
 @SuppressWarnings("unused")
 public interface MuscleRepository extends JpaRepository<Muscle,Long> {
 
+   Muscle findByNameIgnoreCase(String Name);
 }
