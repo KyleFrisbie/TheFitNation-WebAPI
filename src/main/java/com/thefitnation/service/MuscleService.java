@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 public class MuscleService {
 
     private final Logger log = LoggerFactory.getLogger(MuscleService.class);
-    
+
     private final MuscleRepository muscleRepository;
 
     private final MuscleMapper muscleMapper;
@@ -49,7 +49,7 @@ public class MuscleService {
 
     /**
      *  Get all the muscles.
-     *  
+     *
      *  @param pageable the pagination information
      *  @return the list of entities
      */
@@ -72,6 +72,19 @@ public class MuscleService {
         Muscle muscle = muscleRepository.findOne(id);
         MuscleDTO muscleDTO = muscleMapper.muscleToMuscleDTO(muscle);
         return muscleDTO;
+    }
+
+    /**
+     *  Get one muscle by id.
+     *
+     *  @param muscleName the name of the  muscle entity
+     *  @return the entity
+     */
+    @Transactional(readOnly = true)
+    public MuscleDTO findOne(String muscleName) {
+        log.debug("Request to get Muscle : {}", muscleName);
+        Muscle muscle = muscleRepository.findByNameIgnoreCase(muscleName);
+        return muscleMapper.muscleToMuscleDTO(muscle);
     }
 
     /**
