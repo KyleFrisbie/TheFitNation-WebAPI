@@ -356,6 +356,56 @@ public class UserDemographicResourceIntTest {
     }
 
     // TODO: 3/17/2017  Test updateUserDemographicByLoggedInUser
+//    @Test
+//    @Transactional
+//    public void updateUserDemographicByLoggedInUser() throws Exception {
+//        // Initialize the database
+//        userDemographicRepository.saveAndFlush(userDemographic);
+//        int databaseSizeBeforeUpdate = userDemographicRepository.findAll().size();
+//
+//        User user = new User();
+//        user.setFirstName("joe");
+//        user.setPassword("password");
+//        user.setFirstName("Joe");
+//        user.setLastName("Shmoe");
+//        user.setEmail("joe@example.com");
+//        user.setImageUrl("http://placehold.it/50x50");
+//        user.setLangKey("en");
+//
+//        userRepository.save(user);
+//
+//        // Update the userDemographic
+//        UserDemographic updatedUserDemographic = userDemographicRepository.findOne(userDemographic.getId());
+//        updatedUserDemographic
+//            .createdOn(UPDATED_CREATED_ON)
+//            .lastLogin(UPDATED_LAST_LOGIN)
+//            .gender(UPDATED_GENDER)
+//            .dateOfBirth(UPDATED_DATE_OF_BIRTH)
+//            .height(UPDATED_HEIGHT)
+//            .unitOfMeasure(UPDATED_UNIT_OF_MEASURE)
+//            .user(user);
+//        UserDemographicDTO userDemographicDTO = userDemographicMapper.userDemographicToUserDemographicDTO(updatedUserDemographic);
+//
+//        // TODO: 3/18/2017 get a token and set it in the request header
+//        String token = "";
+//
+//        restUserDemographicMockMvc.perform(put("/api/user-demographics/byLoggedInUser")
+//            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+//            .header("Authorization", "Bearer " + token)
+//            .content(TestUtil.convertObjectToJsonBytes(userDemographicDTO)))
+//            .andExpect(status().isOk());
+//
+//        // Validate the UserDemographic in the database
+//        List<UserDemographic> userDemographicList = userDemographicRepository.findAll();
+//        assertThat(userDemographicList).hasSize(databaseSizeBeforeUpdate);
+//        UserDemographic testUserDemographic = userDemographicList.get(userDemographicList.size() - 1);
+//        assertThat(testUserDemographic.getCreatedOn()).isEqualTo(UPDATED_CREATED_ON);
+//        assertThat(testUserDemographic.getLastLogin()).isEqualTo(UPDATED_LAST_LOGIN);
+//        assertThat(testUserDemographic.getGender()).isEqualTo(UPDATED_GENDER);
+//        assertThat(testUserDemographic.getDateOfBirth()).isEqualTo(UPDATED_DATE_OF_BIRTH);
+//        assertThat(testUserDemographic.getHeight()).isEqualTo(UPDATED_HEIGHT);
+//        assertThat(testUserDemographic.getUnitOfMeasure()).isEqualTo(UPDATED_UNIT_OF_MEASURE);
+//    }
 
     @Test
     @Transactional

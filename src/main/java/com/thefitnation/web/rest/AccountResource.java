@@ -40,6 +40,8 @@ import java.util.*;
 @RequestMapping("/api")
 public class AccountResource {
 
+    private static final String ENTITY_NAME = "user";
+
     private final Logger log = LoggerFactory.getLogger(AccountResource.class);
 
     private final UserRepository userRepository;
@@ -179,6 +181,7 @@ public class AccountResource {
     @GetMapping("/account/deactivate")
     @Timed
     public ResponseEntity deactivateAccount() {
+        // TODO: 3/18/2017 more checking for tokens/passwords?
         return Optional.ofNullable(userService.getUserWithAuthorities())
             .map(user -> new ResponseEntity<>(
                 userService.deactivateUser(user.getLogin()), HttpStatus.OK))
@@ -197,6 +200,8 @@ public class AccountResource {
 
         if(!user.isPresent()) {
             return new ResponseEntity<>("invalid login", textPlainHeaders, HttpStatus.BAD_REQUEST);
+        } else if (user.get().getActivated()) {
+            return new ResponseEntity<>("user already activated", textPlainHeaders, HttpStatus.BAD_REQUEST);
         }
 
         mailService.sendActivationEmail(user.get());

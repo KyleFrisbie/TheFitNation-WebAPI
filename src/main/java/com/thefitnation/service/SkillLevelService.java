@@ -11,10 +11,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.stream.Collectors;
-
 /**
  * Service Implementation for managing SkillLevel.
  */
@@ -42,7 +38,14 @@ public class SkillLevelService {
     public SkillLevelDTO save(SkillLevelDTO skillLevelDTO) {
         log.debug("Request to save SkillLevel : {}", skillLevelDTO);
         SkillLevel skillLevel = skillLevelMapper.skillLevelDTOToSkillLevel(skillLevelDTO);
-        skillLevel = skillLevelRepository.save(skillLevel);
+        SkillLevel foundSkillLevel = skillLevelRepository.findOneByLevel(skillLevelDTO.getLevel());
+
+        if (foundSkillLevel == null) {
+            skillLevel = skillLevelRepository.save(skillLevel);
+        } else {
+            skillLevel = foundSkillLevel;
+        }
+
         SkillLevelDTO result = skillLevelMapper.skillLevelToSkillLevelDTO(skillLevel);
         return result;
     }
@@ -77,7 +80,7 @@ public class SkillLevelService {
     @Transactional(readOnly = true)
     public SkillLevelDTO findOneByName(String level) {
         log.debug("Request to get SkillLevel by level: {}", level);
-        SkillLevel skillLevel = skillLevelRepository.findOneByName(level);
+        SkillLevel skillLevel = skillLevelRepository.findOneByLevel(level);
         SkillLevelDTO skillLevelDTO = skillLevelMapper.skillLevelToSkillLevelDTO(skillLevel);
         return skillLevelDTO;
     }
