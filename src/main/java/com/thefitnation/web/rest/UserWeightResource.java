@@ -1,7 +1,14 @@
 package com.thefitnation.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import com.thefitnation.domain.User;
+import com.thefitnation.repository.UserRepository;
+import com.thefitnation.security.AuthoritiesConstants;
+import com.thefitnation.security.SecurityUtils;
+import com.thefitnation.service.UserDemographicService;
+import com.thefitnation.service.UserService;
 import com.thefitnation.service.UserWeightService;
+import com.thefitnation.service.dto.UserDemographicDTO;
 import com.thefitnation.web.rest.util.HeaderUtil;
 import com.thefitnation.web.rest.util.PaginationUtil;
 import com.thefitnation.service.dto.UserWeightDTO;
@@ -19,10 +26,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * REST controller for managing UserWeight.
@@ -34,11 +39,20 @@ public class UserWeightResource {
     private final Logger log = LoggerFactory.getLogger(UserWeightResource.class);
 
     private static final String ENTITY_NAME = "userWeight";
-        
+
     private final UserWeightService userWeightService;
 
-    public UserWeightResource(UserWeightService userWeightService) {
+    private final UserService userService;
+
+    private final UserDemographicService userDemographicService;
+
+    private final UserRepository userRepository;
+
+    public UserWeightResource(UserWeightService userWeightService, UserService userService, UserDemographicService userDemographicService, UserRepository userRepository) {
         this.userWeightService = userWeightService;
+        this.userService = userService;
+        this.userDemographicService = userDemographicService;
+        this.userRepository = userRepository;
     }
 
     /**
@@ -52,9 +66,48 @@ public class UserWeightResource {
     @Timed
     public ResponseEntity<UserWeightDTO> createUserWeight(@Valid @RequestBody UserWeightDTO userWeightDTO) throws URISyntaxException {
         log.debug("REST request to save UserWeight : {}", userWeightDTO);
+
         if (userWeightDTO.getId() != null) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new userWeight cannot already have an ID")).body(null);
         }
+        UserWeightDTO result = userWeightService.save(userWeightDTO);
+        return ResponseEntity.created(new URI("/api/user-weights/" + result.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
+            .body(result);
+    }
+
+    /**
+     * POST /user-weights/byLoggedInUser : Adds a userWeight to the logged in user
+     *
+     * @param userWeightDTO
+     * @return
+     * @throws URISyntaxException
+     */
+    @PostMapping("/user-weights/byLoggedInUser")
+    @Timed
+    public ResponseEntity<UserWeightDTO> createUserWeightByLoggedInUser(@Valid @RequestBody UserWeightDTO userWeightDTO) throws URISyntaxException {
+        log.debug("REST request to save UserWeight : {}", userWeightDTO);
+
+        if (userWeightDTO.getId() != null) {
+            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new userWeight cannot already have an ID")).body(null);
+        }
+        Optional<User> user = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin());
+
+        if(!user.isPresent()) {
+            return ResponseEntity.badRequest()
+                .headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "invaliduser", "Unable to find User by token to associate with UserDemographic"))
+                .body(null);
+        }
+
+        UserDemographicDTO userDemographicDTO = userDemographicService.findOneByUser(user.get().getId());
+        if (userDemographicDTO == null) {
+            return ResponseEntity.badRequest()
+                .headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "noAssociatedUserDemographic", "Unable to find UserDemographic associated with token owner"))
+                .body(null);
+        }
+
+        userWeightDTO.setUserDemographicId(userDemographicDTO.getId());
+
         UserWeightDTO result = userWeightService.save(userWeightDTO);
         return ResponseEntity.created(new URI("/api/user-weights/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
@@ -82,6 +135,46 @@ public class UserWeightResource {
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, userWeightDTO.getId().toString()))
             .body(result);
     }
+
+//    /**
+//     * PUT /user-weights/byLoggedInUser : Updates a logged in user's userWeight
+//     *
+//     * @param userWeightDTO
+//     * @return
+//     * @throws URISyntaxException
+//     */
+//    @PutMapping("/user-weights/byLoggedInUser")
+//    @Timed
+//    public ResponseEntity<UserWeightDTO> updateUserWeightByLoggedInUser(@Valid @RequestBody UserWeightDTO userWeightDTO) throws URISyntaxException {
+//        log.debug("REST request to update UserWeight : {}", userWeightDTO);
+//
+//        if (userWeightDTO.getId() == null) {
+//            return createUserWeightByLoggedInUser(userWeightDTO);
+//        }
+//
+//        Optional<User> user = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin());
+//
+//        if(!user.isPresent()) {
+//            return ResponseEntity.badRequest()
+//                .headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "invaliduser", "Unable to find User by token to associate with UserWeight"))
+//                .body(null);
+//        }
+//        userWeightDTO.setId(null);
+//        userWeightDTO.setUserId(user.get().getId());
+//        UserDemographicDTO foundUserDemographic = userDemographicService.findOneByUser(user.get().getId());
+//
+//        if(foundUserDemographic != null) {
+//            userWeightDTO.setId(foundUserDemographic.getId());
+//        }
+//
+//        if (userWeightDTO.getId() == null) {
+//            return createUserDemographic(userWeightDTO);
+//        }
+//        UserDemographicDTO result = userDemographicService.save(userWeightDTO);
+//        return ResponseEntity.ok()
+//            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, userWeightDTO.getId().toString()))
+//            .body(result);
+//    }
 
     /**
      * GET  /user-weights : get all the userWeights.
