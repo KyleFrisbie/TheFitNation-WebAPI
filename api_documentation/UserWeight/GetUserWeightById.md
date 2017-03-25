@@ -27,4 +27,4 @@ none
 
 ---
 Special Considerations:
-* Attempting to delete a UserWeight (by ID) that isn't owned by the User who owns the Token, or that doesn't exist, will result in a 400 Bad Request
+* Attempting to get a UserWeight (by ID) that isn't owned by the User who owns the Token, or that doesn't exist, will result in a 400 Bad Request
