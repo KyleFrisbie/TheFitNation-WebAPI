@@ -3,7 +3,9 @@ package com.thefitnation.service.mapper;
 import com.thefitnation.domain.*;
 import com.thefitnation.service.dto.ExerciseInstanceDTO;
 
+import com.thefitnation.service.dto.ExerciseInstanceSetDTO;
 import org.mapstruct.*;
+
 import java.util.List;
 
 /**
@@ -19,19 +21,49 @@ public interface ExerciseInstanceMapper {
     @Mapping(source = "repUnit.name", target = "repUnitName")
     @Mapping(source = "effortUnit.id", target = "effortUnitId")
     @Mapping(source = "effortUnit.name", target = "effortUnitName")
+    @Mapping(source = "exerciseInstanceSets", target = "exerciseInstanceSetDTOs")
     ExerciseInstanceDTO exerciseInstanceToExerciseInstanceDTO(ExerciseInstance exerciseInstance);
 
     List<ExerciseInstanceDTO> exerciseInstancesToExerciseInstanceDTOs(List<ExerciseInstance> exerciseInstances);
 
     @Mapping(source = "workoutInstanceId", target = "workoutInstance")
     @Mapping(target = "userExerciseInstances", ignore = true)
-    @Mapping(target = "exerciseInstanceSets", ignore = true)
+    @Mapping(source = "exerciseInstanceSetDTOs", target = "exerciseInstanceSets")
     @Mapping(source = "exerciseId", target = "exercise")
     @Mapping(source = "repUnitId", target = "repUnit")
     @Mapping(source = "effortUnitId", target = "effortUnit")
     ExerciseInstance exerciseInstanceDTOToExerciseInstance(ExerciseInstanceDTO exerciseInstanceDTO);
 
     List<ExerciseInstance> exerciseInstanceDTOsToExerciseInstances(List<ExerciseInstanceDTO> exerciseInstanceDTOs);
+
+    @Mapping(source = "exerciseInstance.id", target = "exerciseInstanceId")
+    ExerciseInstanceSetDTO exerciseInstanceSetToExerciseInstanceSetDTO(ExerciseInstanceSet exerciseInstanceSet);
+
+    default ExerciseInstanceSet ExerciseInstanceSetDTOToExerciseInstanceSet(ExerciseInstanceSetDTO exerciseInstanceSetDTO) {
+        if (exerciseInstanceSetDTO == null) {
+            return null;
+        }
+
+        ExerciseInstanceSet exerciseInstanceSet = new ExerciseInstanceSet();
+
+        Long exerciseInstanceId = exerciseInstanceSetDTO.getExerciseInstanceId();
+        ExerciseInstance exerciseInstance;
+        if (exerciseInstanceId == null) {
+            exerciseInstance = null;
+        } else {
+            exerciseInstance = new ExerciseInstance();
+            exerciseInstance.setId(exerciseInstanceId);
+        }
+        exerciseInstanceSet.setExerciseInstance(exerciseInstance);
+        exerciseInstanceSet.setId(exerciseInstanceSetDTO.getId());
+        exerciseInstanceSet.setOrderNumber(exerciseInstanceSetDTO.getOrderNumber());
+        exerciseInstanceSet.setReqQuantity(exerciseInstanceSetDTO.getReqQuantity());
+        exerciseInstanceSet.setEffortQuantity(exerciseInstanceSetDTO.getEffortQuantity());
+        exerciseInstanceSet.setRestTime(exerciseInstanceSetDTO.getRestTime());
+        exerciseInstanceSet.setNotes(exerciseInstanceSetDTO.getNotes());
+
+        return exerciseInstanceSet;
+    }
 
     default WorkoutInstance workoutInstanceFromId(Long id) {
         if (id == null) {

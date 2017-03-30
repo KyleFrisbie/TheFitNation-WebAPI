@@ -39,7 +39,6 @@ public class ExerciseInstance implements Serializable {
     private Set<UserExerciseInstance> userExerciseInstances = new HashSet<>();
 
     @OneToMany(mappedBy = "exerciseInstance")
-    @JsonIgnore
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<ExerciseInstanceSet> exerciseInstanceSets = new HashSet<>();
 

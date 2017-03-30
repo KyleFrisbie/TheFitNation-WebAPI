@@ -30,6 +30,8 @@ public class ExerciseInstanceDTO implements Serializable {
 
     private String effortUnitName;
 
+    private Set<ExerciseInstanceSetDTO> exerciseInstanceSetDTOs;
+
     public Long getId() {
         return id;
     }
@@ -37,6 +39,7 @@ public class ExerciseInstanceDTO implements Serializable {
     public void setId(Long id) {
         this.id = id;
     }
+
     public String getNotes() {
         return notes;
     }
@@ -101,6 +104,14 @@ public class ExerciseInstanceDTO implements Serializable {
         this.effortUnitName = unitName;
     }
 
+    public Set<ExerciseInstanceSetDTO> getExerciseInstanceSetDTOs() {
+        return exerciseInstanceSetDTOs;
+    }
+
+    public void setExerciseInstanceSetDTOs(Set<ExerciseInstanceSetDTO> exerciseInstanceSetDTOs) {
+        this.exerciseInstanceSetDTOs = exerciseInstanceSetDTOs;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -112,7 +123,9 @@ public class ExerciseInstanceDTO implements Serializable {
 
         ExerciseInstanceDTO exerciseInstanceDTO = (ExerciseInstanceDTO) o;
 
-        if ( ! Objects.equals(id, exerciseInstanceDTO.id)) { return false; }
+        if (!Objects.equals(id, exerciseInstanceDTO.id)) {
+            return false;
+        }
 
         return true;
     }
