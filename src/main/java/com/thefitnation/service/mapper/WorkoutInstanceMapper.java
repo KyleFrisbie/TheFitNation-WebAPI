@@ -8,7 +8,6 @@ import com.thefitnation.service.dto.WorkoutInstanceDTO;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
-import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -41,25 +40,17 @@ public interface WorkoutInstanceMapper {
     @Mapping(source = "exerciseInstanceSets", target = "exerciseInstanceSetDTOs")
     ExerciseInstanceDTO exerciseInstanceToExerciseInstanceDTO(ExerciseInstance exerciseInstance);
 
-    default ExerciseInstance ExerciseInstanceDTOToExerciseInstance(ExerciseInstanceDTO exerciseInstanceDTO) {
-        if (exerciseInstanceDTO == null) {
-            return null;
-        }
-
+    default ExerciseInstance exerciseInstanceDTOToExerciseInstance(ExerciseInstanceDTO exerciseInstanceDTO) {
         ExerciseInstanceMapper exerciseInstanceMapper = Mappers.getMapper(ExerciseInstanceMapper.class);
-
-        ExerciseInstance exerciseInstance = exerciseInstanceMapper.exerciseInstanceDTOToExerciseInstance(exerciseInstanceDTO);
-
-        return exerciseInstance;
+        return exerciseInstanceMapper.exerciseInstanceDTOToExerciseInstance(exerciseInstanceDTO);
     }
 
     @Mapping(source = "exerciseInstance.id", target = "exerciseInstanceId")
     ExerciseInstanceSetDTO exerciseInstanceSetToExerciseInstanceSetDTO(ExerciseInstanceSet exerciseInstanceSet);
 
-    default ExerciseInstanceSet ExerciseInstanceSetDTOToExerciseInstanceSet(ExerciseInstanceSetDTO exerciseInstanceSetDTO) {
-
+    default ExerciseInstanceSet exerciseInstanceSetDTOToExerciseInstanceSet(ExerciseInstanceSetDTO exerciseInstanceSetDTO) {
         ExerciseInstanceMapper exerciseInstanceMapper = Mappers.getMapper(ExerciseInstanceMapper.class);
-        return exerciseInstanceMapper.ExerciseInstanceSetDTOToExerciseInstanceSet(exerciseInstanceSetDTO);
+        return exerciseInstanceMapper.exerciseInstanceSetDTOToExerciseInstanceSet(exerciseInstanceSetDTO);
     }
 
     default WorkoutTemplate workoutTemplateFromId(Long id) {

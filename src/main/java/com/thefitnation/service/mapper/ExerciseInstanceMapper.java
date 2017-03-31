@@ -5,6 +5,7 @@ import com.thefitnation.service.dto.ExerciseInstanceDTO;
 
 import com.thefitnation.service.dto.ExerciseInstanceSetDTO;
 import org.mapstruct.*;
+import org.mapstruct.factory.Mappers;
 
 import java.util.List;
 
@@ -39,30 +40,9 @@ public interface ExerciseInstanceMapper {
     @Mapping(source = "exerciseInstance.id", target = "exerciseInstanceId")
     ExerciseInstanceSetDTO exerciseInstanceSetToExerciseInstanceSetDTO(ExerciseInstanceSet exerciseInstanceSet);
 
-    default ExerciseInstanceSet ExerciseInstanceSetDTOToExerciseInstanceSet(ExerciseInstanceSetDTO exerciseInstanceSetDTO) {
-        if (exerciseInstanceSetDTO == null) {
-            return null;
-        }
-
-        ExerciseInstanceSet exerciseInstanceSet = new ExerciseInstanceSet();
-
-        Long exerciseInstanceId = exerciseInstanceSetDTO.getExerciseInstanceId();
-        ExerciseInstance exerciseInstance;
-        if (exerciseInstanceId == null) {
-            exerciseInstance = null;
-        } else {
-            exerciseInstance = new ExerciseInstance();
-            exerciseInstance.setId(exerciseInstanceId);
-        }
-        exerciseInstanceSet.setExerciseInstance(exerciseInstance);
-        exerciseInstanceSet.setId(exerciseInstanceSetDTO.getId());
-        exerciseInstanceSet.setOrderNumber(exerciseInstanceSetDTO.getOrderNumber());
-        exerciseInstanceSet.setReqQuantity(exerciseInstanceSetDTO.getReqQuantity());
-        exerciseInstanceSet.setEffortQuantity(exerciseInstanceSetDTO.getEffortQuantity());
-        exerciseInstanceSet.setRestTime(exerciseInstanceSetDTO.getRestTime());
-        exerciseInstanceSet.setNotes(exerciseInstanceSetDTO.getNotes());
-
-        return exerciseInstanceSet;
+    default ExerciseInstanceSet exerciseInstanceSetDTOToExerciseInstanceSet(ExerciseInstanceSetDTO exerciseInstanceSetDTO) {
+        ExerciseInstanceSetMapper exerciseInstanceSetMapper = Mappers.getMapper((ExerciseInstanceSetMapper.class));
+        return exerciseInstanceSetMapper.exerciseInstanceSetDTOToExerciseInstanceSet(exerciseInstanceSetDTO);
     }
 
     default WorkoutInstance workoutInstanceFromId(Long id) {

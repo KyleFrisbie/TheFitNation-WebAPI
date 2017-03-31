@@ -55,24 +55,28 @@ public class ExerciseInstanceService {
         exerciseInstance = exerciseInstanceRepository.save(exerciseInstance);
 
         List<ExerciseInstanceSetDTO> exerciseInstanceSetDTOs = exerciseInstanceDTO.getExerciseInstanceSetDTOs();
-        List<ExerciseInstanceSet> exerciseInstanceSets = exerciseInstanceSetMapper.exerciseInstanceSetDTOsToExerciseInstanceSets(exerciseInstanceSetDTOs);
 
-        for (ExerciseInstanceSet exerciseInstanceSet : exerciseInstanceSets) {
-            exerciseInstanceSet.setExerciseInstance(exerciseInstance);
+        if (exerciseInstanceSetDTOs != null && exerciseInstanceSetDTOs.size() > 0) {
+            List<ExerciseInstanceSet> exerciseInstanceSets = exerciseInstanceSetMapper.exerciseInstanceSetDTOsToExerciseInstanceSets(exerciseInstanceSetDTOs);
+
+            for (ExerciseInstanceSet exerciseInstanceSet : exerciseInstanceSets) {
+                exerciseInstanceSet.setExerciseInstance(exerciseInstance);
+            }
+
+            exerciseInstanceSets = exerciseInstanceSetRepository.save(exerciseInstanceSets);
+
+            exerciseInstance.setExerciseInstanceSets(new HashSet<>(exerciseInstanceSets));
         }
 
-        exerciseInstanceSets = exerciseInstanceSetRepository.save(exerciseInstanceSets);
-
-        exerciseInstance.setExerciseInstanceSets(new HashSet<>(exerciseInstanceSets));
         ExerciseInstanceDTO result = exerciseInstanceMapper.exerciseInstanceToExerciseInstanceDTO(exerciseInstance);
         return result;
     }
 
     /**
-     *  Get all the exerciseInstances.
+     * Get all the exerciseInstances.
      *
-     *  @param pageable the pagination information
-     *  @return the list of entities
+     * @param pageable the pagination information
+     * @return the list of entities
      */
     @Transactional(readOnly = true)
     public Page<ExerciseInstanceDTO> findAll(Pageable pageable) {
@@ -82,10 +86,10 @@ public class ExerciseInstanceService {
     }
 
     /**
-     *  Get one exerciseInstance by id.
+     * Get one exerciseInstance by id.
      *
-     *  @param id the id of the entity
-     *  @return the entity
+     * @param id the id of the entity
+     * @return the entity
      */
     @Transactional(readOnly = true)
     public ExerciseInstanceDTO findOne(Long id) {
@@ -96,9 +100,9 @@ public class ExerciseInstanceService {
     }
 
     /**
-     *  Delete the  exerciseInstance by id.
+     * Delete the  exerciseInstance by id.
      *
-     *  @param id the id of the entity
+     * @param id the id of the entity
      */
     public void delete(Long id) {
         log.debug("Request to delete ExerciseInstance : {}", id);
