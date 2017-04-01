@@ -18,14 +18,14 @@ public interface WorkoutInstanceMapper {
 
     @Mapping(source = "workoutTemplate.id", target = "workoutTemplateId")
     @Mapping(source = "workoutTemplate.name", target = "workoutTemplateName")
-    @Mapping(source = "exerciseInstances", target = "exerciseInstanceDTOs")
+    @Mapping(source = "exerciseInstances", target = "exerciseInstances")
     WorkoutInstanceDTO workoutInstanceToWorkoutInstanceDTO(WorkoutInstance workoutInstance);
 
     List<WorkoutInstanceDTO> workoutInstancesToWorkoutInstanceDTOs(List<WorkoutInstance> workoutInstances);
 
     @Mapping(source = "workoutTemplateId", target = "workoutTemplate")
     @Mapping(target = "userWorkoutInstances", ignore = true)
-    @Mapping(source = "exerciseInstanceDTOs", target = "exerciseInstances")
+    @Mapping(source = "exerciseInstances", target = "exerciseInstances")
     WorkoutInstance workoutInstanceDTOToWorkoutInstance(WorkoutInstanceDTO workoutInstanceDTO);
 
     List<WorkoutInstance> workoutInstanceDTOsToWorkoutInstances(List<WorkoutInstanceDTO> workoutInstanceDTOs);
@@ -37,7 +37,7 @@ public interface WorkoutInstanceMapper {
     @Mapping(source = "repUnit.name", target = "repUnitName")
     @Mapping(source = "effortUnit.id", target = "effortUnitId")
     @Mapping(source = "effortUnit.name", target = "effortUnitName")
-    @Mapping(source = "exerciseInstanceSets", target = "exerciseInstanceSetDTOs")
+    @Mapping(source = "exerciseInstanceSets", target = "exerciseInstanceSets")
     ExerciseInstanceDTO exerciseInstanceToExerciseInstanceDTO(ExerciseInstance exerciseInstance);
 
     default ExerciseInstance exerciseInstanceDTOToExerciseInstance(ExerciseInstanceDTO exerciseInstanceDTO) {

@@ -52,7 +52,7 @@ public class WorkoutInstanceService {
         WorkoutInstance workoutInstance = workoutInstanceMapper.workoutInstanceDTOToWorkoutInstance(workoutInstanceDTO);
         workoutInstance = workoutInstanceRepository.save(workoutInstance);
 
-        List<ExerciseInstanceDTO> exerciseInstanceDTOs = workoutInstanceDTO.getExerciseInstanceDTOs();
+        List<ExerciseInstanceDTO> exerciseInstanceDTOs = workoutInstanceDTO.getExerciseInstances();
 
         if (exerciseInstanceDTOs != null && exerciseInstanceDTOs.size() > 0) {
             List<ExerciseInstanceDTO> savedExerciseInstanceDTOs = new ArrayList<>();

@@ -22,14 +22,14 @@ public interface ExerciseInstanceMapper {
     @Mapping(source = "repUnit.name", target = "repUnitName")
     @Mapping(source = "effortUnit.id", target = "effortUnitId")
     @Mapping(source = "effortUnit.name", target = "effortUnitName")
-    @Mapping(source = "exerciseInstanceSets", target = "exerciseInstanceSetDTOs")
+    @Mapping(source = "exerciseInstanceSets", target = "exerciseInstanceSets")
     ExerciseInstanceDTO exerciseInstanceToExerciseInstanceDTO(ExerciseInstance exerciseInstance);
 
     List<ExerciseInstanceDTO> exerciseInstancesToExerciseInstanceDTOs(List<ExerciseInstance> exerciseInstances);
 
     @Mapping(source = "workoutInstanceId", target = "workoutInstance")
     @Mapping(target = "userExerciseInstances", ignore = true)
-    @Mapping(source = "exerciseInstanceSetDTOs", target = "exerciseInstanceSets")
+    @Mapping(source = "exerciseInstanceSets", target = "exerciseInstanceSets")
     @Mapping(source = "exerciseId", target = "exercise")
     @Mapping(source = "repUnitId", target = "repUnit")
     @Mapping(source = "effortUnitId", target = "effortUnit")
