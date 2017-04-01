@@ -1,9 +1,13 @@
 package com.thefitnation.service;
 
 import com.thefitnation.domain.UserExerciseInstance;
+import com.thefitnation.domain.UserExerciseInstanceSet;
 import com.thefitnation.repository.UserExerciseInstanceRepository;
+import com.thefitnation.repository.UserExerciseInstanceSetRepository;
 import com.thefitnation.service.dto.UserExerciseInstanceDTO;
+import com.thefitnation.service.dto.UserExerciseInstanceSetDTO;
 import com.thefitnation.service.mapper.UserExerciseInstanceMapper;
+import com.thefitnation.service.mapper.UserExerciseInstanceSetMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -11,9 +15,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
-import java.util.LinkedList;
+import java.util.HashSet;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Service Implementation for managing UserExerciseInstance.
@@ -23,14 +26,20 @@ import java.util.stream.Collectors;
 public class UserExerciseInstanceService {
 
     private final Logger log = LoggerFactory.getLogger(UserExerciseInstanceService.class);
-    
+
     private final UserExerciseInstanceRepository userExerciseInstanceRepository;
+
+    private final UserExerciseInstanceSetRepository userExerciseInstanceSetRepository;
 
     private final UserExerciseInstanceMapper userExerciseInstanceMapper;
 
-    public UserExerciseInstanceService(UserExerciseInstanceRepository userExerciseInstanceRepository, UserExerciseInstanceMapper userExerciseInstanceMapper) {
+    private final UserExerciseInstanceSetMapper userExerciseInstanceSetMapper;
+
+    public UserExerciseInstanceService(UserExerciseInstanceRepository userExerciseInstanceRepository, UserExerciseInstanceSetRepository userExerciseInstanceSetRepository, UserExerciseInstanceMapper userExerciseInstanceMapper, UserExerciseInstanceSetMapper userExerciseInstanceSetMapper) {
         this.userExerciseInstanceRepository = userExerciseInstanceRepository;
+        this.userExerciseInstanceSetRepository = userExerciseInstanceSetRepository;
         this.userExerciseInstanceMapper = userExerciseInstanceMapper;
+        this.userExerciseInstanceSetMapper = userExerciseInstanceSetMapper;
     }
 
     /**
@@ -43,13 +52,25 @@ public class UserExerciseInstanceService {
         log.debug("Request to save UserExerciseInstance : {}", userExerciseInstanceDTO);
         UserExerciseInstance userExerciseInstance = userExerciseInstanceMapper.userExerciseInstanceDTOToUserExerciseInstance(userExerciseInstanceDTO);
         userExerciseInstance = userExerciseInstanceRepository.save(userExerciseInstance);
+
+        // Associate all children with the new parent and save them to the DB
+        List<UserExerciseInstanceSetDTO> userExerciseInstanceSetDTOs = userExerciseInstanceDTO.getUserExerciseInstanceSets();
+        List<UserExerciseInstanceSet> userExerciseInstanceSets = userExerciseInstanceSetMapper.userExerciseInstanceSetDTOsToUserExerciseInstanceSets(userExerciseInstanceSetDTOs);
+
+        for (UserExerciseInstanceSet userExerciseInstanceSet : userExerciseInstanceSets) {
+            userExerciseInstanceSet.setUserExerciseInstance(userExerciseInstance);
+        }
+
+        userExerciseInstanceSets = userExerciseInstanceSetRepository.save(userExerciseInstanceSets);
+
+        userExerciseInstance.setUserExerciseInstanceSets(new HashSet<>(userExerciseInstanceSets));
         UserExerciseInstanceDTO result = userExerciseInstanceMapper.userExerciseInstanceToUserExerciseInstanceDTO(userExerciseInstance);
         return result;
     }
 
     /**
      *  Get all the userExerciseInstances.
-     *  
+     *
      *  @param pageable the pagination information
      *  @return the list of entities
      */

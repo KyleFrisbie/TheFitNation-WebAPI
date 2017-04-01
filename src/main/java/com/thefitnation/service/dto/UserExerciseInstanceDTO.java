@@ -4,6 +4,7 @@ package com.thefitnation.service.dto;
 import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.Objects;
 
@@ -19,6 +20,8 @@ public class UserExerciseInstanceDTO implements Serializable {
     private Long userWorkoutInstanceId;
 
     private Long exerciseInstanceId;
+
+    private List<UserExerciseInstanceSetDTO> userExerciseInstanceSets;
 
     public Long getId() {
         return id;
@@ -49,6 +52,14 @@ public class UserExerciseInstanceDTO implements Serializable {
 
     public void setExerciseInstanceId(Long exerciseInstanceId) {
         this.exerciseInstanceId = exerciseInstanceId;
+    }
+
+    public List<UserExerciseInstanceSetDTO> getUserExerciseInstanceSets() {
+        return userExerciseInstanceSets;
+    }
+
+    public void setUserExerciseInstanceSets(List<UserExerciseInstanceSetDTO> userExerciseInstanceSets) {
+        this.userExerciseInstanceSets = userExerciseInstanceSets;
     }
 
     @Override
