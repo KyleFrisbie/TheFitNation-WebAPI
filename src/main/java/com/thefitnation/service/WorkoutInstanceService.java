@@ -1,6 +1,8 @@
 package com.thefitnation.service;
 
+import com.thefitnation.domain.ExerciseInstance;
 import com.thefitnation.domain.WorkoutInstance;
+import com.thefitnation.repository.ExerciseInstanceRepository;
 import com.thefitnation.repository.WorkoutInstanceRepository;
 import com.thefitnation.service.dto.ExerciseInstanceDTO;
 import com.thefitnation.service.dto.WorkoutInstanceDTO;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Service Implementation for managing WorkoutInstance.
@@ -28,14 +31,17 @@ public class WorkoutInstanceService {
 
     private final WorkoutInstanceRepository workoutInstanceRepository;
 
+    private final ExerciseInstanceRepository exerciseInstanceRepository;
+
     private final WorkoutInstanceMapper workoutInstanceMapper;
 
     private final ExerciseInstanceMapper exerciseInstanceMapper;
 
     private final ExerciseInstanceService exerciseInstanceService;
 
-    public WorkoutInstanceService(WorkoutInstanceRepository workoutInstanceRepository, WorkoutInstanceMapper workoutInstanceMapper, ExerciseInstanceMapper exerciseInstanceMapper, ExerciseInstanceService exerciseInstanceService) {
+    public WorkoutInstanceService(WorkoutInstanceRepository workoutInstanceRepository, ExerciseInstanceRepository exerciseInstanceRepository, WorkoutInstanceMapper workoutInstanceMapper, ExerciseInstanceMapper exerciseInstanceMapper, ExerciseInstanceService exerciseInstanceService) {
         this.workoutInstanceRepository = workoutInstanceRepository;
+        this.exerciseInstanceRepository = exerciseInstanceRepository;
         this.workoutInstanceMapper = workoutInstanceMapper;
         this.exerciseInstanceMapper = exerciseInstanceMapper;
         this.exerciseInstanceService = exerciseInstanceService;
@@ -50,6 +56,10 @@ public class WorkoutInstanceService {
     public WorkoutInstanceDTO save(WorkoutInstanceDTO workoutInstanceDTO) {
         log.debug("Request to save WorkoutInstance : {}", workoutInstanceDTO);
         WorkoutInstance workoutInstance = workoutInstanceMapper.workoutInstanceDTOToWorkoutInstance(workoutInstanceDTO);
+
+        removeDereferencedExerciseInstances(workoutInstance);
+
+        workoutInstance.setExerciseInstances(null);
         workoutInstance = workoutInstanceRepository.save(workoutInstance);
 
         List<ExerciseInstanceDTO> exerciseInstanceDTOs = workoutInstanceDTO.getExerciseInstances();
@@ -65,6 +75,20 @@ public class WorkoutInstanceService {
 
         WorkoutInstanceDTO result = workoutInstanceMapper.workoutInstanceToWorkoutInstanceDTO(workoutInstance);
         return result;
+    }
+
+    public void removeDereferencedExerciseInstances(WorkoutInstance workoutInstance) {
+        if (workoutInstance.getId() != null) {
+            WorkoutInstance dbWorkoutInstance = workoutInstanceRepository.findOne(workoutInstance.getId());
+            if (dbWorkoutInstance != null) {
+                Set<ExerciseInstance> updatedExerciseInstanceSets = workoutInstance.getExerciseInstances();
+                for (ExerciseInstance exerciseInstance : dbWorkoutInstance.getExerciseInstances()) {
+                    if (!updatedExerciseInstanceSets.contains(exerciseInstance)) {
+                        exerciseInstanceRepository.delete(exerciseInstance);
+                    }
+                }
+            }
+        }
     }
 
     /**

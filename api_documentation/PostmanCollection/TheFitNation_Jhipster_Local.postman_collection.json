@@ -252,7 +252,7 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "Bearer 966b4724-e4e1-403a-8412-46f2583c8371",
+								"value": "Bearer f515965e-2057-4c8d-ae56-87960790f0da",
 								"description": ""
 							}
 						],
@@ -264,12 +264,12 @@
 				{
 					"name": "Get ExerciseInstance By Id",
 					"request": {
-						"url": "http://localhost:8080/api/exercise-instances/6801",
+						"url": "http://localhost:8080/api/exercise-instances/6501",
 						"method": "GET",
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "Bearer 966b4724-e4e1-403a-8412-46f2583c8371",
+								"value": "Bearer ca396d9d-f1da-461b-936f-180b6fee9a06",
 								"description": ""
 							}
 						],
@@ -296,14 +296,61 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "Bearer 5ea3782b-d982-4983-949e-0da7e69baafd",
+								"value": "Bearer f6960c98-fb56-4403-ad09-f806ac46c44f",
 								"description": ""
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"notes\": \"gfagagasdg\",\n  \"workoutInstanceId\": 6701,\n  \"exerciseId\": 2151,\n  \"exerciseName\": \"Overhead Press\",\n  \"repUnitId\": 6752,\n  \"repUnitName\": \"Reps\",\n  \"effortUnitId\": 6751,\n  \"effortUnitName\": \"Pounds\",\n  \"exerciseInstanceSetDTOs\": [\n    {\n      \"orderNumber\": 1,\n      \"reqQuantity\": 10,\n      \"effortQuantity\": 95,\n      \"restTime\": 60,\n      \"notes\": \"tqasgasg\"\n    },\n    {\n      \"orderNumber\": 2,\n      \"reqQuantity\": 8,\n      \"effortQuantity\": 105,\n      \"restTime\": 60,\n      \"notes\": \"asgasdg\"\n    },\n    {\n      \"orderNumber\": 3,\n      \"reqQuantity\": 6,\n      \"effortQuantity\": 135,\n      \"restTime\": 90,\n      \"notes\": \"asgasdgasd\"\n    }\n  ]\n}"
+							"raw": "{\n  \"notes\": \"Text Exercise Instance in Workout Post\",\n  \"workoutInstanceId\": 1653,\n  \"exerciseId\": 1401,\n  \"exerciseName\": \"Curl\",\n  \"repUnitId\": 1201,\n  \"repUnitName\": \"Reps\",\n  \"effortUnitId\": 1202,\n  \"effortUnitName\": \"Pounds\",\n  \"exerciseInstanceSets\": [\n    {\n      \"orderNumber\": 1,\n      \"reqQuantity\": 12,\n      \"effortQuantity\": 45,\n      \"restTime\": 30,\n      \"notes\": \"workoutinstance test 1\",\n      \"exerciseInstanceId\": 7401\n    },\n    {\n      \"orderNumber\": 2,\n      \"reqQuantity\": 15,\n      \"effortQuantity\": 40,\n      \"restTime\": 30,\n      \"notes\": \"workoutinstance test 2\",\n      \"exerciseInstanceId\": 7401\n    },\n    {\n      \"orderNumber\": 5,\n      \"reqQuantity\": 15,\n      \"effortQuantity\": 10,\n      \"restTime\": 0,\n      \"notes\": \"workoutinstance test 3\",\n      \"exerciseInstanceId\": 7401\n    }\n  ]\n}"
 						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Update ExerciseInstance",
+					"request": {
+						"url": "http://localhost:8080/api/exercise-instances",
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer f515965e-2057-4c8d-ae56-87960790f0da",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "  {\n    \"id\": 6951,\n    \"notes\": \"Mike sees this\",\n    \"workoutInstanceId\": 6901,\n    \"exerciseId\": 1401,\n    \"exerciseName\": \"Curl\",\n    \"repUnitId\": 1201,\n    \"repUnitName\": \"Reps\",\n    \"effortUnitId\": 1202,\n    \"effortUnitName\": \"Weight\",\n    \"exerciseInstanceSets\": [\n      {\n        \"orderNumber\": 1,\n        \"reqQuantity\": 12,\n        \"effortQuantity\": 45,\n        \"restTime\": 30,\n        \"notes\": \"workoutinstance dfadsf\",\n        \"exerciseInstanceId\": 6951\n      },\n      {\n        \"id\": 7002,\n        \"orderNumber\": 2,\n        \"reqQuantity\": 15,\n        \"effortQuantity\": 40,\n        \"restTime\": 30,\n        \"notes\": \"update test\",\n        \"exerciseInstanceId\": 6951\n      },\n      {\n        \"id\": 7003,\n        \"orderNumber\": 5,\n        \"reqQuantity\": 15,\n        \"effortQuantity\": 10,\n        \"restTime\": 0,\n        \"notes\": \"blah blah\",\n        \"exerciseInstanceId\": 6951\n      }\n    ]\n  }"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Delete ExerciseInstance By Id",
+					"request": {
+						"url": "http://localhost:8080/api/exercise-instances/7451",
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer f515965e-2057-4c8d-ae56-87960790f0da",
+								"description": ""
+							}
+						],
+						"body": {},
 						"description": ""
 					},
 					"response": []
@@ -322,7 +369,7 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "Bearer 4cac2ce0-9792-45bf-859e-d7694c1524c7",
+								"value": "Bearer f515965e-2057-4c8d-ae56-87960790f0da",
 								"description": ""
 							}
 						],
@@ -374,6 +421,53 @@
 							"mode": "raw",
 							"raw": "{\r\n  \"effortQuantity\": 10,\r\n  \"exerciseInstanceId\": 7401,\r\n  \"notes\": \"a string containing notes :)\",\r\n  \"orderNumber\": 5,\r\n  \"reqQuantity\": 15,\r\n  \"restTime\": 0\r\n}"
 						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Update ExerciseInstanceSet",
+					"request": {
+						"url": "http://localhost:8080/api/exercise-instance-sets",
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer ca396d9d-f1da-461b-936f-180b6fee9a06",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": 7303,\n  \"orderNumber\": 2,\n  \"reqQuantity\": 15,\n  \"effortQuantity\": 40,\n  \"restTime\": 30,\n  \"notes\": \"snack pack\",\n  \"exerciseInstanceId\": 6501\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Delete ExerciseInstanceSet By Id",
+					"request": {
+						"url": "http://localhost:8080/api/exercise-instance-sets/5754",
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer ca396d9d-f1da-461b-936f-180b6fee9a06",
+								"description": ""
+							}
+						],
+						"body": {},
 						"description": ""
 					},
 					"response": []
@@ -538,6 +632,64 @@
 			]
 		},
 		{
+			"name": "UserExerciseInstance",
+			"description": "",
+			"item": [
+				{
+					"name": "Get All UserExerciseInstances",
+					"request": {
+						"url": "http://localhost:8080/api/user-exercise-instances",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer f515965e-2057-4c8d-ae56-87960790f0da",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Post UserExerciseInstance",
+					"request": {
+						"url": "http://localhost:8080/api/user-exercise-instances",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Accept",
+								"value": "*/*",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer f515965e-2057-4c8d-ae56-87960790f0da",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"notes\": \"post new exercise instance\",\n  \"userWorkoutInstanceId\": 7701,\n  \"exerciseInstanceId\": 6701,\n  \"userExerciseInstanceSets\": [\n    {\n      \"orderNumber\": 1,\n      \"repQuantity\": 10,\n      \"effortQuantity\": 2,\n      \"restTime\": 1,\n      \"notes\": \"Do it!!\"\n    },\n    {\n      \"orderNumber\": 2,\n      \"repQuantity\": 10,\n      \"effortQuantity\": 2,\n      \"restTime\": 1,\n      \"notes\": \"Do it!!\"\n    }\n  ]\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "UserWeight",
 			"description": "",
 			"item": [
@@ -682,13 +834,13 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "Bearer 5ea3782b-d982-4983-949e-0da7e69baafd",
+								"value": "Bearer ca396d9d-f1da-461b-936f-180b6fee9a06",
 								"description": ""
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"Test Workout Post\",\n    \"createdOn\": \"2017-03-23\",\n    \"lastUpdated\": \"2017-03-23\",\n    \"restBetweenInstances\": 120,\n    \"orderNumber\": 1,\n    \"notes\": \"Chest day\",\n    \"workoutTemplateId\": 6651,\n    \"workoutTemplateName\": \"Anonymous\",\n    \"exerciseInstanceDTOs\": [\n      {\n        \"notes\": \"Text Exercise Instance in Workout Post\",\n        \"exerciseId\": 1401,\n        \"exerciseName\": \"Curl\",\n        \"repUnitId\": 6752,\n        \"repUnitName\": \"Reps\",\n        \"effortUnitId\": 6751,\n        \"effortUnitName\": \"Pounds\",\n        \"exerciseInstanceSetDTOs\": [\n          {\n            \"orderNumber\": 1,\n            \"reqQuantity\": 12,\n            \"effortQuantity\": 45,\n            \"restTime\": 30,\n            \"notes\": \"workoutinstance test 1\",\n            \"exerciseInstanceId\": 7401\n          },\n          {\n            \"orderNumber\": 2,\n            \"reqQuantity\": 15,\n            \"effortQuantity\": 40,\n            \"restTime\": 30,\n            \"notes\": \"workoutinstance test 2\",\n            \"exerciseInstanceId\": 7401\n          },\n          {\n            \"orderNumber\": 5,\n            \"reqQuantity\": 15,\n            \"effortQuantity\": 10,\n            \"restTime\": 0,\n            \"notes\": \"workoutinstance test 3\",\n            \"exerciseInstanceId\": 7401\n          }\n        ]\n      }\n    ]\n  }"
+							"raw": "{\n    \"name\": \"Test Workout Post\",\n    \"createdOn\": \"2017-03-23\",\n    \"lastUpdated\": \"2017-03-23\",\n    \"restBetweenInstances\": 120,\n    \"orderNumber\": 1,\n    \"notes\": \"Chest day\",\n    \"workoutTemplateId\": 1151,\n    \"workoutTemplateName\": \"Anonymous\",\n    \"exerciseInstances\": [\n      {\n        \"notes\": \"Text Exercise Instance in Workout Post\",\n        \"exerciseId\": 1401,\n        \"exerciseName\": \"Curl\",\n        \"repUnitId\": 1201,\n        \"repUnitName\": \"Reps\",\n        \"effortUnitId\": 1202,\n        \"effortUnitName\": \"Pounds\",\n        \"exerciseInstanceSets\": [\n          {\n            \"orderNumber\": 1,\n            \"reqQuantity\": 12,\n            \"effortQuantity\": 45,\n            \"restTime\": 30,\n            \"notes\": \"workoutinstance test 1\",\n            \"exerciseInstanceId\": 7401\n          },\n          {\n            \"orderNumber\": 2,\n            \"reqQuantity\": 15,\n            \"effortQuantity\": 40,\n            \"restTime\": 30,\n            \"notes\": \"workoutinstance test 2\",\n            \"exerciseInstanceId\": 7401\n          },\n          {\n            \"orderNumber\": 5,\n            \"reqQuantity\": 15,\n            \"effortQuantity\": 10,\n            \"restTime\": 0,\n            \"notes\": \"workoutinstance test 3\",\n            \"exerciseInstanceId\": 7401\n          }\n        ]\n      }\n    ]\n  }"
 						},
 						"description": ""
 					},
@@ -697,12 +849,12 @@
 				{
 					"name": "Get Workout Instance By Id",
 					"request": {
-						"url": "http://localhost:8080/api/workout-instances/13001",
+						"url": "http://localhost:8080/api/workout-instances/5652",
 						"method": "GET",
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "Bearer 5ea3782b-d982-4983-949e-0da7e69baafd",
+								"value": "Bearer ca396d9d-f1da-461b-936f-180b6fee9a06",
 								"description": ""
 							}
 						],
@@ -724,11 +876,58 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "Bearer 5ea3782b-d982-4983-949e-0da7e69baafd",
+								"value": "Bearer f515965e-2057-4c8d-ae56-87960790f0da",
 								"description": ""
 							}
 						],
 						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Workout Instance By Id",
+					"request": {
+						"url": "http://localhost:8080/api/workout-instances/5901",
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer f515965e-2057-4c8d-ae56-87960790f0da",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Update WorkoutInstance",
+					"request": {
+						"url": "http://localhost:8080/api/workout-instances",
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer f515965e-2057-4c8d-ae56-87960790f0da",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": 5901,\n    \"name\": \"Test Workout Postx2\",\n    \"createdOn\": \"2017-03-23\",\n    \"lastUpdated\": \"2017-03-23\",\n    \"restBetweenInstances\": 120,\n    \"orderNumber\": 1,\n    \"notes\": \"Chest day\",\n    \"workoutTemplateId\": 1151,\n    \"workoutTemplateName\": \"Blah\",\n    \"exerciseInstances\": [\n      {\n        \"id\": 6501,\n        \"notes\": \"Text Exercise Instance in Workout Post text a million\",\n        \"workoutInstanceId\": 5901,\n        \"exerciseId\": 1401,\n        \"exerciseName\": \"Curl\",\n        \"repUnitId\": 1201,\n        \"repUnitName\": \"Reps\",\n        \"effortUnitId\": 1202,\n        \"effortUnitName\": \"Weight\",\n        \"exerciseInstanceSets\": [\n          {\n            \"id\": 7504,\n            \"orderNumber\": 1,\n            \"reqQuantity\": 12,\n            \"effortQuantity\": 46,\n            \"restTime\": 30,\n            \"notes\": \"updated candy\",\n            \"exerciseInstanceId\": 6501\n          },\n          {\n            \"orderNumber\": 2,\n            \"reqQuantity\": 15,\n            \"effortQuantity\": 40,\n            \"restTime\": 30,\n            \"notes\": \"test 2111\",\n            \"exerciseInstanceId\": 6501\n          },\n          {\n            \"orderNumber\": 3,\n            \"reqQuantity\": 15,\n            \"effortQuantity\": 40,\n            \"restTime\": 30,\n            \"notes\": \"test 3\",\n            \"exerciseInstanceId\": 6501\n          }\n        ]\n      }\n    ]\n  }"
+						},
 						"description": ""
 					},
 					"response": []
