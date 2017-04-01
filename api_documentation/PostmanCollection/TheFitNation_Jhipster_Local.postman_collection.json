@@ -937,7 +937,124 @@
 		{
 			"name": "WorkoutTemplate",
 			"description": "",
-			"item": []
+			"item": [
+				{
+					"name": "Get All WorkoutTemplates",
+					"request": {
+						"url": "http://localhost:8080/api/workout-templates",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer f515965e-2057-4c8d-ae56-87960790f0da",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Get WorkoutTemplate By Id",
+					"request": {
+						"url": "http://localhost:8080/api/workout-templates/1151",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer f515965e-2057-4c8d-ae56-87960790f0da",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Create WorkoutTemplate",
+					"request": {
+						"url": "http://localhost:8080/api/workout-templates",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer f515965e-2057-4c8d-ae56-87960790f0da",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"TestWorkout TEmplate\",\n  \"createdOn\": \"2017-03-31\",\n  \"lastUpdated\": \"2017-03-31\",\n  \"isPrivate\": false,\n  \"notes\": \"blah\",\n  \"userDemographicId\": 1051,\n  \"skillLevelId\": 1001,\n  \"skillLevelLevel\": \"Beginner\"\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Update WorkoutTemplate",
+					"request": {
+						"url": "http://localhost:8080/api/workout-templates",
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer f515965e-2057-4c8d-ae56-87960790f0da",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": 9301,\n  \"name\": \"Updated Workout Templete\",\n  \"createdOn\": \"2017-03-31\",\n  \"lastUpdated\": \"2017-03-31\",\n  \"isPrivate\": false,\n  \"notes\": \"blah\",\n  \"userDemographicId\": 1051,\n  \"skillLevelId\": 1001,\n  \"skillLevelLevel\": \"Beginner\"\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Delete WorkoutTemplate By Id",
+					"request": {
+						"url": "http://localhost:8080/api/workout-templates/9301",
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer f515965e-2057-4c8d-ae56-87960790f0da",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				}
+			]
 		}
 	]
 }
