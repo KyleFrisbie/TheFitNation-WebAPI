@@ -1,8 +1,10 @@
 package com.thefitnation.service;
 
 import com.thefitnation.domain.ExerciseInstance;
+import com.thefitnation.domain.UserExerciseInstance;
 import com.thefitnation.domain.WorkoutInstance;
 import com.thefitnation.repository.ExerciseInstanceRepository;
+import com.thefitnation.repository.UserExerciseInstanceRepository;
 import com.thefitnation.repository.WorkoutInstanceRepository;
 import com.thefitnation.service.dto.ExerciseInstanceDTO;
 import com.thefitnation.service.dto.WorkoutInstanceDTO;
@@ -33,15 +35,18 @@ public class WorkoutInstanceService {
 
     private final ExerciseInstanceRepository exerciseInstanceRepository;
 
+    private final UserExerciseInstanceRepository userExerciseInstanceRepository;
+
     private final WorkoutInstanceMapper workoutInstanceMapper;
 
     private final ExerciseInstanceMapper exerciseInstanceMapper;
 
     private final ExerciseInstanceService exerciseInstanceService;
 
-    public WorkoutInstanceService(WorkoutInstanceRepository workoutInstanceRepository, ExerciseInstanceRepository exerciseInstanceRepository, WorkoutInstanceMapper workoutInstanceMapper, ExerciseInstanceMapper exerciseInstanceMapper, ExerciseInstanceService exerciseInstanceService) {
+    public WorkoutInstanceService(WorkoutInstanceRepository workoutInstanceRepository, ExerciseInstanceRepository exerciseInstanceRepository, UserExerciseInstanceRepository userExerciseInstanceRepository, WorkoutInstanceMapper workoutInstanceMapper, ExerciseInstanceMapper exerciseInstanceMapper, ExerciseInstanceService exerciseInstanceService) {
         this.workoutInstanceRepository = workoutInstanceRepository;
         this.exerciseInstanceRepository = exerciseInstanceRepository;
+        this.userExerciseInstanceRepository = userExerciseInstanceRepository;
         this.workoutInstanceMapper = workoutInstanceMapper;
         this.exerciseInstanceMapper = exerciseInstanceMapper;
         this.exerciseInstanceService = exerciseInstanceService;
@@ -84,6 +89,10 @@ public class WorkoutInstanceService {
                 Set<ExerciseInstance> updatedExerciseInstanceSets = workoutInstance.getExerciseInstances();
                 for (ExerciseInstance exerciseInstance : dbWorkoutInstance.getExerciseInstances()) {
                     if (!updatedExerciseInstanceSets.contains(exerciseInstance)) {
+                        for (UserExerciseInstance userExerciseInstance : exerciseInstance.getUserExerciseInstances()) {
+                            userExerciseInstance.setExerciseInstance(null);
+                            userExerciseInstanceRepository.save(userExerciseInstance);
+                        }
                         exerciseInstanceRepository.delete(exerciseInstance);
                     }
                 }

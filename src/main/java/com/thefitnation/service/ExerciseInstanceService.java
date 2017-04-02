@@ -2,9 +2,11 @@ package com.thefitnation.service;
 
 import com.thefitnation.domain.ExerciseInstance;
 import com.thefitnation.domain.ExerciseInstanceSet;
+import com.thefitnation.domain.UserExerciseInstanceSet;
 import com.thefitnation.domain.WorkoutInstance;
 import com.thefitnation.repository.ExerciseInstanceRepository;
 import com.thefitnation.repository.ExerciseInstanceSetRepository;
+import com.thefitnation.repository.UserExerciseInstanceSetRepository;
 import com.thefitnation.repository.WorkoutInstanceRepository;
 import com.thefitnation.service.dto.ExerciseInstanceDTO;
 import com.thefitnation.service.dto.ExerciseInstanceSetDTO;
@@ -36,14 +38,17 @@ public class ExerciseInstanceService {
 
     private final ExerciseInstanceSetRepository exerciseInstanceSetRepository;
 
+    private final UserExerciseInstanceSetRepository userExerciseInstanceSetRepository;
+
     private final ExerciseInstanceMapper exerciseInstanceMapper;
 
     private final ExerciseInstanceSetMapper exerciseInstanceSetMapper;
 
-    public ExerciseInstanceService(ExerciseInstanceRepository exerciseInstanceRepository, WorkoutInstanceRepository workoutInstanceRepository, ExerciseInstanceSetRepository exerciseInstanceSetRepository, ExerciseInstanceMapper exerciseInstanceMapper, ExerciseInstanceSetMapper exerciseInstanceSetMapper) {
+    public ExerciseInstanceService(ExerciseInstanceRepository exerciseInstanceRepository, WorkoutInstanceRepository workoutInstanceRepository, ExerciseInstanceSetRepository exerciseInstanceSetRepository, UserExerciseInstanceSetRepository userExerciseInstanceSetRepository, ExerciseInstanceMapper exerciseInstanceMapper, ExerciseInstanceSetMapper exerciseInstanceSetMapper) {
         this.exerciseInstanceRepository = exerciseInstanceRepository;
         this.workoutInstanceRepository = workoutInstanceRepository;
         this.exerciseInstanceSetRepository = exerciseInstanceSetRepository;
+        this.userExerciseInstanceSetRepository = userExerciseInstanceSetRepository;
         this.exerciseInstanceMapper = exerciseInstanceMapper;
         this.exerciseInstanceSetMapper = exerciseInstanceSetMapper;
     }
@@ -63,6 +68,8 @@ public class ExerciseInstanceService {
         exerciseInstance.setExerciseInstanceSets(null);
         exerciseInstance = exerciseInstanceRepository.save(exerciseInstance);
 
+        addExerciseInstanceToParent(exerciseInstance);
+
         List<ExerciseInstanceSetDTO> exerciseInstanceSetDTOs = exerciseInstanceDTO.getExerciseInstanceSets();
 
         if (exerciseInstanceSetDTOs != null && exerciseInstanceSetDTOs.size() > 0) {
@@ -81,6 +88,12 @@ public class ExerciseInstanceService {
         return result;
     }
 
+    public void addExerciseInstanceToParent(ExerciseInstance exerciseInstance) {
+        WorkoutInstance workoutInstance = workoutInstanceRepository.findOne((exerciseInstance.getWorkoutInstance()).getId());
+        workoutInstance.addExerciseInstance(exerciseInstance);
+        workoutInstanceRepository.save(workoutInstance);
+    }
+
     public void removeDereferencedExerciseInstanceSets(ExerciseInstance exerciseInstance) {
         if (exerciseInstance.getId() != null) {
             ExerciseInstance dbExerciseInstance = exerciseInstanceRepository.findOne(exerciseInstance.getId());
@@ -88,6 +101,10 @@ public class ExerciseInstanceService {
                 Set<ExerciseInstanceSet> updatedExerciseInstanceSets = exerciseInstance.getExerciseInstanceSets();
                 for (ExerciseInstanceSet exerciseInstanceSet : dbExerciseInstance.getExerciseInstanceSets()) {
                     if (!updatedExerciseInstanceSets.contains(exerciseInstanceSet)) {
+                        for (UserExerciseInstanceSet userExerciseInstanceSet : exerciseInstanceSet.getUserExerciseInstanceSets()) {
+                            userExerciseInstanceSet.setExerciseInstanceSet(null);
+                            userExerciseInstanceSetRepository.save(userExerciseInstanceSet);
+                        }
                         exerciseInstanceSetRepository.delete(exerciseInstanceSet);
                     }
                 }

@@ -3,17 +3,15 @@ package com.thefitnation.service;
 import com.thefitnation.domain.WorkoutTemplate;
 import com.thefitnation.repository.WorkoutTemplateRepository;
 import com.thefitnation.service.dto.WorkoutTemplateDTO;
+import com.thefitnation.service.dto.WorkoutTemplateWithChildrenDTO;
 import com.thefitnation.service.mapper.WorkoutTemplateMapper;
+import com.thefitnation.service.mapper.WorkoutTemplateWithChildrenMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
-
-import java.util.LinkedList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Service Implementation for managing WorkoutTemplate.
@@ -23,14 +21,17 @@ import java.util.stream.Collectors;
 public class WorkoutTemplateService {
 
     private final Logger log = LoggerFactory.getLogger(WorkoutTemplateService.class);
-    
+
     private final WorkoutTemplateRepository workoutTemplateRepository;
 
     private final WorkoutTemplateMapper workoutTemplateMapper;
 
-    public WorkoutTemplateService(WorkoutTemplateRepository workoutTemplateRepository, WorkoutTemplateMapper workoutTemplateMapper) {
+    private final WorkoutTemplateWithChildrenMapper workoutTemplateWithChildrenMapper;
+
+    public WorkoutTemplateService(WorkoutTemplateRepository workoutTemplateRepository, WorkoutTemplateMapper workoutTemplateMapper, WorkoutTemplateWithChildrenMapper workoutTemplateWithChildrenMapper) {
         this.workoutTemplateRepository = workoutTemplateRepository;
         this.workoutTemplateMapper = workoutTemplateMapper;
+        this.workoutTemplateWithChildrenMapper = workoutTemplateWithChildrenMapper;
     }
 
     /**
@@ -49,7 +50,7 @@ public class WorkoutTemplateService {
 
     /**
      *  Get all the workoutTemplates.
-     *  
+     *
      *  @param pageable the pagination information
      *  @return the list of entities
      */
@@ -67,10 +68,10 @@ public class WorkoutTemplateService {
      *  @return the entity
      */
     @Transactional(readOnly = true)
-    public WorkoutTemplateDTO findOne(Long id) {
+    public WorkoutTemplateWithChildrenDTO findOne(Long id) {
         log.debug("Request to get WorkoutTemplate : {}", id);
         WorkoutTemplate workoutTemplate = workoutTemplateRepository.findOne(id);
-        WorkoutTemplateDTO workoutTemplateDTO = workoutTemplateMapper.workoutTemplateToWorkoutTemplateDTO(workoutTemplate);
+        WorkoutTemplateWithChildrenDTO workoutTemplateDTO = workoutTemplateWithChildrenMapper.workoutTemplateToWorkoutTemplateWithChildrenDTO(workoutTemplate);
         return workoutTemplateDTO;
     }
 

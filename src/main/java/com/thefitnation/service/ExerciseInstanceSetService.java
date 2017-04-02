@@ -44,8 +44,15 @@ public class ExerciseInstanceSetService {
         log.debug("Request to save ExerciseInstanceSet : {}", exerciseInstanceSetDTO);
         ExerciseInstanceSet exerciseInstanceSet = exerciseInstanceSetMapper.exerciseInstanceSetDTOToExerciseInstanceSet(exerciseInstanceSetDTO);
         exerciseInstanceSet = exerciseInstanceSetRepository.save(exerciseInstanceSet);
+        addExerciseInstanceSetToParent(exerciseInstanceSet);
         ExerciseInstanceSetDTO result = exerciseInstanceSetMapper.exerciseInstanceSetToExerciseInstanceSetDTO(exerciseInstanceSet);
         return result;
+    }
+
+    public void addExerciseInstanceSetToParent(ExerciseInstanceSet exerciseInstanceSet) {
+        ExerciseInstance exerciseInstance = exerciseInstanceRepository.findOne((exerciseInstanceSet.getExerciseInstance()).getId());
+        exerciseInstance.addExerciseInstanceSet(exerciseInstanceSet);
+        exerciseInstanceRepository.save(exerciseInstance);
     }
 
     /**
