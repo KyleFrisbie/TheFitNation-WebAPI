@@ -3,8 +3,7 @@ package com.thefitnation.service.dto;
 import java.time.LocalDate;
 import javax.validation.constraints.*;
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -33,6 +32,8 @@ public class WorkoutInstanceDTO implements Serializable {
     private Long workoutTemplateId;
 
     private String workoutTemplateName;
+
+    private List<ExerciseInstanceDTO> exerciseInstances;
 
     public Long getId() {
         return id;
@@ -98,6 +99,14 @@ public class WorkoutInstanceDTO implements Serializable {
 
     public void setWorkoutTemplateName(String workoutTemplateName) {
         this.workoutTemplateName = workoutTemplateName;
+    }
+
+    public List<ExerciseInstanceDTO> getExerciseInstances() {
+        return exerciseInstances;
+    }
+
+    public void setExerciseInstances(List<ExerciseInstanceDTO> exerciseInstances) {
+        this.exerciseInstances = exerciseInstances;
     }
 
     @Override

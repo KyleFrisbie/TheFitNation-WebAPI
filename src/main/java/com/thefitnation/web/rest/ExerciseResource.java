@@ -29,12 +29,12 @@ import java.util.stream.Collectors;
  */
 @RestController
 @RequestMapping("/api")
-public class ExerciseResource {
+    public class ExerciseResource {
 
     private final Logger log = LoggerFactory.getLogger(ExerciseResource.class);
 
     private static final String ENTITY_NAME = "exercise";
-        
+
     private final ExerciseService exerciseService;
 
     public ExerciseResource(ExerciseService exerciseService) {
