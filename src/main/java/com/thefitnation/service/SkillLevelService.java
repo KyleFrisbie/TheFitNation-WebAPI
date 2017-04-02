@@ -11,10 +11,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.stream.Collectors;
-
 /**
  * Service Implementation for managing SkillLevel.
  */
@@ -23,7 +19,7 @@ import java.util.stream.Collectors;
 public class SkillLevelService {
 
     private final Logger log = LoggerFactory.getLogger(SkillLevelService.class);
-    
+
     private final SkillLevelRepository skillLevelRepository;
 
     private final SkillLevelMapper skillLevelMapper;
@@ -42,14 +38,21 @@ public class SkillLevelService {
     public SkillLevelDTO save(SkillLevelDTO skillLevelDTO) {
         log.debug("Request to save SkillLevel : {}", skillLevelDTO);
         SkillLevel skillLevel = skillLevelMapper.skillLevelDTOToSkillLevel(skillLevelDTO);
-        skillLevel = skillLevelRepository.save(skillLevel);
+        SkillLevel foundSkillLevel = skillLevelRepository.findOneByLevel(skillLevelDTO.getLevel());
+
+        if (foundSkillLevel == null) {
+            skillLevel = skillLevelRepository.save(skillLevel);
+        } else {
+            skillLevel = foundSkillLevel;
+        }
+
         SkillLevelDTO result = skillLevelMapper.skillLevelToSkillLevelDTO(skillLevel);
         return result;
     }
 
     /**
      *  Get all the skillLevels.
-     *  
+     *
      *  @param pageable the pagination information
      *  @return the list of entities
      */
@@ -70,6 +73,14 @@ public class SkillLevelService {
     public SkillLevelDTO findOne(Long id) {
         log.debug("Request to get SkillLevel : {}", id);
         SkillLevel skillLevel = skillLevelRepository.findOne(id);
+        SkillLevelDTO skillLevelDTO = skillLevelMapper.skillLevelToSkillLevelDTO(skillLevel);
+        return skillLevelDTO;
+    }
+
+    @Transactional(readOnly = true)
+    public SkillLevelDTO findOneByName(String level) {
+        log.debug("Request to get SkillLevel by level: {}", level);
+        SkillLevel skillLevel = skillLevelRepository.findOneByLevel(level);
         SkillLevelDTO skillLevelDTO = skillLevelMapper.skillLevelToSkillLevelDTO(skillLevel);
         return skillLevelDTO;
     }

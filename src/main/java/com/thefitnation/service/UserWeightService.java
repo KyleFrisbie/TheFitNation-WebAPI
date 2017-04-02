@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 public class UserWeightService {
 
     private final Logger log = LoggerFactory.getLogger(UserWeightService.class);
-    
+
     private final UserWeightRepository userWeightRepository;
 
     private final UserWeightMapper userWeightMapper;
@@ -49,7 +49,7 @@ public class UserWeightService {
 
     /**
      *  Get all the userWeights.
-     *  
+     *
      *  @param pageable the pagination information
      *  @return the list of entities
      */
@@ -57,6 +57,19 @@ public class UserWeightService {
     public Page<UserWeightDTO> findAll(Pageable pageable) {
         log.debug("Request to get all UserWeights");
         Page<UserWeight> result = userWeightRepository.findAll(pageable);
+        return result.map(userWeight -> userWeightMapper.userWeightToUserWeightDTO(userWeight));
+    }
+
+    /**
+     *  Get all the userWeights owned by a user.
+     *
+     *  @param pageable the pagination information
+     *  @return the list of entities
+     */
+    @Transactional(readOnly = true)
+    public Page<UserWeightDTO> findAllByUserId(Pageable pageable, Long id) {
+        log.debug("Request to get all UserWeights");
+        Page<UserWeight> result = userWeightRepository.findAllByUserId(pageable, id);
         return result.map(userWeight -> userWeightMapper.userWeightToUserWeightDTO(userWeight));
     }
 

@@ -2,12 +2,16 @@ package com.thefitnation.web.rest;
 
 import com.thefitnation.TheFitNationApp;
 import com.thefitnation.domain.Authority;
+import com.thefitnation.domain.SkillLevel;
 import com.thefitnation.domain.User;
 import com.thefitnation.repository.AuthorityRepository;
 import com.thefitnation.repository.UserRepository;
 import com.thefitnation.security.AuthoritiesConstants;
 import com.thefitnation.service.MailService;
+import com.thefitnation.service.SkillLevelService;
+import com.thefitnation.service.UserDemographicService;
 import com.thefitnation.service.UserService;
+import com.thefitnation.service.dto.SkillLevelDTO;
 import com.thefitnation.service.dto.UserDTO;
 import com.thefitnation.web.rest.vm.ManagedUserVM;
 import org.junit.Before;
@@ -51,8 +55,20 @@ public class AccountResourceIntTest {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private UserDemographicService userDemographicService;
+
+    @Autowired
+    private SkillLevelService skillLevelService;
+
     @Mock
     private UserService mockUserService;
+
+    @Mock
+    private UserDemographicService mockUserDemographicService;
+
+    @Mock
+    private SkillLevelService mockSkillLevelService;
 
     @Mock
     private MailService mockMailService;
@@ -67,10 +83,14 @@ public class AccountResourceIntTest {
         doNothing().when(mockMailService).sendActivationEmail(anyObject());
 
         AccountResource accountResource =
-            new AccountResource(userRepository, userService, mockMailService);
+            new AccountResource(userRepository, userService, userDemographicService, skillLevelService, mockMailService);
 
         AccountResource accountUserMockResource =
-            new AccountResource(userRepository, mockUserService, mockMailService);
+            new AccountResource(userRepository, mockUserService, mockUserDemographicService, mockSkillLevelService, mockMailService);
+
+        SkillLevelDTO skillLevelDTO = new SkillLevelDTO();
+        skillLevelDTO.setLevel("Beginner");
+        skillLevelService.save(skillLevelDTO);
 
         this.restMvc = MockMvcBuilders.standaloneSetup(accountResource).build();
         this.restUserMockMvc = MockMvcBuilders.standaloneSetup(accountUserMockResource).build();
@@ -134,6 +154,27 @@ public class AccountResourceIntTest {
     }
 
     @Test
+    public void testDeactivateAccount() throws Exception {
+        Set<Authority> authorities = new HashSet<>();
+        Authority authority = new Authority();
+        authority.setName(AuthoritiesConstants.USER);
+        authorities.add(authority);
+
+        User user = new User();
+        user.setLogin("test");
+        user.setFirstName("john");
+        user.setLastName("doe");
+        user.setEmail("john.doe@jhipster.com");
+        user.setImageUrl("http://placehold.it/50x50");
+        user.setAuthorities(authorities);
+        when(mockUserService.getUserWithAuthorities()).thenReturn(user);
+
+        restUserMockMvc.perform(get("/api/account/deactivate")
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk());
+    }
+
+    @Test
     @Transactional
     public void testRegisterValid() throws Exception {
         ManagedUserVM validUser = new ManagedUserVM(
@@ -160,6 +201,46 @@ public class AccountResourceIntTest {
 
         Optional<User> user = userRepository.findOneByLogin("joe");
         assertThat(user.isPresent()).isTrue();
+    }
+
+    @Test
+    @Transactional
+    public void testReactivateAccount() throws Exception {
+        User createdUser = userService.createUser(
+            "joe",
+            "password",
+            "Joe",
+            "Shmoe",
+            "joe@example.com",
+            "http://placehold.it/50x50",
+            "en"
+        );
+        createdUser.setActivated(false);
+
+        ManagedUserVM validUser = new ManagedUserVM(
+            null,                   // id
+            "joe",                  // login
+            "password",             // password
+            "Joe",                  // firstName
+            "Shmoe",                // lastName
+            "joe@example.com",      // e-mail
+            false,                   // activated
+            "http://placehold.it/50x50", //imageUrl
+            "en",                   // langKey
+            null,                   // createdBy
+            null,                   // createdDate
+            null,                   // lastModifiedBy
+            null,                   // lastModifiedDate
+            new HashSet<>(Arrays.asList(AuthoritiesConstants.USER)));
+
+        restMvc.perform(
+            post("/api/account/reactivate")
+                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(validUser)))
+            .andExpect(status().isOk());
+
+        Optional<User> reactivatedUser = userRepository.findOneByLogin("joe");
+        assertThat(reactivatedUser.isPresent()).isTrue();
     }
 
     @Test

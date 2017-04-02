@@ -6,6 +6,7 @@ import com.thefitnation.domain.UserDemographic;
 import com.thefitnation.domain.User;
 import com.thefitnation.domain.SkillLevel;
 import com.thefitnation.repository.UserDemographicRepository;
+import com.thefitnation.repository.UserRepository;
 import com.thefitnation.service.UserDemographicService;
 import com.thefitnation.service.dto.UserDemographicDTO;
 import com.thefitnation.service.mapper.UserDemographicMapper;
@@ -68,6 +69,9 @@ public class UserDemographicResourceIntTest {
     private UserDemographicRepository userDemographicRepository;
 
     @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
     private UserDemographicMapper userDemographicMapper;
 
     @Autowired
@@ -92,7 +96,7 @@ public class UserDemographicResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        UserDemographicResource userDemographicResource = new UserDemographicResource(userDemographicService);
+        UserDemographicResource userDemographicResource = new UserDemographicResource(userRepository, userDemographicService);
         this.restUserDemographicMockMvc = MockMvcBuilders.standaloneSetup(userDemographicResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -148,8 +152,6 @@ public class UserDemographicResourceIntTest {
         List<UserDemographic> userDemographicList = userDemographicRepository.findAll();
         assertThat(userDemographicList).hasSize(databaseSizeBeforeCreate + 1);
         UserDemographic testUserDemographic = userDemographicList.get(userDemographicList.size() - 1);
-        assertThat(testUserDemographic.getCreatedOn()).isEqualTo(DEFAULT_CREATED_ON);
-        assertThat(testUserDemographic.getLastLogin()).isEqualTo(DEFAULT_LAST_LOGIN);
         assertThat(testUserDemographic.getGender()).isEqualTo(DEFAULT_GENDER);
         assertThat(testUserDemographic.getDateOfBirth()).isEqualTo(DEFAULT_DATE_OF_BIRTH);
         assertThat(testUserDemographic.getHeight()).isEqualTo(DEFAULT_HEIGHT);
@@ -353,6 +355,58 @@ public class UserDemographicResourceIntTest {
         assertThat(userDemographicList).hasSize(databaseSizeBeforeUpdate + 1);
     }
 
+    // TODO: 3/17/2017  Test updateUserDemographicByLoggedInUser
+//    @Test
+//    @Transactional
+//    public void updateUserDemographicByLoggedInUser() throws Exception {
+//        // Initialize the database
+//        userDemographicRepository.saveAndFlush(userDemographic);
+//        int databaseSizeBeforeUpdate = userDemographicRepository.findAll().size();
+//
+//        User user = new User();
+//        user.setFirstName("joe");
+//        user.setPassword("password");
+//        user.setFirstName("Joe");
+//        user.setLastName("Shmoe");
+//        user.setEmail("joe@example.com");
+//        user.setImageUrl("http://placehold.it/50x50");
+//        user.setLangKey("en");
+//
+//        userRepository.save(user);
+//
+//        // Update the userDemographic
+//        UserDemographic updatedUserDemographic = userDemographicRepository.findOne(userDemographic.getId());
+//        updatedUserDemographic
+//            .createdOn(UPDATED_CREATED_ON)
+//            .lastLogin(UPDATED_LAST_LOGIN)
+//            .gender(UPDATED_GENDER)
+//            .dateOfBirth(UPDATED_DATE_OF_BIRTH)
+//            .height(UPDATED_HEIGHT)
+//            .unitOfMeasure(UPDATED_UNIT_OF_MEASURE)
+//            .user(user);
+//        UserDemographicDTO userDemographicDTO = userDemographicMapper.userDemographicToUserDemographicDTO(updatedUserDemographic);
+//
+//        // TODO: 3/18/2017 get a token and set it in the request header
+//        String token = "";
+//
+//        restUserDemographicMockMvc.perform(put("/api/user-demographics/byLoggedInUser")
+//            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+//            .header("Authorization", "Bearer " + token)
+//            .content(TestUtil.convertObjectToJsonBytes(userDemographicDTO)))
+//            .andExpect(status().isOk());
+//
+//        // Validate the UserDemographic in the database
+//        List<UserDemographic> userDemographicList = userDemographicRepository.findAll();
+//        assertThat(userDemographicList).hasSize(databaseSizeBeforeUpdate);
+//        UserDemographic testUserDemographic = userDemographicList.get(userDemographicList.size() - 1);
+//        assertThat(testUserDemographic.getCreatedOn()).isEqualTo(UPDATED_CREATED_ON);
+//        assertThat(testUserDemographic.getLastLogin()).isEqualTo(UPDATED_LAST_LOGIN);
+//        assertThat(testUserDemographic.getGender()).isEqualTo(UPDATED_GENDER);
+//        assertThat(testUserDemographic.getDateOfBirth()).isEqualTo(UPDATED_DATE_OF_BIRTH);
+//        assertThat(testUserDemographic.getHeight()).isEqualTo(UPDATED_HEIGHT);
+//        assertThat(testUserDemographic.getUnitOfMeasure()).isEqualTo(UPDATED_UNIT_OF_MEASURE);
+//    }
+
     @Test
     @Transactional
     public void deleteUserDemographic() throws Exception {
@@ -371,6 +425,7 @@ public class UserDemographicResourceIntTest {
     }
 
     @Test
+    @Transactional
     public void equalsVerifier() throws Exception {
         TestUtil.equalsVerifier(UserDemographic.class);
     }
