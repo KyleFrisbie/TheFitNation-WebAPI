@@ -170,7 +170,7 @@ public class UserWeightResource {
             return createUserWeight(userWeightDTO);
         } else {
             UserWeightDTO foundUserWeight= userWeightService.findOne(userWeightDTO.getId());
-            if (!(foundUserWeight == null) || (!foundUserWeight.getUserDemographicId().equals(userWeightDTO.getUserDemographicId()))) {
+            if (foundUserWeight == null || (!foundUserWeight.getUserDemographicId().equals(userWeightDTO.getUserDemographicId()))) {
                 return ResponseEntity.badRequest()
                     .headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "notOwnerOfUserWeight", "Attempting to update a user weight not owned by you"))
                     .body(null);
