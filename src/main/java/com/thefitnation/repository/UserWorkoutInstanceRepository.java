@@ -1,6 +1,7 @@
 package com.thefitnation.repository;
 
 import com.thefitnation.domain.*;
+import com.thefitnation.service.dto.*;
 import org.springframework.data.domain.*;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.data.repository.query.*;
@@ -17,5 +18,5 @@ public interface UserWorkoutInstanceRepository extends JpaRepository<UserWorkout
         "where u.login = :currUser";
 
     @Query(value = FIND_ALL_BY_CURR_USER)
-    Page<UserWorkoutInstance> findAllByCurrentUser(@Param("currUser") String currUser, Pageable pageable);
+    Page<UserWorkoutInstanceDTO> findAllByCurrentUser(@Param("currUser") String currUser, Pageable pageable);
 }
