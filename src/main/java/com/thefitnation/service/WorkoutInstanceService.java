@@ -1,11 +1,7 @@
 package com.thefitnation.service;
 
-import com.thefitnation.domain.ExerciseInstance;
-import com.thefitnation.domain.UserExerciseInstance;
-import com.thefitnation.domain.WorkoutInstance;
-import com.thefitnation.repository.ExerciseInstanceRepository;
-import com.thefitnation.repository.UserExerciseInstanceRepository;
-import com.thefitnation.repository.WorkoutInstanceRepository;
+import com.thefitnation.domain.*;
+import com.thefitnation.repository.*;
 import com.thefitnation.service.dto.ExerciseInstanceDTO;
 import com.thefitnation.service.dto.WorkoutInstanceDTO;
 import com.thefitnation.service.mapper.ExerciseInstanceMapper;
@@ -17,10 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Service Implementation for managing WorkoutInstance.
@@ -31,9 +24,13 @@ public class WorkoutInstanceService {
 
     private final Logger log = LoggerFactory.getLogger(WorkoutInstanceService.class);
 
+    private final WorkoutTemplateRepository workoutTemplateRepository;
+
     private final WorkoutInstanceRepository workoutInstanceRepository;
 
     private final ExerciseInstanceRepository exerciseInstanceRepository;
+
+    private final UserWorkoutInstanceRepository userWorkoutInstanceRepository;
 
     private final UserExerciseInstanceRepository userExerciseInstanceRepository;
 
@@ -43,9 +40,11 @@ public class WorkoutInstanceService {
 
     private final ExerciseInstanceService exerciseInstanceService;
 
-    public WorkoutInstanceService(WorkoutInstanceRepository workoutInstanceRepository, ExerciseInstanceRepository exerciseInstanceRepository, UserExerciseInstanceRepository userExerciseInstanceRepository, WorkoutInstanceMapper workoutInstanceMapper, ExerciseInstanceMapper exerciseInstanceMapper, ExerciseInstanceService exerciseInstanceService) {
+    public WorkoutInstanceService(WorkoutTemplateRepository workoutTemplateRepository, WorkoutInstanceRepository workoutInstanceRepository, ExerciseInstanceRepository exerciseInstanceRepository, UserWorkoutInstanceRepository userWorkoutInstanceRepository, UserExerciseInstanceRepository userExerciseInstanceRepository, WorkoutInstanceMapper workoutInstanceMapper, ExerciseInstanceMapper exerciseInstanceMapper, ExerciseInstanceService exerciseInstanceService) {
+        this.workoutTemplateRepository = workoutTemplateRepository;
         this.workoutInstanceRepository = workoutInstanceRepository;
         this.exerciseInstanceRepository = exerciseInstanceRepository;
+        this.userWorkoutInstanceRepository = userWorkoutInstanceRepository;
         this.userExerciseInstanceRepository = userExerciseInstanceRepository;
         this.workoutInstanceMapper = workoutInstanceMapper;
         this.exerciseInstanceMapper = exerciseInstanceMapper;
@@ -64,8 +63,9 @@ public class WorkoutInstanceService {
 
         removeDereferencedExerciseInstances(workoutInstance);
 
-        workoutInstance.setExerciseInstances(null);
+        workoutInstance.setExerciseInstances(new HashSet<>());
         workoutInstance = workoutInstanceRepository.save(workoutInstance);
+        addWorkoutInstanceToParent(workoutInstance);
 
         List<ExerciseInstanceDTO> exerciseInstanceDTOs = workoutInstanceDTO.getExerciseInstances();
 
@@ -81,6 +81,13 @@ public class WorkoutInstanceService {
         WorkoutInstanceDTO result = workoutInstanceMapper.workoutInstanceToWorkoutInstanceDTO(workoutInstance);
         return result;
     }
+
+    public void addWorkoutInstanceToParent(WorkoutInstance workoutInstance) {
+        WorkoutTemplate workoutTemplate = workoutTemplateRepository.findOne((workoutInstance.getWorkoutTemplate()).getId());
+        workoutTemplate.addWorkoutInstance(workoutInstance);
+        workoutTemplateRepository.save(workoutTemplate);
+    }
+
 
     public void removeDereferencedExerciseInstances(WorkoutInstance workoutInstance) {
         if (workoutInstance.getId() != null) {
@@ -134,6 +141,21 @@ public class WorkoutInstanceService {
      */
     public void delete(Long id) {
         log.debug("Request to delete WorkoutInstance : {}", id);
+        removeWorkoutInstanceFromRelatedItems(id);
         workoutInstanceRepository.delete(id);
+    }
+
+    public void removeWorkoutInstanceFromRelatedItems(Long id) {
+        WorkoutInstance workoutInstance = workoutInstanceRepository.findOne(id);
+        if (workoutInstance != null) {
+            WorkoutTemplate workoutTemplate = workoutInstance.getWorkoutTemplate();
+            workoutTemplate.removeWorkoutInstance(workoutInstance);
+            for (UserWorkoutInstance userWorkoutInstance :
+                workoutInstance.getUserWorkoutInstances()) {
+                userWorkoutInstance.setWorkoutInstance(null);
+                userWorkoutInstanceRepository.save(userWorkoutInstance);
+            }
+            workoutTemplateRepository.save(workoutTemplate);
+        }
     }
 }
