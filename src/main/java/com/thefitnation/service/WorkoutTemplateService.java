@@ -1,6 +1,10 @@
 package com.thefitnation.service;
 
+import com.thefitnation.domain.UserDemographic;
+import com.thefitnation.domain.UserWorkoutTemplate;
 import com.thefitnation.domain.WorkoutTemplate;
+import com.thefitnation.repository.UserDemographicRepository;
+import com.thefitnation.repository.UserWorkoutTemplateRepository;
 import com.thefitnation.repository.WorkoutTemplateRepository;
 import com.thefitnation.service.dto.WorkoutTemplateDTO;
 import com.thefitnation.service.dto.WorkoutTemplateWithChildrenDTO;
@@ -22,14 +26,20 @@ public class WorkoutTemplateService {
 
     private final Logger log = LoggerFactory.getLogger(WorkoutTemplateService.class);
 
+    private final UserDemographicRepository userDemographicRepository;
+
     private final WorkoutTemplateRepository workoutTemplateRepository;
+
+    private final UserWorkoutTemplateRepository userWorkoutTemplateRepository;
 
     private final WorkoutTemplateMapper workoutTemplateMapper;
 
     private final WorkoutTemplateWithChildrenMapper workoutTemplateWithChildrenMapper;
 
-    public WorkoutTemplateService(WorkoutTemplateRepository workoutTemplateRepository, WorkoutTemplateMapper workoutTemplateMapper, WorkoutTemplateWithChildrenMapper workoutTemplateWithChildrenMapper) {
+    public WorkoutTemplateService(UserDemographicRepository userDemographicRepository, WorkoutTemplateRepository workoutTemplateRepository, UserWorkoutTemplateRepository userWorkoutTemplateRepository, WorkoutTemplateMapper workoutTemplateMapper, WorkoutTemplateWithChildrenMapper workoutTemplateWithChildrenMapper) {
+        this.userDemographicRepository = userDemographicRepository;
         this.workoutTemplateRepository = workoutTemplateRepository;
+        this.userWorkoutTemplateRepository = userWorkoutTemplateRepository;
         this.workoutTemplateMapper = workoutTemplateMapper;
         this.workoutTemplateWithChildrenMapper = workoutTemplateWithChildrenMapper;
     }
@@ -82,6 +92,22 @@ public class WorkoutTemplateService {
      */
     public void delete(Long id) {
         log.debug("Request to delete WorkoutTemplate : {}", id);
+        removeWorkoutTemplateFromRelatedItems(id);
         workoutTemplateRepository.delete(id);
+    }
+
+    public void removeWorkoutTemplateFromRelatedItems(Long id) {
+        WorkoutTemplate workoutTemplate = workoutTemplateRepository.findOne(id);
+        if (workoutTemplate != null) {
+            log.debug("Request to remove ExerciseInstance from WorkoutInstance : {}", workoutTemplate.getId());
+            UserDemographic userDemographic = workoutTemplate.getUserDemographic();
+            userDemographic.removeWorkoutTemplate(workoutTemplate);
+            for (UserWorkoutTemplate userWorkoutTemplate :
+                workoutTemplate.getUserWorkoutTemplates()) {
+                userWorkoutTemplate.setWorkoutTemplate(null);
+                userWorkoutTemplateRepository.save(userWorkoutTemplate);
+            }
+            userDemographicRepository.save(userDemographic);
+        }
     }
 }
