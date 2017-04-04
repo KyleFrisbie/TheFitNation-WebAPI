@@ -41,17 +41,27 @@ public class WorkoutInstanceService {
         return result;
     }
 
-    /**
-     *  Get all the workoutInstances.
-     *
-     *  @param pageable the pagination information
-     *  @return the list of entities
-     */
+//    /**
+//     *  Get all the workoutInstances.
+//     *
+//     *  @param pageable the pagination information
+//     *  @return the list of entities
+//     */
+//    @Transactional(readOnly = true)
+//    public Page<WorkoutInstanceDTO> findAll(Pageable pageable) {
+//        log.debug("Request to get all WorkoutInstances");
+//        Page<WorkoutInstance> result = workoutInstanceRepository.findAll(pageable);
+//        return result.map(workoutInstance -> workoutInstanceMapper.workoutInstanceToWorkoutInstanceDTO(workoutInstance));
+//    }
+
+    // TODO: 4/3/17 fix: make this use the mapper object.
     @Transactional(readOnly = true)
-    public Page<WorkoutInstanceDTO> findAll(Pageable pageable) {
-        log.debug("Request to get all WorkoutInstances");
-        Page<WorkoutInstance> result = workoutInstanceRepository.findAll(pageable);
-        return result.map(workoutInstance -> workoutInstanceMapper.workoutInstanceToWorkoutInstanceDTO(workoutInstance));
+    public Page<WorkoutInstance> findByUserIsCurrentUser(Pageable pageable) {
+        log.debug("Request to get all WorkoutInstances by current logged in user");
+        return workoutInstanceRepository.findByUserIsCurrentUser(pageable);
+
+//        Page<WorkoutInstance> result = workoutInstanceRepository.findByUserIsCurrentUser(pageable);
+//        return result.map(WorkoutInstance -> workoutInstanceMapper.workoutInstanceToWorkoutInstanceDTO(workoutInstance));
     }
 
     /**
@@ -76,9 +86,5 @@ public class WorkoutInstanceService {
     public void delete(Long id) {
         log.debug("Request to delete WorkoutInstance : {}", id);
         workoutInstanceRepository.delete(id);
-    }
-
-    public Page<WorkoutInstance> findByUserIsCurrentUser(Pageable pageable) {
-        return workoutInstanceRepository.findByUserIsCurrentUser(pageable);
     }
 }
