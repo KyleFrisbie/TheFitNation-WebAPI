@@ -1,10 +1,8 @@
 package com.thefitnation.repository;
 
-import com.thefitnation.domain.WorkoutInstance;
-
+import com.thefitnation.domain.*;
+import org.springframework.data.domain.*;
 import org.springframework.data.jpa.repository.*;
-
-import java.util.List;
 
 /**
  * Spring Data JPA repository for the WorkoutInstance entity.
@@ -12,4 +10,8 @@ import java.util.List;
 @SuppressWarnings("unused")
 public interface WorkoutInstanceRepository extends JpaRepository<WorkoutInstance,Long> {
 
+    @Query("select workoutInstanceRepository " +
+            "from WorkoutInstance workoutInstanceRepository " +
+            "where workoutInstanceRepository.workoutTemplate.userDemographic.user.login = ?#{principal.username}")
+    Page<WorkoutInstance> findByUserIsCurrentUser(Pageable pageable);
 }
