@@ -1,10 +1,8 @@
 package com.thefitnation.repository;
 
-import com.thefitnation.domain.ExerciseInstance;
-
+import com.thefitnation.domain.*;
+import org.springframework.data.domain.*;
 import org.springframework.data.jpa.repository.*;
-
-import java.util.List;
 
 /**
  * Spring Data JPA repository for the ExerciseInstance entity.
@@ -12,4 +10,5 @@ import java.util.List;
 @SuppressWarnings("unused")
 public interface ExerciseInstanceRepository extends JpaRepository<ExerciseInstance,Long> {
 
+    Page<ExerciseInstance> findByUserLoginOrderByDateDesc(String currentUserLogin, Pageable pageable);
 }
