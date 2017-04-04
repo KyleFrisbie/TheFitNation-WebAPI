@@ -1,19 +1,13 @@
 package com.thefitnation.service;
 
-import com.thefitnation.domain.WorkoutTemplate;
-import com.thefitnation.repository.WorkoutTemplateRepository;
-import com.thefitnation.service.dto.WorkoutTemplateDTO;
-import com.thefitnation.service.mapper.WorkoutTemplateMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.stereotype.Service;
-
-import java.util.LinkedList;
-import java.util.List;
-import java.util.stream.Collectors;
+import com.thefitnation.domain.*;
+import com.thefitnation.repository.*;
+import com.thefitnation.service.dto.*;
+import com.thefitnation.service.mapper.*;
+import org.slf4j.*;
+import org.springframework.data.domain.*;
+import org.springframework.stereotype.*;
+import org.springframework.transaction.annotation.*;
 
 /**
  * Service Implementation for managing WorkoutTemplate.
@@ -23,7 +17,7 @@ import java.util.stream.Collectors;
 public class WorkoutTemplateService {
 
     private final Logger log = LoggerFactory.getLogger(WorkoutTemplateService.class);
-    
+
     private final WorkoutTemplateRepository workoutTemplateRepository;
 
     private final WorkoutTemplateMapper workoutTemplateMapper;
@@ -49,7 +43,7 @@ public class WorkoutTemplateService {
 
     /**
      *  Get all the workoutTemplates.
-     *  
+     *
      *  @param pageable the pagination information
      *  @return the list of entities
      */
@@ -58,6 +52,11 @@ public class WorkoutTemplateService {
         log.debug("Request to get all WorkoutTemplates");
         Page<WorkoutTemplate> result = workoutTemplateRepository.findAll(pageable);
         return result.map(workoutTemplate -> workoutTemplateMapper.workoutTemplateToWorkoutTemplateDTO(workoutTemplate));
+    }
+
+    @Transactional(readOnly = true)
+    public Page<WorkoutTemplateDTO> findAllByCurrentLoggedInUser(Pageable pageable) {
+        return workoutTemplateRepository.findAllByCurrentLoggedInUser(pageable);
     }
 
     /**
@@ -83,4 +82,6 @@ public class WorkoutTemplateService {
         log.debug("Request to delete WorkoutTemplate : {}", id);
         workoutTemplateRepository.delete(id);
     }
+
+
 }
