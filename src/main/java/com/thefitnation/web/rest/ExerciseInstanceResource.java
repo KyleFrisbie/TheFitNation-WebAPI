@@ -91,7 +91,7 @@ public class ExerciseInstanceResource {
 //    }
 
     /**
-      * GET  /exercise-instances : get all the exerciseInstances.
+      * GET  /exercise-instances : get all the exerciseInstances by current logged in user.
       *
       * @param pageable the pagination information
       * @return the ResponseEntity with status 200 (OK) and the list of exerciseInstances in body

@@ -10,5 +10,9 @@ import org.springframework.data.jpa.repository.*;
 @SuppressWarnings("unused")
 public interface ExerciseInstanceRepository extends JpaRepository<ExerciseInstance,Long> {
 
-    Page<ExerciseInstance> findByUserLoginOrderByDateDesc(String currentUserLogin, Pageable pageable);
+    @Query("select exerciseInstance " +
+        "from ExerciseInstance exerciseInstance " +
+        "where exerciseInstance.workoutInstance.workoutTemplate.userDemographic.user.login = ?#{principal.username}")
+    Page<ExerciseInstance> findByLoggedInUser(Pageable pageable);
+
 }
