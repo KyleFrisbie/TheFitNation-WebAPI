@@ -54,9 +54,17 @@ public class WorkoutTemplateService {
         return result.map(workoutTemplate -> workoutTemplateMapper.workoutTemplateToWorkoutTemplateDTO(workoutTemplate));
     }
 
+    /**
+     *  <p>Get all the workoutTemplates.</p>
+     *
+     *  @param pageable the pagination information
+     *  @return the list of entities
+     */
     @Transactional(readOnly = true)
     public Page<WorkoutTemplateDTO> findAllByCurrentLoggedInUser(Pageable pageable) {
-        return workoutTemplateRepository.findAllByCurrentLoggedInUser(pageable);
+        log.debug("Request to get all WorkoutTemplates by current logged in user.");
+        Page<WorkoutTemplate> result = workoutTemplateRepository.findAllByCurrentLoggedInUser(pageable);
+        return result.map(workoutTemplateMapper::workoutTemplateToWorkoutTemplateDTO);
     }
 
     /**
