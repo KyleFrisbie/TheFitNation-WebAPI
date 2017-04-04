@@ -13,5 +13,6 @@ public interface WorkoutInstanceRepository extends JpaRepository<WorkoutInstance
     @Query("select workoutInstanceRepository " +
             "from WorkoutInstance workoutInstanceRepository " +
             "where workoutInstanceRepository.workoutTemplate.userDemographic.user.login = ?#{principal.username}")
-    Page<WorkoutInstance> findByUserIsCurrentUser(Pageable pageable);
+    Page<WorkoutInstance> findAllByCurrentLoggedInUser(Pageable pageable);
+
 }
