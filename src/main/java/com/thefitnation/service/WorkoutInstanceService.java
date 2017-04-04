@@ -55,6 +55,19 @@ public class WorkoutInstanceService {
     }
 
     /**
+     *  Get all the workoutInstances by currentl logged in user.
+     *
+     *  @param pageable the pagination information
+     *  @return the list of entities
+     */
+    @Transactional(readOnly = true)
+    public Page<WorkoutInstanceDTO> findAllByCurrentLoggedInUser(Pageable pageable) {
+        log.debug("Request to get all WorkoutInstances by current logged in user");
+        Page<WorkoutInstance> result = workoutInstanceRepository.findAllByCurrentLoggedInUser(pageable);
+        return result.map(workoutInstanceMapper::workoutInstanceToWorkoutInstanceDTO);
+    }
+
+    /**
      *  Get one workoutInstance by id.
      *
      *  @param id the id of the entity
@@ -78,7 +91,4 @@ public class WorkoutInstanceService {
         workoutInstanceRepository.delete(id);
     }
 
-    public Page<WorkoutInstance> findByUserIsCurrentUser(Pageable pageable) {
-        return workoutInstanceRepository.findByUserIsCurrentUser(pageable);
-    }
 }
