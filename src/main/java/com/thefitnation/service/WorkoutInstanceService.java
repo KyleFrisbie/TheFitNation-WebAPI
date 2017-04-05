@@ -57,13 +57,15 @@ public class WorkoutInstanceService {
     /**
      *  Get all the workoutInstances by currentl logged in user.
      *
-     *  @param pageable the pagination information
+     *
+     * @param login
+     * @param pageable the pagination information
      *  @return the list of entities
      */
     @Transactional(readOnly = true)
-    public Page<WorkoutInstanceDTO> findAllByCurrentLoggedInUser(Pageable pageable) {
+    public Page<WorkoutInstanceDTO> findAllByCurrentLoggedInUser(String login, Pageable pageable) {
         log.debug("Request to get all WorkoutInstances by current logged in user");
-        Page<WorkoutInstance> result = workoutInstanceRepository.findAllByCurrentLoggedInUser(pageable);
+        Page<WorkoutInstance> result = workoutInstanceRepository.findAllByCurrentLoggedInUser(login, pageable);
         return result.map(workoutInstanceMapper::workoutInstanceToWorkoutInstanceDTO);
     }
 

@@ -61,9 +61,9 @@ public class WorkoutTemplateService {
      *  @return the list of entities
      */
     @Transactional(readOnly = true)
-    public Page<WorkoutTemplateDTO> findAllByCurrentLoggedInUser(Pageable pageable) {
+    public Page<WorkoutTemplateDTO> findAllByLogin(String login, Pageable pageable) {
         log.debug("Request to get all WorkoutTemplates by current logged in user.");
-        Page<WorkoutTemplate> result = workoutTemplateRepository.findAllByCurrentLoggedInUser(pageable);
+        Page<WorkoutTemplate> result = workoutTemplateRepository.findAllByCurrentLoggedInUser(login, pageable);
         return result.map(workoutTemplateMapper::workoutTemplateToWorkoutTemplateDTO);
     }
 
@@ -90,6 +90,4 @@ public class WorkoutTemplateService {
         log.debug("Request to delete WorkoutTemplate : {}", id);
         workoutTemplateRepository.delete(id);
     }
-
-
 }

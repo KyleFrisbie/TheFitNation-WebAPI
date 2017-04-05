@@ -3,6 +3,7 @@ package com.thefitnation.repository;
 import com.thefitnation.domain.*;
 import org.springframework.data.domain.*;
 import org.springframework.data.jpa.repository.*;
+import org.springframework.data.repository.query.*;
 
 /**
  * Spring Data JPA repository for the WorkoutTemplate entity.
@@ -12,6 +13,6 @@ public interface WorkoutTemplateRepository extends JpaRepository<WorkoutTemplate
 
     @Query("select workoutTemplate " +
             "from WorkoutTemplate workoutTemplate " +
-            "where workoutTemplate.userDemographic.user.login = ?#{principal.username}")
-    Page<WorkoutTemplate> findAllByCurrentLoggedInUser(Pageable pageable);
+            "where workoutTemplate.userDemographic.user.login = :login")
+    Page<WorkoutTemplate> findAllByCurrentLoggedInUser(@Param(value = "login") String login, Pageable pageable);
 }
