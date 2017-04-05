@@ -74,7 +74,7 @@ public class ExerciseInstanceSetResource {
     }
 
     /**
-     * GET  /exercise-instance-sets : get all the exerciseInstanceSets.
+     * GET  /exercise-instance-sets : get all the exerciseInstanceSets by current logged in user.
      *
      * @param pageable the pagination information
      * @return the ResponseEntity with status 200 (OK) and the list of exerciseInstanceSets in body
@@ -84,11 +84,29 @@ public class ExerciseInstanceSetResource {
     @Timed
     public ResponseEntity<List<ExerciseInstanceSetDTO>> getAllExerciseInstanceSets(@ApiParam Pageable pageable)
         throws URISyntaxException {
-        log.debug("REST request to get a page of ExerciseInstanceSets");
-        Page<ExerciseInstanceSetDTO> page = exerciseInstanceSetService.findAll(pageable);
+        log.debug("REST request to get a page of ExerciseInstanceSets by current logged in user.");
+        Page<ExerciseInstanceSetDTO> page = exerciseInstanceSetService.findAllByCurrentUser(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/exercise-instance-sets");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
+
+//
+//    /**
+//     * GET  /exercise-instance-sets : get all the exerciseInstanceSets.
+//     *
+//     * @param pageable the pagination information
+//     * @return the ResponseEntity with status 200 (OK) and the list of exerciseInstanceSets in body
+//     * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
+//     */
+//    @GetMapping("/exercise-instance-sets")
+//    @Timed
+//    public ResponseEntity<List<ExerciseInstanceSetDTO>> getAllExerciseInstanceSets(@ApiParam Pageable pageable)
+//        throws URISyntaxException {
+//        log.debug("REST request to get a page of ExerciseInstanceSets");
+//        Page<ExerciseInstanceSetDTO> page = exerciseInstanceSetService.findAll(pageable);
+//        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/exercise-instance-sets");
+//        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+//    }
 
     /**
      * GET  /exercise-instance-sets/:id : get the "id" exerciseInstanceSet.

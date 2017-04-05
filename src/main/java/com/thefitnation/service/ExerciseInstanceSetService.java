@@ -1,19 +1,13 @@
 package com.thefitnation.service;
 
-import com.thefitnation.domain.ExerciseInstanceSet;
-import com.thefitnation.repository.ExerciseInstanceSetRepository;
-import com.thefitnation.service.dto.ExerciseInstanceSetDTO;
-import com.thefitnation.service.mapper.ExerciseInstanceSetMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.stereotype.Service;
-
-import java.util.LinkedList;
-import java.util.List;
-import java.util.stream.Collectors;
+import com.thefitnation.domain.*;
+import com.thefitnation.repository.*;
+import com.thefitnation.service.dto.*;
+import com.thefitnation.service.mapper.*;
+import org.slf4j.*;
+import org.springframework.data.domain.*;
+import org.springframework.stereotype.*;
+import org.springframework.transaction.annotation.*;
 
 /**
  * Service Implementation for managing ExerciseInstanceSet.
@@ -23,7 +17,7 @@ import java.util.stream.Collectors;
 public class ExerciseInstanceSetService {
 
     private final Logger log = LoggerFactory.getLogger(ExerciseInstanceSetService.class);
-    
+
     private final ExerciseInstanceSetRepository exerciseInstanceSetRepository;
 
     private final ExerciseInstanceSetMapper exerciseInstanceSetMapper;
@@ -49,7 +43,7 @@ public class ExerciseInstanceSetService {
 
     /**
      *  Get all the exerciseInstanceSets.
-     *  
+     *
      *  @param pageable the pagination information
      *  @return the list of entities
      */
@@ -57,6 +51,19 @@ public class ExerciseInstanceSetService {
     public Page<ExerciseInstanceSetDTO> findAll(Pageable pageable) {
         log.debug("Request to get all ExerciseInstanceSets");
         Page<ExerciseInstanceSet> result = exerciseInstanceSetRepository.findAll(pageable);
+        return result.map(exerciseInstanceSet -> exerciseInstanceSetMapper.exerciseInstanceSetToExerciseInstanceSetDTO(exerciseInstanceSet));
+    }
+
+    /**
+     *  Get all the exerciseInstanceSets by current logged in user.
+     *
+     *  @param pageable the pagination information
+     *  @return the list of entities
+     */
+    @Transactional(readOnly = true)
+    public Page<ExerciseInstanceSetDTO> findAllByCurrentUser(Pageable pageable) {
+        log.debug("Request to get all ExerciseInstanceSets by current logged in user");
+        Page<ExerciseInstanceSet> result = exerciseInstanceSetRepository.findAllByCurrentLoggedInUser(pageable);
         return result.map(exerciseInstanceSet -> exerciseInstanceSetMapper.exerciseInstanceSetToExerciseInstanceSetDTO(exerciseInstanceSet));
     }
 
@@ -83,4 +90,5 @@ public class ExerciseInstanceSetService {
         log.debug("Request to delete ExerciseInstanceSet : {}", id);
         exerciseInstanceSetRepository.delete(id);
     }
+
 }
