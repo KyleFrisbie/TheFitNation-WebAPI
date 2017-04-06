@@ -1,6 +1,9 @@
 package com.thefitnation.web.rest;
 
 import com.codahale.metrics.annotation.*;
+import com.thefitnation.domain.*;
+import com.thefitnation.repository.*;
+import com.thefitnation.security.*;
 import com.thefitnation.service.*;
 import com.thefitnation.service.dto.*;
 import com.thefitnation.web.rest.util.*;
@@ -26,9 +29,11 @@ public class ExerciseInstanceResource {
     private static final String ENTITY_NAME = "exerciseInstance";
 
     private final ExerciseInstanceService exerciseInstanceService;
+    private final UserRepository userRepository;
 
-    public ExerciseInstanceResource(ExerciseInstanceService exerciseInstanceService) {
+    public ExerciseInstanceResource(ExerciseInstanceService exerciseInstanceService, UserRepository userRepository) {
         this.exerciseInstanceService = exerciseInstanceService;
+        this.userRepository = userRepository;
     }
 
     /**
@@ -73,22 +78,22 @@ public class ExerciseInstanceResource {
             .body(result);
     }
 
-//    /**
-//     * GET  /exercise-instances : get all the exerciseInstances.
-//     *
-//     * @param pageable the pagination information
-//     * @return the ResponseEntity with status 200 (OK) and the list of exerciseInstances in body
-//     * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
-//     */
-//    @GetMapping("/exercise-instances")
-//    @Timed
-//    public ResponseEntity<List<ExerciseInstanceDTO>> getAllExerciseInstances(@ApiParam Pageable pageable)
-//        throws URISyntaxException {
-//        log.debug("REST request to get a page of ExerciseInstances");
-//        Page<ExerciseInstanceDTO> page = exerciseInstanceService.findAll(pageable);
-//        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/exercise-instances");
-//        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
-//    }
+    /**
+     * GET  /exercise-instances : get all the exerciseInstances.
+     *
+     * @param pageable the pagination information
+     * @return the ResponseEntity with status 200 (OK) and the list of exerciseInstances in body
+     * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
+     */
+    @GetMapping("/exercise-instances")
+    @Timed
+    public ResponseEntity<List<ExerciseInstanceDTO>> getAllExerciseInstances(@ApiParam Pageable pageable)
+        throws URISyntaxException {
+        log.debug("REST request to get a page of ExerciseInstances");
+        Page<ExerciseInstanceDTO> page = exerciseInstanceService.findAll(pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/exercise-instances");
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+    }
 
     /**
       * GET  /exercise-instances : get all the exerciseInstances by current logged in user.
@@ -97,14 +102,22 @@ public class ExerciseInstanceResource {
       * @return the ResponseEntity with status 200 (OK) and the list of exerciseInstances in body
       * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
       */
-    @GetMapping("/exercise-instances")
+    @GetMapping("/user/exercise-instances")
     @Timed
-    public ResponseEntity<List<ExerciseInstanceDTO>> getAllExerciseInstances(@ApiParam Pageable pageable)
+    public ResponseEntity<List<ExerciseInstanceDTO>> getAllExerciseInstancesByCurrUser(@ApiParam Pageable pageable)
         throws URISyntaxException {
         log.debug("REST request to get a page of ExerciseInstances by currently logged in user");
-        Page<ExerciseInstanceDTO> page = exerciseInstanceService.findAllByCurrentUser(pageable);
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/exercise-instances");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+        Optional<User> user = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin());
+        if(user.isPresent()) {
+            String login = SecurityUtils.getCurrentUserLogin();
+            Page<ExerciseInstanceDTO> page = exerciseInstanceService.findAllByCurrentUserLogin(login, pageable);
+            HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/user/exercise-instances");
+            return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+        } else {
+            return ResponseEntity.badRequest()
+                .headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "invaliduser", "Unable to find User by token"))
+                .body(null);
+        }
     }
 
     /**

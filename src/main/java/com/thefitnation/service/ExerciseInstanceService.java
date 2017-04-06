@@ -55,10 +55,11 @@ public class ExerciseInstanceService {
     }
 
     @Transactional(readOnly = true)
-    public Page<ExerciseInstanceDTO> findAllByCurrentUser(Pageable pageable) {
+    public Page<ExerciseInstanceDTO> findAllByCurrentUserLogin(String login, Pageable pageable) {
         log.debug("Request to get all ExerciseInstances by currently logged in user");
-        Page<ExerciseInstance> result = exerciseInstanceRepository.findByLoggedInUser(pageable);
-        return result.map(exerciseInstance -> exerciseInstanceMapper.exerciseInstanceToExerciseInstanceDTO(exerciseInstance));
+        return exerciseInstanceRepository
+            .findAllByCurrentUserLogin(login, pageable)
+            .map(exerciseInstanceMapper::exerciseInstanceToExerciseInstanceDTO);
     }
 
     /**
@@ -84,4 +85,5 @@ public class ExerciseInstanceService {
         log.debug("Request to delete ExerciseInstance : {}", id);
         exerciseInstanceRepository.delete(id);
     }
+
 }
