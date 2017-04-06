@@ -55,17 +55,20 @@ public class ExerciseInstanceSetService {
     }
 
     /**
-     *  Get all the exerciseInstanceSets by current logged in user.
+     *  Get all the exerciseInstanceSets by logged in user.
      *
+     * @param login of the current user
      *  @param pageable the pagination information
      *  @return the list of entities
      */
     @Transactional(readOnly = true)
-    public Page<ExerciseInstanceSetDTO> findAllByCurrentUser(Pageable pageable) {
-        log.debug("Request to get all ExerciseInstanceSets by current logged in user");
-        Page<ExerciseInstanceSet> result = exerciseInstanceSetRepository.findAllByCurrentLoggedInUser(pageable);
-        return result.map(exerciseInstanceSet -> exerciseInstanceSetMapper.exerciseInstanceSetToExerciseInstanceSetDTO(exerciseInstanceSet));
+    public Page<ExerciseInstanceSetDTO> findAllByCurrentUser(String login, Pageable pageable) {
+        log.debug("Request to get all ExerciseInstanceSets");
+        return exerciseInstanceSetRepository
+            .findAll(login, pageable)
+            .map(exerciseInstanceSetMapper::exerciseInstanceSetToExerciseInstanceSetDTO);
     }
+
 
     /**
      *  Get one exerciseInstanceSet by id.
@@ -90,5 +93,4 @@ public class ExerciseInstanceSetService {
         log.debug("Request to delete ExerciseInstanceSet : {}", id);
         exerciseInstanceSetRepository.delete(id);
     }
-
 }
