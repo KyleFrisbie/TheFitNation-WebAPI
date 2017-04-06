@@ -110,7 +110,7 @@ public class MuscleResource {
      * @param muscleName the id of the muscleDTO to retrieve
      * @return the ResponseEntity with status 200 (OK) and with body the muscleDTO, or with status 404 (Not Found)
      */
-    @GetMapping("/muscles/{muscleName}")
+    @GetMapping("/muscles/name/{muscleName}")
     @Timed
     public ResponseEntity<MuscleDTO> getMuscle(@PathVariable String muscleName) {
         log.debug("REST request to get Muscle : {}", muscleName);

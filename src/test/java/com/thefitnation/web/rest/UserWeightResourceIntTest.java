@@ -4,7 +4,10 @@ import com.thefitnation.TheFitNationApp;
 
 import com.thefitnation.domain.UserWeight;
 import com.thefitnation.domain.UserDemographic;
+import com.thefitnation.repository.UserRepository;
 import com.thefitnation.repository.UserWeightRepository;
+import com.thefitnation.service.UserDemographicService;
+import com.thefitnation.service.UserService;
 import com.thefitnation.service.UserWeightService;
 import com.thefitnation.service.dto.UserWeightDTO;
 import com.thefitnation.service.mapper.UserWeightMapper;
@@ -50,13 +53,22 @@ public class UserWeightResourceIntTest {
     private static final Float UPDATED_WEIGHT = 2F;
 
     @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
     private UserWeightRepository userWeightRepository;
 
     @Autowired
     private UserWeightMapper userWeightMapper;
 
     @Autowired
+    private UserDemographicService userDemographicService;
+
+    @Autowired
     private UserWeightService userWeightService;
+
+    @Autowired
+    private UserService userService;
 
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
@@ -77,7 +89,7 @@ public class UserWeightResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        UserWeightResource userWeightResource = new UserWeightResource(userWeightService);
+        UserWeightResource userWeightResource = new UserWeightResource(userWeightService, userService, userDemographicService, userRepository);
         this.restUserWeightMockMvc = MockMvcBuilders.standaloneSetup(userWeightResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)

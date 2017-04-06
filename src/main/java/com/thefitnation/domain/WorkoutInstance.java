@@ -58,8 +58,7 @@ public class WorkoutInstance implements Serializable {
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<UserWorkoutInstance> userWorkoutInstances = new HashSet<>();
 
-    @OneToMany(mappedBy = "workoutInstance")
-    @JsonIgnore
+    @OneToMany(mappedBy = "workoutInstance", cascade = {CascadeType.MERGE, CascadeType.REFRESH, CascadeType.REMOVE, CascadeType.DETACH})
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<ExerciseInstance> exerciseInstances = new HashSet<>();
 

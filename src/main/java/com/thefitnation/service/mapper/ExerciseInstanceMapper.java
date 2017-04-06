@@ -3,7 +3,10 @@ package com.thefitnation.service.mapper;
 import com.thefitnation.domain.*;
 import com.thefitnation.service.dto.ExerciseInstanceDTO;
 
+import com.thefitnation.service.dto.ExerciseInstanceSetDTO;
 import org.mapstruct.*;
+import org.mapstruct.factory.Mappers;
+
 import java.util.List;
 
 /**
@@ -19,19 +22,28 @@ public interface ExerciseInstanceMapper {
     @Mapping(source = "repUnit.name", target = "repUnitName")
     @Mapping(source = "effortUnit.id", target = "effortUnitId")
     @Mapping(source = "effortUnit.name", target = "effortUnitName")
+    @Mapping(source = "exerciseInstanceSets", target = "exerciseInstanceSets")
     ExerciseInstanceDTO exerciseInstanceToExerciseInstanceDTO(ExerciseInstance exerciseInstance);
 
     List<ExerciseInstanceDTO> exerciseInstancesToExerciseInstanceDTOs(List<ExerciseInstance> exerciseInstances);
 
     @Mapping(source = "workoutInstanceId", target = "workoutInstance")
     @Mapping(target = "userExerciseInstances", ignore = true)
-    @Mapping(target = "exerciseInstanceSets", ignore = true)
+    @Mapping(source = "exerciseInstanceSets", target = "exerciseInstanceSets")
     @Mapping(source = "exerciseId", target = "exercise")
     @Mapping(source = "repUnitId", target = "repUnit")
     @Mapping(source = "effortUnitId", target = "effortUnit")
     ExerciseInstance exerciseInstanceDTOToExerciseInstance(ExerciseInstanceDTO exerciseInstanceDTO);
 
     List<ExerciseInstance> exerciseInstanceDTOsToExerciseInstances(List<ExerciseInstanceDTO> exerciseInstanceDTOs);
+
+    @Mapping(source = "exerciseInstance.id", target = "exerciseInstanceId")
+    ExerciseInstanceSetDTO exerciseInstanceSetToExerciseInstanceSetDTO(ExerciseInstanceSet exerciseInstanceSet);
+
+    default ExerciseInstanceSet exerciseInstanceSetDTOToExerciseInstanceSet(ExerciseInstanceSetDTO exerciseInstanceSetDTO) {
+        ExerciseInstanceSetMapper exerciseInstanceSetMapper = Mappers.getMapper((ExerciseInstanceSetMapper.class));
+        return exerciseInstanceSetMapper.exerciseInstanceSetDTOToExerciseInstanceSet(exerciseInstanceSetDTO);
+    }
 
     default WorkoutInstance workoutInstanceFromId(Long id) {
         if (id == null) {

@@ -1,19 +1,19 @@
 package com.thefitnation.service;
 
+import com.thefitnation.domain.ExerciseInstance;
 import com.thefitnation.domain.ExerciseInstanceSet;
+import com.thefitnation.domain.UserExerciseInstanceSet;
+import com.thefitnation.repository.ExerciseInstanceRepository;
 import com.thefitnation.repository.ExerciseInstanceSetRepository;
+import com.thefitnation.repository.UserExerciseInstanceSetRepository;
 import com.thefitnation.service.dto.ExerciseInstanceSetDTO;
 import com.thefitnation.service.mapper.ExerciseInstanceSetMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
-
-import java.util.LinkedList;
-import java.util.List;
-import java.util.stream.Collectors;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Service Implementation for managing ExerciseInstanceSet.
@@ -23,13 +23,19 @@ import java.util.stream.Collectors;
 public class ExerciseInstanceSetService {
 
     private final Logger log = LoggerFactory.getLogger(ExerciseInstanceSetService.class);
-    
+
     private final ExerciseInstanceSetRepository exerciseInstanceSetRepository;
+
+    private final ExerciseInstanceRepository exerciseInstanceRepository;
+
+    private final UserExerciseInstanceSetRepository userExerciseInstanceSetRepository;
 
     private final ExerciseInstanceSetMapper exerciseInstanceSetMapper;
 
-    public ExerciseInstanceSetService(ExerciseInstanceSetRepository exerciseInstanceSetRepository, ExerciseInstanceSetMapper exerciseInstanceSetMapper) {
+    public ExerciseInstanceSetService(ExerciseInstanceSetRepository exerciseInstanceSetRepository, ExerciseInstanceRepository exerciseInstanceRepository, UserExerciseInstanceSetRepository userExerciseInstanceSetRepository, ExerciseInstanceSetMapper exerciseInstanceSetMapper) {
         this.exerciseInstanceSetRepository = exerciseInstanceSetRepository;
+        this.exerciseInstanceRepository = exerciseInstanceRepository;
+        this.userExerciseInstanceSetRepository = userExerciseInstanceSetRepository;
         this.exerciseInstanceSetMapper = exerciseInstanceSetMapper;
     }
 
@@ -43,13 +49,20 @@ public class ExerciseInstanceSetService {
         log.debug("Request to save ExerciseInstanceSet : {}", exerciseInstanceSetDTO);
         ExerciseInstanceSet exerciseInstanceSet = exerciseInstanceSetMapper.exerciseInstanceSetDTOToExerciseInstanceSet(exerciseInstanceSetDTO);
         exerciseInstanceSet = exerciseInstanceSetRepository.save(exerciseInstanceSet);
+        addExerciseInstanceSetToParent(exerciseInstanceSet);
         ExerciseInstanceSetDTO result = exerciseInstanceSetMapper.exerciseInstanceSetToExerciseInstanceSetDTO(exerciseInstanceSet);
         return result;
     }
 
+    public void addExerciseInstanceSetToParent(ExerciseInstanceSet exerciseInstanceSet) {
+        ExerciseInstance exerciseInstance = exerciseInstanceRepository.findOne((exerciseInstanceSet.getExerciseInstance()).getId());
+        exerciseInstance.addExerciseInstanceSet(exerciseInstanceSet);
+        exerciseInstanceRepository.save(exerciseInstance);
+    }
+
     /**
      *  Get all the exerciseInstanceSets.
-     *  
+     *
      *  @param pageable the pagination information
      *  @return the list of entities
      */
@@ -81,6 +94,22 @@ public class ExerciseInstanceSetService {
      */
     public void delete(Long id) {
         log.debug("Request to delete ExerciseInstanceSet : {}", id);
+        removeExerciseInstanceSetFromRelatedItems(id);
         exerciseInstanceSetRepository.delete(id);
+    }
+
+    public void removeExerciseInstanceSetFromRelatedItems(Long id) {
+        ExerciseInstanceSet exerciseInstanceSet  = exerciseInstanceSetRepository.findOne(id);
+        if (exerciseInstanceSet != null) {
+            log.debug("Request to remove ExerciseInstanceSet from ExerciseInstance : {}", exerciseInstanceSet.getId());
+            ExerciseInstance exerciseInstance = exerciseInstanceSet.getExerciseInstance();
+            exerciseInstance.removeExerciseInstanceSet(exerciseInstanceSet);
+            for (UserExerciseInstanceSet userExerciseInstanceSet :
+                exerciseInstanceSet.getUserExerciseInstanceSets()) {
+                userExerciseInstanceSet.setExerciseInstanceSet(null);
+                userExerciseInstanceSetRepository.save(userExerciseInstanceSet);
+            }
+            exerciseInstanceRepository.save(exerciseInstance);
+        }
     }
 }
