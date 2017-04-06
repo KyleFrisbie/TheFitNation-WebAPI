@@ -1,19 +1,13 @@
 package com.thefitnation.service;
 
-import com.thefitnation.domain.UserDemographic;
-import com.thefitnation.repository.UserDemographicRepository;
-import com.thefitnation.service.dto.UserDemographicDTO;
-import com.thefitnation.service.mapper.UserDemographicMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.stereotype.Service;
-
-import java.util.LinkedList;
-import java.util.List;
-import java.util.stream.Collectors;
+import com.thefitnation.domain.*;
+import com.thefitnation.repository.*;
+import com.thefitnation.service.dto.*;
+import com.thefitnation.service.mapper.*;
+import org.slf4j.*;
+import org.springframework.data.domain.*;
+import org.springframework.stereotype.*;
+import org.springframework.transaction.annotation.*;
 
 /**
  * Service Implementation for managing UserDemographic.
@@ -80,6 +74,12 @@ public class UserDemographicService {
         UserDemographic userDemographic = userDemographicRepository.findOneByUserWithEagerRelationships(id);
         UserDemographicDTO userDemographicDTO = userDemographicMapper.userDemographicToUserDemographicDTO(userDemographic);
         return userDemographicDTO;
+    }
+
+    @Transactional(readOnly = true)
+    public UserDemographic findOneByLogin(String currentUserLogin) {
+        log.debug("Request to get UserDemographic by User : {}", currentUserLogin);
+        return userDemographicRepository.findOneByLogin(currentUserLogin);
     }
 
     /**

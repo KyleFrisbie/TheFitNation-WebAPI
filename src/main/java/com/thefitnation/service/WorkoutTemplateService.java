@@ -2,8 +2,10 @@ package com.thefitnation.service;
 
 import com.thefitnation.domain.*;
 import com.thefitnation.repository.*;
+import com.thefitnation.security.*;
 import com.thefitnation.service.dto.*;
 import com.thefitnation.service.mapper.*;
+import java.time.*;
 import org.slf4j.*;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.*;
@@ -19,12 +21,15 @@ public class WorkoutTemplateService {
     private final Logger log = LoggerFactory.getLogger(WorkoutTemplateService.class);
 
     private final WorkoutTemplateRepository workoutTemplateRepository;
-
     private final WorkoutTemplateMapper workoutTemplateMapper;
+    private final UserDemographicService userDemographicService;
+    private final UserService userService;
 
-    public WorkoutTemplateService(WorkoutTemplateRepository workoutTemplateRepository, WorkoutTemplateMapper workoutTemplateMapper) {
+    public WorkoutTemplateService(WorkoutTemplateRepository workoutTemplateRepository, WorkoutTemplateMapper workoutTemplateMapper, UserDemographicService userDemographicService, UserService userService) {
         this.workoutTemplateRepository = workoutTemplateRepository;
         this.workoutTemplateMapper = workoutTemplateMapper;
+        this.userDemographicService = userDemographicService;
+        this.userService = userService;
     }
 
     /**
@@ -36,6 +41,11 @@ public class WorkoutTemplateService {
     public WorkoutTemplateDTO save(WorkoutTemplateDTO workoutTemplateDTO) {
         log.debug("Request to save WorkoutTemplate : {}", workoutTemplateDTO);
         WorkoutTemplate workoutTemplate = workoutTemplateMapper.workoutTemplateDTOToWorkoutTemplate(workoutTemplateDTO);
+
+        workoutTemplate.setUserDemographic(userDemographicService.findOneByLogin(SecurityUtils.getCurrentUserLogin()));
+        workoutTemplate.setCreatedOn(LocalDate.now());
+        workoutTemplate.setLastUpdated(LocalDate.now());
+
         workoutTemplate = workoutTemplateRepository.save(workoutTemplate);
         WorkoutTemplateDTO result = workoutTemplateMapper.workoutTemplateToWorkoutTemplateDTO(workoutTemplate);
         return result;
