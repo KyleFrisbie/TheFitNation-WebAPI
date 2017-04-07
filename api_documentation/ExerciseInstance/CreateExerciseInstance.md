@@ -1,6 +1,6 @@
-Create Exercise Instance
+Create ExerciseInstance
 ---
-* Create a new Exercise Inistance with embedded Exercise Instance Sets
+* Create a new Exercise Instance with embedded ExerciseInstanceSets
 
 **Method and Route**\
 POST /api/exercise-instances
@@ -12,7 +12,7 @@ Accept: application/json
 Authorization: Bearer 2191a7f5-313f-471b-9c4f-807ffa630751
 
 **Post Body**
-```javascript
+```json
 {
   "notes": "a suprise new workout!",
   "workoutInstanceId": 6901,
@@ -52,7 +52,7 @@ Authorization: Bearer 2191a7f5-313f-471b-9c4f-807ffa630751
 ```
 
 **Response Body**
-```javascript
+```json
 {
   "id": 12504,
   "notes": "a suprise new workout!",
@@ -98,7 +98,8 @@ Authorization: Bearer 2191a7f5-313f-471b-9c4f-807ffa630751
 **Special Considerations**
 * Like all other posts, the ID field for an ExerciseInstance must be null (or not present).
 * Don't include id's for any of the ExerciseInstanceSets. This route requires all ExerciseInstanceSets to be new and existing ExerciseInstanceSets should not be added to an new ExerciseInstance.
-* Valid id's are required for the following:\
-..1. exerciseId
-..2. repUnitId
-..3. effortUnitId
+* Valid id's are required for the following:
+    1. workoutInstanceId
+    2. exerciseId
+    3. repUnitId
+    4. effortUnitId

@@ -1,4 +1,4 @@
-Delete an Exercise Instance Set by Id
+Delete an ExerciseInstanceSet by Id
 ---
 
 **Method and Route**\
@@ -19,4 +19,4 @@ none
 ```
 
 **Special Considerations**\
-* Deleting an ExerciseInstanceSet will also disassociate it from its parent ExerciseInstance and any UserExerciseInstanceSets that were refrencing it.
+* Deleting an ExerciseInstanceSet will also disassociate it from its parent ExerciseInstance and any UserExerciseInstanceSets that were referencing it.
