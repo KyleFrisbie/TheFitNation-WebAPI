@@ -25,9 +25,7 @@ import org.springframework.web.bind.annotation.*;
 public class WorkoutTemplateResource {
 
     private final Logger log = LoggerFactory.getLogger(WorkoutTemplateResource.class);
-
     private static final String ENTITY_NAME = "workoutTemplate";
-
     private final WorkoutTemplateService workoutTemplateService;
     private final UserRepository userRepository;
 
@@ -72,10 +70,17 @@ public class WorkoutTemplateResource {
         if (workoutTemplateDTO.getId() == null) {
             return createWorkoutTemplate(workoutTemplateDTO);
         }
-        WorkoutTemplateDTO result = workoutTemplateService.save(workoutTemplateDTO);
-        return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, workoutTemplateDTO.getId().toString()))
-            .body(result);
+        WorkoutTemplateDTO result = workoutTemplateService.update(workoutTemplateDTO);
+
+        if (!result.equals(workoutTemplateDTO)){
+            return ResponseEntity.ok()
+                .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, workoutTemplateDTO.getId().toString()))
+                .body(result);
+        } else {
+            return ResponseEntity.badRequest()
+                .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, workoutTemplateDTO.getId().toString()))
+                .body(result);
+        }
     }
 
     /**
@@ -92,7 +97,6 @@ public class WorkoutTemplateResource {
         log.debug("REST request to get a page of WorkoutTemplates");
 
         Optional<User> user = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin());
-
         if(user.isPresent()) {
 
             String login = SecurityUtils.getCurrentUserLogin();

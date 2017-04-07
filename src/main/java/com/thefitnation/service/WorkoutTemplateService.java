@@ -23,13 +23,11 @@ public class WorkoutTemplateService {
     private final WorkoutTemplateRepository workoutTemplateRepository;
     private final WorkoutTemplateMapper workoutTemplateMapper;
     private final UserDemographicService userDemographicService;
-    private final UserService userService;
 
-    public WorkoutTemplateService(WorkoutTemplateRepository workoutTemplateRepository, WorkoutTemplateMapper workoutTemplateMapper, UserDemographicService userDemographicService, UserService userService) {
+    public WorkoutTemplateService(WorkoutTemplateRepository workoutTemplateRepository, WorkoutTemplateMapper workoutTemplateMapper, UserDemographicService userDemographicService) {
         this.workoutTemplateRepository = workoutTemplateRepository;
         this.workoutTemplateMapper = workoutTemplateMapper;
         this.userDemographicService = userDemographicService;
-        this.userService = userService;
     }
 
     /**
@@ -49,6 +47,24 @@ public class WorkoutTemplateService {
         workoutTemplate = workoutTemplateRepository.save(workoutTemplate);
         WorkoutTemplateDTO result = workoutTemplateMapper.workoutTemplateToWorkoutTemplateDTO(workoutTemplate);
         return result;
+    }
+
+    /**
+     * Update a workoutTemplate.
+     *
+     * @param workoutTemplateDTO the entity to save
+     * @return the persisted entity
+     */
+    public WorkoutTemplateDTO update(WorkoutTemplateDTO workoutTemplateDTO) {
+        log.debug("Request to update WorkoutTemplate : {}", workoutTemplateDTO);
+
+        WorkoutTemplate workoutTemplate = workoutTemplateMapper.workoutTemplateDTOToWorkoutTemplate(workoutTemplateDTO);
+        if (workoutTemplateDTO.getUserDemographicId() == userDemographicService.findOneByLogin(SecurityUtils.getCurrentUserLogin()).getId()) {
+            workoutTemplate.setLastUpdated(LocalDate.now());
+            workoutTemplate = workoutTemplateRepository.save(workoutTemplate);
+        }
+
+        return workoutTemplateMapper.workoutTemplateToWorkoutTemplateDTO(workoutTemplate);
     }
 
     /**
