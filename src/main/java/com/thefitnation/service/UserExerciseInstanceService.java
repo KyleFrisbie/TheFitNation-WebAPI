@@ -16,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -87,7 +88,7 @@ public class UserExerciseInstanceService {
         return result;
     }
 
-    public void addUserExerciseInstanceToParent(UserExerciseInstance userExerciseInstance) {
+    private void addUserExerciseInstanceToParent(UserExerciseInstance userExerciseInstance) {
         UserWorkoutInstance userWorkoutInstance = userWorkoutInstanceRepository.findOne((userExerciseInstance.getUserWorkoutInstance()).getId());
         userWorkoutInstance.addUserExerciseInstance(userExerciseInstance);
         userWorkoutInstanceRepository.save(userWorkoutInstance);
@@ -99,15 +100,20 @@ public class UserExerciseInstanceService {
         }
     }
 
-    public void removeDereferencedUserExerciseInstanceSets(UserExerciseInstance userExerciseInstance) {
+    private void removeDereferencedUserExerciseInstanceSets(UserExerciseInstance userExerciseInstance) {
         if (userExerciseInstance.getId() != null) {
             UserExerciseInstance dbUserExerciseInstance = userExerciseInstanceRepository.findOne(userExerciseInstance.getId());
             if (dbUserExerciseInstance != null) {
                 Set<UserExerciseInstanceSet> updatedUserExerciseInstanceSets = userExerciseInstance.getUserExerciseInstanceSets();
+                ArrayList<UserExerciseInstanceSet> removedUserExerciseInstanceSets = new ArrayList<>();
                 for (UserExerciseInstanceSet userExerciseInstanceSet : dbUserExerciseInstance.getUserExerciseInstanceSets()) {
                     if (!updatedUserExerciseInstanceSets.contains(userExerciseInstanceSet)) {
-                        userExerciseInstanceSetService.delete(userExerciseInstanceSet.getId());
+                        removedUserExerciseInstanceSets.add(userExerciseInstanceSet);
                     }
+                }
+
+                for (UserExerciseInstanceSet userExerciseInstanceSet : removedUserExerciseInstanceSets) {
+                    userExerciseInstanceSetService.delete(userExerciseInstanceSet.getId());
                 }
             }
         }
