@@ -1,4 +1,4 @@
-Delete Workout Template by id
+Delete WorkoutTemplate by id
 ---
 
 **Method and Route**\
@@ -19,4 +19,4 @@ none
 
 **Special Considerations**
 * Removes all child objects from the db when the WorkoutTemplate is removed.
-* Any UserWorkoutTemplates that were related to the removed WorkoutTemplate will still exist, without a refrence to a parent WorkoutTemplate.
+* Any UserWorkoutTemplates that were related to the removed WorkoutTemplate will still exist, without a reference to a parent WorkoutTemplate.

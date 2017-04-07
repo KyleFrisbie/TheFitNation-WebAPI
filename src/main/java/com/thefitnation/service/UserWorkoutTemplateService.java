@@ -3,17 +3,15 @@ package com.thefitnation.service;
 import com.thefitnation.domain.UserWorkoutTemplate;
 import com.thefitnation.repository.UserWorkoutTemplateRepository;
 import com.thefitnation.service.dto.UserWorkoutTemplateDTO;
+import com.thefitnation.service.dto.UserWorkoutTemplateWithChildrenDTO;
 import com.thefitnation.service.mapper.UserWorkoutTemplateMapper;
+import com.thefitnation.service.mapper.UserWorkoutTemplateWithChildrenMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
-
-import java.util.LinkedList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Service Implementation for managing UserWorkoutTemplate.
@@ -23,14 +21,17 @@ import java.util.stream.Collectors;
 public class UserWorkoutTemplateService {
 
     private final Logger log = LoggerFactory.getLogger(UserWorkoutTemplateService.class);
-    
+
     private final UserWorkoutTemplateRepository userWorkoutTemplateRepository;
 
     private final UserWorkoutTemplateMapper userWorkoutTemplateMapper;
 
-    public UserWorkoutTemplateService(UserWorkoutTemplateRepository userWorkoutTemplateRepository, UserWorkoutTemplateMapper userWorkoutTemplateMapper) {
+    private final UserWorkoutTemplateWithChildrenMapper userWorkoutTemplateWithChildrenMapper;
+
+    public UserWorkoutTemplateService(UserWorkoutTemplateRepository userWorkoutTemplateRepository, UserWorkoutTemplateMapper userWorkoutTemplateMapper, UserWorkoutTemplateWithChildrenMapper userWorkoutTemplateWithChildrenMapper) {
         this.userWorkoutTemplateRepository = userWorkoutTemplateRepository;
         this.userWorkoutTemplateMapper = userWorkoutTemplateMapper;
+        this.userWorkoutTemplateWithChildrenMapper = userWorkoutTemplateWithChildrenMapper;
     }
 
     /**
@@ -49,7 +50,7 @@ public class UserWorkoutTemplateService {
 
     /**
      *  Get all the userWorkoutTemplates.
-     *  
+     *
      *  @param pageable the pagination information
      *  @return the list of entities
      */
@@ -67,10 +68,10 @@ public class UserWorkoutTemplateService {
      *  @return the entity
      */
     @Transactional(readOnly = true)
-    public UserWorkoutTemplateDTO findOne(Long id) {
+    public UserWorkoutTemplateWithChildrenDTO findOne(Long id) {
         log.debug("Request to get UserWorkoutTemplate : {}", id);
         UserWorkoutTemplate userWorkoutTemplate = userWorkoutTemplateRepository.findOne(id);
-        UserWorkoutTemplateDTO userWorkoutTemplateDTO = userWorkoutTemplateMapper.userWorkoutTemplateToUserWorkoutTemplateDTO(userWorkoutTemplate);
+        UserWorkoutTemplateWithChildrenDTO userWorkoutTemplateDTO = userWorkoutTemplateWithChildrenMapper.userWorkoutTemplateToUserWorkoutTemplateWithChildrenDTO(userWorkoutTemplate);
         return userWorkoutTemplateDTO;
     }
 

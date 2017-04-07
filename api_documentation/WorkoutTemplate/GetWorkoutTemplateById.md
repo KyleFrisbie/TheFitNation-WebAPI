@@ -1,4 +1,4 @@
-Get Workout Template by id
+Get WorkoutTemplate by id
 ---
 * Returns a WorkoutTemplate with a list of its child objects (WorkoutInstances, etc).
 

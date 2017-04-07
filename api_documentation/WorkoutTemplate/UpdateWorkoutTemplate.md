@@ -1,4 +1,4 @@
-Update existing Workout Template
+Update existing WorkoutTemplate
 ---
 
 **Method and Route**\
@@ -41,5 +41,5 @@ Authorization: Bearer 3dcbc283-88d2-4fa9-90eb-18d681cf6459
 
 **Special Considerations**
 * Valid id's must be included for:\
-..* userDemographicId
-..* skillLevelId
+    * userDemographicId
+    * skillLevelId
