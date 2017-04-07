@@ -1,7 +1,11 @@
 package com.thefitnation.service;
 
+import com.thefitnation.domain.UserDemographic;
 import com.thefitnation.domain.UserWorkoutTemplate;
+import com.thefitnation.domain.WorkoutTemplate;
+import com.thefitnation.repository.UserDemographicRepository;
 import com.thefitnation.repository.UserWorkoutTemplateRepository;
+import com.thefitnation.repository.WorkoutTemplateRepository;
 import com.thefitnation.service.dto.UserWorkoutTemplateDTO;
 import com.thefitnation.service.dto.UserWorkoutTemplateWithChildrenDTO;
 import com.thefitnation.service.mapper.UserWorkoutTemplateMapper;
@@ -24,12 +28,18 @@ public class UserWorkoutTemplateService {
 
     private final UserWorkoutTemplateRepository userWorkoutTemplateRepository;
 
+    private final WorkoutTemplateRepository workoutTemplateRepository;
+
+    private final UserDemographicRepository userDemographicRepository;
+
     private final UserWorkoutTemplateMapper userWorkoutTemplateMapper;
 
     private final UserWorkoutTemplateWithChildrenMapper userWorkoutTemplateWithChildrenMapper;
 
-    public UserWorkoutTemplateService(UserWorkoutTemplateRepository userWorkoutTemplateRepository, UserWorkoutTemplateMapper userWorkoutTemplateMapper, UserWorkoutTemplateWithChildrenMapper userWorkoutTemplateWithChildrenMapper) {
+    public UserWorkoutTemplateService(UserWorkoutTemplateRepository userWorkoutTemplateRepository, WorkoutTemplateRepository workoutTemplateRepository, UserDemographicRepository userDemographicRepository, UserWorkoutTemplateMapper userWorkoutTemplateMapper, UserWorkoutTemplateWithChildrenMapper userWorkoutTemplateWithChildrenMapper) {
         this.userWorkoutTemplateRepository = userWorkoutTemplateRepository;
+        this.workoutTemplateRepository = workoutTemplateRepository;
+        this.userDemographicRepository = userDemographicRepository;
         this.userWorkoutTemplateMapper = userWorkoutTemplateMapper;
         this.userWorkoutTemplateWithChildrenMapper = userWorkoutTemplateWithChildrenMapper;
     }
@@ -82,6 +92,22 @@ public class UserWorkoutTemplateService {
      */
     public void delete(Long id) {
         log.debug("Request to delete UserWorkoutTemplate : {}", id);
+        removeUserWorkoutTemplateFromRelatedItems(id);
         userWorkoutTemplateRepository.delete(id);
+    }
+
+    public void removeUserWorkoutTemplateFromRelatedItems(Long id) {
+        UserWorkoutTemplate userWorkoutTemplate = userWorkoutTemplateRepository.findOne(id);
+        if (userWorkoutTemplate != null) {
+            UserDemographic userDemographic = userWorkoutTemplate.getUserDemographic();
+            userDemographic.removeUserWorkoutTemplate(userWorkoutTemplate);
+            userDemographicRepository.save(userDemographic);
+
+            if (userWorkoutTemplate.getWorkoutTemplate() != null) {
+                WorkoutTemplate workoutTemplate = userWorkoutTemplate.getWorkoutTemplate();
+                workoutTemplate.removeUserWorkoutTemplate(userWorkoutTemplate);
+                workoutTemplateRepository.save(workoutTemplate);
+            }
+        }
     }
 }
