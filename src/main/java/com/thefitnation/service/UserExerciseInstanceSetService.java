@@ -49,7 +49,7 @@ public class UserExerciseInstanceSetService {
         log.debug("Request to save UserExerciseInstanceSet : {}", userExerciseInstanceSetDTO);
         UserExerciseInstanceSet userExerciseInstanceSet = userExerciseInstanceSetMapper.userExerciseInstanceSetDTOToUserExerciseInstanceSet(userExerciseInstanceSetDTO);
         userExerciseInstanceSet = userExerciseInstanceSetRepository.save(userExerciseInstanceSet);
-addUserExerciseInstanceSetToParent(userExerciseInstanceSet);
+        addUserExerciseInstanceSetToParent(userExerciseInstanceSet);
         UserExerciseInstanceSetDTO result = userExerciseInstanceSetMapper.userExerciseInstanceSetToUserExerciseInstanceSetDTO(userExerciseInstanceSet);
         return result;
     }
@@ -59,7 +59,7 @@ addUserExerciseInstanceSetToParent(userExerciseInstanceSet);
         userExerciseInstance.addUserExerciseInstanceSet(userExerciseInstanceSet);
         userExerciseInstanceRepository.save(userExerciseInstance);
 
-        if(userExerciseInstanceSet.getExerciseInstanceSet() != null) {
+        if (userExerciseInstanceSet.getExerciseInstanceSet() != null) {
             ExerciseInstanceSet exerciseInstanceSet = exerciseInstanceSetRepository.findOne((userExerciseInstanceSet.getExerciseInstanceSet()).getId());
             exerciseInstanceSet.addUserExerciseInstanceSet(userExerciseInstanceSet);
             exerciseInstanceSetRepository.save(exerciseInstanceSet);
@@ -67,10 +67,10 @@ addUserExerciseInstanceSetToParent(userExerciseInstanceSet);
     }
 
     /**
-     *  Get all the userExerciseInstanceSets.
+     * Get all the userExerciseInstanceSets.
      *
-     *  @param pageable the pagination information
-     *  @return the list of entities
+     * @param pageable the pagination information
+     * @return the list of entities
      */
     @Transactional(readOnly = true)
     public Page<UserExerciseInstanceSetDTO> findAll(Pageable pageable) {
@@ -80,10 +80,10 @@ addUserExerciseInstanceSetToParent(userExerciseInstanceSet);
     }
 
     /**
-     *  Get one userExerciseInstanceSet by id.
+     * Get one userExerciseInstanceSet by id.
      *
-     *  @param id the id of the entity
-     *  @return the entity
+     * @param id the id of the entity
+     * @return the entity
      */
     @Transactional(readOnly = true)
     public UserExerciseInstanceSetDTO findOne(Long id) {
@@ -94,9 +94,9 @@ addUserExerciseInstanceSetToParent(userExerciseInstanceSet);
     }
 
     /**
-     *  Delete the  userExerciseInstanceSet by id.
+     * Delete the  userExerciseInstanceSet by id.
      *
-     *  @param id the id of the entity
+     * @param id the id of the entity
      */
     public void delete(Long id) {
         log.debug("Request to delete UserExerciseInstanceSet : {}", id);
@@ -105,14 +105,14 @@ addUserExerciseInstanceSetToParent(userExerciseInstanceSet);
     }
 
     public void removeUserExerciseInstanceSetFromRelatedItems(Long id) {
-        UserExerciseInstanceSet userExerciseInstanceSet  = userExerciseInstanceSetRepository.findOne(id);
+        UserExerciseInstanceSet userExerciseInstanceSet = userExerciseInstanceSetRepository.findOne(id);
         if (userExerciseInstanceSet != null) {
             log.debug("Request to remove UserExerciseInstanceSet from UserExerciseInstance : {}", userExerciseInstanceSet.getId());
             UserExerciseInstance userExerciseInstance = userExerciseInstanceSet.getUserExerciseInstance();
             userExerciseInstance.removeUserExerciseInstanceSet(userExerciseInstanceSet);
             userExerciseInstanceRepository.save(userExerciseInstance);
 
-            if(userExerciseInstanceSet.getExerciseInstanceSet() != null) {
+            if (userExerciseInstanceSet.getExerciseInstanceSet() != null) {
                 ExerciseInstanceSet exerciseInstanceSet = userExerciseInstanceSet.getExerciseInstanceSet();
                 exerciseInstanceSet.removeUserExerciseInstanceSet(userExerciseInstanceSet);
                 exerciseInstanceSetRepository.save(exerciseInstanceSet);

@@ -164,9 +164,11 @@ public class UserExerciseInstanceService {
             userWorkoutInstance.removeUserExerciseInstance(userExerciseInstance);
             userWorkoutInstanceRepository.save(userWorkoutInstance);
 
-            ExerciseInstance exerciseInstance = userExerciseInstance.getExerciseInstance();
-            exerciseInstance.removeUserExerciseInstance(userExerciseInstance);
-            exerciseInstanceRepository.save(exerciseInstance);
+            if (userExerciseInstance.getExerciseInstance() != null) {
+                ExerciseInstance exerciseInstance = userExerciseInstance.getExerciseInstance();
+                exerciseInstance.removeUserExerciseInstance(userExerciseInstance);
+                exerciseInstanceRepository.save(exerciseInstance);
+            }
         }
     }
 }
