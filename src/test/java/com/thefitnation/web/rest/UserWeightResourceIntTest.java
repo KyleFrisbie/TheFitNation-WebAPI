@@ -2,26 +2,34 @@ package com.thefitnation.web.rest;
 
 import com.thefitnation.TheFitNationApp;
 
+import com.thefitnation.domain.User;
 import com.thefitnation.domain.UserWeight;
 import com.thefitnation.domain.UserDemographic;
 import com.thefitnation.repository.UserRepository;
 import com.thefitnation.repository.UserWeightRepository;
+import com.thefitnation.security.SecurityUtils;
 import com.thefitnation.service.UserDemographicService;
 import com.thefitnation.service.UserService;
 import com.thefitnation.service.UserWeightService;
 import com.thefitnation.service.dto.UserWeightDTO;
 import com.thefitnation.service.mapper.UserWeightMapper;
+import com.thefitnation.testTools.CreateEntities;
 import com.thefitnation.web.rest.errors.ExceptionTranslator;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -31,9 +39,13 @@ import javax.persistence.EntityManager;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -143,12 +155,13 @@ public class UserWeightResourceIntTest {
     @Test
     @Transactional
     public void createUserWeightWithExistingId() throws Exception {
+        // Create the UserWeight with an existing ID
+        em.persist(userWeight);
+        em.flush();
+
         int databaseSizeBeforeCreate = userWeightRepository.findAll().size();
 
-        // Create the UserWeight with an existing ID
-        UserWeight existingUserWeight = new UserWeight();
-        existingUserWeight.setId(1L);
-        UserWeightDTO existingUserWeightDTO = userWeightMapper.userWeightToUserWeightDTO(existingUserWeight);
+        UserWeightDTO existingUserWeightDTO = userWeightMapper.userWeightToUserWeightDTO(userWeight);
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restUserWeightMockMvc.perform(post("/api/user-weights")
@@ -227,6 +240,29 @@ public class UserWeightResourceIntTest {
             .andExpect(jsonPath("$.id").value(userWeight.getId().intValue()))
             .andExpect(jsonPath("$.weightDate").value(DEFAULT_WEIGHT_DATE.toString()))
             .andExpect(jsonPath("$.weight").value(DEFAULT_WEIGHT.doubleValue()));
+    }
+
+    @Test
+    @Transactional
+    public void getUserWeightByLoggedInUser() throws Exception {
+        User user = userRepository.findOneByLogin("admin").get();
+
+        // Initialize the database
+        UserWeight testUserWeight = CreateEntities.generateUserWeightForUser(em, user);
+        em.persist(testUserWeight);
+        em.flush();
+
+        SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
+        securityContext.setAuthentication(new UsernamePasswordAuthenticationToken("admin", "admin"));
+        SecurityContextHolder.setContext(securityContext);
+
+        // Get the userWeight
+        restUserWeightMockMvc.perform(get("/api/user-weights/byLoggedInUser/{id}", testUserWeight.getId()))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$.id").value(testUserWeight.getId().intValue()))
+            .andExpect(jsonPath("$.weightDate").value(testUserWeight.getWeightDate().toString()))
+            .andExpect(jsonPath("$.weight").value(testUserWeight.getWeight().doubleValue()));
     }
 
     @Test

@@ -35,13 +35,17 @@ public class CreateEntities {
     }
 
     public static User generateUniqueUser(EntityManager em) {
+        return generateUniqueUser(em, "test" + uniqueUserNumber, RandomStringUtils.random(60));
+    }
+
+    public static User generateUniqueUser(EntityManager em, String login, String password) {
         User user = new User();
-        user.setLogin("test" + uniqueUserNumber);
-        user.setPassword(RandomStringUtils.random(60));
+        user.setLogin(login);
+        user.setPassword(password);
         user.setActivated(true);
-        user.setEmail("test" + uniqueUserNumber + "@test.com");
-        user.setFirstName("test" + uniqueUserNumber);
-        user.setLastName("test" + uniqueUserNumber);
+        user.setEmail(login + "@test.com");
+        user.setFirstName(login);
+        user.setLastName(login);
         user.setImageUrl("http://placehold.it/50x50");
         em.persist(user);
         em.flush();
@@ -58,6 +62,36 @@ public class CreateEntities {
             .height(1F)
             .unitOfMeasure(UnitOfMeasure.Imperial)
             .user(generateUniqueUser(em))
+            .skillLevel(generateSkillLevel(em));
+        em.persist(userDemographic);
+        em.flush();
+        return userDemographic;
+    }
+
+    public static UserDemographic generateUserDemographic(EntityManager em, String login, String password) {
+        UserDemographic userDemographic = new UserDemographic()
+            .createdOn(LocalDate.ofEpochDay(0L))
+            .lastLogin(LocalDate.ofEpochDay(0L))
+            .gender(Gender.Male)
+            .dateOfBirth(LocalDate.ofEpochDay(0L))
+            .height(1F)
+            .unitOfMeasure(UnitOfMeasure.Imperial)
+            .user(generateUniqueUser(em, login, password))
+            .skillLevel(generateSkillLevel(em));
+        em.persist(userDemographic);
+        em.flush();
+        return userDemographic;
+    }
+
+    public static UserDemographic generateUserDemographic(EntityManager em, User user) {
+        UserDemographic userDemographic = new UserDemographic()
+            .createdOn(LocalDate.ofEpochDay(0L))
+            .lastLogin(LocalDate.ofEpochDay(0L))
+            .gender(Gender.Male)
+            .dateOfBirth(LocalDate.ofEpochDay(0L))
+            .height(1F)
+            .unitOfMeasure(UnitOfMeasure.Imperial)
+            .user(user)
             .skillLevel(generateSkillLevel(em));
         em.persist(userDemographic);
         em.flush();
@@ -89,11 +123,40 @@ public class CreateEntities {
         return userWeights;
     }
 
+    public static List<UserWeight> generateUserWeightsForSingleUser(EntityManager em, int numberOfUserWeights, String login, String password) {
+        List<UserWeight> userWeights = new ArrayList<>();
+        UserDemographic userDemographic = generateUserDemographic(em, login, password);
+        for (int i = 0; i < numberOfUserWeights; i++) {
+            userWeights.add(generateUserWeightForUser(em, userDemographic));
+        }
+        return userWeights;
+    }
+
     public static UserWeight generateUserWeight(EntityManager em) {
         UserWeight userWeight = new UserWeight()
             .weightDate(LocalDate.ofEpochDay(0L))
             .weight(1F);
         userWeight.setUserDemographic(generateUserDemographic(em));
+        em.persist(userWeight);
+        em.flush();
+        return userWeight;
+    }
+
+    public static UserWeight generateUserWeightForUser(EntityManager em, String login, String password) {
+        UserWeight userWeight = new UserWeight()
+            .weightDate(LocalDate.ofEpochDay(0L))
+            .weight(1F);
+        userWeight.setUserDemographic(generateUserDemographic(em, login, password));
+        em.persist(userWeight);
+        em.flush();
+        return userWeight;
+    }
+
+    public static UserWeight generateUserWeightForUser(EntityManager em, User user) {
+        UserWeight userWeight = new UserWeight()
+            .weightDate(LocalDate.ofEpochDay(0L))
+            .weight(1F);
+        userWeight.setUserDemographic(generateUserDemographic(em, user));
         em.persist(userWeight);
         em.flush();
         return userWeight;
