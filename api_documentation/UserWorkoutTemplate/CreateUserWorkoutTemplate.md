@@ -39,5 +39,6 @@ Authorization: Bearer 3dcbc283-88d2-4fa9-90eb-18d681cf6459
 * If this UserWorkoutTemplate is based on a WorkoutTemplate, a workoutTemplateId must be included.
 * Valid id's must be included for:
     1. userDemographicId
+        * if a UserDemographicId is not included, the server will attempt to add the UserDemographicId owned by the currently logged in user.
     2. workoutTemplateId (if included)
 * To create any UserWorkoutInstances to associate with a UserWorkoutTemplate, use the UserWorkoutInstance endpoint.
