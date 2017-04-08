@@ -1,6 +1,6 @@
-Delete Exercise Instance by ID
+Delete ExerciseInstance by ID
 ---
-* Delete an Exercise Inistance
+* Delete an ExerciseInstance
 * This also removes the child ExerciseInstanceSets
 * Any UserExerciseInstances/UserExerciseInstanceSets that depend on this object continue to exist in the DB but are disassociated with the ExerciseInstanceSet and its children that are being removed.
 

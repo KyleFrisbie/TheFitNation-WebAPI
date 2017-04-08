@@ -1,6 +1,6 @@
-Update Exercise Instance
+Update ExerciseInstance
 ---
-* Update an existing Exercise Inistance
+* Update an existing Exercise Instance
 * Add/remove/or update embedded Exercise Instance Sets
 
 **Method and Route**\
@@ -13,7 +13,7 @@ Accept: application/json
 Authorization: Bearer aee6e0b8-fc84-4e73-8357-d6a3073c5536
 
 **Post Body**
-```javascript
+```json
 {
   "id": 9703,
   "notes": "Text Exercise Instance in Workout Post",
@@ -56,7 +56,7 @@ Authorization: Bearer aee6e0b8-fc84-4e73-8357-d6a3073c5536
 ```
 
 **Response Body**
-```javascript
+```json
 {
   "id": 12505,
   "notes": "Text Exercise Instance in Workout Post",
@@ -101,10 +101,11 @@ Authorization: Bearer aee6e0b8-fc84-4e73-8357-d6a3073c5536
 
 **Special Considerations**
 * Like all other PUTS, the ID field for an ExerciseInstance must be included.
-* Valid id's are required for the following:\
-..1. exerciseId
-..2. repUnitId
-..3. effortUnitId
+* Valid id's are required for the following:
+    1. workoutInstanceId
+    2. exerciseId
+    3. repUnitId
+    4. effortUnitId
 * New ExerciseInstanceSets can be added by including an ExerciseInstanceSet object without an id.
-* ExerciseInstanceSets can be updated by providing the id for an exisiting ExerciseInstanceSet within the ExerciseInstanceSet object. This child must already be related to the parent you are updating.
+* ExerciseInstanceSets can be updated by providing the id for an existing ExerciseInstanceSet within the ExerciseInstanceSet object. This child must already be related to the parent you are updating.
 * An ExerciseInstanceSet can be removed from the list of Sets simply by removing it from the list.

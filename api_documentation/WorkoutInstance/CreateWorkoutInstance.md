@@ -1,4 +1,4 @@
-Create Workout Instance
+Create WorkoutInstance
 ---
 * Create a WorkoutInstance with all new child objects.
 
@@ -11,7 +11,7 @@ Accept: application/json
 Authorization: Bearer 3dcbc283-88d2-4fa9-90eb-18d681cf6459
 
 **Post Body**
-```javascript
+```json
 {
     "name": "Demo Embedded Workout Post",
     "createdOn": "2017-03-23",
@@ -62,7 +62,7 @@ Authorization: Bearer 3dcbc283-88d2-4fa9-90eb-18d681cf6459
 ```
 
 **Response Body**
-```javascript
+```json
 {
   "id": 12454,
   "name": "Demo Embedded Workout Post",
@@ -120,8 +120,8 @@ Authorization: Bearer 3dcbc283-88d2-4fa9-90eb-18d681cf6459
 
 **Special Considerations**
 * Must have valid id's for:\
-..* workoutTemplateId
-..* exerciseId
-..* repUnitId
-..* effortUnitId
+    1. workoutTemplateId
+    2. exerciseId
+    3. repUnitId
+    4. effortUnitId
 * The foreign key id's required in the child objects will be automatically generated/added on the server side.
