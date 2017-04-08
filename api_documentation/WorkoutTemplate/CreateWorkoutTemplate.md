@@ -42,5 +42,6 @@ Authorization: Bearer 3dcbc283-88d2-4fa9-90eb-18d681cf6459
 **Special Considerations**
 * Valid id's must be included for:
     1. userDemographicId
+        * if a UserDemographicId is not included, the server will attempt to add the UserDemographicId owned by the currently logged in user.
     2. skillLevelId
 * To create any WorkoutInstances to associate with a WorkoutTemplate, use the WorkoutInstance endpoint.
