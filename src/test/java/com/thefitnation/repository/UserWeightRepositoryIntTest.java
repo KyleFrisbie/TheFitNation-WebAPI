@@ -28,7 +28,7 @@ public class UserWeightRepositoryIntTest {
 
     private static final int NUMBER_OF_USER_WEIGHTS = 10;
 
-    private List<User> users = new ArrayList<User>();
+    private User user;
 
     @Autowired
     private EntityManager em;
@@ -36,36 +36,15 @@ public class UserWeightRepositoryIntTest {
     @Autowired
     private UserWeightRepository userWeightRepository;
 
-    @Before
-    public void setup() {
-        users = CreateEntities.generateUniqueUsers(2);
-        for (User user : users) {
-            em.persist(user);
-            em.flush();
-
-            SkillLevel skillLevel = CreateEntities.generateSkillLevel("Beginner");
-            em.persist(skillLevel);
-            em.flush();
-
-            UserDemographic userDemographic = CreateEntities.generateUserDemographics(user, skillLevel);
-            em.persist(userDemographic);
-            em.flush();
-
-            List<UserWeight> userWeights = CreateEntities.generateUserWeights(userDemographic, NUMBER_OF_USER_WEIGHTS);
-            for (UserWeight userWeight : userWeights) {
-                em.persist(userWeight);
-                em.flush();
-            }
-        }
-    }
-
     @Test
     public void findAllByUserId() {
-        User user = users.get(0);
-        Page<UserWeight> userWeights = userWeightRepository.findAllByUserId(null, user.getId());
+        List<UserWeight> userWeights = CreateEntities.generateUserWeightsForSingleUser(em, NUMBER_OF_USER_WEIGHTS);
+        user = userWeights.get(0).getUserDemographic().getUser();
 
-        assertThat(userWeights.getTotalElements()).isEqualTo(NUMBER_OF_USER_WEIGHTS);
-        for (UserWeight userWeight : userWeights.map(uw -> uw)) {
+        Page<UserWeight> savedUserWeights = userWeightRepository.findAllByUserId(null, user.getId());
+
+        assertThat(savedUserWeights.getTotalElements()).isEqualTo(NUMBER_OF_USER_WEIGHTS);
+        for (UserWeight userWeight : savedUserWeights.map(uw -> uw)) {
             assertThat(userWeight.getUserDemographic().getUser().getId()).isEqualTo(user.getId());
         }
     }
