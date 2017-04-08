@@ -85,7 +85,7 @@ public class ExerciseInstanceSetResource {
      * @return the ResponseEntity with status 200 (OK) and the list of exerciseInstanceSets in body
      * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
      */
-    @GetMapping("/user/exercise-instance-sets")
+    @GetMapping("/exercise-instance-sets")
     @Timed
     public ResponseEntity<List<ExerciseInstanceSetDTO>> getAllExerciseInstanceSetsByCurrUSer(@ApiParam Pageable pageable)
         throws URISyntaxException {
@@ -98,7 +98,7 @@ public class ExerciseInstanceSetResource {
             String login = SecurityUtils.getCurrentUserLogin();
 
             Page<ExerciseInstanceSetDTO> page = exerciseInstanceSetService.findAllByCurrentUser(login, pageable);
-            HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/user/exercise-instance-sets");
+            HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/exercise-instance-sets");
             return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
 
         } else {
@@ -106,24 +106,6 @@ public class ExerciseInstanceSetResource {
                 .headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "invaliduser", "Unable to find User by token"))
                 .body(null);
         }
-    }
-
-
-    /**
-     * GET  /exercise-instance-sets : get all the exerciseInstanceSets.
-     *
-     * @param pageable the pagination information
-     * @return the ResponseEntity with status 200 (OK) and the list of exerciseInstanceSets in body
-     * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
-     */
-    @GetMapping("/exercise-instance-sets")
-    @Timed
-    public ResponseEntity<List<ExerciseInstanceSetDTO>> getAllExerciseInstanceSets(@ApiParam Pageable pageable)
-        throws URISyntaxException {
-        log.debug("REST request to get a page of ExerciseInstanceSets");
-        Page<ExerciseInstanceSetDTO> page = exerciseInstanceSetService.findAll(pageable);
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/exercise-instance-sets");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
     /**

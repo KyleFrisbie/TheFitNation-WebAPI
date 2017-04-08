@@ -57,14 +57,16 @@ public class WorkoutTemplateService {
      */
     public WorkoutTemplateDTO update(WorkoutTemplateDTO workoutTemplateDTO) {
         log.debug("Request to update WorkoutTemplate : {}", workoutTemplateDTO);
-
         WorkoutTemplate workoutTemplate = workoutTemplateMapper.workoutTemplateDTOToWorkoutTemplate(workoutTemplateDTO);
-        if (workoutTemplateDTO.getUserDemographicId() == userDemographicService.findOneByLogin(SecurityUtils.getCurrentUserLogin()).getId()) {
+        if (isLoggedInUser(workoutTemplateDTO)) {
             workoutTemplate.setLastUpdated(LocalDate.now());
             workoutTemplate = workoutTemplateRepository.save(workoutTemplate);
         }
-
         return workoutTemplateMapper.workoutTemplateToWorkoutTemplateDTO(workoutTemplate);
+    }
+
+    private boolean isLoggedInUser(WorkoutTemplateDTO workoutTemplateDTO) {
+        return workoutTemplateDTO.getUserDemographicId() == userDemographicService.findOneByLogin(SecurityUtils.getCurrentUserLogin()).getId();
     }
 
     /**
@@ -87,8 +89,9 @@ public class WorkoutTemplateService {
      *  @return the list of entities
      */
     @Transactional(readOnly = true)
-    public Page<WorkoutTemplateDTO> findAllByLogin(String login, Pageable pageable) {
+    public Page<WorkoutTemplateDTO> findAllByLogin(Pageable pageable) {
         log.debug("Request to get all WorkoutTemplates by current logged in user.");
+        String login = SecurityUtils.getCurrentUserLogin();
         Page<WorkoutTemplate> result = workoutTemplateRepository.findAllByCurrentLoggedInUser(login, pageable);
         return result.map(workoutTemplateMapper::workoutTemplateToWorkoutTemplateDTO);
     }
@@ -112,8 +115,13 @@ public class WorkoutTemplateService {
      *
      *  @param id the id of the entity
      */
-    public void delete(Long id) {
+    public boolean delete(Long id) {
         log.debug("Request to delete WorkoutTemplate : {}", id);
-        workoutTemplateRepository.delete(id);
+
+        if (this.isLoggedInUser(this.findOne(id))) {
+            workoutTemplateRepository.delete(id);
+            return true;
+        }
+        return false;
     }
 }

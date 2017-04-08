@@ -2,6 +2,7 @@ package com.thefitnation.service;
 
 import com.thefitnation.domain.*;
 import com.thefitnation.repository.*;
+import com.thefitnation.security.*;
 import com.thefitnation.service.dto.*;
 import com.thefitnation.service.mapper.*;
 import org.slf4j.*;
@@ -55,8 +56,9 @@ public class ExerciseInstanceService {
     }
 
     @Transactional(readOnly = true)
-    public Page<ExerciseInstanceDTO> findAllByCurrentUserLogin(String login, Pageable pageable) {
+    public Page<ExerciseInstanceDTO> findAllByCurrentUserLogin(Pageable pageable) {
         log.debug("Request to get all ExerciseInstances by currently logged in user");
+        String login = SecurityUtils.getCurrentUserLogin();
         return exerciseInstanceRepository
             .findAllByCurrentUserLogin(login, pageable)
             .map(exerciseInstanceMapper::exerciseInstanceToExerciseInstanceDTO);

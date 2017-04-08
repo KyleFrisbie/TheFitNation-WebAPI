@@ -1,9 +1,7 @@
 package com.thefitnation.web.rest;
 
 import com.codahale.metrics.annotation.*;
-import com.thefitnation.domain.*;
 import com.thefitnation.repository.*;
-import com.thefitnation.security.*;
 import com.thefitnation.service.*;
 import com.thefitnation.service.dto.*;
 import com.thefitnation.web.rest.util.*;
@@ -27,11 +25,9 @@ public class WorkoutTemplateResource {
     private final Logger log = LoggerFactory.getLogger(WorkoutTemplateResource.class);
     private static final String ENTITY_NAME = "workoutTemplate";
     private final WorkoutTemplateService workoutTemplateService;
-    private final UserRepository userRepository;
 
     public WorkoutTemplateResource(WorkoutTemplateService workoutTemplateService, UserRepository userRepository) {
         this.workoutTemplateService = workoutTemplateService;
-        this.userRepository = userRepository;
     }
 
     /**
@@ -90,41 +86,11 @@ public class WorkoutTemplateResource {
      * @return the ResponseEntity with status 200 (OK) and the list of workoutTemplates in body
      * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
      */
-    @GetMapping("/user/workout-templates")
-    @Timed
-    public ResponseEntity<List<WorkoutTemplateDTO>> getAllWorkoutTemplatesByCurrUser(@ApiParam Pageable pageable)
-        throws URISyntaxException {
-        log.debug("REST request to get a page of WorkoutTemplates");
-
-        Optional<User> user = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin());
-        if(user.isPresent()) {
-
-            String login = SecurityUtils.getCurrentUserLogin();
-
-            Page<WorkoutTemplateDTO> page = workoutTemplateService.findAllByLogin(login, pageable);
-            HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/workout-templates");
-            return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
-
-        } else {
-            return ResponseEntity.badRequest()
-                .headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "invaliduser", "Unable to find User by token"))
-                .body(null);
-        }
-    }
-
-    /**
-     * GET  /workout-templates : get all the workoutTemplates.
-     *
-     * @param pageable the pagination information
-     * @return the ResponseEntity with status 200 (OK) and the list of workoutTemplates in body
-     * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
-     */
     @GetMapping("/workout-templates")
     @Timed
-    public ResponseEntity<List<WorkoutTemplateDTO>> getAllWorkoutTemplates(@ApiParam Pageable pageable)
-        throws URISyntaxException {
+    public ResponseEntity<List<WorkoutTemplateDTO>> getAllWorkoutTemplatesByCurrUser(@ApiParam Pageable pageable) throws URISyntaxException {
         log.debug("REST request to get a page of WorkoutTemplates");
-        Page<WorkoutTemplateDTO> page = workoutTemplateService.findAll(pageable);
+        Page<WorkoutTemplateDTO> page = workoutTemplateService.findAllByLogin(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/workout-templates");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }

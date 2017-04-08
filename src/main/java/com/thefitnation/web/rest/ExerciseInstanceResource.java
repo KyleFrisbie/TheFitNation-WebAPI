@@ -109,8 +109,7 @@ public class ExerciseInstanceResource {
         log.debug("REST request to get a page of ExerciseInstances by currently logged in user");
         Optional<User> user = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin());
         if(user.isPresent()) {
-            String login = SecurityUtils.getCurrentUserLogin();
-            Page<ExerciseInstanceDTO> page = exerciseInstanceService.findAllByCurrentUserLogin(login, pageable);
+            Page<ExerciseInstanceDTO> page = exerciseInstanceService.findAllByCurrentUserLogin(pageable);
             HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/user/exercise-instances");
             return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
         } else {

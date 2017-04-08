@@ -2,8 +2,10 @@ package com.thefitnation.service;
 
 import com.thefitnation.domain.*;
 import com.thefitnation.repository.*;
+import com.thefitnation.security.*;
 import com.thefitnation.service.dto.*;
 import com.thefitnation.service.mapper.*;
+import java.time.*;
 import org.slf4j.*;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.*;
@@ -17,9 +19,7 @@ import org.springframework.transaction.annotation.*;
 public class WorkoutInstanceService {
 
     private final Logger log = LoggerFactory.getLogger(WorkoutInstanceService.class);
-
     private final WorkoutInstanceRepository workoutInstanceRepository;
-
     private final WorkoutInstanceMapper workoutInstanceMapper;
 
     public WorkoutInstanceService(WorkoutInstanceRepository workoutInstanceRepository, WorkoutInstanceMapper workoutInstanceMapper) {
@@ -35,7 +35,30 @@ public class WorkoutInstanceService {
      */
     public WorkoutInstanceDTO save(WorkoutInstanceDTO workoutInstanceDTO) {
         log.debug("Request to save WorkoutInstance : {}", workoutInstanceDTO);
+
         WorkoutInstance workoutInstance = workoutInstanceMapper.workoutInstanceDTOToWorkoutInstance(workoutInstanceDTO);
+
+        workoutInstance.setCreatedOn(LocalDate.now());
+        workoutInstance.setLastUpdated(LocalDate.now());
+
+        workoutInstance = workoutInstanceRepository.save(workoutInstance);
+        WorkoutInstanceDTO result = workoutInstanceMapper.workoutInstanceToWorkoutInstanceDTO(workoutInstance);
+        return result;
+    }
+
+    /**
+     * Update a workoutInstance.
+     *
+     * @param workoutInstanceDTO the entity to save
+     * @return the persisted entity
+     */
+    public WorkoutInstanceDTO update(WorkoutInstanceDTO workoutInstanceDTO) {
+        log.debug("Request to save WorkoutInstance : {}", workoutInstanceDTO);
+
+        WorkoutInstance workoutInstance = workoutInstanceMapper.workoutInstanceDTOToWorkoutInstance(workoutInstanceDTO);
+
+        workoutInstance.setLastUpdated(LocalDate.now());
+
         workoutInstance = workoutInstanceRepository.save(workoutInstance);
         WorkoutInstanceDTO result = workoutInstanceMapper.workoutInstanceToWorkoutInstanceDTO(workoutInstance);
         return result;
@@ -57,14 +80,15 @@ public class WorkoutInstanceService {
     /**
      *  Get all the workoutInstances by currentl logged in user.
      *
-     *
-     * @param login
      * @param pageable the pagination information
      *  @return the list of entities
      */
     @Transactional(readOnly = true)
-    public Page<WorkoutInstanceDTO> findAllByCurrentLoggedInUser(String login, Pageable pageable) {
+    public Page<WorkoutInstanceDTO> findAllByCurrentLoggedInUser(Pageable pageable) {
         log.debug("Request to get all WorkoutInstances by current logged in user");
+
+        String login = SecurityUtils.getCurrentUserLogin();
+
         Page<WorkoutInstance> result = workoutInstanceRepository.findAllByCurrentLoggedInUser(login, pageable);
         return result.map(workoutInstanceMapper::workoutInstanceToWorkoutInstanceDTO);
     }
