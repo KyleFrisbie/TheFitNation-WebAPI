@@ -1,11 +1,14 @@
 package com.thefitnation.service;
 
+import com.thefitnation.domain.User;
 import com.thefitnation.domain.UserDemographic;
 import com.thefitnation.domain.UserWorkoutTemplate;
 import com.thefitnation.domain.WorkoutTemplate;
 import com.thefitnation.repository.UserDemographicRepository;
+import com.thefitnation.repository.UserRepository;
 import com.thefitnation.repository.UserWorkoutTemplateRepository;
 import com.thefitnation.repository.WorkoutTemplateRepository;
+import com.thefitnation.security.SecurityUtils;
 import com.thefitnation.service.dto.UserWorkoutTemplateDTO;
 import com.thefitnation.service.dto.UserWorkoutTemplateWithChildrenDTO;
 import com.thefitnation.service.mapper.UserWorkoutTemplateMapper;
@@ -17,6 +20,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 /**
  * Service Implementation for managing UserWorkoutTemplate.
  */
@@ -25,6 +30,8 @@ import org.springframework.stereotype.Service;
 public class UserWorkoutTemplateService {
 
     private final Logger log = LoggerFactory.getLogger(UserWorkoutTemplateService.class);
+
+    private final UserRepository userRepository;
 
     private final UserWorkoutTemplateRepository userWorkoutTemplateRepository;
 
@@ -36,7 +43,8 @@ public class UserWorkoutTemplateService {
 
     private final UserWorkoutTemplateWithChildrenMapper userWorkoutTemplateWithChildrenMapper;
 
-    public UserWorkoutTemplateService(UserWorkoutTemplateRepository userWorkoutTemplateRepository, WorkoutTemplateRepository workoutTemplateRepository, UserDemographicRepository userDemographicRepository, UserWorkoutTemplateMapper userWorkoutTemplateMapper, UserWorkoutTemplateWithChildrenMapper userWorkoutTemplateWithChildrenMapper) {
+    public UserWorkoutTemplateService(UserRepository userRepository, UserWorkoutTemplateRepository userWorkoutTemplateRepository, WorkoutTemplateRepository workoutTemplateRepository, UserDemographicRepository userDemographicRepository, UserWorkoutTemplateMapper userWorkoutTemplateMapper, UserWorkoutTemplateWithChildrenMapper userWorkoutTemplateWithChildrenMapper) {
+        this.userRepository = userRepository;
         this.userWorkoutTemplateRepository = userWorkoutTemplateRepository;
         this.workoutTemplateRepository = workoutTemplateRepository;
         this.userDemographicRepository = userDemographicRepository;
@@ -52,6 +60,13 @@ public class UserWorkoutTemplateService {
      */
     public UserWorkoutTemplateDTO save(UserWorkoutTemplateDTO userWorkoutTemplateDTO) {
         log.debug("Request to save UserWorkoutTemplate : {}", userWorkoutTemplateDTO);
+        if (userWorkoutTemplateDTO.getUserDemographicId() == null) {
+            Optional<User> user = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin());
+            if (user.isPresent()) {
+                UserDemographic userDemographic = userDemographicRepository.findOneByUserWithEagerRelationships(user.get().getId());
+                userWorkoutTemplateDTO.setUserDemographicId(userDemographic.getId());
+            }
+        }
         UserWorkoutTemplate userWorkoutTemplate = userWorkoutTemplateMapper.userWorkoutTemplateDTOToUserWorkoutTemplate(userWorkoutTemplateDTO);
         userWorkoutTemplate = userWorkoutTemplateRepository.save(userWorkoutTemplate);
         UserWorkoutTemplateDTO result = userWorkoutTemplateMapper.userWorkoutTemplateToUserWorkoutTemplateDTO(userWorkoutTemplate);
