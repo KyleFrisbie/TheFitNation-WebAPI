@@ -1,4 +1,4 @@
-Create new Workout Template
+Create new WorkoutTemplate
 ---
 * Creates a new WorkoutTemplate without child objects
 
@@ -11,7 +11,7 @@ Accept: application/json
 Authorization: Bearer 3dcbc283-88d2-4fa9-90eb-18d681cf6459
 
 **Post Body**
-```javascript
+```json
 {
   "name": "TestWorkout TEmplate 2",
   "createdOn": "2017-03-31",
@@ -25,7 +25,7 @@ Authorization: Bearer 3dcbc283-88d2-4fa9-90eb-18d681cf6459
 ```
 
 **Response Body**
-```javascript
+```json
 {
   "id": 12605,
   "name": "TestWorkout TEmplate 2",
@@ -40,7 +40,8 @@ Authorization: Bearer 3dcbc283-88d2-4fa9-90eb-18d681cf6459
 ```
 
 **Special Considerations**
-* Valid id's must be included for:\
-..* userDemographicId
-..* skillLevelId
+* Valid id's must be included for:
+    1. userDemographicId
+        * if a UserDemographicId is not included, the server will attempt to add the UserDemographicId owned by the currently logged in user.
+    2. skillLevelId
 * To create any WorkoutInstances to associate with a WorkoutTemplate, use the WorkoutInstance endpoint.

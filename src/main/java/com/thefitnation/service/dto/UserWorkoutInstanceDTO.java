@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.Objects;
 
@@ -30,6 +31,8 @@ public class UserWorkoutInstanceDTO implements Serializable {
     private Long workoutInstanceId;
 
     private String workoutInstanceName;
+
+    private List<UserExerciseInstanceDTO> userExerciseInstances;
 
     public Long getId() {
         return id;
@@ -89,6 +92,14 @@ public class UserWorkoutInstanceDTO implements Serializable {
 
     public void setWorkoutInstanceName(String workoutInstanceName) {
         this.workoutInstanceName = workoutInstanceName;
+    }
+
+    public List<UserExerciseInstanceDTO> getUserExerciseInstances() {
+        return userExerciseInstances;
+    }
+
+    public void setUserExerciseInstances(List<UserExerciseInstanceDTO> userExerciseInstances) {
+        this.userExerciseInstances = userExerciseInstances;
     }
 
     @Override

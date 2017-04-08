@@ -1,4 +1,4 @@
-Update Exercise Instance Set
+Update ExerciseInstanceSet
 ---
 
 **Method and Route**\
@@ -10,7 +10,7 @@ Accept: application/json
 Authorization: Bearer 3dcbc283-88d2-4fa9-90eb-18d681cf6459
 
 **Post Body**
-```javascript
+```json
 {
   "id": 9764,
   "orderNumber": 2,
@@ -23,7 +23,7 @@ Authorization: Bearer 3dcbc283-88d2-4fa9-90eb-18d681cf6459
 ```
 
 **Response Body**
-```javascript
+```json
 {
   "id": 12567,
   "orderNumber": 2,

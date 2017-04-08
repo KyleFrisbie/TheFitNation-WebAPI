@@ -1,4 +1,4 @@
-Get an Exercise Instance Set by Id
+Get an ExerciseInstanceSet by Id
 ---
 
 **Method and Route**\
@@ -14,7 +14,7 @@ none
 ```
 
 **Response Body**
-```javascript
+```json
 {
   "id": 10910,
   "orderNumber": 1,

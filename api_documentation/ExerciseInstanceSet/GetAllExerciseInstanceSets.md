@@ -1,4 +1,4 @@
-Get All Exercise Instance Sets
+Get All ExerciseInstanceSets
 ---
 * Get all Exercise Instance Sets
 
@@ -14,7 +14,7 @@ none
 ```
 
 **Response Body**
-```javascript
+```json
 [
   {
     "id": 10910,

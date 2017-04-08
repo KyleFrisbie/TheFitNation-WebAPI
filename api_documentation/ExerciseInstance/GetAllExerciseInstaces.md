@@ -1,6 +1,6 @@
-Get All Exercise Instances
+Get All ExerciseInstances
 ---
-* Get all Exercise Inistance with embedded Exercise Instance Sets
+* Get all ExerciseInstance with embedded ExerciseInstanceSets
 
 **Method and Route**\
 GET /api/exercise-instances
@@ -16,7 +16,7 @@ none
 ```
 
 **Response Body**
-```javascript
+```json
 [
   {
     "id": 6701,

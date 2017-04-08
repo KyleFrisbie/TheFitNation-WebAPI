@@ -14,7 +14,7 @@ none
 ```
 
 **Response Body**
-```javascript
+```json
 {
   "id": 6901,
   "name": "Test Workout Post",

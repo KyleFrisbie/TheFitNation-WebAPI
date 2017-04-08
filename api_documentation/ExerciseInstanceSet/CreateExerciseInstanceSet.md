@@ -1,4 +1,4 @@
-Create Exercise Instance Set
+Create ExerciseInstanceSet
 ---
 
 **Method and Route**\
@@ -10,7 +10,7 @@ Accept: application/json
 Authorization: Bearer 3dcbc283-88d2-4fa9-90eb-18d681cf6459
 
 **Post Body**
-```javascript
+```json
 {
   "effortQuantity": 10,
   "exerciseInstanceId": 6951,
@@ -22,7 +22,7 @@ Authorization: Bearer 3dcbc283-88d2-4fa9-90eb-18d681cf6459
 ```
 
 **Response Body**
-```javascript
+```json
 {
   "id": 12566,
   "orderNumber": 5,

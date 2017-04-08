@@ -1,4 +1,4 @@
-Get all Workout Templates
+Get all WorkoutTemplates
 ---
 * Get all WorkoutTemplates without child objects
 

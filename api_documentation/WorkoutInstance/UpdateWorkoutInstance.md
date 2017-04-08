@@ -1,4 +1,4 @@
-Update Workout Instance
+Update WorkoutInstance
 ---
 * Updates a WorkoutInstance
 
@@ -11,7 +11,7 @@ Accept: application/json
 Authorization: Bearer 3dcbc283-88d2-4fa9-90eb-18d681cf6459
 
 **Post Body**
-```javascript
+```json
 {
   "id": 9901,
   "name": "Remove some sets, update some sets, add some new sets",
@@ -75,7 +75,7 @@ Authorization: Bearer 3dcbc283-88d2-4fa9-90eb-18d681cf6459
 ```
 
 **Response Body**
-```javascript
+```json
 {
   "id": 12455,
   "name": "Remove some sets, update some sets, add some new sets",
@@ -141,13 +141,13 @@ Authorization: Bearer 3dcbc283-88d2-4fa9-90eb-18d681cf6459
 ```
 
 **Special Considerations**
-* Must have valid id's for:\
-..* workoutTemplateId
-..* exerciseId
-..* repUnitId
-..* effortUnitId
+* Must have valid id's for:
+    * workoutTemplateId
+    * exerciseId
+    * repUnitId
+    * effortUnitId
 * Child objects refer to the list of ExerciseInstances, and ExerciseInstanceSets.
-* Child objects can be deleted from the WorkoutTemplate simply by removing them from the list of children.
-* Child objects can be updated by providing a valid id for a child that already exists
-* New children can be added by adding new objects to the list without an id.
-* The foreign key id's required in any new child objects will be automatically generated/added on the server side.
+    * Child objects can be deleted from the WorkoutTemplate simply by removing them from the list of children.
+    * Child objects can be updated by providing a valid id for a child that already exists
+    * New children can be added by adding new objects to the list without an id.
+    * The foreign key id's required in any new child objects will be automatically generated/added on the server side.
