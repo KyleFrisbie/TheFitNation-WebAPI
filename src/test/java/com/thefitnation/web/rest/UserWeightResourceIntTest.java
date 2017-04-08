@@ -126,6 +126,12 @@ public class UserWeightResourceIntTest {
         return userWeight;
     }
 
+    private void logInUser(String login, String password) {
+        SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
+        securityContext.setAuthentication(new UsernamePasswordAuthenticationToken(login, password));
+        SecurityContextHolder.setContext(securityContext);
+    }
+
     @Before
     public void initTest() {
         userWeight = createEntity(em);
@@ -252,9 +258,7 @@ public class UserWeightResourceIntTest {
         em.persist(testUserWeight);
         em.flush();
 
-        SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
-        securityContext.setAuthentication(new UsernamePasswordAuthenticationToken("admin", "admin"));
-        SecurityContextHolder.setContext(securityContext);
+        logInUser("admin", "admin");
 
         // Get the userWeight
         restUserWeightMockMvc.perform(get("/api/user-weights/byLoggedInUser/{id}", testUserWeight.getId()))
@@ -263,6 +267,21 @@ public class UserWeightResourceIntTest {
             .andExpect(jsonPath("$.id").value(testUserWeight.getId().intValue()))
             .andExpect(jsonPath("$.weightDate").value(testUserWeight.getWeightDate().toString()))
             .andExpect(jsonPath("$.weight").value(testUserWeight.getWeight().doubleValue()));
+    }
+
+    @Test
+    @Transactional
+    public void getUserWeightWithoutLoggedInUser() throws Exception {
+        restUserWeightMockMvc.perform(get("/api/user-weights/byLoggedInUser/{id}", userWeight.getId()))
+            .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @Transactional
+    public void getUserWeightByLoggedInUserWithoutUserDemographic() throws Exception {
+        logInUser("admin", "admin");
+        restUserWeightMockMvc.perform(get("/api/user-weights/byLoggedInUser/{id}", userWeight.getId()))
+            .andExpect(status().isBadRequest());
     }
 
     @Test
