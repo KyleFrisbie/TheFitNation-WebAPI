@@ -101,7 +101,7 @@ public class UserWorkoutInstanceResource {
     public ResponseEntity<List<UserWorkoutInstanceDTO>> getAllUserWorkoutInstancesByCurrUSer(@ApiParam Pageable pageable)
         throws URISyntaxException {
         log.debug("REST request to get a page of UserWorkoutInstances");
-        Page<UserWorkoutInstanceDTO> page = userWorkoutInstanceService.findAllByCurrUser(pageable);
+        Page<UserWorkoutInstanceDTO> page = userWorkoutInstanceService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/user-workout-instances");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }

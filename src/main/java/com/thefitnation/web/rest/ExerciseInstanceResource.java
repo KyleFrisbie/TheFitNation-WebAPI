@@ -1,9 +1,7 @@
 package com.thefitnation.web.rest;
 
 import com.codahale.metrics.annotation.*;
-import com.thefitnation.domain.*;
 import com.thefitnation.repository.*;
-import com.thefitnation.security.*;
 import com.thefitnation.service.*;
 import com.thefitnation.service.dto.*;
 import com.thefitnation.web.rest.util.*;
@@ -106,17 +104,18 @@ public class ExerciseInstanceResource {
     @Timed
     public ResponseEntity<List<ExerciseInstanceDTO>> getAllExerciseInstancesByCurrUser(@ApiParam Pageable pageable)
         throws URISyntaxException {
-        log.debug("REST request to get a page of ExerciseInstances by currently logged in user");
-        Optional<User> user = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin());
-        if(user.isPresent()) {
-            Page<ExerciseInstanceDTO> page = exerciseInstanceService.findAllByCurrentUserLogin(pageable);
-            HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/user/exercise-instances");
-            return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
-        } else {
-            return ResponseEntity.badRequest()
-                .headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "invaliduser", "Unable to find User by token"))
-                .body(null);
-        }
+//        log.debug("REST request to get a page of ExerciseInstances by currently logged in user");
+//        Optional<User> user = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin());
+//        if(user.isPresent()) {
+//            Page<ExerciseInstanceDTO> page = exerciseInstanceService.findAllByCurrentUserLogin(pageable);
+//            HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/user/exercise-instances");
+//            return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+//        } else {
+//            return ResponseEntity.badRequest()
+//                .headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "invaliduser", "Unable to find User by token"))
+//                .body(null);
+//        }
+        return null;
     }
 
     /**

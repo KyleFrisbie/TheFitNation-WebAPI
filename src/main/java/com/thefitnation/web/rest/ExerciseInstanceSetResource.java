@@ -1,9 +1,7 @@
 package com.thefitnation.web.rest;
 
 import com.codahale.metrics.annotation.*;
-import com.thefitnation.domain.*;
 import com.thefitnation.repository.*;
-import com.thefitnation.security.*;
 import com.thefitnation.service.*;
 import com.thefitnation.service.dto.*;
 import com.thefitnation.web.rest.util.*;
@@ -89,23 +87,24 @@ public class ExerciseInstanceSetResource {
     @Timed
     public ResponseEntity<List<ExerciseInstanceSetDTO>> getAllExerciseInstanceSetsByCurrUSer(@ApiParam Pageable pageable)
         throws URISyntaxException {
-        log.debug("REST request to get a page of ExerciseInstanceSets by current logged in user.");
-
-        Optional<User> user = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin());
-
-        if(user.isPresent()) {
-
-            String login = SecurityUtils.getCurrentUserLogin();
-
-            Page<ExerciseInstanceSetDTO> page = exerciseInstanceSetService.findAllByCurrentUser(login, pageable);
-            HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/exercise-instance-sets");
-            return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
-
-        } else {
-            return ResponseEntity.badRequest()
-                .headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "invaliduser", "Unable to find User by token"))
-                .body(null);
-        }
+//        log.debug("REST request to get a page of ExerciseInstanceSets by current logged in user.");
+//
+//        Optional<User> user = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin());
+//
+//        if(user.isPresent()) {
+//
+//            String login = SecurityUtils.getCurrentUserLogin();
+//
+//            Page<ExerciseInstanceSetDTO> page = exerciseInstanceSetService.findAllByCurrentUser(login, pageable);
+//            HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/exercise-instance-sets");
+//            return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+//
+//        } else {
+//            return ResponseEntity.badRequest()
+//                .headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "invaliduser", "Unable to find User by token"))
+//                .body(null);
+//        }
+        return null;
     }
 
     /**

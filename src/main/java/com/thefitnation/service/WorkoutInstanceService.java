@@ -2,18 +2,13 @@ package com.thefitnation.service;
 
 import com.thefitnation.domain.*;
 import com.thefitnation.repository.*;
-import com.thefitnation.service.dto.ExerciseInstanceDTO;
-import com.thefitnation.service.dto.WorkoutInstanceDTO;
-import com.thefitnation.service.mapper.ExerciseInstanceMapper;
-import com.thefitnation.service.mapper.WorkoutInstanceMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.stereotype.Service;
-
+import com.thefitnation.service.dto.*;
+import com.thefitnation.service.mapper.*;
 import java.util.*;
+import org.slf4j.*;
+import org.springframework.data.domain.*;
+import org.springframework.stereotype.*;
+import org.springframework.transaction.annotation.*;
 
 /**
  * Service Implementation for managing WorkoutInstance.
@@ -21,23 +16,14 @@ import java.util.*;
 @Service
 @Transactional
 public class WorkoutInstanceService {
-
     private final Logger log = LoggerFactory.getLogger(WorkoutInstanceService.class);
-
     private final WorkoutTemplateRepository workoutTemplateRepository;
-
     private final WorkoutInstanceRepository workoutInstanceRepository;
-
     private final ExerciseInstanceRepository exerciseInstanceRepository;
-
     private final UserWorkoutInstanceRepository userWorkoutInstanceRepository;
-
     private final UserExerciseInstanceRepository userExerciseInstanceRepository;
-
     private final WorkoutInstanceMapper workoutInstanceMapper;
-
     private final ExerciseInstanceMapper exerciseInstanceMapper;
-
     private final ExerciseInstanceService exerciseInstanceService;
 
     public WorkoutInstanceService(WorkoutTemplateRepository workoutTemplateRepository, WorkoutInstanceRepository workoutInstanceRepository, ExerciseInstanceRepository exerciseInstanceRepository, UserWorkoutInstanceRepository userWorkoutInstanceRepository, UserExerciseInstanceRepository userExerciseInstanceRepository, WorkoutInstanceMapper workoutInstanceMapper, ExerciseInstanceMapper exerciseInstanceMapper, ExerciseInstanceService exerciseInstanceService) {
@@ -60,9 +46,7 @@ public class WorkoutInstanceService {
     public WorkoutInstanceDTO save(WorkoutInstanceDTO workoutInstanceDTO) {
         log.debug("Request to save WorkoutInstance : {}", workoutInstanceDTO);
         WorkoutInstance workoutInstance = workoutInstanceMapper.workoutInstanceDTOToWorkoutInstance(workoutInstanceDTO);
-
         removeDereferencedExerciseInstances(workoutInstance);
-
         workoutInstance.setExerciseInstances(new HashSet<>());
         workoutInstance = workoutInstanceRepository.save(workoutInstance);
         addWorkoutInstanceToParent(workoutInstance);
