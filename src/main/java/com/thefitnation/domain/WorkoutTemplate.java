@@ -51,8 +51,7 @@ public class WorkoutTemplate implements Serializable {
     @NotNull
     private UserDemographic userDemographic;
 
-    @OneToMany(mappedBy = "workoutTemplate")
-    @JsonIgnore
+    @OneToMany(mappedBy = "workoutTemplate", cascade = {CascadeType.MERGE, CascadeType.REFRESH, CascadeType.REMOVE, CascadeType.DETACH}, fetch = FetchType.LAZY)
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<WorkoutInstance> workoutInstances = new HashSet<>();
 

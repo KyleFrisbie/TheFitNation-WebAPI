@@ -2,6 +2,7 @@ package com.thefitnation.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.thefitnation.service.UserWorkoutTemplateService;
+import com.thefitnation.service.dto.UserWorkoutTemplateWithChildrenDTO;
 import com.thefitnation.web.rest.util.HeaderUtil;
 import com.thefitnation.web.rest.util.PaginationUtil;
 import com.thefitnation.service.dto.UserWorkoutTemplateDTO;
@@ -34,7 +35,7 @@ public class UserWorkoutTemplateResource {
     private final Logger log = LoggerFactory.getLogger(UserWorkoutTemplateResource.class);
 
     private static final String ENTITY_NAME = "userWorkoutTemplate";
-        
+
     private final UserWorkoutTemplateService userWorkoutTemplateService;
 
     public UserWorkoutTemplateResource(UserWorkoutTemplateService userWorkoutTemplateService) {
@@ -108,9 +109,9 @@ public class UserWorkoutTemplateResource {
      */
     @GetMapping("/user-workout-templates/{id}")
     @Timed
-    public ResponseEntity<UserWorkoutTemplateDTO> getUserWorkoutTemplate(@PathVariable Long id) {
+    public ResponseEntity<UserWorkoutTemplateWithChildrenDTO> getUserWorkoutTemplate(@PathVariable Long id) {
         log.debug("REST request to get UserWorkoutTemplate : {}", id);
-        UserWorkoutTemplateDTO userWorkoutTemplateDTO = userWorkoutTemplateService.findOne(id);
+        UserWorkoutTemplateWithChildrenDTO userWorkoutTemplateDTO = userWorkoutTemplateService.findOne(id);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(userWorkoutTemplateDTO));
     }
 
