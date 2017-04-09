@@ -1,7 +1,6 @@
 package com.thefitnation.web.rest;
 
 import com.codahale.metrics.annotation.*;
-import com.thefitnation.repository.*;
 import com.thefitnation.service.*;
 import com.thefitnation.service.dto.*;
 import com.thefitnation.web.rest.util.*;
@@ -26,11 +25,10 @@ public class WorkoutInstanceResource {
     private static final String ENTITY_NAME = "workoutInstance";
 
     private final WorkoutInstanceService workoutInstanceService;
-    private final UserRepository userRepository;
 
-    public WorkoutInstanceResource(WorkoutInstanceService workoutInstanceService, UserRepository userRepository) {
+
+    public WorkoutInstanceResource(WorkoutInstanceService workoutInstanceService) {
         this.workoutInstanceService = workoutInstanceService;
-        this.userRepository = userRepository;
     }
 
     /**
