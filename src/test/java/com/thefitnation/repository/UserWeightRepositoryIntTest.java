@@ -25,7 +25,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class UserWeightRepositoryIntTest {
 
     private static final int NUMBER_OF_USER_WEIGHTS = 10;
-    
+
     @Autowired
     private EntityManager em;
 

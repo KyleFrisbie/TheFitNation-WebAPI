@@ -1005,7 +1005,7 @@
 				{
 					"name": "Create User Weight",
 					"request": {
-						"url": "http://localhost:8080/api/user-weights/byLoggedInUser",
+						"url": "http://localhost:8080/api/user-weights",
 						"method": "POST",
 						"header": [
 							{
@@ -1020,7 +1020,7 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "Bearer aee6e0b8-fc84-4e73-8357-d6a3073c5536",
+								"value": "Bearer f2db434c-9e5d-4c35-abaf-2e468ceaa8ae",
 								"description": ""
 							}
 						],
@@ -1035,7 +1035,7 @@
 				{
 					"name": "Update User Weight",
 					"request": {
-						"url": "http://localhost:8080/api/user-weights/byLoggedInUser",
+						"url": "http://localhost:8080/api/user-weights",
 						"method": "PUT",
 						"header": [
 							{
@@ -1050,7 +1050,7 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "Bearer aee6e0b8-fc84-4e73-8357-d6a3073c5536",
+								"value": "Bearer f2db434c-9e5d-4c35-abaf-2e468ceaa8ae",
 								"description": ""
 							}
 						],
@@ -1065,7 +1065,7 @@
 				{
 					"name": "Delete User Weight",
 					"request": {
-						"url": "http://localhost:8080/api/user-weights/byLoggedInUser/9551",
+						"url": "http://localhost:8080/api/user-weights/9551",
 						"method": "DELETE",
 						"header": [
 							{
@@ -1085,7 +1085,7 @@
 				{
 					"name": "Get User Weight by ID",
 					"request": {
-						"url": "http://localhost:8080/api/user-weights/byLoggedInUser/9401",
+						"url": "http://localhost:8080/api/user-weights/9401",
 						"method": "GET",
 						"header": [
 							{
@@ -1103,7 +1103,7 @@
 					"response": []
 				},
 				{
-					"name": "Get All User Weights by Logged in User",
+					"name": "Get All User Weights",
 					"request": {
 						"url": "http://localhost:8080/api/user-weights/byLoggedInUser",
 						"method": "GET",
@@ -1111,23 +1111,6 @@
 							{
 								"key": "Authorization",
 								"value": "Bearer 76827adc-aee8-4641-84da-c10613d55c48",
-								"description": ""
-							}
-						],
-						"body": {},
-						"description": ""
-					},
-					"response": []
-				},
-				{
-					"name": "Get All User Weights by Logged in User copy",
-					"request": {
-						"url": "http://localhost:8080/api/user-weights/byLoggedInUser/1",
-						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer 7a1f5d9d-5e6c-484b-ad18-b32c22050bc9",
 								"description": ""
 							}
 						],

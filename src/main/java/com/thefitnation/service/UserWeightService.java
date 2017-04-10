@@ -57,12 +57,15 @@ public class UserWeightService {
         if (user == null) {
             return null;
         }
+        if (userWeightDTO.getUserDemographicId() == null) {
+            userWeightDTO.setUserDemographicId(userDemographicRepository.findOneByUserWithEagerRelationships(user.getId()).getId());
+        }
+
         UserWeight userWeight = userWeightMapper.userWeightDTOToUserWeight(userWeightDTO);
 
         if (isAdmin(user)) {
             userWeight = userWeightRepository.save(userWeight);
         } else {
-            userWeight.setUserDemographic(userDemographicRepository.findOneByUserWithEagerRelationships(user.getId()));
             Optional<UserWeight> dbUserWeight = userWeightRepository.findOneByUserId(userWeight.getId(), user.getId());
             if (!dbUserWeight.isPresent()) {
                 userWeight.setId(null);

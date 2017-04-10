@@ -76,7 +76,7 @@ public class UserWeightResource {
      * @param userWeightDTO the userWeightDTO to update
      * @return the ResponseEntity with status 200 (OK) and with body the updated userWeightDTO,
      * or with status 400 (Bad Request) if the userWeightDTO is not valid,
-     * or with status 500 (Internal Server Error) if the userWeightDTO couldnt be updated
+     * or with status 500 (Internal Server Error) if the userWeightDTO couldn't be updated
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PutMapping("/user-weights")
