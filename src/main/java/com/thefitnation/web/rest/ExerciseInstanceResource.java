@@ -1,28 +1,19 @@
 package com.thefitnation.web.rest;
 
-import com.codahale.metrics.annotation.Timed;
-import com.thefitnation.service.ExerciseInstanceService;
-import com.thefitnation.web.rest.util.HeaderUtil;
-import com.thefitnation.web.rest.util.PaginationUtil;
-import com.thefitnation.service.dto.ExerciseInstanceDTO;
-import io.swagger.annotations.ApiParam;
-import io.github.jhipster.web.util.ResponseUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import com.codahale.metrics.annotation.*;
+import com.thefitnation.repository.*;
+import com.thefitnation.service.*;
+import com.thefitnation.service.dto.*;
+import com.thefitnation.web.rest.util.*;
+import io.github.jhipster.web.util.*;
+import io.swagger.annotations.*;
+import java.net.*;
+import java.util.*;
+import javax.validation.*;
+import org.slf4j.*;
+import org.springframework.data.domain.*;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * REST controller for managing ExerciseInstance.
@@ -34,11 +25,13 @@ public class ExerciseInstanceResource {
     private final Logger log = LoggerFactory.getLogger(ExerciseInstanceResource.class);
 
     private static final String ENTITY_NAME = "exerciseInstance";
-        
-    private final ExerciseInstanceService exerciseInstanceService;
 
-    public ExerciseInstanceResource(ExerciseInstanceService exerciseInstanceService) {
+    private final ExerciseInstanceService exerciseInstanceService;
+    private final UserRepository userRepository;
+
+    public ExerciseInstanceResource(ExerciseInstanceService exerciseInstanceService, UserRepository userRepository) {
         this.exerciseInstanceService = exerciseInstanceService;
+        this.userRepository = userRepository;
     }
 
     /**
@@ -98,6 +91,31 @@ public class ExerciseInstanceResource {
         Page<ExerciseInstanceDTO> page = exerciseInstanceService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/exercise-instances");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+    }
+
+    /**
+      * GET  /exercise-instances : get all the exerciseInstances by current logged in user.
+      *
+      * @param pageable the pagination information
+      * @return the ResponseEntity with status 200 (OK) and the list of exerciseInstances in body
+      * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
+      */
+    @GetMapping("/user/exercise-instances")
+    @Timed
+    public ResponseEntity<List<ExerciseInstanceDTO>> getAllExerciseInstancesByCurrUser(@ApiParam Pageable pageable)
+        throws URISyntaxException {
+//        log.debug("REST request to get a page of ExerciseInstances by currently logged in user");
+//        Optional<User> user = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin());
+//        if(user.isPresent()) {
+//            Page<ExerciseInstanceDTO> page = exerciseInstanceService.findAllByCurrentUserLogin(pageable);
+//            HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/user/exercise-instances");
+//            return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+//        } else {
+//            return ResponseEntity.badRequest()
+//                .headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "invaliduser", "Unable to find User by token"))
+//                .body(null);
+//        }
+        return null;
     }
 
     /**
