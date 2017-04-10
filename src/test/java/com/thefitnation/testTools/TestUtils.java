@@ -7,9 +7,13 @@ import com.thefitnation.domain.UserDemographic;
 import com.thefitnation.domain.UserWeight;
 import com.thefitnation.domain.enumeration.Gender;
 import com.thefitnation.domain.enumeration.UnitOfMeasure;
+import com.thefitnation.repository.UserRepository;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,12 +21,13 @@ import javax.persistence.EntityManager;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = TheFitNationApp.class)
 @Transactional
-public class CreateEntities {
+public class TestUtils {
 
     private static int uniqueUserNumber = 0;
 
@@ -109,25 +114,34 @@ public class CreateEntities {
     public static List<UserWeight> generateUserWeights(EntityManager em, int numberOfUserWeights) {
         List<UserWeight> userWeights = new ArrayList<>();
         for (int i = 0; i < numberOfUserWeights; i++) {
+            UserWeight userWeight = generateUserWeightForUser(em);
+            em.persist(userWeight);
+            em.flush();
             userWeights.add(generateUserWeight(em));
         }
         return userWeights;
     }
 
-    public static List<UserWeight> generateUserWeightsForSingleUser(EntityManager em, int numberOfUserWeights) {
+    public static List<UserWeight> generateUserWeightsForUser(EntityManager em, int numberOfUserWeights, String login, String password) {
         List<UserWeight> userWeights = new ArrayList<>();
-        UserDemographic userDemographic = generateUserDemographic(em);
+        UserDemographic userDemographic = generateUserDemographic(em, login, password);
         for (int i = 0; i < numberOfUserWeights; i++) {
+            UserWeight userWeight = generateUserWeightForUser(em, userDemographic);
+            em.persist(userWeight);
+            em.flush();
             userWeights.add(generateUserWeightForUser(em, userDemographic));
         }
         return userWeights;
     }
 
-    public static List<UserWeight> generateUserWeightsForSingleUser(EntityManager em, int numberOfUserWeights, String login, String password) {
+    public static List<UserWeight> generateUserWeightsForUser(EntityManager em, int numberOfUserWeights, User user) {
         List<UserWeight> userWeights = new ArrayList<>();
-        UserDemographic userDemographic = generateUserDemographic(em, login, password);
+        UserDemographic userDemographic = generateUserDemographic(em, user);
         for (int i = 0; i < numberOfUserWeights; i++) {
-            userWeights.add(generateUserWeightForUser(em, userDemographic));
+            UserWeight userWeight = generateUserWeightForUser(em, userDemographic);
+            em.persist(userWeight);
+            em.flush();
+            userWeights.add(userWeight);
         }
         return userWeights;
     }
@@ -137,8 +151,6 @@ public class CreateEntities {
             .weightDate(LocalDate.ofEpochDay(0L))
             .weight(1F);
         userWeight.setUserDemographic(generateUserDemographic(em));
-        em.persist(userWeight);
-        em.flush();
         return userWeight;
     }
 
@@ -147,8 +159,6 @@ public class CreateEntities {
             .weightDate(LocalDate.ofEpochDay(0L))
             .weight(1F);
         userWeight.setUserDemographic(generateUserDemographic(em, login, password));
-        em.persist(userWeight);
-        em.flush();
         return userWeight;
     }
 
@@ -157,8 +167,6 @@ public class CreateEntities {
             .weightDate(LocalDate.ofEpochDay(0L))
             .weight(1F);
         userWeight.setUserDemographic(generateUserDemographic(em, user));
-        em.persist(userWeight);
-        em.flush();
         return userWeight;
     }
 
@@ -167,8 +175,20 @@ public class CreateEntities {
             .weightDate(LocalDate.ofEpochDay(0L))
             .weight(1F);
         userWeight.setUserDemographic(userDemographic);
-        em.persist(userWeight);
-        em.flush();
         return userWeight;
+    }
+
+    public static UserWeight generateUserWeightForUser(EntityManager em) {
+        return generateUserWeightForUser(em, generateUserDemographic(em));
+    }
+
+
+
+    public static Optional<User> logInUser(String login, String password, UserRepository userRepository) {
+        SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
+        securityContext.setAuthentication(new UsernamePasswordAuthenticationToken(login, password));
+        SecurityContextHolder.setContext(securityContext);
+
+        return userRepository.findOneByLogin(login);
     }
 }

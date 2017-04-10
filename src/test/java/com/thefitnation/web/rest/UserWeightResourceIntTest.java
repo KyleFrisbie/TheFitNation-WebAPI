@@ -7,30 +7,23 @@ import com.thefitnation.domain.UserWeight;
 import com.thefitnation.domain.UserDemographic;
 import com.thefitnation.repository.UserRepository;
 import com.thefitnation.repository.UserWeightRepository;
-import com.thefitnation.security.SecurityUtils;
 import com.thefitnation.service.UserDemographicService;
 import com.thefitnation.service.UserService;
 import com.thefitnation.service.UserWeightService;
-import com.thefitnation.service.dto.UserDemographicDTO;
 import com.thefitnation.service.dto.UserWeightDTO;
 import com.thefitnation.service.mapper.UserWeightMapper;
-import com.thefitnation.testTools.CreateEntities;
+import com.thefitnation.testTools.TestUtils;
 import com.thefitnation.web.rest.errors.ExceptionTranslator;
 
-import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -44,9 +37,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -102,7 +93,7 @@ public class UserWeightResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        UserWeightResource userWeightResource = new UserWeightResource(userWeightService, userService, userDemographicService, userRepository);
+        UserWeightResource userWeightResource = new UserWeightResource(userWeightService, userService, userDemographicService);
         this.restUserWeightMockMvc = MockMvcBuilders.standaloneSetup(userWeightResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -127,14 +118,6 @@ public class UserWeightResourceIntTest {
         return userWeight;
     }
 
-    private Optional<User> logInUser(String login, String password) {
-        SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
-        securityContext.setAuthentication(new UsernamePasswordAuthenticationToken(login, password));
-        SecurityContextHolder.setContext(securityContext);
-
-        return userRepository.findOneByLogin(login);
-    }
-
     @Before
     public void initTest() {
         userWeight = createEntity(em);
@@ -142,11 +125,12 @@ public class UserWeightResourceIntTest {
 
     @Test
     @Transactional
-    public void createUserWeight() throws Exception {
-        int databaseSizeBeforeCreate = userWeightRepository.findAll().size();
-
-        // Create the UserWeight
+    public void createUserWeightForUser() throws Exception {
+        Optional<User> user = TestUtils.logInUser("user", "user", userRepository);
+        UserWeight userWeight = TestUtils.generateUserWeightForUser(em, user.get());
         UserWeightDTO userWeightDTO = userWeightMapper.userWeightToUserWeightDTO(userWeight);
+
+        int databaseSizeBeforeCreate = userWeightRepository.findAll().size();
 
         restUserWeightMockMvc.perform(post("/api/user-weights")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -164,19 +148,19 @@ public class UserWeightResourceIntTest {
     @Test
     @Transactional
     public void createUserWeightWithExistingId() throws Exception {
-        // Create the UserWeight with an existing ID
+        Optional<User> user = TestUtils.logInUser("user", "user", userRepository);
+        UserWeight userWeight = TestUtils.generateUserWeightForUser(em, user.get());
         em.persist(userWeight);
         em.flush();
+        UserWeightDTO userWeightDTO = userWeightMapper.userWeightToUserWeightDTO(userWeight);
 
         int databaseSizeBeforeCreate = userWeightRepository.findAll().size();
-
-        UserWeightDTO existingUserWeightDTO = userWeightMapper.userWeightToUserWeightDTO(userWeight);
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restUserWeightMockMvc.perform(post("/api/user-weights")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(existingUserWeightDTO)))
-            .andExpect(status().isBadRequest());
+            .content(TestUtil.convertObjectToJsonBytes(userWeightDTO)))
+            .andExpect(status().is2xxSuccessful());
 
         // Validate the Alice in the database
         List<UserWeight> userWeightList = userWeightRepository.findAll();
@@ -186,12 +170,12 @@ public class UserWeightResourceIntTest {
     @Test
     @Transactional
     public void checkWeightDateIsRequired() throws Exception {
-        int databaseSizeBeforeTest = userWeightRepository.findAll().size();
-        // set the field null
-        userWeight.setWeightDate(null);
-
-        // Create the UserWeight, which fails.
+        Optional<User> user = TestUtils.logInUser("user", "user", userRepository);
+        UserWeight userWeight = TestUtils.generateUserWeightForUser(em, user.get());
         UserWeightDTO userWeightDTO = userWeightMapper.userWeightToUserWeightDTO(userWeight);
+        userWeightDTO.setWeightDate(null);
+
+        int databaseSizeBeforeCreate = userWeightRepository.findAll().size();
 
         restUserWeightMockMvc.perform(post("/api/user-weights")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -199,18 +183,18 @@ public class UserWeightResourceIntTest {
             .andExpect(status().isBadRequest());
 
         List<UserWeight> userWeightList = userWeightRepository.findAll();
-        assertThat(userWeightList).hasSize(databaseSizeBeforeTest);
+        assertThat(userWeightList).hasSize(databaseSizeBeforeCreate);
     }
 
     @Test
     @Transactional
     public void checkWeightIsRequired() throws Exception {
-        int databaseSizeBeforeTest = userWeightRepository.findAll().size();
-        // set the field null
-        userWeight.setWeight(null);
-
-        // Create the UserWeight, which fails.
+        Optional<User> user = TestUtils.logInUser("user", "user", userRepository);
+        UserWeight userWeight = TestUtils.generateUserWeightForUser(em, user.get());
         UserWeightDTO userWeightDTO = userWeightMapper.userWeightToUserWeightDTO(userWeight);
+        userWeightDTO.setWeight(null);
+
+        int databaseSizeBeforeCreate = userWeightRepository.findAll().size();
 
         restUserWeightMockMvc.perform(post("/api/user-weights")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -218,14 +202,15 @@ public class UserWeightResourceIntTest {
             .andExpect(status().isBadRequest());
 
         List<UserWeight> userWeightList = userWeightRepository.findAll();
-        assertThat(userWeightList).hasSize(databaseSizeBeforeTest);
+        assertThat(userWeightList).hasSize(databaseSizeBeforeCreate);
     }
 
     @Test
     @Transactional
     public void getAllUserWeights() throws Exception {
-        // Initialize the database
-        userWeightRepository.saveAndFlush(userWeight);
+        Optional<User> user = TestUtils.logInUser("user", "user", userRepository);
+        int numberOfUserWeights = 10;
+        UserWeight userWeight = TestUtils.generateUserWeightsForUser(em, numberOfUserWeights, user.get()).get(0);
 
         // Get all the userWeightList
         restUserWeightMockMvc.perform(get("/api/user-weights?sort=id,desc"))
@@ -239,8 +224,10 @@ public class UserWeightResourceIntTest {
     @Test
     @Transactional
     public void getUserWeight() throws Exception {
-        // Initialize the database
-        userWeightRepository.saveAndFlush(userWeight);
+        Optional<User> user = TestUtils.logInUser("user", "user", userRepository);
+        UserWeight userWeight = TestUtils.generateUserWeightForUser(em, user.get());
+        em.persist(userWeight);
+        em.flush();
 
         // Get the userWeight
         restUserWeightMockMvc.perform(get("/api/user-weights/{id}", userWeight.getId()))
@@ -253,60 +240,31 @@ public class UserWeightResourceIntTest {
 
     @Test
     @Transactional
-    public void getUserWeightByLoggedInUser() throws Exception {
-        User user = userRepository.findOneByLogin("admin").get();
-
-        // Initialize the database
-        UserWeight testUserWeight = CreateEntities.generateUserWeightForUser(em, user);
-        em.persist(testUserWeight);
-        em.flush();
-
-        logInUser("admin", "admin");
-
-        // Get the userWeight
-        restUserWeightMockMvc.perform(get("/api/user-weights/byLoggedInUser/{id}", testUserWeight.getId()))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(jsonPath("$.id").value(testUserWeight.getId().intValue()))
-            .andExpect(jsonPath("$.weightDate").value(testUserWeight.getWeightDate().toString()))
-            .andExpect(jsonPath("$.weight").value(testUserWeight.getWeight().doubleValue()));
-    }
-
-    @Test
-    @Transactional
     public void getUserWeightWithoutLoggedInUser() throws Exception {
         restUserWeightMockMvc.perform(get("/api/user-weights/byLoggedInUser/{id}", userWeight.getId()))
-            .andExpect(status().isBadRequest());
+            .andExpect(status().isInternalServerError());
     }
-
-    // TODO: 4/8/2017 Fix this failing test?
-//    @Test
-//    @Transactional
-//    public void getUserWeightByLoggedInUserWithoutUserDemographic() throws Exception {
-//        Optional<User> user = logInUser("admin", "admin");
-//        if (user.isPresent()) {
-//            UserDemographicDTO userDemographicDTO = userDemographicService.findOneByUser(user.get().getId());
-//            if (userDemographicDTO != null) {
-//                userDemographicService.delete(userDemographicDTO.getId());
-//            }
-//            restUserWeightMockMvc.perform(get("/api/user-weights/byLoggedInUser/{id}", userWeight.getId()))
-//                .andExpect(status().isBadRequest());
-//        }
-//    }
 
     @Test
     @Transactional
     public void getNonExistingUserWeight() throws Exception {
-        // Get the userWeight
+        Optional<User> user = TestUtils.logInUser("user", "user", userRepository);
+        UserDemographic userDemographic = TestUtils.generateUserDemographic(em, user.get());
+        em.persist(userDemographic);
+        em.flush();
+
         restUserWeightMockMvc.perform(get("/api/user-weights/{id}", Long.MAX_VALUE))
-            .andExpect(status().isNotFound());
+            .andExpect(status().isInternalServerError());
     }
 
     @Test
     @Transactional
     public void updateUserWeight() throws Exception {
-        // Initialize the database
-        userWeightRepository.saveAndFlush(userWeight);
+        Optional<User> user = TestUtils.logInUser("user", "user", userRepository);
+        UserWeight userWeight = TestUtils.generateUserWeightForUser(em, user.get());
+        em.persist(userWeight);
+        em.flush();
+
         int databaseSizeBeforeUpdate = userWeightRepository.findAll().size();
 
         // Update the userWeight
@@ -332,6 +290,13 @@ public class UserWeightResourceIntTest {
     @Test
     @Transactional
     public void updateNonExistingUserWeight() throws Exception {
+        Optional<User> user = TestUtils.logInUser("user", "user", userRepository);
+        UserDemographic userDemographic = TestUtils.generateUserDemographic(em, user.get());
+        em.persist(userDemographic);
+        em.flush();
+
+        UserWeight userWeight = TestUtils.generateUserWeightForUser(em);
+
         int databaseSizeBeforeUpdate = userWeightRepository.findAll().size();
 
         // Create the UserWeight
@@ -341,7 +306,7 @@ public class UserWeightResourceIntTest {
         restUserWeightMockMvc.perform(put("/api/user-weights")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(userWeightDTO)))
-            .andExpect(status().isCreated());
+            .andExpect(status().is2xxSuccessful());
 
         // Validate the UserWeight in the database
         List<UserWeight> userWeightList = userWeightRepository.findAll();
@@ -351,8 +316,10 @@ public class UserWeightResourceIntTest {
     @Test
     @Transactional
     public void deleteUserWeight() throws Exception {
-        // Initialize the database
-        userWeightRepository.saveAndFlush(userWeight);
+        Optional<User> user = TestUtils.logInUser("user", "user", userRepository);
+        UserWeight userWeight = TestUtils.generateUserWeightForUser(em, user.get());
+        em.persist(userWeight);
+        em.flush();
         int databaseSizeBeforeDelete = userWeightRepository.findAll().size();
 
         // Get the userWeight
