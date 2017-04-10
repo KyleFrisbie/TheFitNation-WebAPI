@@ -1,14 +1,17 @@
 package com.thefitnation.web.rest;
 
 import com.codahale.metrics.annotation.*;
+import com.thefitnation.repository.*;
 import com.thefitnation.service.*;
 import com.thefitnation.service.dto.*;
 import com.thefitnation.web.rest.util.*;
 import io.github.jhipster.web.util.*;
+import io.swagger.annotations.*;
 import java.net.*;
 import java.util.*;
 import javax.validation.*;
 import org.slf4j.*;
+import org.springframework.data.domain.*;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,13 +24,11 @@ import org.springframework.web.bind.annotation.*;
 public class WorkoutInstanceResource {
 
     private final Logger log = LoggerFactory.getLogger(WorkoutInstanceResource.class);
-
     private static final String ENTITY_NAME = "workoutInstance";
-
     private final WorkoutInstanceService workoutInstanceService;
 
 
-    public WorkoutInstanceResource(WorkoutInstanceService workoutInstanceService) {
+    public WorkoutInstanceResource(WorkoutInstanceService workoutInstanceService, UserRepository userRepository) {
         this.workoutInstanceService = workoutInstanceService;
     }
 
@@ -51,43 +52,43 @@ public class WorkoutInstanceResource {
             .body(result);
     }
 
-//    /**
-//     * PUT  /workout-instances : Updates an existing workoutInstance.
-//     *
-//     * @param workoutInstanceDTO the workoutInstanceDTO to update
-//     * @return the ResponseEntity with status 200 (OK) and with body the updated workoutInstanceDTO,
-//     * or with status 400 (Bad Request) if the workoutInstanceDTO is not valid,
-//     * or with status 500 (Internal Server Error) if the workoutInstanceDTO couldn't be updated
-//     * @throws URISyntaxException if the Location URI syntax is incorrect
-//     */
-//    @PutMapping("/workout-instances")
-//    @Timed
-//    public ResponseEntity<WorkoutInstanceDTO> updateWorkoutInstance(@Valid @RequestBody WorkoutInstanceDTO workoutInstanceDTO) throws URISyntaxException {
-//        log.debug("REST request to update WorkoutInstance : {}", workoutInstanceDTO);
-//        if (workoutInstanceDTO.getId() == null) {
-//            return createWorkoutInstance(workoutInstanceDTO);
-//        }
-//        WorkoutInstanceDTO result = workoutInstanceService.update(workoutInstanceDTO);
-//        return ResponseEntity.ok()
-//            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, workoutInstanceDTO.getId().toString()))
-//            .body(result);
-//    }
+    /**
+     * PUT  /workout-instances : Updates an existing workoutInstance.
+     *
+     * @param workoutInstanceDTO the workoutInstanceDTO to update
+     * @return the ResponseEntity with status 200 (OK) and with body the updated workoutInstanceDTO,
+     * or with status 400 (Bad Request) if the workoutInstanceDTO is not valid,
+     * or with status 500 (Internal Server Error) if the workoutInstanceDTO couldn't be updated
+     * @throws URISyntaxException if the Location URI syntax is incorrect
+     */
+    @PutMapping("/workout-instances")
+    @Timed
+    public ResponseEntity<WorkoutInstanceDTO> updateWorkoutInstance(@Valid @RequestBody WorkoutInstanceDTO workoutInstanceDTO) throws URISyntaxException {
+        log.debug("REST request to update WorkoutInstance : {}", workoutInstanceDTO);
+        if (workoutInstanceDTO.getId() == null) {
+            return createWorkoutInstance(workoutInstanceDTO);
+        }
+        WorkoutInstanceDTO result = workoutInstanceService.update(workoutInstanceDTO);
+        return ResponseEntity.ok()
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, workoutInstanceDTO.getId().toString()))
+            .body(result);
+    }
 
-//    /**
-//     * GET  /workout-instances : get all the workoutInstances by current logged in user.
-//     *
-//     * @param pageable the pagination information
-//     * @return the ResponseEntity with status 200 (OK) and the list of workoutInstances in body
-//     * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
-//     */
-//    @GetMapping("/workout-instances")
-//    @Timed
-//    public ResponseEntity<List<WorkoutInstanceDTO>> getAllWorkoutInstancesByCurrUser(@ApiParam Pageable pageable) throws URISyntaxException {
-//        log.debug("REST request to get a page of WorkoutInstances by current logged in user");
-//        Page<WorkoutInstanceDTO> page = workoutInstanceService.findAllByCurrentLoggedInUser(pageable);
-//        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/workout-instances");
-//        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
-//    }
+    /**
+     * GET  /workout-instances : get all the workoutInstances by current logged in user.
+     *
+     * @param pageable the pagination information
+     * @return the ResponseEntity with status 200 (OK) and the list of workoutInstances in body
+     * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
+     */
+    @GetMapping("/workout-instances")
+    @Timed
+    public ResponseEntity<List<WorkoutInstanceDTO>> getAllWorkoutInstancesByCurrUser(@ApiParam Pageable pageable) throws URISyntaxException {
+        log.debug("REST request to get a page of WorkoutInstances by current logged in user");
+        Page<WorkoutInstanceDTO> page = workoutInstanceService.findAllByCurrentLoggedInUser(pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/workout-instances");
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+    }
 
     /**
      * GET  /workout-instances/:id : get the "id" workoutInstance.

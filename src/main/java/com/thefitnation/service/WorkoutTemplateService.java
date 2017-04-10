@@ -54,15 +54,6 @@ public class WorkoutTemplateService {
      */
     public WorkoutTemplateDTO save(WorkoutTemplateDTO workoutTemplateDTO) {
         log.debug("Request to save WorkoutTemplate : {}", workoutTemplateDTO);
-        if (workoutTemplateDTO.getUserDemographicId() == null) {
-
-            Optional<User> user = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin());
-
-            if (user.isPresent()) {
-                UserDemographic userDemographic = userDemographicRepository.findOneByUserWithEagerRelationships(user.get().getId());
-                workoutTemplateDTO.setUserDemographicId(userDemographic.getId());
-            }
-        }
 
         WorkoutTemplate workoutTemplate = workoutTemplateMapper.workoutTemplateDTOToWorkoutTemplate(workoutTemplateDTO);
 

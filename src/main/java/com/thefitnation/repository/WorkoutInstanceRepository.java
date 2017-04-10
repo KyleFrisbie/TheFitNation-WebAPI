@@ -11,8 +11,14 @@ import org.springframework.data.repository.query.*;
 @SuppressWarnings("unused")
 public interface WorkoutInstanceRepository extends JpaRepository<WorkoutInstance,Long> {
 
-    @Query("select workoutInstanceRepository " +
-            "from WorkoutInstance workoutInstanceRepository " +
-            "where workoutInstanceRepository.workoutTemplate.userDemographic.user.login = :login")
-    Page<WorkoutInstance> findAllByCurrentLoggedInUser(@Param(value = "login") String login, Pageable pageable);
+    @Query("select workoutInstance " +
+            "from WorkoutInstance workoutInstance " +
+            "where workoutInstance.workoutTemplate.userDemographic.user.login = :login")
+    Page<WorkoutInstance> findAll(@Param(value = "login") String login, Pageable pageable);
+
+    @Query("select workoutInstance " +
+            "from WorkoutInstance workoutInstance " +
+            "where workoutInstance.workoutTemplate.userDemographic.user.login = :login " +
+                "and workoutInstance.id = :id ")
+    WorkoutInstance findOne(@Param(value = "login") String login, @Param(value = "id") Long id);
 }
