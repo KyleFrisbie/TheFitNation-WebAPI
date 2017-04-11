@@ -12,43 +12,29 @@
 			"description": "",
 			"item": [
 				{
-					"name": "Register New User",
-					"request": {
-						"url": "http://localhost:8080/api/register",
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"description": ""
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n  \"email\": \"poop@poop.com\",\r\n  \"langKey\": \"en\",\r\n  \"login\": \"poop\",\r\n  \"password\": \"poop\"\r\n}"
-						},
-						"description": ""
-					},
-					"response": []
-				},
-				{
 					"name": "Get OAuth2 Token for User",
 					"request": {
 						"url": "http://localhost:8080/oauth/token",
 						"method": "POST",
-						"header": [],
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"description": ""
+							}
+						],
 						"body": {
-							"mode": "formdata",
-							"formdata": [
+							"mode": "urlencoded",
+							"urlencoded": [
 								{
 									"key": "username",
-									"value": "user",
+									"value": "poop",
 									"type": "text",
 									"enabled": true
 								},
 								{
 									"key": "password",
-									"value": "user",
+									"value": "poop",
 									"type": "text",
 									"enabled": true
 								},
@@ -83,6 +69,83 @@
 									"enabled": true
 								}
 							]
+						},
+						"description": "For the oauth endpoint using username password and refresh token"
+					},
+					"response": []
+				},
+				{
+					"name": "Refresh OAuth2 Token for User",
+					"request": {
+						"url": "http://localhost:8080/oauth/token",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "refresh_token",
+									"value": "instertrefreshTokenHere",
+									"type": "text",
+									"enabled": true
+								},
+								{
+									"key": "grant_type",
+									"value": "refresh_token",
+									"type": "text",
+									"enabled": true
+								},
+								{
+									"key": "scope",
+									"value": "read write",
+									"type": "text",
+									"enabled": true
+								},
+								{
+									"key": "client_secret",
+									"value": "my-secret-token-to-change-in-production",
+									"type": "text",
+									"enabled": true
+								},
+								{
+									"key": "client_id",
+									"value": "TheFitNationapp",
+									"type": "text",
+									"enabled": true
+								},
+								{
+									"key": "submit",
+									"value": "login",
+									"type": "text",
+									"enabled": true
+								}
+							]
+						},
+						"description": "For the oauth endpoint using username password and refresh token"
+					},
+					"response": []
+				},
+				{
+					"name": "Register New User",
+					"request": {
+						"url": "http://localhost:8080/api/register",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"poop@poop.com\",\r\n  \"langKey\": \"en\",\r\n  \"login\": \"poop\",\r\n  \"password\": \"poop\"\r\n}"
 						},
 						"description": ""
 					},
@@ -232,6 +295,26 @@
 						"description": ""
 					},
 					"response": []
+				},
+				{
+					"name": "Get All Exercises",
+					"request": {
+						"url": "http://localhost:8080/api/exercises",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer 88023e31-1689-4699-8c42-a18214d57b19",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\":\"Upright Row\",\n\t\"imageUri\":null,\n\t\"notes\":null,\n\t\"id\":null,\n\t\"skillLevelId\":1351,\n\t\"muscles\":[\n\t\t{\n\t\t\t\"id\":1251,\n\t\t\t\"name\":\"Deltoids\",\n\t\t\t\"bodyPartId\":1201,\n\t\t\t\"bodyPartName\":\"Shoulders\"\n\t\t}\n\t],\n\t\"exerciseFamilyId\":1301\n}"
+						},
+						"description": ""
+					},
+					"response": []
 				}
 			]
 		},
@@ -252,7 +335,7 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "Bearer 2191a7f5-313f-471b-9c4f-807ffa630751",
+								"value": "Bearer 88023e31-1689-4699-8c42-a18214d57b19",
 								"description": ""
 							}
 						],
@@ -264,12 +347,12 @@
 				{
 					"name": "Get ExerciseInstance By Id",
 					"request": {
-						"url": "http://localhost:8080/api/exercise-instances/9701",
+						"url": "http://localhost:8080/api/exercise-instances/6701",
 						"method": "GET",
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "Bearer aee6e0b8-fc84-4e73-8357-d6a3073c5536",
+								"value": "Bearer 88023e31-1689-4699-8c42-a18214d57b19",
 								"description": ""
 							}
 						],
@@ -296,7 +379,7 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "Bearer 2191a7f5-313f-471b-9c4f-807ffa630751",
+								"value": "Bearer 9a4026cc-4afe-4416-a274-61810f478ee6",
 								"description": ""
 							}
 						],
@@ -369,7 +452,7 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "Bearer 8cbe27a3-7e10-488e-a72e-3bed87094c2e",
+								"value": "Bearer 9a4026cc-4afe-4416-a274-61810f478ee6",
 								"description": ""
 							}
 						],
@@ -628,6 +711,26 @@
 						"description": "failing"
 					},
 					"response": []
+				},
+				{
+					"name": "Get All UserDemographics",
+					"request": {
+						"url": "http://localhost:8080/api/user-demographics",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer 88023e31-1689-4699-8c42-a18214d57b19",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"id\":2051,\n\t\"createdOn\":\"2012-03-11\",\n\t\"lastLogin\":\"2017-03-11\",\n\t\"gender\":\"Female\",\n\t\"dateOfBirth\":\"2000-03-11\",\n\t\"height\":75,\n\t\"unitOfMeasure\":\"Imperial\",\n\t\"gyms\":[],\n\t\"skillLevelId\":1351,\n\t\"skillLevelLevel\":\"Beginner\"\n}"
+						},
+						"description": "failing"
+					},
+					"response": []
 				}
 			]
 		},
@@ -792,7 +895,7 @@
 				{
 					"name": "Get UserExerciseInstanceSet By Id",
 					"request": {
-						"url": "http://localhost:8080/api/user-exercise-instance-sets/8251",
+						"url": "http://localhost:8080/api/user-exercise-instance-sets/15351",
 						"method": "GET",
 						"header": [
 							{
@@ -802,7 +905,7 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "Bearer 8cbe27a3-7e10-488e-a72e-3bed87094c2e",
+								"value": "Bearer 9a4026cc-4afe-4416-a274-61810f478ee6",
 								"description": ""
 							}
 						],
@@ -829,13 +932,13 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "Bearer 8cbe27a3-7e10-488e-a72e-3bed87094c2e",
+								"value": "Bearer 9a4026cc-4afe-4416-a274-61810f478ee6",
 								"description": ""
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"orderNumber\": 1,\n  \"repQuantity\": 190,\n  \"effortQuantity\": 190,\n  \"restTime\": 1290,\n  \"notes\": \"Create new set\",\n  \"userExerciseInstanceId\": 7751,\n  \"exerciseInstanceSetId\": null\n}"
+							"raw": "{\n  \"orderNumber\": 1,\n  \"repQuantity\": 190,\n  \"effortQuantity\": 190,\n  \"restTime\": 1290,\n  \"notes\": \"Create new set with exerciseInstanceSet\",\n  \"userExerciseInstanceId\": 7751,\n  \"exerciseInstanceSetId\": 10910\n}"
 						},
 						"description": ""
 					},
@@ -902,7 +1005,7 @@
 				{
 					"name": "Create User Weight",
 					"request": {
-						"url": "http://localhost:8080/api/user-weights/byLoggedInUser",
+						"url": "http://localhost:8080/api/user-weights",
 						"method": "POST",
 						"header": [
 							{
@@ -917,7 +1020,7 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "Bearer aee6e0b8-fc84-4e73-8357-d6a3073c5536",
+								"value": "Bearer f2db434c-9e5d-4c35-abaf-2e468ceaa8ae",
 								"description": ""
 							}
 						],
@@ -932,7 +1035,7 @@
 				{
 					"name": "Update User Weight",
 					"request": {
-						"url": "http://localhost:8080/api/user-weights/byLoggedInUser",
+						"url": "http://localhost:8080/api/user-weights",
 						"method": "PUT",
 						"header": [
 							{
@@ -947,7 +1050,7 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "Bearer aee6e0b8-fc84-4e73-8357-d6a3073c5536",
+								"value": "Bearer f2db434c-9e5d-4c35-abaf-2e468ceaa8ae",
 								"description": ""
 							}
 						],
@@ -962,7 +1065,7 @@
 				{
 					"name": "Delete User Weight",
 					"request": {
-						"url": "http://localhost:8080/api/user-weights/byLoggedInUser/9551",
+						"url": "http://localhost:8080/api/user-weights/9551",
 						"method": "DELETE",
 						"header": [
 							{
@@ -982,7 +1085,7 @@
 				{
 					"name": "Get User Weight by ID",
 					"request": {
-						"url": "http://localhost:8080/api/user-weights/byLoggedInUser/9401",
+						"url": "http://localhost:8080/api/user-weights/9401",
 						"method": "GET",
 						"header": [
 							{
@@ -1000,7 +1103,7 @@
 					"response": []
 				},
 				{
-					"name": "Get All User Weights by Logged in User",
+					"name": "Get All User Weights",
 					"request": {
 						"url": "http://localhost:8080/api/user-weights/byLoggedInUser",
 						"method": "GET",
@@ -1201,13 +1304,13 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "Bearer 8cbe27a3-7e10-488e-a72e-3bed87094c2e",
+								"value": "Bearer 88023e31-1689-4699-8c42-a18214d57b19",
 								"description": ""
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"createdOn\": \"2017-04-01\",\n  \"lastUpdated\": \"2017-04-01\",\n  \"notes\": \"New user workout template <3\",\n  \"userDemographicId\": 1051,\n  \"workoutTemplateId\": 1151,\n  \"workoutTemplateName\": \"Blah\"\n}"
+							"raw": "{\n  \"createdOn\": \"2017-04-01\",\n  \"lastUpdated\": \"2017-04-01\",\n  \"notes\": \"New user workout template <3\",\n  \"workoutTemplateId\": 1151,\n  \"workoutTemplateName\": \"Blah\"\n}"
 						},
 						"description": ""
 					},
@@ -1246,7 +1349,7 @@
 				{
 					"name": "Delete UserWorkoutTemplate By Id",
 					"request": {
-						"url": "http://localhost:8080/api/user-workout-templates/15102",
+						"url": "http://localhost:8080/api/user-workout-templates/15251",
 						"method": "DELETE",
 						"header": [
 							{
@@ -1445,13 +1548,13 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "Bearer 3dcbc283-88d2-4fa9-90eb-18d681cf6459",
+								"value": "Bearer 88023e31-1689-4699-8c42-a18214d57b19",
 								"description": ""
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"name\": \"TestWorkout TEmplate 2\",\n  \"createdOn\": \"2017-03-31\",\n  \"lastUpdated\": \"2017-03-31\",\n  \"isPrivate\": false,\n  \"notes\": \"blah\",\n  \"userDemographicId\": 1051,\n  \"skillLevelId\": 1001,\n  \"skillLevelLevel\": \"Beginner\"\n}"
+							"raw": "{\n  \"name\": \"TestWorkout TEmplate 2\",\n  \"createdOn\": \"2017-03-31\",\n  \"lastUpdated\": \"2017-03-31\",\n  \"isPrivate\": false,\n  \"notes\": \"blah\",\n  \"skillLevelId\": 1001,\n  \"skillLevelLevel\": \"Beginner\"\n}"
 						},
 						"description": ""
 					},
