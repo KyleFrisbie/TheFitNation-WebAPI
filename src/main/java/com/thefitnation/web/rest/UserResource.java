@@ -6,8 +6,10 @@ import com.thefitnation.domain.User;
 import com.thefitnation.repository.UserRepository;
 import com.thefitnation.security.AuthoritiesConstants;
 import com.thefitnation.service.MailService;
+import com.thefitnation.service.UserDemographicService;
 import com.thefitnation.service.UserService;
 import com.thefitnation.service.dto.UserDTO;
+import com.thefitnation.service.dto.UserDemographicDTO;
 import com.thefitnation.web.rest.vm.ManagedUserVM;
 import com.thefitnation.web.rest.util.HeaderUtil;
 import com.thefitnation.web.rest.util.PaginationUtil;
@@ -62,17 +64,20 @@ public class UserResource {
 
     private final UserRepository userRepository;
 
+    private final UserDemographicService userDemographicService;
+
     private final MailService mailService;
 
     private final UserService userService;
 
-    public UserResource(UserRepository userRepository, MailService mailService,
-            UserService userService) {
-
+    public UserResource(UserRepository userRepository, UserDemographicService userDemographicService, MailService mailService,
+                        UserService userService) {
         this.userRepository = userRepository;
+        this.userDemographicService = userDemographicService;
         this.mailService = mailService;
         this.userService = userService;
     }
+
 
     /**
      * POST  /users  : Creates a new user.
@@ -166,6 +171,14 @@ public class UserResource {
         return ResponseUtil.wrapOrNotFound(
             userService.getUserWithAuthoritiesByLogin(login)
                 .map(UserDTO::new));
+    }
+
+    @GetMapping("users/user-demographic")
+    @Timed
+    public ResponseEntity<UserDemographicDTO> getUserDemographic() {
+        log.debug("REST request to get UserDemographic");
+        UserDemographicDTO userDemographicDTO = userDemographicService.findOneByUser();
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(userDemographicDTO));
     }
 
     /**

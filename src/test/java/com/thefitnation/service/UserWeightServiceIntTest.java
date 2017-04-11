@@ -86,6 +86,7 @@ public class UserWeightServiceIntTest {
         List<UserWeight> userWeights = userWeightRepository.findAll();
         assertThat(userWeights).hasSize(databaseSizeBeforeCreate + 1);
         assertThat(testUserWeight.getId()).isNotNull();
+        assertThat(testUserWeight.getUserDemographicId()).isEqualTo(userDemographic.getId());
     }
 
     @Test

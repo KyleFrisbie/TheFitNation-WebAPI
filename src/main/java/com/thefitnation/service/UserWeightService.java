@@ -53,7 +53,7 @@ public class UserWeightService {
      */
     public UserWeightDTO save(UserWeightDTO userWeightDTO) {
         log.debug("Request to save UserWeight : {}", userWeightDTO);
-        User user = AccountAuthTool.getLoggedInUser(userRepository.findOneWithAuthoritiesByLogin(SecurityUtils.getCurrentUserLogin()));
+        User user = AccountAuthTool.getLoggedInUser(userRepository);
         if (user == null) {
             return null;
         }
@@ -63,7 +63,7 @@ public class UserWeightService {
 
         UserWeight userWeight = userWeightMapper.userWeightDTOToUserWeight(userWeightDTO);
 
-        if (isAdmin(user)) {
+        if (AccountAuthTool.isAdmin(user)) {
             userWeight = userWeightRepository.save(userWeight);
         } else {
             Optional<UserWeight> dbUserWeight = userWeightRepository.findOneByUserId(userWeight.getId(), user.getId());
@@ -85,13 +85,13 @@ public class UserWeightService {
     @Transactional(readOnly = true)
     public Page<UserWeightDTO> findAll(Pageable pageable) {
         log.debug("Request to get all UserWeights");
-        User user = AccountAuthTool.getLoggedInUser(userRepository.findOneWithAuthoritiesByLogin(SecurityUtils.getCurrentUserLogin()));
+        User user = AccountAuthTool.getLoggedInUser(userRepository);
         if (user == null) {
             return null;
         }
 
         Page<UserWeight> result;
-        if (isAdmin(user)) {
+        if (AccountAuthTool.isAdmin(user)) {
             result = userWeightRepository.findAll(pageable);
         } else {
             result = userWeightRepository.findAllByUserId(pageable, user.getId());
@@ -127,26 +127,17 @@ public class UserWeightService {
     }
 
     private UserWeightDTO getUserWeightWithPermission(Long id) {
-        User user = AccountAuthTool.getLoggedInUser(userRepository.findOneWithAuthoritiesByLogin(SecurityUtils.getCurrentUserLogin()));
+        User user = AccountAuthTool.getLoggedInUser(userRepository);
         UserDemographic userDemographic = userDemographicRepository.findOneByUserWithEagerRelationships(user.getId());
         if (userDemographic == null) {
             return null;
         }
         UserWeight userWeight = userWeightRepository.findOne(id);
-        if (!isAdmin(user)) {
+        if (!AccountAuthTool.isAdmin(user)) {
             if (!(userWeight.getUserDemographic().getId().equals(userDemographic.getId()))) {
                 return null;
             }
         }
         return userWeightMapper.userWeightToUserWeightDTO(userWeight);
-    }
-
-    private boolean isAdmin(User user) {
-        for (Authority role : user.getAuthorities()) {
-            if (role.getName().equals(AuthoritiesConstants.ADMIN)) {
-                return true;
-            }
-        }
-        return false;
     }
 }

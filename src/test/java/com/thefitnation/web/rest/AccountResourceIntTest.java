@@ -5,11 +5,12 @@ import com.thefitnation.domain.Authority;
 import com.thefitnation.domain.SkillLevel;
 import com.thefitnation.domain.User;
 import com.thefitnation.repository.AuthorityRepository;
+import com.thefitnation.repository.SkillLevelRepository;
+import com.thefitnation.repository.UserDemographicRepository;
 import com.thefitnation.repository.UserRepository;
 import com.thefitnation.security.AuthoritiesConstants;
 import com.thefitnation.service.MailService;
 import com.thefitnation.service.SkillLevelService;
-import com.thefitnation.service.UserDemographicService;
 import com.thefitnation.service.UserService;
 import com.thefitnation.service.dto.SkillLevelDTO;
 import com.thefitnation.service.dto.UserDTO;
@@ -50,25 +51,22 @@ public class AccountResourceIntTest {
     private UserRepository userRepository;
 
     @Autowired
+    private UserDemographicRepository userDemographicRepository;
+
+    @Autowired
     private AuthorityRepository authorityRepository;
 
     @Autowired
     private UserService userService;
 
     @Autowired
-    private UserDemographicService userDemographicService;
-
-    @Autowired
-    private SkillLevelService skillLevelService;
+    private SkillLevelRepository skillLevelRepository;
 
     @Mock
     private UserService mockUserService;
 
     @Mock
-    private UserDemographicService mockUserDemographicService;
-
-    @Mock
-    private SkillLevelService mockSkillLevelService;
+    private SkillLevelRepository mockSkillLevelRepository;
 
     @Mock
     private MailService mockMailService;
@@ -83,14 +81,14 @@ public class AccountResourceIntTest {
         doNothing().when(mockMailService).sendActivationEmail(anyObject());
 
         AccountResource accountResource =
-            new AccountResource(userRepository, userService, userDemographicService, skillLevelService, mockMailService);
+            new AccountResource(userRepository, userService, userDemographicRepository, skillLevelRepository, mockMailService);
 
         AccountResource accountUserMockResource =
-            new AccountResource(userRepository, mockUserService, mockUserDemographicService, mockSkillLevelService, mockMailService);
+            new AccountResource(userRepository, mockUserService, userDemographicRepository, mockSkillLevelRepository, mockMailService);
 
-        SkillLevelDTO skillLevelDTO = new SkillLevelDTO();
-        skillLevelDTO.setLevel("Beginner");
-        skillLevelService.save(skillLevelDTO);
+        SkillLevel skillLevel = new SkillLevel();
+        skillLevel.setLevel("Beginner");
+        skillLevelRepository.save(skillLevel);
 
         this.restMvc = MockMvcBuilders.standaloneSetup(accountResource).build();
         this.restUserMockMvc = MockMvcBuilders.standaloneSetup(accountUserMockResource).build();

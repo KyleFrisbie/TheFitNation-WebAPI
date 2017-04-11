@@ -34,7 +34,10 @@ public class TestUtils {
     public static List<User> generateUniqueUsers(EntityManager em, int numberOfUsers) {
         List<User> users = new ArrayList<>();
         for (int i = 0; i < numberOfUsers; i++) {
-            users.add(generateUniqueUser(em));
+            User user = generateUniqueUser(em);
+            em.persist(user);
+            em.flush();
+            users.add(user);
         }
         return users;
     }
@@ -52,13 +55,15 @@ public class TestUtils {
         user.setFirstName(login);
         user.setLastName(login);
         user.setImageUrl("http://placehold.it/50x50");
-        em.persist(user);
-        em.flush();
         uniqueUserNumber++;
         return user;
     }
 
     public static UserDemographic generateUserDemographic(EntityManager em) {
+        User user = generateUniqueUser(em);
+        em.persist(user);
+        em.flush();
+
         UserDemographic userDemographic = new UserDemographic()
             .createdOn(LocalDate.ofEpochDay(0L))
             .lastLogin(LocalDate.ofEpochDay(0L))
@@ -66,7 +71,7 @@ public class TestUtils {
             .dateOfBirth(LocalDate.ofEpochDay(0L))
             .height(1F)
             .unitOfMeasure(UnitOfMeasure.Imperial)
-            .user(generateUniqueUser(em))
+            .user(user)
             .skillLevel(generateSkillLevel(em));
         em.persist(userDemographic);
         em.flush();
@@ -74,6 +79,10 @@ public class TestUtils {
     }
 
     public static UserDemographic generateUserDemographic(EntityManager em, String login, String password) {
+        User user = generateUniqueUser(em, login, password);
+        em.persist(user);
+        em.flush();
+
         UserDemographic userDemographic = new UserDemographic()
             .createdOn(LocalDate.ofEpochDay(0L))
             .lastLogin(LocalDate.ofEpochDay(0L))
@@ -81,7 +90,7 @@ public class TestUtils {
             .dateOfBirth(LocalDate.ofEpochDay(0L))
             .height(1F)
             .unitOfMeasure(UnitOfMeasure.Imperial)
-            .user(generateUniqueUser(em, login, password))
+            .user(user)
             .skillLevel(generateSkillLevel(em));
         em.persist(userDemographic);
         em.flush();
@@ -181,8 +190,6 @@ public class TestUtils {
     public static UserWeight generateUserWeightForUser(EntityManager em) {
         return generateUserWeightForUser(em, generateUserDemographic(em));
     }
-
-
 
     public static Optional<User> logInUser(String login, String password, UserRepository userRepository) {
         SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
