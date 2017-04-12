@@ -128,12 +128,12 @@ public class UserWeightService {
 
     private UserWeightDTO getUserWeightWithPermission(Long id) {
         User user = AccountAuthTool.getLoggedInUser(userRepository);
-        UserDemographic userDemographic = userDemographicRepository.findOneByUserWithEagerRelationships(user.getId());
-        if (userDemographic == null) {
-            return null;
-        }
         UserWeight userWeight = userWeightRepository.findOne(id);
         if (!AccountAuthTool.isAdmin(user)) {
+            UserDemographic userDemographic = userDemographicRepository.findOneByUserWithEagerRelationships(user.getId());
+            if (userDemographic == null) {
+                return null;
+            }
             if (!(userWeight.getUserDemographic().getId().equals(userDemographic.getId()))) {
                 return null;
             }

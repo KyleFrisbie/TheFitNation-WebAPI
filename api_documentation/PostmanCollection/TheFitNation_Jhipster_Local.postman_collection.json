@@ -28,13 +28,13 @@
 							"urlencoded": [
 								{
 									"key": "username",
-									"value": "poop",
+									"value": "user",
 									"type": "text",
 									"enabled": true
 								},
 								{
 									"key": "password",
-									"value": "poop",
+									"value": "user",
 									"type": "text",
 									"enabled": true
 								},
@@ -145,7 +145,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"email\": \"poop@poop.com\",\r\n  \"langKey\": \"en\",\r\n  \"login\": \"poop\",\r\n  \"password\": \"poop\"\r\n}"
+							"raw": "{\r\n  \"email\": \"snack@pack.com\",\r\n  \"langKey\": \"en\",\r\n  \"login\": \"snack\",\r\n  \"password\": \"snack\"\r\n}"
 						},
 						"description": ""
 					},
@@ -685,7 +685,7 @@
 				{
 					"name": "Update User Demographic by Logged In User",
 					"request": {
-						"url": "http://localhost:8080/api/user-demographics/byLoggedInUser",
+						"url": "http://localhost:8080/api/user-demographics",
 						"method": "PUT",
 						"header": [
 							{
@@ -700,13 +700,13 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "Bearer 82bb4fab-8fd4-4edc-a463-de9f1f1f69f4",
+								"value": "Bearer d54ff6a6-318c-47e0-b8e8-d0ea159158a9",
 								"description": ""
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"id\":2051,\n\t\"createdOn\":\"2012-03-11\",\n\t\"lastLogin\":\"2017-03-11\",\n\t\"gender\":\"Female\",\n\t\"dateOfBirth\":\"2000-03-11\",\n\t\"height\":75,\n\t\"unitOfMeasure\":\"Imperial\",\n\t\"gyms\":[],\n\t\"skillLevelId\":1351,\n\t\"skillLevelLevel\":\"Beginner\"\n}"
+							"raw": "{\n  \"createdOn\": \"2017-04-10\",\n  \"lastLogin\": \"2017-04-10\",\n  \"gender\": \"Female\",\n  \"dateOfBirth\": \"2000-03-11\",\n  \"height\": 75,\n  \"unitOfMeasure\": \"Imperial\",\n  \"userLogin\": \"user\",\n  \"gyms\": [],\n  \"skillLevelId\": 1001,\n  \"skillLevelLevel\": \"Beginner\"\n}"
 						},
 						"description": "failing"
 					},
@@ -720,7 +720,7 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "Bearer 88023e31-1689-4699-8c42-a18214d57b19",
+								"value": "Bearer d54ff6a6-318c-47e0-b8e8-d0ea159158a9",
 								"description": ""
 							}
 						],
@@ -729,6 +729,40 @@
 							"raw": "{\n\t\"id\":2051,\n\t\"createdOn\":\"2012-03-11\",\n\t\"lastLogin\":\"2017-03-11\",\n\t\"gender\":\"Female\",\n\t\"dateOfBirth\":\"2000-03-11\",\n\t\"height\":75,\n\t\"unitOfMeasure\":\"Imperial\",\n\t\"gyms\":[],\n\t\"skillLevelId\":1351,\n\t\"skillLevelLevel\":\"Beginner\"\n}"
 						},
 						"description": "failing"
+					},
+					"response": []
+				},
+				{
+					"name": "Get UserDemographic By Id",
+					"request": {
+						"url": "http://localhost:8080/api/user-demographics/1051",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer d54ff6a6-318c-47e0-b8e8-d0ea159158a9",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Get UserDemographic for Logged In User",
+					"request": {
+						"url": "http://localhost:8080/api/users/user-demographic",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer d54ff6a6-318c-47e0-b8e8-d0ea159158a9",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": ""
 					},
 					"response": []
 				}
@@ -1020,7 +1054,7 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "Bearer f2db434c-9e5d-4c35-abaf-2e468ceaa8ae",
+								"value": "Bearer d54ff6a6-318c-47e0-b8e8-d0ea159158a9",
 								"description": ""
 							}
 						],
@@ -1050,13 +1084,13 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "Bearer f2db434c-9e5d-4c35-abaf-2e468ceaa8ae",
+								"value": "Bearer d54ff6a6-318c-47e0-b8e8-d0ea159158a9",
 								"description": ""
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"weightDate\":\"2017-02-25\",\n\t\"weight\":12,\n\t\"id\":9401\n}"
+							"raw": "{\n\t\"weightDate\":\"2017-02-25\",\n\t\"weight\":12,\n\t\"id\": 1\n}"
 						},
 						"description": ""
 					},
@@ -1065,12 +1099,12 @@
 				{
 					"name": "Delete User Weight",
 					"request": {
-						"url": "http://localhost:8080/api/user-weights/9551",
+						"url": "http://localhost:8080/api/user-weights/17402",
 						"method": "DELETE",
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "Bearer aee6e0b8-fc84-4e73-8357-d6a3073c5536",
+								"value": "Bearer d54ff6a6-318c-47e0-b8e8-d0ea159158a9",
 								"description": ""
 							}
 						],
@@ -1085,12 +1119,12 @@
 				{
 					"name": "Get User Weight by ID",
 					"request": {
-						"url": "http://localhost:8080/api/user-weights/9401",
+						"url": "http://localhost:8080/api/user-weights/17401",
 						"method": "GET",
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "Bearer aee6e0b8-fc84-4e73-8357-d6a3073c5536",
+								"value": "Bearer d54ff6a6-318c-47e0-b8e8-d0ea159158a9",
 								"description": ""
 							}
 						],
@@ -1105,12 +1139,12 @@
 				{
 					"name": "Get All User Weights",
 					"request": {
-						"url": "http://localhost:8080/api/user-weights/byLoggedInUser",
+						"url": "http://localhost:8080/api/user-weights",
 						"method": "GET",
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "Bearer 76827adc-aee8-4641-84da-c10613d55c48",
+								"value": "Bearer d54ff6a6-318c-47e0-b8e8-d0ea159158a9",
 								"description": ""
 							}
 						],

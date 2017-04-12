@@ -273,7 +273,7 @@ public class UserWeightServiceIntTest {
     public void deleteOneUserWeightsByIdNotOwnedByAdmin() {
         Optional<User> user = TestUtils.logInUser("admin", "admin", userRepository);
         TestUtils.generateUserDemographic(em, user.get());
-        UserWeight userWeight = TestUtils.generateUserWeightForUser(em);
+        UserWeight userWeight = TestUtils.generateUserWeight(em);
         em.persist(userWeight);
         em.flush();
         int databaseSizeBeforeDelete = userWeightRepository.findAll().size();

@@ -28,6 +28,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
 import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -46,6 +47,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = TheFitNationApp.class)
 public class AccountResourceIntTest {
+
+    @Autowired
+    private EntityManager em;
 
     @Autowired
     private UserRepository userRepository;
@@ -95,6 +99,7 @@ public class AccountResourceIntTest {
     }
 
     @Test
+    @Transactional
     public void testNonAuthenticatedUser() throws Exception {
         restUserMockMvc.perform(get("/api/authenticate")
             .accept(MediaType.APPLICATION_JSON))
@@ -103,6 +108,7 @@ public class AccountResourceIntTest {
     }
 
     @Test
+    @Transactional
     public void testAuthenticatedUser() throws Exception {
         restUserMockMvc.perform(get("/api/authenticate")
             .with(request -> {
@@ -115,6 +121,7 @@ public class AccountResourceIntTest {
     }
 
     @Test
+    @Transactional
     public void testGetExistingAccount() throws Exception {
         Set<Authority> authorities = new HashSet<>();
         Authority authority = new Authority();
@@ -143,6 +150,7 @@ public class AccountResourceIntTest {
     }
 
     @Test
+    @Transactional
     public void testGetUnknownAccount() throws Exception {
         when(mockUserService.getUserWithAuthorities()).thenReturn(null);
 
@@ -152,6 +160,7 @@ public class AccountResourceIntTest {
     }
 
     @Test
+    @Transactional
     public void testDeactivateAccount() throws Exception {
         Set<Authority> authorities = new HashSet<>();
         Authority authority = new Authority();
@@ -175,6 +184,7 @@ public class AccountResourceIntTest {
     @Test
     @Transactional
     public void testRegisterValid() throws Exception {
+        em.clear();
         ManagedUserVM validUser = new ManagedUserVM(
             null,                   // id
             "joe",                  // login
@@ -331,6 +341,7 @@ public class AccountResourceIntTest {
     @Test
     @Transactional
     public void testRegisterDuplicateLogin() throws Exception {
+        em.clear();
         // Good
         ManagedUserVM validUser = new ManagedUserVM(
             null,                   // id
@@ -373,6 +384,7 @@ public class AccountResourceIntTest {
     @Test
     @Transactional
     public void testRegisterDuplicateEmail() throws Exception {
+        em.clear();
         // Good
         ManagedUserVM validUser = new ManagedUserVM(
             null,                   // id

@@ -34,7 +34,10 @@ public class UserWeightRepositoryIntTest {
 
     @Test
     public void findAllByUserId() {
-        User user = TestUtils.generateUniqueUser(em);
+        User user = TestUtils.generateUniqueUser();
+        em.persist(user);
+        em.flush();
+
         List<UserWeight> userWeights = TestUtils.generateUserWeightsForUser(em, NUMBER_OF_USER_WEIGHTS, user);
         Page<UserWeight> savedUserWeights = userWeightRepository.findAllByUserId(null, user.getId());
 
@@ -46,7 +49,10 @@ public class UserWeightRepositoryIntTest {
 
     @Test
     public void findOneByUserId() {
-        User user = TestUtils.generateUniqueUser(em);
+        User user = TestUtils.generateUniqueUser();
+        em.persist(user);
+        em.flush();
+
         List<UserWeight> userWeights = TestUtils.generateUserWeightsForUser(em, NUMBER_OF_USER_WEIGHTS, user);
         UserWeight userWeight = userWeights.get(0);
         Optional<UserWeight> foundUserWeight = userWeightRepository.findOneByUserId(userWeight.getId(), user.getId());

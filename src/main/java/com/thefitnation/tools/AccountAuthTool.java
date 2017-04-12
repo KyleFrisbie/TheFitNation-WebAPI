@@ -23,9 +23,11 @@ public class AccountAuthTool {
     }
 
     public static boolean isAdmin(User user) {
-        for (Authority role : user.getAuthorities()) {
-            if (role.getName().equals(AuthoritiesConstants.ADMIN)) {
-                return true;
+        if (user != null) {
+            for (Authority role : user.getAuthorities()) {
+                if (role.getName().equals(AuthoritiesConstants.ADMIN)) {
+                    return true;
+                }
             }
         }
         return false;

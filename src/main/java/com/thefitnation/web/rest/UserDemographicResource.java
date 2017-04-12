@@ -98,32 +98,6 @@ public class UserDemographicResource {
             .body(result);
     }
 
-    /***
-     * PUT /user-demographics/byLoggedInUser : Updates a logged in user's userDemographic
-     *
-     * @param userDemographicDTO
-     * @return
-     * @throws URISyntaxException
-     */
-    @PutMapping("/user-demographics/byLoggedInUser")
-    @Timed
-    public ResponseEntity<UserDemographicDTO> updateUserDemographicByLoggedInUser(@Valid @RequestBody UserDemographicDTO userDemographicDTO) throws URISyntaxException {
-        log.debug("REST request to update UserDemographic : {}", userDemographicDTO);
-        UserDemographicDTO foundUserDemographic = userDemographicService.findOneByUser();
-
-        if(foundUserDemographic != null) {
-            userDemographicDTO.setId(foundUserDemographic.getId());
-        }
-
-        if (userDemographicDTO.getId() == null) {
-            return createUserDemographic(userDemographicDTO);
-        }
-        UserDemographicDTO result = userDemographicService.save(userDemographicDTO);
-        return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, userDemographicDTO.getId().toString()))
-            .body(result);
-    }
-
     /**
      * GET  /user-demographics : get all the userDemographics.
      *

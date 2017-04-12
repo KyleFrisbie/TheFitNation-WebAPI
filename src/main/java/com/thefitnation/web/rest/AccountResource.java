@@ -101,7 +101,8 @@ public class AccountResource {
 
                     SkillLevel beginnerSkillLevel = skillLevelRepository.findOneByLevel("Beginner");
                     if (beginnerSkillLevel == null) {
-                        beginnerSkillLevel.setLevel("Beginner");
+                        beginnerSkillLevel = new SkillLevel()
+                            .level("Beginner");
                         beginnerSkillLevel = skillLevelRepository.save(beginnerSkillLevel);
                     }
                     userDemographic.setSkillLevel(beginnerSkillLevel);
