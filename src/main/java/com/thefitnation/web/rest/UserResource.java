@@ -175,7 +175,7 @@ public class UserResource {
 
     @GetMapping("users/user-demographic")
     @Timed
-    public ResponseEntity<UserDemographicDTO> getUserDemographic() {
+    public ResponseEntity<UserDemographicDTO> getUserDemographic(Long id) {
         log.debug("REST request to get UserDemographic");
         UserDemographicDTO userDemographicDTO = userDemographicService.findOneByUser();
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(userDemographicDTO));
