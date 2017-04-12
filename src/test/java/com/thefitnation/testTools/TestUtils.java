@@ -34,16 +34,19 @@ public class TestUtils {
     public static List<User> generateUniqueUsers(EntityManager em, int numberOfUsers) {
         List<User> users = new ArrayList<>();
         for (int i = 0; i < numberOfUsers; i++) {
-            users.add(generateUniqueUser(em));
+            User user = generateUniqueUser();
+            em.persist(user);
+            em.flush();
+            users.add(user);
         }
         return users;
     }
 
-    public static User generateUniqueUser(EntityManager em) {
-        return generateUniqueUser(em, "test" + uniqueUserNumber, RandomStringUtils.random(60));
+    public static User generateUniqueUser() {
+        return generateUniqueUser("test" + uniqueUserNumber, RandomStringUtils.random(60));
     }
 
-    public static User generateUniqueUser(EntityManager em, String login, String password) {
+    public static User generateUniqueUser(String login, String password) {
         User user = new User();
         user.setLogin(login);
         user.setPassword(password);
@@ -52,44 +55,42 @@ public class TestUtils {
         user.setFirstName(login);
         user.setLastName(login);
         user.setImageUrl("http://placehold.it/50x50");
-        em.persist(user);
-        em.flush();
         uniqueUserNumber++;
         return user;
     }
 
+    public static List<UserDemographic> generateUserDemographics(EntityManager em, int numberOfUserDemographics) {
+        List<UserDemographic> userDemographics = new ArrayList<>(numberOfUserDemographics);
+        for (int i = 0; i < numberOfUserDemographics; i++) {
+            UserDemographic userDemographic = generateUserDemographic(em);
+            em.persist(userDemographic);
+            em.flush();
+            userDemographics.add(userDemographic);
+        }
+        return userDemographics;
+    }
+
+    public static List<UserDemographic> generateUserDemographics(EntityManager em, int numberOfUserDemographics, User user) {
+        List<UserDemographic> userDemographics = new ArrayList<>(numberOfUserDemographics);
+        for (int i = 0; i < numberOfUserDemographics; i++) {
+            UserDemographic userDemographic = generateUserDemographic(em, user);
+            em.persist(userDemographic);
+            em.flush();
+            userDemographics.add(userDemographic);
+        }
+        return userDemographics;
+    }
+
     public static UserDemographic generateUserDemographic(EntityManager em) {
-        UserDemographic userDemographic = new UserDemographic()
-            .createdOn(LocalDate.ofEpochDay(0L))
-            .lastLogin(LocalDate.ofEpochDay(0L))
-            .gender(Gender.Male)
-            .dateOfBirth(LocalDate.ofEpochDay(0L))
-            .height(1F)
-            .unitOfMeasure(UnitOfMeasure.Imperial)
-            .user(generateUniqueUser(em))
-            .skillLevel(generateSkillLevel(em));
-        em.persist(userDemographic);
+        User user = generateUniqueUser();
+        em.persist(user);
         em.flush();
-        return userDemographic;
-    }
 
-    public static UserDemographic generateUserDemographic(EntityManager em, String login, String password) {
-        UserDemographic userDemographic = new UserDemographic()
-            .createdOn(LocalDate.ofEpochDay(0L))
-            .lastLogin(LocalDate.ofEpochDay(0L))
-            .gender(Gender.Male)
-            .dateOfBirth(LocalDate.ofEpochDay(0L))
-            .height(1F)
-            .unitOfMeasure(UnitOfMeasure.Imperial)
-            .user(generateUniqueUser(em, login, password))
-            .skillLevel(generateSkillLevel(em));
-        em.persist(userDemographic);
+        SkillLevel skillLevel = generateSkillLevel();
+        em.persist(skillLevel);
         em.flush();
-        return userDemographic;
-    }
 
-    public static UserDemographic generateUserDemographic(EntityManager em, User user) {
-        UserDemographic userDemographic = new UserDemographic()
+        return new UserDemographic()
             .createdOn(LocalDate.ofEpochDay(0L))
             .lastLogin(LocalDate.ofEpochDay(0L))
             .gender(Gender.Male)
@@ -97,18 +98,47 @@ public class TestUtils {
             .height(1F)
             .unitOfMeasure(UnitOfMeasure.Imperial)
             .user(user)
-            .skillLevel(generateSkillLevel(em));
-        em.persist(userDemographic);
-        em.flush();
-        return userDemographic;
+            .skillLevel(skillLevel);
     }
 
-    public static SkillLevel generateSkillLevel(EntityManager em) {
-        SkillLevel skillLevel = new SkillLevel()
-            .level("Beginner");
+    public static UserDemographic generateUserDemographic(EntityManager em, String login, String password) {
+        User user = generateUniqueUser(login, password);
+        em.persist(user);
+        em.flush();
+
+        SkillLevel skillLevel = generateSkillLevel();
         em.persist(skillLevel);
         em.flush();
-        return skillLevel;
+
+        return new UserDemographic()
+            .createdOn(LocalDate.ofEpochDay(0L))
+            .lastLogin(LocalDate.ofEpochDay(0L))
+            .gender(Gender.Male)
+            .dateOfBirth(LocalDate.ofEpochDay(0L))
+            .height(1F)
+            .unitOfMeasure(UnitOfMeasure.Imperial)
+            .user(user)
+            .skillLevel(skillLevel);
+    }
+
+    public static UserDemographic generateUserDemographic(EntityManager em, User user) {
+        SkillLevel skillLevel = generateSkillLevel();
+        em.persist(skillLevel);
+        em.flush();
+
+        return new UserDemographic()
+            .createdOn(LocalDate.ofEpochDay(0L))
+            .lastLogin(LocalDate.ofEpochDay(0L))
+            .gender(Gender.Male)
+            .dateOfBirth(LocalDate.ofEpochDay(0L))
+            .height(1F)
+            .unitOfMeasure(UnitOfMeasure.Imperial)
+            .user(user)
+            .skillLevel(skillLevel);
+    }
+
+    public static SkillLevel generateSkillLevel() {
+        return new SkillLevel().level("Beginner");
     }
 
     public static List<UserWeight> generateUserWeights(EntityManager em, int numberOfUserWeights) {
@@ -122,55 +152,69 @@ public class TestUtils {
         return userWeights;
     }
 
-    public static List<UserWeight> generateUserWeightsForUser(EntityManager em, int numberOfUserWeights, String login, String password) {
+    private static List<UserWeight> createUserWeightsForUserDemographic(EntityManager em, int numberOfUserWeights, UserDemographic userDemographic) {
         List<UserWeight> userWeights = new ArrayList<>();
-        UserDemographic userDemographic = generateUserDemographic(em, login, password);
         for (int i = 0; i < numberOfUserWeights; i++) {
-            UserWeight userWeight = generateUserWeightForUser(em, userDemographic);
+            UserWeight userWeight = generateUserWeightForUser(userDemographic);
             em.persist(userWeight);
             em.flush();
-            userWeights.add(generateUserWeightForUser(em, userDemographic));
-        }
-        return userWeights;
-    }
 
-    public static List<UserWeight> generateUserWeightsForUser(EntityManager em, int numberOfUserWeights, User user) {
-        List<UserWeight> userWeights = new ArrayList<>();
-        UserDemographic userDemographic = generateUserDemographic(em, user);
-        for (int i = 0; i < numberOfUserWeights; i++) {
-            UserWeight userWeight = generateUserWeightForUser(em, userDemographic);
-            em.persist(userWeight);
-            em.flush();
             userWeights.add(userWeight);
         }
         return userWeights;
     }
 
+    public static List<UserWeight> generateUserWeightsForUser(EntityManager em, int numberOfUserWeights, String login, String password) {
+        UserDemographic userDemographic = generateUserDemographic(em, login, password);
+        em.persist(userDemographic);
+        em.flush();
+        return createUserWeightsForUserDemographic(em, numberOfUserWeights, userDemographic);
+    }
+
+    public static List<UserWeight> generateUserWeightsForUser(EntityManager em, int numberOfUserWeights, User user) {
+        UserDemographic userDemographic = generateUserDemographic(em, user);
+        em.persist(userDemographic);
+        em.flush();
+        return createUserWeightsForUserDemographic(em, numberOfUserWeights, userDemographic);
+    }
+
     public static UserWeight generateUserWeight(EntityManager em) {
+        UserDemographic userDemographic = generateUserDemographic(em);
+        em.persist(userDemographic);
+        em.flush();
+
         UserWeight userWeight = new UserWeight()
             .weightDate(LocalDate.ofEpochDay(0L))
             .weight(1F);
-        userWeight.setUserDemographic(generateUserDemographic(em));
+        userWeight.setUserDemographic(userDemographic);
         return userWeight;
     }
 
     public static UserWeight generateUserWeightForUser(EntityManager em, String login, String password) {
+        UserDemographic userDemographic = generateUserDemographic(em, login, password);
+        em.persist(userDemographic);
+        em.flush();
+
         UserWeight userWeight = new UserWeight()
             .weightDate(LocalDate.ofEpochDay(0L))
             .weight(1F);
-        userWeight.setUserDemographic(generateUserDemographic(em, login, password));
+        userWeight.setUserDemographic(userDemographic);
         return userWeight;
     }
 
     public static UserWeight generateUserWeightForUser(EntityManager em, User user) {
+        UserDemographic userDemographic = generateUserDemographic(em, user);
+        em.persist(userDemographic);
+        em.flush();
+
         UserWeight userWeight = new UserWeight()
             .weightDate(LocalDate.ofEpochDay(0L))
             .weight(1F);
-        userWeight.setUserDemographic(generateUserDemographic(em, user));
+        userWeight.setUserDemographic(userDemographic);
         return userWeight;
     }
 
-    public static UserWeight generateUserWeightForUser(EntityManager em, UserDemographic userDemographic) {
+    public static UserWeight generateUserWeightForUser(UserDemographic userDemographic) {
         UserWeight userWeight = new UserWeight()
             .weightDate(LocalDate.ofEpochDay(0L))
             .weight(1F);
@@ -179,10 +223,12 @@ public class TestUtils {
     }
 
     public static UserWeight generateUserWeightForUser(EntityManager em) {
-        return generateUserWeightForUser(em, generateUserDemographic(em));
+        UserDemographic userDemographic = generateUserDemographic(em);
+        em.persist(userDemographic);
+        em.flush();
+
+        return generateUserWeightForUser(userDemographic);
     }
-
-
 
     public static Optional<User> logInUser(String login, String password, UserRepository userRepository) {
         SecurityContext securityContext = SecurityContextHolder.createEmptyContext();

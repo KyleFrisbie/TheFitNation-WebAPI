@@ -143,6 +143,7 @@ public class UserWeightResourceIntTest {
         UserWeight testUserWeight = userWeightList.get(userWeightList.size() - 1);
         assertThat(testUserWeight.getWeightDate()).isEqualTo(DEFAULT_WEIGHT_DATE);
         assertThat(testUserWeight.getWeight()).isEqualTo(DEFAULT_WEIGHT);
+        assertThat(testUserWeight.getUserDemographic().getId()).isEqualTo(userWeight.getUserDemographic().getId());
     }
 
     @Test

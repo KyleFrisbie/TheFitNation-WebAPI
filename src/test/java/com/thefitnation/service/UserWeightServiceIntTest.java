@@ -86,6 +86,7 @@ public class UserWeightServiceIntTest {
         List<UserWeight> userWeights = userWeightRepository.findAll();
         assertThat(userWeights).hasSize(databaseSizeBeforeCreate + 1);
         assertThat(testUserWeight.getId()).isNotNull();
+        assertThat(testUserWeight.getUserDemographicId()).isEqualTo(userDemographic.getId());
     }
 
     @Test
@@ -272,7 +273,7 @@ public class UserWeightServiceIntTest {
     public void deleteOneUserWeightsByIdNotOwnedByAdmin() {
         Optional<User> user = TestUtils.logInUser("admin", "admin", userRepository);
         TestUtils.generateUserDemographic(em, user.get());
-        UserWeight userWeight = TestUtils.generateUserWeightForUser(em);
+        UserWeight userWeight = TestUtils.generateUserWeight(em);
         em.persist(userWeight);
         em.flush();
         int databaseSizeBeforeDelete = userWeightRepository.findAll().size();
