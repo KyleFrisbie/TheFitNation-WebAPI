@@ -80,12 +80,11 @@ public class WorkoutInstanceService {
     public WorkoutInstanceDTO update(WorkoutInstanceDTO workoutInstanceDTO) {
         log.debug("Request to update WorkoutInstance : {}", workoutInstanceDTO);
 
-        String s = workoutTemplateRepository
+        if (!workoutTemplateRepository
             .findOne(workoutInstanceDTO.getWorkoutTemplateId())
             .getUserDemographic()
             .getUser()
-            .getLogin();
-        if (!s.equals(SecurityUtils.getCurrentUserLogin())) {
+            .getLogin().equals(SecurityUtils.getCurrentUserLogin())) {
             return null;
         }
 
