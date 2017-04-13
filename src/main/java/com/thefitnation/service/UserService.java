@@ -1,28 +1,20 @@
 package com.thefitnation.service;
 
-import com.thefitnation.domain.Authority;
-import com.thefitnation.domain.User;
-import com.thefitnation.repository.AuthorityRepository;
-import com.thefitnation.config.Constants;
-import com.thefitnation.repository.UserRepository;
-import com.thefitnation.security.AuthoritiesConstants;
-import com.thefitnation.security.SecurityUtils;
-import com.thefitnation.service.util.RandomUtil;
-import com.thefitnation.service.dto.UserDTO;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import javax.swing.text.html.Option;
-import java.time.ZonedDateTime;
+import com.thefitnation.config.*;
+import com.thefitnation.domain.*;
+import com.thefitnation.repository.*;
+import com.thefitnation.security.*;
+import com.thefitnation.service.dto.*;
+import com.thefitnation.service.util.*;
+import java.time.*;
 import java.util.*;
+import org.slf4j.*;
+import org.springframework.data.domain.*;
+import org.springframework.scheduling.annotation.*;
+import org.springframework.security.crypto.password.*;
+import org.springframework.security.oauth2.provider.token.store.*;
+import org.springframework.stereotype.*;
+import org.springframework.transaction.annotation.*;
 
 /**
  * Service class for managing users.
@@ -250,6 +242,10 @@ public class UserService {
         return userRepository.findOneWithAuthoritiesByLogin(SecurityUtils.getCurrentUserLogin()).orElse(null);
     }
 
+    @Transactional(readOnly = true)
+    public Optional<User> findCurrentLoggedInUser() {
+        return userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin());
+    }
 
     /**
      * Not activated users should be automatically deleted after 3 days.

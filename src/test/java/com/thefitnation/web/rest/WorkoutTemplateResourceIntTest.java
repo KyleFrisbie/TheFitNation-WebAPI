@@ -1,37 +1,30 @@
 package com.thefitnation.web.rest;
 
-import com.thefitnation.TheFitNationApp;
+import com.thefitnation.*;
+import com.thefitnation.domain.*;
+import com.thefitnation.repository.*;
+import com.thefitnation.service.*;
+import com.thefitnation.service.dto.*;
+import com.thefitnation.service.mapper.*;
+import com.thefitnation.web.rest.errors.*;
+import java.time.*;
+import java.util.*;
+import javax.persistence.*;
+import org.junit.*;
+import org.junit.runner.*;
+import org.mockito.*;
+import org.springframework.beans.factory.annotation.*;
+import org.springframework.boot.test.context.*;
+import org.springframework.data.web.*;
+import org.springframework.http.*;
+import org.springframework.http.converter.json.*;
+import org.springframework.test.context.junit4.*;
+import org.springframework.test.web.servlet.*;
+import org.springframework.test.web.servlet.setup.*;
+import org.springframework.transaction.annotation.*;
 
-import com.thefitnation.domain.WorkoutTemplate;
-import com.thefitnation.domain.UserDemographic;
-import com.thefitnation.domain.SkillLevel;
-import com.thefitnation.repository.WorkoutTemplateRepository;
-import com.thefitnation.service.WorkoutTemplateService;
-import com.thefitnation.service.dto.WorkoutTemplateDTO;
-import com.thefitnation.service.mapper.WorkoutTemplateMapper;
-import com.thefitnation.web.rest.errors.ExceptionTranslator;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
-import org.springframework.http.MediaType;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.transaction.annotation.Transactional;
-
-import javax.persistence.EntityManager;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.hasItem;
+import static org.assertj.core.api.Assertions.*;
+import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -85,9 +78,9 @@ public class WorkoutTemplateResourceIntTest {
     private WorkoutTemplate workoutTemplate;
 
     @Before
-    public void setup() {
+    public void setup(UserRepository userRepository) {
         MockitoAnnotations.initMocks(this);
-        WorkoutTemplateResource workoutTemplateResource = new WorkoutTemplateResource(workoutTemplateService);
+        WorkoutTemplateResource workoutTemplateResource = new WorkoutTemplateResource(workoutTemplateService, userRepository);
         this.restWorkoutTemplateMockMvc = MockMvcBuilders.standaloneSetup(workoutTemplateResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
