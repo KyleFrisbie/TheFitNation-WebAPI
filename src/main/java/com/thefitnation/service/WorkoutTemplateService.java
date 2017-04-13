@@ -96,22 +96,10 @@ public class WorkoutTemplateService {
      */
     @Transactional(readOnly = true)
     public Page<WorkoutTemplateDTO> findAll(Pageable pageable) {
-        log.debug("Request to get all WorkoutTemplates");
-        Page<WorkoutTemplate> result = workoutTemplateRepository.findAll(pageable);
-        return result.map(workoutTemplate -> workoutTemplateMapper.workoutTemplateToWorkoutTemplateDTO(workoutTemplate));
-    }
-
-    /**
-     * find All by Login
-     * @param pageable options for returning WorkoutTemplateDTOs
-     * @return a Page of WorkoutTemplateDTOs
-     */
-    public Page<WorkoutTemplateDTO> findAllByLogin(Pageable pageable) {
         log.debug("Request to get all WorkoutTemplates by current logged in user.");
         String login = SecurityUtils.getCurrentUserLogin();
         Page<WorkoutTemplate> result = workoutTemplateRepository.findAllByCurrentLoggedInUser(login, pageable);
         return result.map(workoutTemplateMapper::workoutTemplateToWorkoutTemplateDTO);
-
     }
 
     /**
