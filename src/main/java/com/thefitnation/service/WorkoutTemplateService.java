@@ -124,9 +124,10 @@ public class WorkoutTemplateService {
      */
     public void delete(Long id) {
         log.debug("Request to delete WorkoutTemplate : {}", id);
-
-        if (workoutTemplateRepository.findOne(SecurityUtils.getCurrentUserLogin(), id).getId() != null)
+        if (workoutTemplateRepository.findOne(SecurityUtils.getCurrentUserLogin(), id).getId() != null) {
+            removeWorkoutTemplateFromRelatedItems(id);
             workoutTemplateRepository.delete(id);
+        }
     }
 
     public void removeWorkoutTemplateFromRelatedItems(Long id) {
