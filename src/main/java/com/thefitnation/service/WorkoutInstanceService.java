@@ -40,7 +40,7 @@ public class WorkoutInstanceService {
         this.exerciseInstanceService = exerciseInstanceService;
     }
 
-    /**
+    /**x
      * Save a workoutInstance.
      *
      * @param workoutInstanceDTO the entity to save
@@ -49,13 +49,11 @@ public class WorkoutInstanceService {
     public WorkoutInstanceDTO save(WorkoutInstanceDTO workoutInstanceDTO) {
         log.debug("Request to save WorkoutInstance : {}", workoutInstanceDTO);
 
-        String s = workoutTemplateRepository
+        if (!workoutTemplateRepository
             .findOne(workoutInstanceDTO.getWorkoutTemplateId())
             .getUserDemographic()
             .getUser()
-            .getLogin();
-
-        if (!s.equals(SecurityUtils.getCurrentUserLogin())) { return null; }
+            .getLogin().equals(SecurityUtils.getCurrentUserLogin())) { return null; }
 
         WorkoutInstance workoutInstance = workoutInstanceMapper.workoutInstanceDTOToWorkoutInstance(workoutInstanceDTO);
 
@@ -69,14 +67,7 @@ public class WorkoutInstanceService {
 
         List<ExerciseInstanceDTO> exerciseInstanceDTOs = workoutInstanceDTO.getExerciseInstances();
 
-        if (exerciseInstanceDTOs != null && exerciseInstanceDTOs.size() > 0) {
-            List<ExerciseInstanceDTO> savedExerciseInstanceDTOs = new ArrayList<>();
-            for (ExerciseInstanceDTO exerciseInstanceDTO : exerciseInstanceDTOs) {
-                exerciseInstanceDTO.setWorkoutInstanceId(workoutInstance.getId());
-                savedExerciseInstanceDTOs.add(exerciseInstanceService.save(exerciseInstanceDTO));
-            }
-            workoutInstance.setExerciseInstances(new HashSet<>(exerciseInstanceMapper.exerciseInstanceDTOsToExerciseInstances(savedExerciseInstanceDTOs)));
-        }
+        exerciseInstanceDTOExists(workoutInstance, exerciseInstanceDTOs);
         return workoutInstanceMapper.workoutInstanceToWorkoutInstanceDTO(workoutInstance);
     }
 
@@ -109,14 +100,7 @@ public class WorkoutInstanceService {
 
         List<ExerciseInstanceDTO> exerciseInstanceDTOs = workoutInstanceDTO.getExerciseInstances();
 
-        if (exerciseInstanceDTOs != null && exerciseInstanceDTOs.size() > 0) {
-            List<ExerciseInstanceDTO> savedExerciseInstanceDTOs = new ArrayList<>();
-            for (ExerciseInstanceDTO exerciseInstanceDTO : exerciseInstanceDTOs) {
-                exerciseInstanceDTO.setWorkoutInstanceId(workoutInstance.getId());
-                savedExerciseInstanceDTOs.add(exerciseInstanceService.save(exerciseInstanceDTO));
-            }
-            workoutInstance.setExerciseInstances(new HashSet<>(exerciseInstanceMapper.exerciseInstanceDTOsToExerciseInstances(savedExerciseInstanceDTOs)));
-        }
+        exerciseInstanceDTOExists(workoutInstance, exerciseInstanceDTOs);
 
         return workoutInstanceMapper.workoutInstanceToWorkoutInstanceDTO(workoutInstance);
     }
@@ -176,6 +160,18 @@ public class WorkoutInstanceService {
             workoutInstanceRepository.delete(id);
         }
     }
+
+    private void exerciseInstanceDTOExists(WorkoutInstance workoutInstance, List<ExerciseInstanceDTO> exerciseInstanceDTOs) {
+        if (exerciseInstanceDTOs != null && exerciseInstanceDTOs.size() > 0) {
+            List<ExerciseInstanceDTO> savedExerciseInstanceDTOs = new ArrayList<>();
+            for (ExerciseInstanceDTO exerciseInstanceDTO : exerciseInstanceDTOs) {
+                exerciseInstanceDTO.setWorkoutInstanceId(workoutInstance.getId());
+                savedExerciseInstanceDTOs.add(exerciseInstanceService.save(exerciseInstanceDTO));
+            }
+            workoutInstance.setExerciseInstances(new HashSet<>(exerciseInstanceMapper.exerciseInstanceDTOsToExerciseInstances(savedExerciseInstanceDTOs)));
+        }
+    }
+
 
     private void removeWorkoutInstanceFromRelatedItems(Long id) {
         WorkoutInstance workoutInstance = workoutInstanceRepository.findOne(id);
