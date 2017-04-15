@@ -133,12 +133,6 @@ public class UserDemographicService {
         return userDemographicMapper.userDemographicToUserDemographicDTO(userDemographic);
     }
 
-    @Transactional(readOnly = true)
-    public UserDemographic findOneByLogin(String currentUserLogin) {
-        log.debug("Request to get UserDemographic by User : {}", currentUserLogin);
-        return userDemographicRepository.findOneByLogin(currentUserLogin);
-    }
-
     /**
      * Delete the  userDemographic by id.
      *

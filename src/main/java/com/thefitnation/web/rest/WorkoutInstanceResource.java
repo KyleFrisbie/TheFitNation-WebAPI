@@ -68,7 +68,7 @@ public class WorkoutInstanceResource {
         if (workoutInstanceDTO.getId() == null) {
             return createWorkoutInstance(workoutInstanceDTO);
         }
-        WorkoutInstanceDTO result = workoutInstanceService.update(workoutInstanceDTO);
+        WorkoutInstanceDTO result = workoutInstanceService.save(workoutInstanceDTO);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, workoutInstanceDTO.getId().toString()))
             .body(result);
@@ -83,9 +83,9 @@ public class WorkoutInstanceResource {
      */
     @GetMapping("/workout-instances")
     @Timed
-    public ResponseEntity<List<WorkoutInstanceDTO>> getAllWorkoutInstancesByCurrUser(@ApiParam Pageable pageable) throws URISyntaxException {
+    public ResponseEntity<List<WorkoutInstanceDTO>> getAllWorkoutInstances(@ApiParam Pageable pageable) throws URISyntaxException {
         log.debug("REST request to get a page of WorkoutInstances by current logged in user");
-        Page<WorkoutInstanceDTO> page = workoutInstanceService.findAllByCurrentLoggedInUser(pageable);
+        Page<WorkoutInstanceDTO> page = workoutInstanceService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/workout-instances");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }

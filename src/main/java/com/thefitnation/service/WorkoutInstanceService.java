@@ -28,8 +28,17 @@ public class WorkoutInstanceService {
     private final WorkoutInstanceMapper workoutInstanceMapper;
     private final ExerciseInstanceMapper exerciseInstanceMapper;
     private final ExerciseInstanceService exerciseInstanceService;
+    private final UserRepository userRepository;
 
-    public WorkoutInstanceService(WorkoutTemplateRepository workoutTemplateRepository, WorkoutInstanceRepository workoutInstanceRepository, ExerciseInstanceRepository exerciseInstanceRepository, UserWorkoutInstanceRepository userWorkoutInstanceRepository, UserExerciseInstanceRepository userExerciseInstanceRepository, WorkoutInstanceMapper workoutInstanceMapper, ExerciseInstanceMapper exerciseInstanceMapper, ExerciseInstanceService exerciseInstanceService) {
+    public WorkoutInstanceService(WorkoutTemplateRepository workoutTemplateRepository,
+                                  WorkoutInstanceRepository workoutInstanceRepository,
+                                  ExerciseInstanceRepository exerciseInstanceRepository,
+                                  UserWorkoutInstanceRepository userWorkoutInstanceRepository,
+                                  UserExerciseInstanceRepository userExerciseInstanceRepository,
+                                  WorkoutInstanceMapper workoutInstanceMapper,
+                                  ExerciseInstanceMapper exerciseInstanceMapper,
+                                  ExerciseInstanceService exerciseInstanceService,
+                                  UserRepository userRepository) {
         this.workoutTemplateRepository = workoutTemplateRepository;
         this.workoutInstanceRepository = workoutInstanceRepository;
         this.exerciseInstanceRepository = exerciseInstanceRepository;
@@ -38,9 +47,10 @@ public class WorkoutInstanceService {
         this.workoutInstanceMapper = workoutInstanceMapper;
         this.exerciseInstanceMapper = exerciseInstanceMapper;
         this.exerciseInstanceService = exerciseInstanceService;
+        this.userRepository = userRepository;
     }
 
-    /**
+    /**x
      * Save a workoutInstance.
      *
      * @param workoutInstanceDTO the entity to save
@@ -49,76 +59,46 @@ public class WorkoutInstanceService {
     public WorkoutInstanceDTO save(WorkoutInstanceDTO workoutInstanceDTO) {
         log.debug("Request to save WorkoutInstance : {}", workoutInstanceDTO);
 
-        String s = workoutTemplateRepository
-            .findOne(workoutInstanceDTO.getWorkoutTemplateId())
-            .getUserDemographic()
-            .getUser()
-            .getLogin();
-
-        if (!s.equals(SecurityUtils.getCurrentUserLogin())) { return null; }
-
-        WorkoutInstance workoutInstance = workoutInstanceMapper.workoutInstanceDTOToWorkoutInstance(workoutInstanceDTO);
-
-        workoutInstance.setCreatedOn(LocalDate.now());
-        workoutInstance.setLastUpdated(LocalDate.now());
-
-        removeDereferenceExerciseInstances(workoutInstance);
-        workoutInstance.setExerciseInstances(new HashSet<>());
-        workoutInstance = workoutInstanceRepository.save(workoutInstance);
-        addWorkoutInstanceToParent(workoutInstance);
-
-        List<ExerciseInstanceDTO> exerciseInstanceDTOs = workoutInstanceDTO.getExerciseInstances();
-
-        if (exerciseInstanceDTOs != null && exerciseInstanceDTOs.size() > 0) {
-            List<ExerciseInstanceDTO> savedExerciseInstanceDTOs = new ArrayList<>();
-            for (ExerciseInstanceDTO exerciseInstanceDTO : exerciseInstanceDTOs) {
-                exerciseInstanceDTO.setWorkoutInstanceId(workoutInstance.getId());
-                savedExerciseInstanceDTOs.add(exerciseInstanceService.save(exerciseInstanceDTO));
+        Optional<User> user = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin());
+        if (user.isPresent()) {
+            if (!workoutTemplateRepository
+                .findOne(workoutInstanceDTO.getWorkoutTemplateId())
+                .getUserDemographic()
+                .getUser()
+                .getLogin().equals(SecurityUtils.getCurrentUserLogin())) {
+                return null;
             }
-            workoutInstance.setExerciseInstances(new HashSet<>(exerciseInstanceMapper.exerciseInstanceDTOsToExerciseInstances(savedExerciseInstanceDTOs)));
-        }
-        return workoutInstanceMapper.workoutInstanceToWorkoutInstanceDTO(workoutInstance);
-    }
+            if (workoutInstanceDTO.getWorkoutTemplateId() == null) {
+                WorkoutInstance workoutInstance = workoutInstanceMapper.workoutInstanceDTOToWorkoutInstance(workoutInstanceDTO);
+                workoutInstance.setCreatedOn(LocalDate.now());
+                workoutInstance.setLastUpdated(LocalDate.now());
 
-    /**
-     * Update a workoutInstance.
-     *
-     * @param workoutInstanceDTO the entity to save
-     * @return the persisted entity
-     */
-    public WorkoutInstanceDTO update(WorkoutInstanceDTO workoutInstanceDTO) {
-        log.debug("Request to update WorkoutInstance : {}", workoutInstanceDTO);
+                removeDereferenceExerciseInstances(workoutInstance);
+                workoutInstance.setExerciseInstances(new HashSet<>());
+                workoutInstance = workoutInstanceRepository.save(workoutInstance);
+                addWorkoutInstanceToParent(workoutInstance);
 
-        String s = workoutTemplateRepository
-            .findOne(workoutInstanceDTO.getWorkoutTemplateId())
-            .getUserDemographic()
-            .getUser()
-            .getLogin();
-        if (!s.equals(SecurityUtils.getCurrentUserLogin())) {
-            return null;
-        }
+                List<ExerciseInstanceDTO> exerciseInstanceDTOs = workoutInstanceDTO.getExerciseInstances();
+                exerciseInstanceDTOExists(workoutInstance, exerciseInstanceDTOs);
+                return workoutInstanceMapper.workoutInstanceToWorkoutInstanceDTO(workoutInstance);
+            } else {
+                WorkoutInstance workoutInstance = workoutInstanceMapper.workoutInstanceDTOToWorkoutInstance(workoutInstanceDTO);
 
-        WorkoutInstance workoutInstance = workoutInstanceMapper.workoutInstanceDTOToWorkoutInstance(workoutInstanceDTO);
+                workoutInstance.setLastUpdated(LocalDate.now());
 
-        workoutInstance.setLastUpdated(LocalDate.now());
+                removeDereferenceExerciseInstances(workoutInstance);
+                workoutInstance.setExerciseInstances(new HashSet<>());
+                workoutInstance = workoutInstanceRepository.save(workoutInstance);
+                addWorkoutInstanceToParent(workoutInstance);
 
-        removeDereferenceExerciseInstances(workoutInstance);
-        workoutInstance.setExerciseInstances(new HashSet<>());
-        workoutInstance = workoutInstanceRepository.save(workoutInstance);
-        addWorkoutInstanceToParent(workoutInstance);
+                List<ExerciseInstanceDTO> exerciseInstanceDTOs = workoutInstanceDTO.getExerciseInstances();
 
-        List<ExerciseInstanceDTO> exerciseInstanceDTOs = workoutInstanceDTO.getExerciseInstances();
+                exerciseInstanceDTOExists(workoutInstance, exerciseInstanceDTOs);
 
-        if (exerciseInstanceDTOs != null && exerciseInstanceDTOs.size() > 0) {
-            List<ExerciseInstanceDTO> savedExerciseInstanceDTOs = new ArrayList<>();
-            for (ExerciseInstanceDTO exerciseInstanceDTO : exerciseInstanceDTOs) {
-                exerciseInstanceDTO.setWorkoutInstanceId(workoutInstance.getId());
-                savedExerciseInstanceDTOs.add(exerciseInstanceService.save(exerciseInstanceDTO));
+                return workoutInstanceMapper.workoutInstanceToWorkoutInstanceDTO(workoutInstance);
             }
-            workoutInstance.setExerciseInstances(new HashSet<>(exerciseInstanceMapper.exerciseInstanceDTOsToExerciseInstances(savedExerciseInstanceDTOs)));
         }
-
-        return workoutInstanceMapper.workoutInstanceToWorkoutInstanceDTO(workoutInstance);
+        return null;
     }
 
     /**
@@ -129,19 +109,6 @@ public class WorkoutInstanceService {
      */
     @Transactional(readOnly = true)
     public Page<WorkoutInstanceDTO> findAll(Pageable pageable) {
-        log.debug("Request to get all WorkoutInstances");
-        Page<WorkoutInstance> result = workoutInstanceRepository.findAll(pageable);
-        return result.map(workoutInstanceMapper::workoutInstanceToWorkoutInstanceDTO);
-    }
-
-    /**
-     *  Get all the workoutInstances by logged in user.
-     *
-     *  @param pageable the pagination information
-     *  @return the list of entities
-     */
-    @Transactional(readOnly = true)
-    public Page<WorkoutInstanceDTO> findAllByCurrentLoggedInUser(Pageable pageable) {
         log.debug("Request to get all WorkoutInstances by logged in user");
         String login = SecurityUtils.getCurrentUserLogin();
         Page<WorkoutInstance> result = workoutInstanceRepository.findAll(login, pageable);
@@ -159,8 +126,7 @@ public class WorkoutInstanceService {
         log.debug("Request to get WorkoutInstance : {}", id);
         String login = SecurityUtils.getCurrentUserLogin();
         WorkoutInstance workoutInstance = workoutInstanceRepository.findOne(login, id);
-        WorkoutInstanceDTO workoutInstanceDTO = workoutInstanceMapper.workoutInstanceToWorkoutInstanceDTO(workoutInstance);
-        return workoutInstanceDTO;
+        return workoutInstanceMapper.workoutInstanceToWorkoutInstanceDTO(workoutInstance);
     }
 
     /**
@@ -170,10 +136,20 @@ public class WorkoutInstanceService {
      */
     public void delete(Long id) {
         log.debug("Request to delete WorkoutInstance : {}", id);
-
         if (workoutInstanceRepository.findOne(SecurityUtils.getCurrentUserLogin(), id).getId() != null){
             removeWorkoutInstanceFromRelatedItems(id);
             workoutInstanceRepository.delete(id);
+        }
+    }
+
+    private void exerciseInstanceDTOExists(WorkoutInstance workoutInstance, List<ExerciseInstanceDTO> exerciseInstanceDTOs) {
+        if (exerciseInstanceDTOs != null && exerciseInstanceDTOs.size() > 0) {
+            List<ExerciseInstanceDTO> savedExerciseInstanceDTOs = new ArrayList<>();
+            for (ExerciseInstanceDTO exerciseInstanceDTO : exerciseInstanceDTOs) {
+                exerciseInstanceDTO.setWorkoutInstanceId(workoutInstance.getId());
+                savedExerciseInstanceDTOs.add(exerciseInstanceService.save(exerciseInstanceDTO));
+            }
+            workoutInstance.setExerciseInstances(new HashSet<>(exerciseInstanceMapper.exerciseInstanceDTOsToExerciseInstances(savedExerciseInstanceDTOs)));
         }
     }
 
