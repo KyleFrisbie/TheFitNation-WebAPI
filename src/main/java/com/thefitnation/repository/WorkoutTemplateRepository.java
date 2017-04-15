@@ -14,7 +14,7 @@ public interface WorkoutTemplateRepository extends JpaRepository<WorkoutTemplate
     @Query("select workoutTemplate " +
             "from WorkoutTemplate workoutTemplate " +
             "where workoutTemplate.userDemographic.user.login = :login")
-    Page<WorkoutTemplate> findAllByCurrentLoggedInUser(@Param(value = "login") String login, Pageable pageable);
+    Page<WorkoutTemplate> findAll(@Param(value = "login") String login, Pageable pageable);
 
     @Query("select workoutTemplate " +
             "from WorkoutTemplate workoutTemplate " +

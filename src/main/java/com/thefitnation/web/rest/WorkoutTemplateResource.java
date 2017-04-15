@@ -85,11 +85,10 @@ public class WorkoutTemplateResource {
     @GetMapping("/workout-templates")
     @Timed
     public ResponseEntity<List<WorkoutTemplateDTO>> getAllWorkoutTemplates(@ApiParam Pageable pageable) throws URISyntaxException {
-//        log.debug("REST request to get a page of WorkoutTemplates");
-//        Page<WorkoutTemplateDTO> page = workoutTemplateService.findAllByLogin(pageable);
-//        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/workout-templates");
-//        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
-        return null;
+        log.debug("REST request to get a page of WorkoutTemplates");
+        Page<WorkoutTemplateDTO> page = workoutTemplateService.findAll(pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/workout-templates");
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
     /**

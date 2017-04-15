@@ -96,7 +96,7 @@ public class WorkoutTemplateService {
     public Page<WorkoutTemplateDTO> findAll(Pageable pageable) {
         log.debug("Request to get all WorkoutTemplates by current logged in user.");
         String login = SecurityUtils.getCurrentUserLogin();
-        Page<WorkoutTemplate> result = workoutTemplateRepository.findAllByCurrentLoggedInUser(login, pageable);
+        Page<WorkoutTemplate> result = workoutTemplateRepository.findAll(login, pageable);
         return result.map(workoutTemplateMapper::workoutTemplateToWorkoutTemplateDTO);
     }
 
