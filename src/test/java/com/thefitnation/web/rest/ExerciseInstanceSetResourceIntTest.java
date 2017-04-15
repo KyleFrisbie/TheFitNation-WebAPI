@@ -6,9 +6,13 @@ import com.thefitnation.repository.*;
 import com.thefitnation.service.*;
 import com.thefitnation.service.dto.*;
 import com.thefitnation.service.mapper.*;
+import com.thefitnation.testTools.AuthUtil;
+import com.thefitnation.testTools.ExerciseInstanceSetGenerator;
 import com.thefitnation.web.rest.errors.*;
+
 import java.util.*;
 import javax.persistence.*;
+
 import org.junit.*;
 import org.junit.runner.*;
 import org.mockito.*;
@@ -52,6 +56,9 @@ public class ExerciseInstanceSetResourceIntTest {
     private static final String UPDATED_NOTES = "BBBBBBBBBB";
 
     @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
     private ExerciseInstanceSetRepository exerciseInstanceSetRepository;
 
     @Autowired
@@ -75,7 +82,6 @@ public class ExerciseInstanceSetResourceIntTest {
     private MockMvc restExerciseInstanceSetMockMvc;
 
     private ExerciseInstanceSet exerciseInstanceSet;
-    private UserRepository userRepository;
 
     @Before
     public void setup() {
@@ -89,17 +95,17 @@ public class ExerciseInstanceSetResourceIntTest {
 
     /**
      * Create an entity for this test.
-     *
+     * <p>
      * This is a static method, as tests for other entities might also need it,
      * if they test an entity which requires the current entity.
      */
     public static ExerciseInstanceSet createEntity(EntityManager em) {
         ExerciseInstanceSet exerciseInstanceSet = new ExerciseInstanceSet()
-                .orderNumber(DEFAULT_ORDER_NUMBER)
-                .reqQuantity(DEFAULT_REQ_QUANTITY)
-                .effortQuantity(DEFAULT_EFFORT_QUANTITY)
-                .restTime(DEFAULT_REST_TIME)
-                .notes(DEFAULT_NOTES);
+            .orderNumber(DEFAULT_ORDER_NUMBER)
+            .reqQuantity(DEFAULT_REQ_QUANTITY)
+            .effortQuantity(DEFAULT_EFFORT_QUANTITY)
+            .restTime(DEFAULT_REST_TIME)
+            .notes(DEFAULT_NOTES);
         // Add required entity
         ExerciseInstance exerciseInstance = ExerciseInstanceResourceIntTest.createEntity(em);
         em.persist(exerciseInstance);
@@ -116,6 +122,8 @@ public class ExerciseInstanceSetResourceIntTest {
     @Test
     @Transactional
     public void createExerciseInstanceSet() throws Exception {
+        Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
+        ExerciseInstanceSet exerciseInstanceSet = ExerciseInstanceSetGenerator.getInstance().getOne(em, user.get());
         int databaseSizeBeforeCreate = exerciseInstanceSetRepository.findAll().size();
 
         // Create the ExerciseInstanceSet
@@ -140,6 +148,8 @@ public class ExerciseInstanceSetResourceIntTest {
     @Test
     @Transactional
     public void createExerciseInstanceSetWithExistingId() throws Exception {
+        Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
+        ExerciseInstanceSet exerciseInstanceSet = ExerciseInstanceSetGenerator.getInstance().getOne(em, user.get());
         int databaseSizeBeforeCreate = exerciseInstanceSetRepository.findAll().size();
 
         // Create the ExerciseInstanceSet with an existing ID
@@ -237,7 +247,8 @@ public class ExerciseInstanceSetResourceIntTest {
     @Test
     @Transactional
     public void getExerciseInstanceSet() throws Exception {
-        // Initialize the database
+        Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
+        ExerciseInstanceSet exerciseInstanceSet = ExerciseInstanceSetGenerator.getInstance().getOne(em, user.get());
         exerciseInstanceSetRepository.saveAndFlush(exerciseInstanceSet);
 
         // Get the exerciseInstanceSet
@@ -270,11 +281,11 @@ public class ExerciseInstanceSetResourceIntTest {
         // Update the exerciseInstanceSet
         ExerciseInstanceSet updatedExerciseInstanceSet = exerciseInstanceSetRepository.findOne(exerciseInstanceSet.getId());
         updatedExerciseInstanceSet
-                .orderNumber(UPDATED_ORDER_NUMBER)
-                .reqQuantity(UPDATED_REQ_QUANTITY)
-                .effortQuantity(UPDATED_EFFORT_QUANTITY)
-                .restTime(UPDATED_REST_TIME)
-                .notes(UPDATED_NOTES);
+            .orderNumber(UPDATED_ORDER_NUMBER)
+            .reqQuantity(UPDATED_REQ_QUANTITY)
+            .effortQuantity(UPDATED_EFFORT_QUANTITY)
+            .restTime(UPDATED_REST_TIME)
+            .notes(UPDATED_NOTES);
         ExerciseInstanceSetDTO exerciseInstanceSetDTO = exerciseInstanceSetMapper.exerciseInstanceSetToExerciseInstanceSetDTO(updatedExerciseInstanceSet);
 
         restExerciseInstanceSetMockMvc.perform(put("/api/exercise-instance-sets")
@@ -296,6 +307,8 @@ public class ExerciseInstanceSetResourceIntTest {
     @Test
     @Transactional
     public void updateNonExistingExerciseInstanceSet() throws Exception {
+        Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
+        ExerciseInstanceSet exerciseInstanceSet = ExerciseInstanceSetGenerator.getInstance().getOne(em, user.get());
         int databaseSizeBeforeUpdate = exerciseInstanceSetRepository.findAll().size();
 
         // Create the ExerciseInstanceSet
@@ -315,7 +328,8 @@ public class ExerciseInstanceSetResourceIntTest {
     @Test
     @Transactional
     public void deleteExerciseInstanceSet() throws Exception {
-        // Initialize the database
+        Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
+        ExerciseInstanceSet exerciseInstanceSet = ExerciseInstanceSetGenerator.getInstance().getOne(em, user.get());
         exerciseInstanceSetRepository.saveAndFlush(exerciseInstanceSet);
         int databaseSizeBeforeDelete = exerciseInstanceSetRepository.findAll().size();
 

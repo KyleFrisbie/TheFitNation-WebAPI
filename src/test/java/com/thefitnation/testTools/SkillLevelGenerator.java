@@ -2,7 +2,11 @@ package com.thefitnation.testTools;
 
 import com.thefitnation.domain.SkillLevel;
 
+import javax.persistence.EntityManager;
+
 public class SkillLevelGenerator implements IUnownedEntityGenerator<SkillLevel> {
+
+    private static final String DEFAULT_NAME = "AAAAAAAAAA";
 
     private static SkillLevelGenerator instance;
 
@@ -16,7 +20,7 @@ public class SkillLevelGenerator implements IUnownedEntityGenerator<SkillLevel> 
     }
 
     @Override
-    public SkillLevel getOne() {
-        return new SkillLevel().level("Beginner");
+    public SkillLevel getOne(EntityManager entityManager) {
+        return new SkillLevel().level(DEFAULT_NAME);
     }
 }

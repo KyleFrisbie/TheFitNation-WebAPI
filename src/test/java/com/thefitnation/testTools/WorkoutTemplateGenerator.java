@@ -30,7 +30,7 @@ public class WorkoutTemplateGenerator implements IOwnedEntityGenerator<WorkoutTe
     private static final String DEFAULT_NOTES = "AAAAAAAAAA";
 
     private SkillLevel getSkillLevel(EntityManager entityManager) {
-        SkillLevel skillLevel = SkillLevelGenerator.getInstance().getOne();
+        SkillLevel skillLevel = SkillLevelGenerator.getInstance().getOne(entityManager);
         entityManager.persist(skillLevel);
         entityManager.flush();
 

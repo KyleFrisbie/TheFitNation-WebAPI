@@ -30,7 +30,7 @@ public class UserDemographicGenerator implements IOwnedEntityGenerator<UserDemog
         entityManager.persist(user);
         entityManager.flush();
 
-        SkillLevel skillLevel = SkillLevelGenerator.getInstance().getOne();
+        SkillLevel skillLevel = SkillLevelGenerator.getInstance().getOne(entityManager);
         entityManager.persist(skillLevel);
         entityManager.flush();
 
@@ -47,7 +47,7 @@ public class UserDemographicGenerator implements IOwnedEntityGenerator<UserDemog
 
     @Override
     public UserDemographic getOne(EntityManager entityManager, User user) {
-        SkillLevel skillLevel = SkillLevelGenerator.getInstance().getOne();
+        SkillLevel skillLevel = SkillLevelGenerator.getInstance().getOne(entityManager);
         entityManager.persist(skillLevel);
         entityManager.flush();
 
@@ -68,7 +68,7 @@ public class UserDemographicGenerator implements IOwnedEntityGenerator<UserDemog
         entityManager.persist(user);
         entityManager.flush();
 
-        SkillLevel skillLevel = SkillLevelGenerator.getInstance().getOne();
+        SkillLevel skillLevel = SkillLevelGenerator.getInstance().getOne(entityManager);
         entityManager.persist(skillLevel);
         entityManager.flush();
 
