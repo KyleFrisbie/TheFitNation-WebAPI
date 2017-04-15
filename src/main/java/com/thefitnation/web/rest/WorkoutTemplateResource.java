@@ -68,7 +68,7 @@ public class WorkoutTemplateResource {
         if (workoutTemplateDTO.getId() == null) {
             return createWorkoutTemplate(workoutTemplateDTO);
         }
-        WorkoutTemplateDTO result = workoutTemplateService.update(workoutTemplateDTO);
+        WorkoutTemplateDTO result = workoutTemplateService.save(workoutTemplateDTO);
 
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, workoutTemplateDTO.getId().toString()))

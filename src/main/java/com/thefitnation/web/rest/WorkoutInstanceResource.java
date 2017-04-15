@@ -68,7 +68,7 @@ public class WorkoutInstanceResource {
         if (workoutInstanceDTO.getId() == null) {
             return createWorkoutInstance(workoutInstanceDTO);
         }
-        WorkoutInstanceDTO result = workoutInstanceService.update(workoutInstanceDTO);
+        WorkoutInstanceDTO result = workoutInstanceService.save(workoutInstanceDTO);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, workoutInstanceDTO.getId().toString()))
             .body(result);

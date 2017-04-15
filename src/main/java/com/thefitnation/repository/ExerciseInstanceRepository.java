@@ -20,5 +20,5 @@ public interface ExerciseInstanceRepository extends JpaRepository<ExerciseInstan
             "from ExerciseInstance exerciseInstance " +
             "where exerciseInstance.workoutInstance.workoutTemplate.userDemographic.user.login = :login " +
                 "and exerciseInstance.id = :id")
-    ExerciseInstance findOne(@Param(value = "login") String login, @Param(value = "login") Long id);
+    ExerciseInstance findOne(@Param(value = "login") String login, @Param(value = "id") Long id);
 }

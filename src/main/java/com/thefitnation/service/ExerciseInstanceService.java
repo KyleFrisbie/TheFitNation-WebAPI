@@ -102,7 +102,8 @@ public class ExerciseInstanceService {
     @Transactional(readOnly = true)
     public ExerciseInstanceDTO findOne(Long id) {
         log.debug("Request to get ExerciseInstance : {}", id);
-        ExerciseInstance exerciseInstance = exerciseInstanceRepository.findOne(SecurityUtils.getCurrentUserLogin(), id);
+        String login = SecurityUtils.getCurrentUserLogin();
+        ExerciseInstance exerciseInstance = exerciseInstanceRepository.findOne(login, id);
         return exerciseInstanceMapper.exerciseInstanceToExerciseInstanceDTO(exerciseInstance);
     }
 
