@@ -1,4 +1,11 @@
 # TheFitNation
+
+[![Build Status](https://travis-ci.com/KyleFrisbie/TheFitNation-WebAPI.svg?token=xdYzvZBf58eKa1nBA2ue&branch=master)](https://travis-ci.com/KyleFrisbie/TheFitNation-WebAPI)
+[![codecov](https://codecov.io/gh/KyleFrisbie/TheFitNation-WebAPI/branch/dev/graph/badge.svg?token=pJslsSP0ob)](https://codecov.io/gh/KyleFrisbie/TheFitNation-WebAPI)
+
+
+
+
 This application was generated using JHipster 4.0.7, you can find documentation and help at [https://jhipster.github.io/documentation-archive/v4.0.7](https://jhipster.github.io/documentation-archive/v4.0.7).
 
 ## Development
