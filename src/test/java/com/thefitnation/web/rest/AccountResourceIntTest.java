@@ -5,11 +5,12 @@ import com.thefitnation.domain.Authority;
 import com.thefitnation.domain.SkillLevel;
 import com.thefitnation.domain.User;
 import com.thefitnation.repository.AuthorityRepository;
+import com.thefitnation.repository.SkillLevelRepository;
+import com.thefitnation.repository.UserDemographicRepository;
 import com.thefitnation.repository.UserRepository;
 import com.thefitnation.security.AuthoritiesConstants;
 import com.thefitnation.service.MailService;
 import com.thefitnation.service.SkillLevelService;
-import com.thefitnation.service.UserDemographicService;
 import com.thefitnation.service.UserService;
 import com.thefitnation.service.dto.SkillLevelDTO;
 import com.thefitnation.service.dto.UserDTO;
@@ -27,6 +28,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
 import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -47,7 +49,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class AccountResourceIntTest {
 
     @Autowired
+    private EntityManager em;
+
+    @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private UserDemographicRepository userDemographicRepository;
 
     @Autowired
     private AuthorityRepository authorityRepository;
@@ -56,19 +64,13 @@ public class AccountResourceIntTest {
     private UserService userService;
 
     @Autowired
-    private UserDemographicService userDemographicService;
-
-    @Autowired
-    private SkillLevelService skillLevelService;
+    private SkillLevelRepository skillLevelRepository;
 
     @Mock
     private UserService mockUserService;
 
     @Mock
-    private UserDemographicService mockUserDemographicService;
-
-    @Mock
-    private SkillLevelService mockSkillLevelService;
+    private SkillLevelRepository mockSkillLevelRepository;
 
     @Mock
     private MailService mockMailService;
@@ -83,20 +85,21 @@ public class AccountResourceIntTest {
         doNothing().when(mockMailService).sendActivationEmail(anyObject());
 
         AccountResource accountResource =
-            new AccountResource(userRepository, userService, userDemographicService, skillLevelService, mockMailService);
+            new AccountResource(userRepository, userService, userDemographicRepository, skillLevelRepository, mockMailService);
 
         AccountResource accountUserMockResource =
-            new AccountResource(userRepository, mockUserService, mockUserDemographicService, mockSkillLevelService, mockMailService);
+            new AccountResource(userRepository, mockUserService, userDemographicRepository, mockSkillLevelRepository, mockMailService);
 
-        SkillLevelDTO skillLevelDTO = new SkillLevelDTO();
-        skillLevelDTO.setLevel("Beginner");
-        skillLevelService.save(skillLevelDTO);
+        SkillLevel skillLevel = new SkillLevel();
+        skillLevel.setLevel("Beginner");
+        skillLevelRepository.save(skillLevel);
 
         this.restMvc = MockMvcBuilders.standaloneSetup(accountResource).build();
         this.restUserMockMvc = MockMvcBuilders.standaloneSetup(accountUserMockResource).build();
     }
 
     @Test
+    @Transactional
     public void testNonAuthenticatedUser() throws Exception {
         restUserMockMvc.perform(get("/api/authenticate")
             .accept(MediaType.APPLICATION_JSON))
@@ -105,6 +108,7 @@ public class AccountResourceIntTest {
     }
 
     @Test
+    @Transactional
     public void testAuthenticatedUser() throws Exception {
         restUserMockMvc.perform(get("/api/authenticate")
             .with(request -> {
@@ -117,6 +121,7 @@ public class AccountResourceIntTest {
     }
 
     @Test
+    @Transactional
     public void testGetExistingAccount() throws Exception {
         Set<Authority> authorities = new HashSet<>();
         Authority authority = new Authority();
@@ -145,6 +150,7 @@ public class AccountResourceIntTest {
     }
 
     @Test
+    @Transactional
     public void testGetUnknownAccount() throws Exception {
         when(mockUserService.getUserWithAuthorities()).thenReturn(null);
 
@@ -154,6 +160,7 @@ public class AccountResourceIntTest {
     }
 
     @Test
+    @Transactional
     public void testDeactivateAccount() throws Exception {
         Set<Authority> authorities = new HashSet<>();
         Authority authority = new Authority();
@@ -177,6 +184,7 @@ public class AccountResourceIntTest {
     @Test
     @Transactional
     public void testRegisterValid() throws Exception {
+        em.clear();
         ManagedUserVM validUser = new ManagedUserVM(
             null,                   // id
             "joe",                  // login
@@ -333,6 +341,7 @@ public class AccountResourceIntTest {
     @Test
     @Transactional
     public void testRegisterDuplicateLogin() throws Exception {
+        em.clear();
         // Good
         ManagedUserVM validUser = new ManagedUserVM(
             null,                   // id
@@ -375,6 +384,7 @@ public class AccountResourceIntTest {
     @Test
     @Transactional
     public void testRegisterDuplicateEmail() throws Exception {
+        em.clear();
         // Good
         ManagedUserVM validUser = new ManagedUserVM(
             null,                   // id

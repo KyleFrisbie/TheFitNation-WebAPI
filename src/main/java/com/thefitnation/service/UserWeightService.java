@@ -1,19 +1,25 @@
 package com.thefitnation.service;
 
+import com.thefitnation.domain.Authority;
+import com.thefitnation.domain.User;
+import com.thefitnation.domain.UserDemographic;
 import com.thefitnation.domain.UserWeight;
+import com.thefitnation.repository.UserDemographicRepository;
+import com.thefitnation.repository.UserRepository;
 import com.thefitnation.repository.UserWeightRepository;
+import com.thefitnation.security.AuthoritiesConstants;
+import com.thefitnation.security.SecurityUtils;
 import com.thefitnation.service.dto.UserWeightDTO;
 import com.thefitnation.service.mapper.UserWeightMapper;
+import com.thefitnation.tools.AccountAuthTool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 /**
  * Service Implementation for managing UserWeight.
@@ -26,10 +32,16 @@ public class UserWeightService {
 
     private final UserWeightRepository userWeightRepository;
 
+    private final UserRepository userRepository;
+
+    private final UserDemographicRepository userDemographicRepository;
+
     private final UserWeightMapper userWeightMapper;
 
-    public UserWeightService(UserWeightRepository userWeightRepository, UserWeightMapper userWeightMapper) {
+    public UserWeightService(UserWeightRepository userWeightRepository, UserRepository userRepository, UserDemographicRepository userDemographicRepository, UserWeightMapper userWeightMapper) {
         this.userWeightRepository = userWeightRepository;
+        this.userRepository = userRepository;
+        this.userDemographicRepository = userDemographicRepository;
         this.userWeightMapper = userWeightMapper;
     }
 
@@ -41,59 +53,91 @@ public class UserWeightService {
      */
     public UserWeightDTO save(UserWeightDTO userWeightDTO) {
         log.debug("Request to save UserWeight : {}", userWeightDTO);
+        User user = AccountAuthTool.getLoggedInUser(userRepository);
+        if (user == null) {
+            return null;
+        }
+        if (userWeightDTO.getUserDemographicId() == null) {
+            userWeightDTO.setUserDemographicId(userDemographicRepository.findOneByUserWithEagerRelationships(user.getId()).getId());
+        }
+
         UserWeight userWeight = userWeightMapper.userWeightDTOToUserWeight(userWeightDTO);
-        userWeight = userWeightRepository.save(userWeight);
+
+        if (AccountAuthTool.isAdmin(user)) {
+            userWeight = userWeightRepository.save(userWeight);
+        } else {
+            Optional<UserWeight> dbUserWeight = userWeightRepository.findOneByUserId(userWeight.getId(), user.getId());
+            if (!dbUserWeight.isPresent()) {
+                userWeight.setId(null);
+            }
+            userWeight = userWeightRepository.save(userWeight);
+        }
         UserWeightDTO result = userWeightMapper.userWeightToUserWeightDTO(userWeight);
         return result;
     }
 
     /**
-     *  Get all the userWeights.
+     * Get all the userWeights.
      *
-     *  @param pageable the pagination information
-     *  @return the list of entities
+     * @param pageable the pagination information
+     * @return the list of entities
      */
     @Transactional(readOnly = true)
     public Page<UserWeightDTO> findAll(Pageable pageable) {
         log.debug("Request to get all UserWeights");
-        Page<UserWeight> result = userWeightRepository.findAll(pageable);
-        return result.map(userWeight -> userWeightMapper.userWeightToUserWeightDTO(userWeight));
+        User user = AccountAuthTool.getLoggedInUser(userRepository);
+        if (user == null) {
+            return null;
+        }
+
+        Page<UserWeight> result;
+        if (AccountAuthTool.isAdmin(user)) {
+            result = userWeightRepository.findAll(pageable);
+        } else {
+            result = userWeightRepository.findAllByUserId(pageable, user.getId());
+        }
+        return result.map(userWeightMapper::userWeightToUserWeightDTO);
     }
 
     /**
-     *  Get all the userWeights owned by a user.
+     * Get one userWeight by id.
      *
-     *  @param pageable the pagination information
-     *  @return the list of entities
-     */
-    @Transactional(readOnly = true)
-    public Page<UserWeightDTO> findAllByUserId(Pageable pageable, Long id) {
-        log.debug("Request to get all UserWeights");
-        Page<UserWeight> result = userWeightRepository.findAllByUserId(pageable, id);
-        return result.map(userWeight -> userWeightMapper.userWeightToUserWeightDTO(userWeight));
-    }
-
-    /**
-     *  Get one userWeight by id.
-     *
-     *  @param id the id of the entity
-     *  @return the entity
+     * @param id the id of the entity
+     * @return the entity
      */
     @Transactional(readOnly = true)
     public UserWeightDTO findOne(Long id) {
         log.debug("Request to get UserWeight : {}", id);
-        UserWeight userWeight = userWeightRepository.findOne(id);
-        UserWeightDTO userWeightDTO = userWeightMapper.userWeightToUserWeightDTO(userWeight);
+
+        UserWeightDTO userWeightDTO = getUserWeightWithPermission(id);
         return userWeightDTO;
     }
 
     /**
-     *  Delete the  userWeight by id.
+     * Delete the  userWeight by id.
      *
-     *  @param id the id of the entity
+     * @param id the id of the entity
      */
     public void delete(Long id) {
         log.debug("Request to delete UserWeight : {}", id);
-        userWeightRepository.delete(id);
+        UserWeightDTO userWeightDTO = getUserWeightWithPermission(id);
+        if ((userWeightDTO != null) && (userWeightDTO.getId() != null)) {
+            userWeightRepository.delete(id);
+        }
+    }
+
+    private UserWeightDTO getUserWeightWithPermission(Long id) {
+        User user = AccountAuthTool.getLoggedInUser(userRepository);
+        UserWeight userWeight = userWeightRepository.findOne(id);
+        if (!AccountAuthTool.isAdmin(user)) {
+            UserDemographic userDemographic = userDemographicRepository.findOneByUserWithEagerRelationships(user.getId());
+            if (userDemographic == null) {
+                return null;
+            }
+            if (!(userWeight.getUserDemographic().getId().equals(userDemographic.getId()))) {
+                return null;
+            }
+        }
+        return userWeightMapper.userWeightToUserWeightDTO(userWeight);
     }
 }

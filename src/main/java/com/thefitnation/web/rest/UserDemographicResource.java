@@ -67,6 +67,7 @@ public class UserDemographicResource {
         }
 
         userDemographicDTO.setCreatedOn(LocalDate.now());
+        userDemographicDTO.setLastLogin(LocalDate.now());
 
         UserDemographicDTO result = userDemographicService.save(userDemographicDTO);
         return ResponseEntity.created(new URI("/api/user-demographics/" + result.getId()))
@@ -90,41 +91,7 @@ public class UserDemographicResource {
         if (userDemographicDTO.getId() == null) {
             return createUserDemographic(userDemographicDTO);
         }
-        UserDemographicDTO result = userDemographicService.save(userDemographicDTO);
-        return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, userDemographicDTO.getId().toString()))
-            .body(result);
-    }
-
-    /***
-     * PUT /user-demographics/byLoggedInUser : Updates a logged in user's userDemographic
-     *
-     * @param userDemographicDTO
-     * @return
-     * @throws URISyntaxException
-     */
-    @PutMapping("/user-demographics/byLoggedInUser")
-    @Timed
-    public ResponseEntity<UserDemographicDTO> updateUserDemographicByLoggedInUser(@Valid @RequestBody UserDemographicDTO userDemographicDTO) throws URISyntaxException {
-        log.debug("REST request to update UserDemographic : {}", userDemographicDTO);
-        Optional<User> user = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin());
-
-        if(!user.isPresent()) {
-            return ResponseEntity.badRequest()
-                .headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "invaliduser", "Unable to find User by token to associate with UserDemographic"))
-                .body(null);
-        }
-        userDemographicDTO.setId(null);
-        userDemographicDTO.setUserId(user.get().getId());
-        UserDemographicDTO foundUserDemographic = userDemographicService.findOneByUser(user.get().getId());
-
-        if(foundUserDemographic != null) {
-            userDemographicDTO.setId(foundUserDemographic.getId());
-        }
-
-        if (userDemographicDTO.getId() == null) {
-            return createUserDemographic(userDemographicDTO);
-        }
+        userDemographicDTO.setLastLogin(LocalDate.now());
         UserDemographicDTO result = userDemographicService.save(userDemographicDTO);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, userDemographicDTO.getId().toString()))

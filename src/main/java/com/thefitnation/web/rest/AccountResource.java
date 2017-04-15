@@ -4,7 +4,10 @@ import com.codahale.metrics.annotation.Timed;
 
 import com.thefitnation.domain.SkillLevel;
 import com.thefitnation.domain.User;
+import com.thefitnation.domain.UserDemographic;
 import com.thefitnation.domain.enumeration.UnitOfMeasure;
+import com.thefitnation.repository.SkillLevelRepository;
+import com.thefitnation.repository.UserDemographicRepository;
 import com.thefitnation.repository.UserRepository;
 import com.thefitnation.security.SecurityUtils;
 import com.thefitnation.service.MailService;
@@ -25,7 +28,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -48,20 +50,17 @@ public class AccountResource {
 
     private final UserService userService;
 
-    private final UserDemographicService userDemographicService;
+    private final UserDemographicRepository userDemographicRepository;
 
-    private final SkillLevelService skillLevelService;
+    private final SkillLevelRepository skillLevelRepository;
 
     private final MailService mailService;
 
-    public AccountResource(UserRepository userRepository, UserService userService,
-                           UserDemographicService userDemographicService, SkillLevelService skillLevelService,
-                           MailService mailService) {
-
+    public AccountResource(UserRepository userRepository, UserService userService,  UserDemographicRepository userDemographicRepository, SkillLevelRepository skillLevelService, MailService mailService) {
         this.userRepository = userRepository;
         this.userService = userService;
-        this.userDemographicService = userDemographicService;
-        this.skillLevelService = skillLevelService;
+        this.userDemographicRepository = userDemographicRepository;
+        this.skillLevelRepository = skillLevelService;
         this.mailService = mailService;
     }
 
@@ -72,7 +71,7 @@ public class AccountResource {
      * @return the ResponseEntity with status 201 (Created) if the user is registered or 400 (Bad Request) if the login or e-mail is already in use
      */
     @PostMapping(path = "/register",
-                    produces={MediaType.APPLICATION_JSON_VALUE, MediaType.TEXT_PLAIN_VALUE})
+        produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.TEXT_PLAIN_VALUE})
     @Timed
     public ResponseEntity registerAccount(@Valid @RequestBody ManagedUserVM managedUserVM) {
 
@@ -91,28 +90,26 @@ public class AccountResource {
 
                     mailService.sendActivationEmail(user);
 
-                    UserDemographicDTO userDemographicDTO = new UserDemographicDTO();
+                    UserDemographic userDemographic = new UserDemographic();
 
                     LocalDate now = LocalDate.now();
-                    userDemographicDTO.setCreatedOn(now);
-                    userDemographicDTO.setLastLogin(now);
-                    userDemographicDTO.setDateOfBirth(now);
-                    userDemographicDTO.setUserId(user.getId());
-                    userDemographicDTO.setUnitOfMeasure(UnitOfMeasure.Imperial);
+                    userDemographic.setCreatedOn(now);
+                    userDemographic.setLastLogin(now);
+                    userDemographic.setDateOfBirth(now);
+                    userDemographic.setUser(user);
+                    userDemographic.setUnitOfMeasure(UnitOfMeasure.Imperial);
 
-                    SkillLevelDTO beginnerSkillLevelDTO = skillLevelService.findOneByName("Beginner");
-                    if (beginnerSkillLevelDTO == null) {
-                        beginnerSkillLevelDTO.setLevel("Beginner");
-                        beginnerSkillLevelDTO = skillLevelService.save(beginnerSkillLevelDTO);
+                    SkillLevel beginnerSkillLevel = skillLevelRepository.findOneByLevel("Beginner");
+                    if (beginnerSkillLevel == null) {
+                        beginnerSkillLevel = new SkillLevel()
+                            .level("Beginner");
+                        beginnerSkillLevel = skillLevelRepository.save(beginnerSkillLevel);
                     }
-
-                    userDemographicDTO.setSkillLevelId(beginnerSkillLevelDTO.getId());
-
-                    userDemographicService.save(userDemographicDTO);
-
+                    userDemographic.setSkillLevel(beginnerSkillLevel);
+                    userDemographicRepository.save(userDemographic);
                     return new ResponseEntity<>(HttpStatus.CREATED);
                 })
-        );
+            );
     }
 
     /**
@@ -188,8 +185,8 @@ public class AccountResource {
             .orElse(new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR));
     }
 
-    @PostMapping(path="/account/reactivate",
-        produces={MediaType.APPLICATION_JSON_VALUE, MediaType.TEXT_PLAIN_VALUE})
+    @PostMapping(path = "/account/reactivate",
+        produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.TEXT_PLAIN_VALUE})
     @Timed
     public ResponseEntity reactivateAccount(@Valid @RequestBody ManagedUserVM managedUserVM) {
 
@@ -198,7 +195,7 @@ public class AccountResource {
 
         Optional<User> user = userRepository.findOneByLogin(managedUserVM.getLogin().toLowerCase());
 
-        if(!user.isPresent()) {
+        if (!user.isPresent()) {
             return new ResponseEntity<>("invalid login", textPlainHeaders, HttpStatus.BAD_REQUEST);
         } else if (user.get().getActivated()) {
             return new ResponseEntity<>("user already activated", textPlainHeaders, HttpStatus.BAD_REQUEST);
@@ -257,8 +254,8 @@ public class AccountResource {
             return new ResponseEntity<>("Incorrect password", HttpStatus.BAD_REQUEST);
         }
         return userService.completePasswordReset(keyAndPassword.getNewPassword(), keyAndPassword.getKey())
-              .map(user -> new ResponseEntity<String>(HttpStatus.OK))
-              .orElse(new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR));
+            .map(user -> new ResponseEntity<String>(HttpStatus.OK))
+            .orElse(new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR));
     }
 
     private boolean checkPasswordLength(String password) {
