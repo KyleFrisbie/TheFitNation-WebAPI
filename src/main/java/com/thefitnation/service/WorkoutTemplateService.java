@@ -55,14 +55,19 @@ public class WorkoutTemplateService {
     public WorkoutTemplateDTO save(WorkoutTemplateDTO workoutTemplateDTO) {
         log.debug("Request to save WorkoutTemplate : {}", workoutTemplateDTO);
 
-        WorkoutTemplate workoutTemplate = workoutTemplateMapper.workoutTemplateDTOToWorkoutTemplate(workoutTemplateDTO);
+        if (workoutTemplateDTO.getUserDemographicId() == null) {
+            Optional<User> user = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin());
 
-        workoutTemplate.setUserDemographic(userDemographicRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin()));
-        workoutTemplate.setCreatedOn(LocalDate.now());
-        workoutTemplate.setLastUpdated(LocalDate.now());
-
-        workoutTemplate = workoutTemplateRepository.save(workoutTemplate);
-        return workoutTemplateMapper.workoutTemplateToWorkoutTemplateDTO(workoutTemplate);
+            if (user.isPresent()) {
+                WorkoutTemplate workoutTemplate = workoutTemplateMapper.workoutTemplateDTOToWorkoutTemplate(workoutTemplateDTO);
+                workoutTemplate.setUserDemographic(userDemographicRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin()));
+                workoutTemplate.setCreatedOn(LocalDate.now());
+                workoutTemplate.setLastUpdated(LocalDate.now());
+                workoutTemplate = workoutTemplateRepository.save(workoutTemplate);
+                return workoutTemplateMapper.workoutTemplateToWorkoutTemplateDTO(workoutTemplate);
+            }
+        }
+        return null;
     }
 
     /**
@@ -73,14 +78,7 @@ public class WorkoutTemplateService {
      */
     public WorkoutTemplateDTO update(WorkoutTemplateDTO workoutTemplateDTO) {
         log.debug("Request to update WorkoutTemplate : {}", workoutTemplateDTO);
-        if (workoutTemplateDTO.getUserDemographicId() == null) {
-            Optional<User> user = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin());
 
-            if (user.isPresent()) {
-                UserDemographic userDemographic = userDemographicRepository.findOneByUserWithEagerRelationships(user.get().getId());
-                workoutTemplateDTO.setUserDemographicId(userDemographic.getId());
-            }
-        }
 
         WorkoutTemplate workoutTemplate = workoutTemplateMapper.workoutTemplateDTOToWorkoutTemplate(workoutTemplateDTO);
         workoutTemplate.setLastUpdated(LocalDate.now());
