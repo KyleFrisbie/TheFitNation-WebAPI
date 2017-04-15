@@ -4,7 +4,7 @@ Get All UserWeights
 * Gets all user weights for the current user (by token)
 
 **Method and Route**\
-GET /api/user-weights/byLoggedInUser
+GET /api/user-weights
 
 **Request Headers**\
 Authorization: Bearer 6e8cc684-8afe-4958-b19c-4a038ebeb3c2
@@ -16,7 +16,7 @@ none
 ```
 
 **Response Body**
-```javascript
+```json
 [
   {
     "id": 6553,
