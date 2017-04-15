@@ -130,6 +130,9 @@ public class WorkoutTemplateResourceIntTest {
         WorkoutTemplate workoutTemplate = WorkoutTemplateGenerator.getInstance().getOne(em, user.get());
 
         int databaseSizeBeforeCreate = workoutTemplateRepository.findAll().size();
+        LocalDate timeNow = LocalDate.now();
+        workoutTemplate.setCreatedOn(timeNow);
+        workoutTemplate.setLastUpdated(timeNow);
 
         // Create the WorkoutTemplate
         WorkoutTemplateDTO workoutTemplateDTO = workoutTemplateMapper.workoutTemplateToWorkoutTemplateDTO(workoutTemplate);

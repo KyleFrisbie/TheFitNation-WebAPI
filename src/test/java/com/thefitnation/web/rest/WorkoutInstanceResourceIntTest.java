@@ -131,9 +131,12 @@ public class WorkoutInstanceResourceIntTest {
     public void createWorkoutInstance() throws Exception {
         Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
         WorkoutInstance workoutInstance = WorkoutInstanceGenerator.getInstance().getOne(em, user.get());
-        WorkoutInstanceDTO workoutInstanceDTO = workoutInstanceMapper.workoutInstanceToWorkoutInstanceDTO(workoutInstance);
 
         int databaseSizeBeforeCreate = workoutInstanceRepository.findAll().size();
+        LocalDate timeNow = LocalDate.now();
+        workoutInstance.setCreatedOn(timeNow);
+        workoutInstance.setLastUpdated(timeNow);
+        WorkoutInstanceDTO workoutInstanceDTO = workoutInstanceMapper.workoutInstanceToWorkoutInstanceDTO(workoutInstance);
 
         restWorkoutInstanceMockMvc.perform(post("/api/workout-instances")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
