@@ -37,7 +37,12 @@ public class WorkoutTemplateService {
      * @param workoutTemplateMapper to map WorkoutTemplate to and from WorkoutTemplateDTO
      * @param workoutTemplateWithChildrenMapper to map WorkoutTemplateWithChildren to and from WorkoutTemplateWithChildrenDTO
      */
-    public WorkoutTemplateService(UserRepository userRepository, UserDemographicRepository userDemographicRepository, WorkoutTemplateRepository workoutTemplateRepository, UserWorkoutTemplateRepository userWorkoutTemplateRepository, WorkoutTemplateMapper workoutTemplateMapper, WorkoutTemplateWithChildrenMapper workoutTemplateWithChildrenMapper) {
+    public WorkoutTemplateService(UserRepository userRepository,
+                                  UserDemographicRepository userDemographicRepository,
+                                  WorkoutTemplateRepository workoutTemplateRepository,
+                                  UserWorkoutTemplateRepository userWorkoutTemplateRepository,
+                                  WorkoutTemplateMapper workoutTemplateMapper,
+                                  WorkoutTemplateWithChildrenMapper workoutTemplateWithChildrenMapper) {
         this.userRepository = userRepository;
         this.userDemographicRepository = userDemographicRepository;
         this.workoutTemplateRepository = workoutTemplateRepository;
@@ -55,35 +60,24 @@ public class WorkoutTemplateService {
     public WorkoutTemplateDTO save(WorkoutTemplateDTO workoutTemplateDTO) {
         log.debug("Request to save WorkoutTemplate : {}", workoutTemplateDTO);
 
-        if (workoutTemplateDTO.getUserDemographicId() == null) {
-            Optional<User> user = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin());
+        Optional<User> user = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin());
 
-            if (user.isPresent()) {
+        if (user.isPresent()) {
+            if (workoutTemplateDTO.getUserDemographicId() == null) {
                 WorkoutTemplate workoutTemplate = workoutTemplateMapper.workoutTemplateDTOToWorkoutTemplate(workoutTemplateDTO);
                 workoutTemplate.setUserDemographic(userDemographicRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin()));
                 workoutTemplate.setCreatedOn(LocalDate.now());
                 workoutTemplate.setLastUpdated(LocalDate.now());
                 workoutTemplate = workoutTemplateRepository.save(workoutTemplate);
                 return workoutTemplateMapper.workoutTemplateToWorkoutTemplateDTO(workoutTemplate);
+            } else {
+                WorkoutTemplate workoutTemplate = workoutTemplateMapper.workoutTemplateDTOToWorkoutTemplate(workoutTemplateDTO);
+                workoutTemplate.setLastUpdated(LocalDate.now());
+                workoutTemplate = workoutTemplateRepository.save(workoutTemplate);
+                return workoutTemplateMapper.workoutTemplateToWorkoutTemplateDTO(workoutTemplate);
             }
         }
         return null;
-    }
-
-    /**
-     * Update a workoutTemplate.
-     *
-     * @param workoutTemplateDTO the entity to save
-     * @return the persisted entity
-     */
-    public WorkoutTemplateDTO update(WorkoutTemplateDTO workoutTemplateDTO) {
-        log.debug("Request to update WorkoutTemplate : {}", workoutTemplateDTO);
-
-
-        WorkoutTemplate workoutTemplate = workoutTemplateMapper.workoutTemplateDTOToWorkoutTemplate(workoutTemplateDTO);
-        workoutTemplate.setLastUpdated(LocalDate.now());
-        workoutTemplate = workoutTemplateRepository.save(workoutTemplate);
-        return workoutTemplateMapper.workoutTemplateToWorkoutTemplateDTO(workoutTemplate);
     }
 
     /**
@@ -111,8 +105,7 @@ public class WorkoutTemplateService {
         log.debug("Request to get WorkoutTemplate : {}", id);
         String login = SecurityUtils.getCurrentUserLogin();
         WorkoutTemplate workoutTemplate = workoutTemplateRepository.findOne(login, id);
-        WorkoutTemplateWithChildrenDTO workoutTemplateDTO = workoutTemplateWithChildrenMapper.workoutTemplateToWorkoutTemplateWithChildrenDTO(workoutTemplate);
-        return workoutTemplateDTO;
+        return workoutTemplateWithChildrenMapper.workoutTemplateToWorkoutTemplateWithChildrenDTO(workoutTemplate);
     }
 
     /**

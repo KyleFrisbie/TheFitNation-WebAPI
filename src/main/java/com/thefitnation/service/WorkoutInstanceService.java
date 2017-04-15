@@ -28,8 +28,17 @@ public class WorkoutInstanceService {
     private final WorkoutInstanceMapper workoutInstanceMapper;
     private final ExerciseInstanceMapper exerciseInstanceMapper;
     private final ExerciseInstanceService exerciseInstanceService;
+    private final UserRepository userRepository;
 
-    public WorkoutInstanceService(WorkoutTemplateRepository workoutTemplateRepository, WorkoutInstanceRepository workoutInstanceRepository, ExerciseInstanceRepository exerciseInstanceRepository, UserWorkoutInstanceRepository userWorkoutInstanceRepository, UserExerciseInstanceRepository userExerciseInstanceRepository, WorkoutInstanceMapper workoutInstanceMapper, ExerciseInstanceMapper exerciseInstanceMapper, ExerciseInstanceService exerciseInstanceService) {
+    public WorkoutInstanceService(WorkoutTemplateRepository workoutTemplateRepository,
+                                  WorkoutInstanceRepository workoutInstanceRepository,
+                                  ExerciseInstanceRepository exerciseInstanceRepository,
+                                  UserWorkoutInstanceRepository userWorkoutInstanceRepository,
+                                  UserExerciseInstanceRepository userExerciseInstanceRepository,
+                                  WorkoutInstanceMapper workoutInstanceMapper,
+                                  ExerciseInstanceMapper exerciseInstanceMapper,
+                                  ExerciseInstanceService exerciseInstanceService,
+                                  UserRepository userRepository) {
         this.workoutTemplateRepository = workoutTemplateRepository;
         this.workoutInstanceRepository = workoutInstanceRepository;
         this.exerciseInstanceRepository = exerciseInstanceRepository;
@@ -38,6 +47,7 @@ public class WorkoutInstanceService {
         this.workoutInstanceMapper = workoutInstanceMapper;
         this.exerciseInstanceMapper = exerciseInstanceMapper;
         this.exerciseInstanceService = exerciseInstanceService;
+        this.userRepository = userRepository;
     }
 
     /**x
@@ -49,59 +59,46 @@ public class WorkoutInstanceService {
     public WorkoutInstanceDTO save(WorkoutInstanceDTO workoutInstanceDTO) {
         log.debug("Request to save WorkoutInstance : {}", workoutInstanceDTO);
 
-        if (!workoutTemplateRepository
-            .findOne(workoutInstanceDTO.getWorkoutTemplateId())
-            .getUserDemographic()
-            .getUser()
-            .getLogin().equals(SecurityUtils.getCurrentUserLogin())) { return null; }
+        Optional<User> user = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin());
+        if (user.isPresent()) {
+            if (!workoutTemplateRepository
+                .findOne(workoutInstanceDTO.getWorkoutTemplateId())
+                .getUserDemographic()
+                .getUser()
+                .getLogin().equals(SecurityUtils.getCurrentUserLogin())) {
+                return null;
+            }
+            if (workoutInstanceDTO.getWorkoutTemplateId() == null) {
+                WorkoutInstance workoutInstance = workoutInstanceMapper.workoutInstanceDTOToWorkoutInstance(workoutInstanceDTO);
+                workoutInstance.setCreatedOn(LocalDate.now());
+                workoutInstance.setLastUpdated(LocalDate.now());
 
-        WorkoutInstance workoutInstance = workoutInstanceMapper.workoutInstanceDTOToWorkoutInstance(workoutInstanceDTO);
+                removeDereferenceExerciseInstances(workoutInstance);
+                workoutInstance.setExerciseInstances(new HashSet<>());
+                workoutInstance = workoutInstanceRepository.save(workoutInstance);
+                addWorkoutInstanceToParent(workoutInstance);
 
-        workoutInstance.setCreatedOn(LocalDate.now());
-        workoutInstance.setLastUpdated(LocalDate.now());
+                List<ExerciseInstanceDTO> exerciseInstanceDTOs = workoutInstanceDTO.getExerciseInstances();
+                exerciseInstanceDTOExists(workoutInstance, exerciseInstanceDTOs);
+                return workoutInstanceMapper.workoutInstanceToWorkoutInstanceDTO(workoutInstance);
+            } else {
+                WorkoutInstance workoutInstance = workoutInstanceMapper.workoutInstanceDTOToWorkoutInstance(workoutInstanceDTO);
 
-        removeDereferenceExerciseInstances(workoutInstance);
-        workoutInstance.setExerciseInstances(new HashSet<>());
-        workoutInstance = workoutInstanceRepository.save(workoutInstance);
-        addWorkoutInstanceToParent(workoutInstance);
+                workoutInstance.setLastUpdated(LocalDate.now());
 
-        List<ExerciseInstanceDTO> exerciseInstanceDTOs = workoutInstanceDTO.getExerciseInstances();
+                removeDereferenceExerciseInstances(workoutInstance);
+                workoutInstance.setExerciseInstances(new HashSet<>());
+                workoutInstance = workoutInstanceRepository.save(workoutInstance);
+                addWorkoutInstanceToParent(workoutInstance);
 
-        exerciseInstanceDTOExists(workoutInstance, exerciseInstanceDTOs);
-        return workoutInstanceMapper.workoutInstanceToWorkoutInstanceDTO(workoutInstance);
-    }
+                List<ExerciseInstanceDTO> exerciseInstanceDTOs = workoutInstanceDTO.getExerciseInstances();
 
-    /**
-     * Update a workoutInstance.
-     *
-     * @param workoutInstanceDTO the entity to save
-     * @return the persisted entity
-     */
-    public WorkoutInstanceDTO update(WorkoutInstanceDTO workoutInstanceDTO) {
-        log.debug("Request to update WorkoutInstance : {}", workoutInstanceDTO);
+                exerciseInstanceDTOExists(workoutInstance, exerciseInstanceDTOs);
 
-        if (!workoutTemplateRepository
-            .findOne(workoutInstanceDTO.getWorkoutTemplateId())
-            .getUserDemographic()
-            .getUser()
-            .getLogin().equals(SecurityUtils.getCurrentUserLogin())) {
-            return null;
+                return workoutInstanceMapper.workoutInstanceToWorkoutInstanceDTO(workoutInstance);
+            }
         }
-
-        WorkoutInstance workoutInstance = workoutInstanceMapper.workoutInstanceDTOToWorkoutInstance(workoutInstanceDTO);
-
-        workoutInstance.setLastUpdated(LocalDate.now());
-
-        removeDereferenceExerciseInstances(workoutInstance);
-        workoutInstance.setExerciseInstances(new HashSet<>());
-        workoutInstance = workoutInstanceRepository.save(workoutInstance);
-        addWorkoutInstanceToParent(workoutInstance);
-
-        List<ExerciseInstanceDTO> exerciseInstanceDTOs = workoutInstanceDTO.getExerciseInstances();
-
-        exerciseInstanceDTOExists(workoutInstance, exerciseInstanceDTOs);
-
-        return workoutInstanceMapper.workoutInstanceToWorkoutInstanceDTO(workoutInstance);
+        return null;
     }
 
     /**
@@ -140,7 +137,6 @@ public class WorkoutInstanceService {
      */
     public void delete(Long id) {
         log.debug("Request to delete WorkoutInstance : {}", id);
-
         if (workoutInstanceRepository.findOne(SecurityUtils.getCurrentUserLogin(), id).getId() != null){
             removeWorkoutInstanceFromRelatedItems(id);
             workoutInstanceRepository.delete(id);
@@ -157,7 +153,6 @@ public class WorkoutInstanceService {
             workoutInstance.setExerciseInstances(new HashSet<>(exerciseInstanceMapper.exerciseInstanceDTOsToExerciseInstances(savedExerciseInstanceDTOs)));
         }
     }
-
 
     private void removeWorkoutInstanceFromRelatedItems(Long id) {
         WorkoutInstance workoutInstance = workoutInstanceRepository.findOne(id);

@@ -83,7 +83,7 @@ public class WorkoutInstanceResource {
      */
     @GetMapping("/workout-instances")
     @Timed
-    public ResponseEntity<List<WorkoutInstanceDTO>> getAllWorkoutInstancesByCurrUser(@ApiParam Pageable pageable) throws URISyntaxException {
+    public ResponseEntity<List<WorkoutInstanceDTO>> getAllWorkoutInstances(@ApiParam Pageable pageable) throws URISyntaxException {
         log.debug("REST request to get a page of WorkoutInstances by current logged in user");
         Page<WorkoutInstanceDTO> page = workoutInstanceService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/workout-instances");

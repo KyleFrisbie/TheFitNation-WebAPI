@@ -12,13 +12,7 @@ import org.springframework.data.repository.query.*;
 public interface ExerciseInstanceRepository extends JpaRepository<ExerciseInstance,Long> {
 
     @Query("select exerciseInstance " +
-        "from ExerciseInstance exerciseInstance " +
-        "where exerciseInstance.workoutInstance.workoutTemplate.userDemographic.user.login = ?#{principal.username}")
-    Page<ExerciseInstance> findByLoggedInUser(Pageable pageable);
-
-    @Query("select exerciseInstance " +
-        "from ExerciseInstance exerciseInstance " +
-        "where exerciseInstance.workoutInstance.workoutTemplate.userDemographic.user.login = :login")
-    Page<ExerciseInstance> findAllByCurrentUserLogin(@Param(value = "login") String login, Pageable pageable);
-
+            "from ExerciseInstance exerciseInstance " +
+            "where exerciseInstance.workoutInstance.workoutTemplate.userDemographic.user.login = :login")
+    Page<ExerciseInstance> findAll(@Param(value = "login")String login, Pageable pageable);
 }
