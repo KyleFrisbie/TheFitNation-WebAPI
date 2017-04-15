@@ -4,18 +4,14 @@ package com.thefitnation.service;
 import com.thefitnation.TheFitNationApp;
 import com.thefitnation.domain.User;
 import com.thefitnation.domain.UserDemographic;
-import com.thefitnation.domain.UserDemographic;
 import com.thefitnation.domain.enumeration.Gender;
 import com.thefitnation.domain.enumeration.UnitOfMeasure;
 import com.thefitnation.repository.UserDemographicRepository;
 import com.thefitnation.repository.UserRepository;
-import com.thefitnation.repository.UserDemographicRepository;
 import com.thefitnation.service.dto.UserDemographicDTO;
 import com.thefitnation.service.mapper.UserDemographicMapper;
-import com.thefitnation.service.mapper.UserDemographicMapper;
-import com.thefitnation.testTools.TestUtils;
-import com.thefitnation.web.rest.UserDemographicResourceIntTest;
-import org.junit.Before;
+import com.thefitnation.testTools.AuthUtil;
+import com.thefitnation.testTools.UserDemographicGenerator;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,8 +68,8 @@ public class UserDemographicServiceIntTest {
 
     @Test
     public void saveNewUserDemographicAsLoggedInUser() {
-        Optional<User> user = TestUtils.logInUser("user", "user", userRepository);
-        UserDemographic userDemographic = TestUtils.generateUserDemographic(em, user.get());
+        Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
+        UserDemographic userDemographic = UserDemographicGenerator.getInstance().getOne(em, user.get());
 
         int databaseSizeBeforeCreate = userDemographicRepository.findAll().size();
 
@@ -88,8 +84,8 @@ public class UserDemographicServiceIntTest {
 
     @Test
     public void saveNewUserDemographicNotOwnedByLoggedInUser() {
-        Optional<User> user = TestUtils.logInUser("user", "user", userRepository);
-        UserDemographic userDemographic = TestUtils.generateUserDemographic(em);
+        Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
+        UserDemographic userDemographic = UserDemographicGenerator.getInstance().getOne(em);
         em.persist(userDemographic);
         em.flush();
 
@@ -108,7 +104,7 @@ public class UserDemographicServiceIntTest {
 
     @Test
     public void saveNewUserDemographicWithoutValidLogin() {
-        UserDemographic userDemographic = TestUtils.generateUserDemographic(em);
+        UserDemographic userDemographic = UserDemographicGenerator.getInstance().getOne(em);
 
         int databaseSizeBeforeCreate = userDemographicRepository.findAll().size();
 
@@ -122,8 +118,8 @@ public class UserDemographicServiceIntTest {
 
     @Test
     public void saveNewUserDemographicAsAdmin() {
-        Optional<User> user = TestUtils.logInUser("admin", "admin", userRepository);
-        UserDemographic userDemographic = TestUtils.generateUserDemographic(em);
+        Optional<User> user = AuthUtil.logInUser("admin", "admin", userRepository);
+        UserDemographic userDemographic = UserDemographicGenerator.getInstance().getOne(em);
 
         int databaseSizeBeforeUpdate = userDemographicRepository.findAll().size();
 
@@ -138,8 +134,8 @@ public class UserDemographicServiceIntTest {
 
     @Test
     public void updateUserDemographicForUser() {
-        Optional<User> user = TestUtils.logInUser("user", "user", userRepository);
-        UserDemographic userDemographic = TestUtils.generateUserDemographic(em, user.get());
+        Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
+        UserDemographic userDemographic = UserDemographicGenerator.getInstance().getOne(em, user.get());
         em.persist(userDemographic);
         em.flush();
 
@@ -166,9 +162,9 @@ public class UserDemographicServiceIntTest {
 
     @Test
     public void findAllUserDemographicsForAdmin() {
-        TestUtils.logInUser("admin", "admin", userRepository);
+        AuthUtil.logInUser("admin", "admin", userRepository);
         int numberOfUserDemographics = 10;
-        List<UserDemographic> originalUserDemographics = TestUtils.generateUserDemographics(em, numberOfUserDemographics);
+        List<UserDemographic> originalUserDemographics = UserDemographicGenerator.getInstance().getMany(em, numberOfUserDemographics);
 
         Page<UserDemographicDTO> testUserDemographicDTOs = userDemographicService.findAll(null);
 
@@ -181,9 +177,9 @@ public class UserDemographicServiceIntTest {
 
     @Test
     public void findAllUserDemographicsForUser() {
-        TestUtils.logInUser("user", "user", userRepository);
+        AuthUtil.logInUser("user", "user", userRepository);
         int numberOfUserDemographics = 10;
-        TestUtils.generateUserDemographics(em, numberOfUserDemographics);
+        UserDemographicGenerator.getInstance().getMany(em, numberOfUserDemographics);
 
         Page<UserDemographicDTO> testUserDemographicDTOs = userDemographicService.findAll(null);
 
@@ -192,8 +188,8 @@ public class UserDemographicServiceIntTest {
 
     @Test
     public void findOneUserDemographicsById() {
-        Optional<User> user = TestUtils.logInUser("user", "user", userRepository);
-        UserDemographic userDemographic = TestUtils.generateUserDemographic(em, user.get());
+        Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
+        UserDemographic userDemographic = UserDemographicGenerator.getInstance().getOne(em, user.get());
         em.persist(userDemographic);
         em.flush();
 
@@ -205,8 +201,8 @@ public class UserDemographicServiceIntTest {
 
     @Test
     public void findOneUserDemographicsByIdNotOwnedByUser() {
-        Optional<User> user = TestUtils.logInUser("user", "user", userRepository);
-        UserDemographic userDemographic = TestUtils.generateUserDemographic(em);
+        Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
+        UserDemographic userDemographic = UserDemographicGenerator.getInstance().getOne(em);
         em.persist(userDemographic);
         em.flush();
 
@@ -216,8 +212,8 @@ public class UserDemographicServiceIntTest {
 
     @Test
     public void findOneUserDemographicsByIdNotOwnedByAdmin() {
-        Optional<User> user = TestUtils.logInUser("admin", "admin", userRepository);
-        UserDemographic userDemographic = TestUtils.generateUserDemographic(em);
+        Optional<User> user = AuthUtil.logInUser("admin", "admin", userRepository);
+        UserDemographic userDemographic = UserDemographicGenerator.getInstance().getOne(em);
         em.persist(userDemographic);
         em.flush();
 
@@ -229,8 +225,8 @@ public class UserDemographicServiceIntTest {
 
     @Test
     public void deleteUserDemographicsById() {
-        Optional<User> user = TestUtils.logInUser("user", "user", userRepository);
-        UserDemographic userDemographic = TestUtils.generateUserDemographic(em, user.get());
+        Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
+        UserDemographic userDemographic = UserDemographicGenerator.getInstance().getOne(em, user.get());
         em.persist(userDemographic);
         em.flush();
 
@@ -241,8 +237,8 @@ public class UserDemographicServiceIntTest {
 
     @Test
     public void deleteOneUserDemographicsAsAdmin() {
-        Optional<User> user = TestUtils.logInUser("admin", "admin", userRepository);
-        UserDemographic userDemographic = TestUtils.generateUserDemographic(em, user.get());
+        Optional<User> user = AuthUtil.logInUser("admin", "admin", userRepository);
+        UserDemographic userDemographic = UserDemographicGenerator.getInstance().getOne(em, user.get());
         em.persist(userDemographic);
         em.flush();
 

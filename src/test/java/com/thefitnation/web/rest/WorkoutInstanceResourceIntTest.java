@@ -6,10 +6,15 @@ import com.thefitnation.repository.*;
 import com.thefitnation.service.*;
 import com.thefitnation.service.dto.*;
 import com.thefitnation.service.mapper.*;
+import com.thefitnation.testTools.AuthUtil;
+import com.thefitnation.testTools.WorkoutInstanceGenerator;
 import com.thefitnation.web.rest.errors.*;
 import java.time.*;
 import java.util.*;
+import javax.jws.soap.SOAPBinding;
 import javax.persistence.*;
+import javax.swing.text.html.Option;
+
 import org.junit.*;
 import org.junit.runner.*;
 import org.mockito.*;
@@ -22,6 +27,7 @@ import org.springframework.test.context.junit4.*;
 import org.springframework.test.web.servlet.*;
 import org.springframework.test.web.servlet.setup.*;
 import org.springframework.transaction.annotation.*;
+import scopt.Opt;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.hamcrest.Matchers.*;
@@ -123,10 +129,11 @@ public class WorkoutInstanceResourceIntTest {
     @Test
     @Transactional
     public void createWorkoutInstance() throws Exception {
-        int databaseSizeBeforeCreate = workoutInstanceRepository.findAll().size();
-
-        // Create the WorkoutInstance
+        Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
+        WorkoutInstance workoutInstance = WorkoutInstanceGenerator.getInstance().getOne(em, user.get());
         WorkoutInstanceDTO workoutInstanceDTO = workoutInstanceMapper.workoutInstanceToWorkoutInstanceDTO(workoutInstance);
+
+        int databaseSizeBeforeCreate = workoutInstanceRepository.findAll().size();
 
         restWorkoutInstanceMockMvc.perform(post("/api/workout-instances")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -138,8 +145,8 @@ public class WorkoutInstanceResourceIntTest {
         assertThat(workoutInstanceList).hasSize(databaseSizeBeforeCreate + 1);
         WorkoutInstance testWorkoutInstance = workoutInstanceList.get(workoutInstanceList.size() - 1);
         assertThat(testWorkoutInstance.getName()).isEqualTo(DEFAULT_NAME);
-        assertThat(testWorkoutInstance.getCreatedOn()).isEqualTo(DEFAULT_CREATED_ON);
-        assertThat(testWorkoutInstance.getLastUpdated()).isEqualTo(DEFAULT_LAST_UPDATED);
+        assertThat(testWorkoutInstance.getCreatedOn()).isEqualTo(LocalDate.now());
+        assertThat(testWorkoutInstance.getLastUpdated()).isEqualTo(LocalDate.now());
         assertThat(testWorkoutInstance.getRestBetweenInstances()).isEqualTo(DEFAULT_REST_BETWEEN_INSTANCES);
         assertThat(testWorkoutInstance.getOrderNumber()).isEqualTo(DEFAULT_ORDER_NUMBER);
         assertThat(testWorkoutInstance.getNotes()).isEqualTo(DEFAULT_NOTES);
@@ -169,6 +176,7 @@ public class WorkoutInstanceResourceIntTest {
     @Test
     @Transactional
     public void checkCreatedOnIsRequired() throws Exception {
+        AuthUtil.logInUser("user", "user", userRepository);
         int databaseSizeBeforeTest = workoutInstanceRepository.findAll().size();
         // set the field null
         workoutInstance.setCreatedOn(null);
@@ -226,8 +234,10 @@ public class WorkoutInstanceResourceIntTest {
     @Test
     @Transactional
     public void getAllWorkoutInstances() throws Exception {
-        // Initialize the database
-        workoutInstanceRepository.saveAndFlush(workoutInstance);
+        Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
+        WorkoutInstance workoutInstance = WorkoutInstanceGenerator.getInstance().getOne(em, user.get());
+        em.persist(workoutInstance);
+        em.flush();
 
         // Get all the workoutInstanceList
         restWorkoutInstanceMockMvc.perform(get("/api/workout-instances?sort=id,desc"))
@@ -245,8 +255,10 @@ public class WorkoutInstanceResourceIntTest {
     @Test
     @Transactional
     public void getWorkoutInstance() throws Exception {
-        // Initialize the database
-        workoutInstanceRepository.saveAndFlush(workoutInstance);
+        Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
+        WorkoutInstance workoutInstance = WorkoutInstanceGenerator.getInstance().getOne(em, user.get());
+        em.persist(workoutInstance);
+        em.flush();
 
         // Get the workoutInstance
         restWorkoutInstanceMockMvc.perform(get("/api/workout-instances/{id}", workoutInstance.getId()))
@@ -307,6 +319,8 @@ public class WorkoutInstanceResourceIntTest {
     @Test
     @Transactional
     public void updateNonExistingWorkoutInstance() throws Exception {
+        Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
+        WorkoutInstance workoutInstance = WorkoutInstanceGenerator.getInstance().getOne(em, user.get());
         int databaseSizeBeforeUpdate = workoutInstanceRepository.findAll().size();
 
         // Create the WorkoutInstance
@@ -326,7 +340,11 @@ public class WorkoutInstanceResourceIntTest {
     @Test
     @Transactional
     public void deleteWorkoutInstance() throws Exception {
-        // Initialize the database
+        Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
+        WorkoutInstance workoutInstance = WorkoutInstanceGenerator.getInstance().getOne(em, user.get());
+        em.persist(workoutInstance);
+        em.flush();
+
         workoutInstanceRepository.saveAndFlush(workoutInstance);
         int databaseSizeBeforeDelete = workoutInstanceRepository.findAll().size();
 

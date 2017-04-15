@@ -9,8 +9,9 @@ import com.thefitnation.repository.UserRepository;
 import com.thefitnation.repository.UserWeightRepository;
 import com.thefitnation.service.dto.UserWeightDTO;
 import com.thefitnation.service.mapper.UserWeightMapper;
-import com.thefitnation.testTools.TestUtils;
-import com.thefitnation.web.rest.TestUtil;
+import com.thefitnation.testTools.AuthUtil;
+import com.thefitnation.testTools.UserDemographicGenerator;
+import com.thefitnation.testTools.UserWeightGenerator;
 import com.thefitnation.web.rest.UserWeightResourceIntTest;
 import org.junit.Before;
 import org.junit.Test;
@@ -67,8 +68,8 @@ public class UserWeightServiceIntTest {
 
     @Test
     public void saveNewUserWeightAsLoggedInUser() {
-        Optional<User> user = TestUtils.logInUser("user", "user", userRepository);
-        UserDemographic userDemographic = TestUtils.generateUserDemographic(em, user.get());
+        Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
+        UserDemographic userDemographic = UserDemographicGenerator.getInstance().getOne(em, user.get());
         em.persist(userDemographic);
         em.flush();
 
@@ -91,12 +92,12 @@ public class UserWeightServiceIntTest {
 
     @Test
     public void saveNewUserWeightNotOwnedByLoggedInUser() {
-        Optional<User> user = TestUtils.logInUser("user", "user", userRepository);
-        UserDemographic userDemographic = TestUtils.generateUserDemographic(em, user.get());
+        Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
+        UserDemographic userDemographic = UserDemographicGenerator.getInstance().getOne(em, user.get());
         em.persist(userDemographic);
         em.flush();
 
-        UserWeight userWeight = TestUtils.generateUserWeightForUser(em);
+        UserWeight userWeight = UserWeightGenerator.getInstance().getOne(em);
         int databaseSizeBeforeCreate = userWeightRepository.findAll().size();
 
         UserWeightDTO userWeightDTO = userWeightMapper.userWeightToUserWeightDTO(userWeight);
@@ -124,10 +125,10 @@ public class UserWeightServiceIntTest {
 
     @Test
     public void saveNewUserWeightAsAdmin() {
-        Optional<User> user = TestUtils.logInUser("admin", "admin", userRepository);
+        Optional<User> user = AuthUtil.logInUser("admin", "admin", userRepository);
         int databaseSizeBeforeCreate = userWeightRepository.findAll().size();
 
-        UserWeight userWeight = TestUtils.generateUserWeight(em);
+        UserWeight userWeight = UserWeightGenerator.getInstance().getOne(em);
         User weightOwner = userWeight.getUserDemographic().getUser();
 
         UserWeightDTO userWeightDTO = userWeightMapper.userWeightToUserWeightDTO(userWeight);
@@ -144,8 +145,8 @@ public class UserWeightServiceIntTest {
 
     @Test
     public void updateUserWeightForUser() {
-        Optional<User> user = TestUtils.logInUser("user", "user", userRepository);
-        UserWeight userWeight = TestUtils.generateUserWeightForUser(em, user.get());
+        Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
+        UserWeight userWeight = UserWeightGenerator.getInstance().getOne(em, user.get());
         em.persist(userWeight);
         em.flush();
 
@@ -168,10 +169,10 @@ public class UserWeightServiceIntTest {
 
     @Test
     public void findAllUserWeightsForUser() {
-        Optional<User> user = TestUtils.logInUser("user", "user", userRepository);
+        Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
         int numberOfUserWeights = 10;
-        List<UserWeight> userWeights = TestUtils.generateUserWeightsForUser(em, numberOfUserWeights, user.get());
-        TestUtils.generateUserWeights(em, numberOfUserWeights);
+        List<UserWeight> userWeights = UserWeightGenerator.getInstance().getMany(em, numberOfUserWeights, user.get());
+        UserWeightGenerator.getInstance().getMany(em, numberOfUserWeights);
 
         Page<UserWeightDTO> userWeightDTOsPage = userWeightService.findAll(null);
 
@@ -186,10 +187,10 @@ public class UserWeightServiceIntTest {
 
     @Test
     public void findAllUserWeightsForAdmin() {
-        Optional<User> user = TestUtils.logInUser("admin", "admin", userRepository);
+        Optional<User> user = AuthUtil.logInUser("admin", "admin", userRepository);
         int numberOfUserWeights = 10;
-        TestUtils.generateUserWeightsForUser(em, numberOfUserWeights, user.get());
-        TestUtils.generateUserWeights(em, numberOfUserWeights);
+        UserWeightGenerator.getInstance().getMany(em, numberOfUserWeights, user.get());
+        UserWeightGenerator.getInstance().getMany(em, numberOfUserWeights);
 
         int databaseSize = userWeightRepository.findAll().size();
 
@@ -200,7 +201,7 @@ public class UserWeightServiceIntTest {
     @Test
     public void findAllUserWeightsForInvalidUser() {
         int numberOfUserWeights = 10;
-        TestUtils.generateUserWeights(em, numberOfUserWeights);
+        UserWeightGenerator.getInstance().getMany(em, numberOfUserWeights);
         int databaseSize = userWeightRepository.findAll().size();
 
         Page<UserWeightDTO> userWeightDTOsPage = userWeightService.findAll(null);
@@ -209,8 +210,8 @@ public class UserWeightServiceIntTest {
 
     @Test
     public void findOneUserWeightsById() {
-        Optional<User> user = TestUtils.logInUser("user", "user", userRepository);
-        UserWeight userWeight = TestUtils.generateUserWeightForUser(em, user.get());
+        Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
+        UserWeight userWeight = UserWeightGenerator.getInstance().getOne(em, user.get());
         em.persist(userWeight);
         em.flush();
 
@@ -221,8 +222,8 @@ public class UserWeightServiceIntTest {
 
     @Test
     public void findOneUserWeightsByIdNotOwnedByUser() {
-        TestUtils.logInUser("user", "user", userRepository);
-        UserWeight userWeight = TestUtils.generateUserWeightForUser(em);
+        AuthUtil.logInUser("user", "user", userRepository);
+        UserWeight userWeight = UserWeightGenerator.getInstance().getOne(em);
         em.persist(userWeight);
         em.flush();
 
@@ -232,9 +233,9 @@ public class UserWeightServiceIntTest {
 
     @Test
     public void findOneUserWeightsByIdNotOwnedByAdmin() {
-        Optional<User> user = TestUtils.logInUser("admin", "admin", userRepository);
-        TestUtils.generateUserDemographic(em, user.get());
-        UserWeight userWeight = TestUtils.generateUserWeightForUser(em);
+        Optional<User> user = AuthUtil.logInUser("admin", "admin", userRepository);
+        UserDemographicGenerator.getInstance().getOne(em, user.get());
+        UserWeight userWeight = UserWeightGenerator.getInstance().getOne(em);
         em.persist(userWeight);
         em.flush();
 
@@ -245,8 +246,8 @@ public class UserWeightServiceIntTest {
 
     @Test
     public void deleteOneUserWeightsById() {
-        Optional<User> user = TestUtils.logInUser("user", "user", userRepository);
-        UserWeight userWeight = TestUtils.generateUserWeightForUser(em, user.get());
+        Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
+        UserWeight userWeight = UserWeightGenerator.getInstance().getOne(em, user.get());
         em.persist(userWeight);
         em.flush();
         int databaseSizeBeforeDelete = userWeightRepository.findAll().size();
@@ -258,8 +259,8 @@ public class UserWeightServiceIntTest {
 
     @Test
     public void deleteOneUserWeightsByIdNotOwnedByUser() {
-        TestUtils.logInUser("user", "user", userRepository);
-        UserWeight userWeight = TestUtils.generateUserWeightForUser(em);
+        AuthUtil.logInUser("user", "user", userRepository);
+        UserWeight userWeight = UserWeightGenerator.getInstance().getOne(em);
         em.persist(userWeight);
         em.flush();
         int databaseSizeBeforeDelete = userWeightRepository.findAll().size();
@@ -271,9 +272,9 @@ public class UserWeightServiceIntTest {
 
     @Test
     public void deleteOneUserWeightsByIdNotOwnedByAdmin() {
-        Optional<User> user = TestUtils.logInUser("admin", "admin", userRepository);
-        TestUtils.generateUserDemographic(em, user.get());
-        UserWeight userWeight = TestUtils.generateUserWeight(em);
+        Optional<User> user = AuthUtil.logInUser("admin", "admin", userRepository);
+        UserDemographicGenerator.getInstance().getOne(em, user.get());
+        UserWeight userWeight = UserWeightGenerator.getInstance().getOne(em);
         em.persist(userWeight);
         em.flush();
         int databaseSizeBeforeDelete = userWeightRepository.findAll().size();
