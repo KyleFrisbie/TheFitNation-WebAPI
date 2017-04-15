@@ -126,8 +126,7 @@ public class WorkoutInstanceService {
         log.debug("Request to get WorkoutInstance : {}", id);
         String login = SecurityUtils.getCurrentUserLogin();
         WorkoutInstance workoutInstance = workoutInstanceRepository.findOne(login, id);
-        WorkoutInstanceDTO workoutInstanceDTO = workoutInstanceMapper.workoutInstanceToWorkoutInstanceDTO(workoutInstance);
-        return workoutInstanceDTO;
+        return workoutInstanceMapper.workoutInstanceToWorkoutInstanceDTO(workoutInstance);
     }
 
     /**

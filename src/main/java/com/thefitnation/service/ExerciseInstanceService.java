@@ -102,7 +102,9 @@ public class ExerciseInstanceService {
     @Transactional(readOnly = true)
     public ExerciseInstanceDTO findOne(Long id) {
         log.debug("Request to get ExerciseInstance : {}", id);
-        ExerciseInstance exerciseInstance = exerciseInstanceRepository.findOne(id);
+
+        String login = SecurityUtils.getCurrentUserLogin();
+        ExerciseInstance exerciseInstance = exerciseInstanceRepository.findOne(login, id);
         return exerciseInstanceMapper.exerciseInstanceToExerciseInstanceDTO(exerciseInstance);
     }
 
@@ -115,6 +117,11 @@ public class ExerciseInstanceService {
         log.debug("Request to delete ExerciseInstance : {}", id);
         removeExerciseInstanceFromRelatedItems(id);
         exerciseInstanceRepository.delete(id);
+
+        if (exerciseInstanceRepository.findOne(SecurityUtils.getCurrentUserLogin(), id).getId() != null){
+            removeExerciseInstanceFromRelatedItems(id);
+            workoutInstanceRepository.delete(id);
+        }
     }
 
     private void removeExerciseInstanceFromRelatedItems(Long id) {
