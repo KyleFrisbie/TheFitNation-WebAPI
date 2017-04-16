@@ -5,8 +5,10 @@ import com.thefitnation.repository.*;
 import com.thefitnation.security.*;
 import com.thefitnation.service.dto.*;
 import com.thefitnation.service.mapper.*;
+
 import java.time.*;
 import java.util.*;
+
 import org.slf4j.*;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.*;
@@ -29,6 +31,8 @@ public class WorkoutInstanceService {
     private final ExerciseInstanceMapper exerciseInstanceMapper;
     private final ExerciseInstanceService exerciseInstanceService;
     private final UserRepository userRepository;
+    private final ExerciseRepository exerciseRepository;
+    private final UnitRepository unitRepository;
 
     public WorkoutInstanceService(WorkoutTemplateRepository workoutTemplateRepository,
                                   WorkoutInstanceRepository workoutInstanceRepository,
@@ -38,7 +42,7 @@ public class WorkoutInstanceService {
                                   WorkoutInstanceMapper workoutInstanceMapper,
                                   ExerciseInstanceMapper exerciseInstanceMapper,
                                   ExerciseInstanceService exerciseInstanceService,
-                                  UserRepository userRepository) {
+                                  UserRepository userRepository, ExerciseRepository exerciseRepository, UnitRepository unitRepository) {
         this.workoutTemplateRepository = workoutTemplateRepository;
         this.workoutInstanceRepository = workoutInstanceRepository;
         this.exerciseInstanceRepository = exerciseInstanceRepository;
@@ -48,9 +52,12 @@ public class WorkoutInstanceService {
         this.exerciseInstanceMapper = exerciseInstanceMapper;
         this.exerciseInstanceService = exerciseInstanceService;
         this.userRepository = userRepository;
+        this.exerciseRepository = exerciseRepository;
+        this.unitRepository = unitRepository;
     }
 
-    /**x
+
+    /**
      * Save a workoutInstance.
      *
      * @param workoutInstanceDTO the entity to save
@@ -68,44 +75,39 @@ public class WorkoutInstanceService {
                 .getLogin().equals(SecurityUtils.getCurrentUserLogin())) {
                 return null;
             }
-            if (workoutInstanceDTO.getWorkoutTemplateId() == null) {
-                WorkoutInstance workoutInstance = workoutInstanceMapper.workoutInstanceDTOToWorkoutInstance(workoutInstanceDTO);
+
+            WorkoutInstance workoutInstance = workoutInstanceMapper.workoutInstanceDTOToWorkoutInstance(workoutInstanceDTO);
+            workoutInstance.setLastUpdated(LocalDate.now());
+            if (workoutInstance.getId() == null) {
                 workoutInstance.setCreatedOn(LocalDate.now());
-                workoutInstance.setLastUpdated(LocalDate.now());
-
-                removeDereferenceExerciseInstances(workoutInstance);
-                workoutInstance.setExerciseInstances(new HashSet<>());
-                workoutInstance = workoutInstanceRepository.save(workoutInstance);
-                addWorkoutInstanceToParent(workoutInstance);
-
-                List<ExerciseInstanceDTO> exerciseInstanceDTOs = workoutInstanceDTO.getExerciseInstances();
-                exerciseInstanceDTOExists(workoutInstance, exerciseInstanceDTOs);
-                return workoutInstanceMapper.workoutInstanceToWorkoutInstanceDTO(workoutInstance);
-            } else {
-                WorkoutInstance workoutInstance = workoutInstanceMapper.workoutInstanceDTOToWorkoutInstance(workoutInstanceDTO);
-
-                workoutInstance.setLastUpdated(LocalDate.now());
-
-                removeDereferenceExerciseInstances(workoutInstance);
-                workoutInstance.setExerciseInstances(new HashSet<>());
-                workoutInstance = workoutInstanceRepository.save(workoutInstance);
-                addWorkoutInstanceToParent(workoutInstance);
-
-                List<ExerciseInstanceDTO> exerciseInstanceDTOs = workoutInstanceDTO.getExerciseInstances();
-
-                exerciseInstanceDTOExists(workoutInstance, exerciseInstanceDTOs);
-
-                return workoutInstanceMapper.workoutInstanceToWorkoutInstanceDTO(workoutInstance);
             }
+            removeDereferenceExerciseInstances(workoutInstance);
+            workoutInstance.setExerciseInstances(new HashSet<>());
+            workoutInstance = workoutInstanceRepository.save(workoutInstance);
+            addWorkoutInstanceToParent(workoutInstance);
+
+            List<ExerciseInstanceDTO> exerciseInstanceDTOs = workoutInstanceDTO.getExerciseInstances();
+            exerciseInstanceDTOExists(workoutInstance, exerciseInstanceDTOs);
+
+            WorkoutInstanceDTO result = workoutInstanceMapper.workoutInstanceToWorkoutInstanceDTO(workoutInstance);
+
+            for (ExerciseInstanceDTO exerciseInstanceDTO :
+                result.getExerciseInstances()) {
+                exerciseInstanceDTO.setEffortUnitName(unitRepository.findOne(exerciseInstanceDTO.getEffortUnitId()).getName());
+                exerciseInstanceDTO.setRepUnitName(unitRepository.findOne(exerciseInstanceDTO.getRepUnitId()).getName());
+                exerciseInstanceDTO.setExerciseName(exerciseRepository.findOne(exerciseInstanceDTO.getExerciseId()).getName());
+            }
+
+            return result;
         }
         return null;
     }
 
     /**
-     *  Get all the workoutInstances.
+     * Get all the workoutInstances.
      *
-     *  @param pageable the pagination information
-     *  @return the list of entities
+     * @param pageable the pagination information
+     * @return the list of entities
      */
     @Transactional(readOnly = true)
     public Page<WorkoutInstanceDTO> findAll(Pageable pageable) {
@@ -116,10 +118,10 @@ public class WorkoutInstanceService {
     }
 
     /**
-     *  Get one workoutInstance by id.
+     * Get one workoutInstance by id.
      *
-     *  @param id the id of the entity
-     *  @return the entity
+     * @param id the id of the entity
+     * @return the entity
      */
     @Transactional(readOnly = true)
     public WorkoutInstanceDTO findOne(Long id) {
@@ -130,13 +132,13 @@ public class WorkoutInstanceService {
     }
 
     /**
-     *  Delete the  workoutInstance by id.
+     * Delete the  workoutInstance by id.
      *
-     *  @param id the id of the entity
+     * @param id the id of the entity
      */
     public void delete(Long id) {
         log.debug("Request to delete WorkoutInstance : {}", id);
-        if (workoutInstanceRepository.findOne(SecurityUtils.getCurrentUserLogin(), id).getId() != null){
+        if (workoutInstanceRepository.findOne(SecurityUtils.getCurrentUserLogin(), id).getId() != null) {
             removeWorkoutInstanceFromRelatedItems(id);
             workoutInstanceRepository.delete(id);
         }
