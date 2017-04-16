@@ -88,7 +88,7 @@ public class UserWorkoutInstanceService {
         userWorkoutTemplateRepository.save(userWorkoutTemplate);
 
         if (userWorkoutInstance.getWorkoutInstance() != null) {
-            WorkoutInstance workoutInstance = workoutInstanceRepository.findOne((userWorkoutTemplate.getWorkoutTemplate()).getId());
+            WorkoutInstance workoutInstance = workoutInstanceRepository.findOne((userWorkoutInstance.getWorkoutInstance()).getId());
             workoutInstance.addUserWorkoutInstance(userWorkoutInstance);
             workoutInstanceRepository.save(workoutInstance);
         }
