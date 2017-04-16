@@ -5,8 +5,11 @@ import com.thefitnation.domain.User;
 import com.thefitnation.domain.UserDemographic;
 import com.thefitnation.domain.enumeration.Gender;
 import com.thefitnation.domain.enumeration.UnitOfMeasure;
+import com.thefitnation.repository.UserDemographicRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,8 +27,7 @@ public class UserDemographicGenerator implements IOwnedEntityGenerator<UserDemog
         return instance;
     }
 
-    @Override
-    public UserDemographic getOne(EntityManager entityManager) {
+    private UserDemographic createUserDemographic(EntityManager entityManager) {
         User user = UserGenerator.getOne();
         entityManager.persist(user);
         entityManager.flush();
@@ -45,8 +47,16 @@ public class UserDemographicGenerator implements IOwnedEntityGenerator<UserDemog
             .skillLevel(skillLevel);
     }
 
-    @Override
-    public UserDemographic getOne(EntityManager entityManager, User user) {
+    private UserDemographic createUserDemographic(EntityManager entityManager, User user) {
+        Query query = entityManager.createQuery("select userDemographic from UserDemographic userDemographic where userDemographic.user.id =:id");
+        query.setParameter("id", user.getId());
+
+        UserDemographic existingUserDemographic = (UserDemographic)query.getSingleResult();
+
+        if (existingUserDemographic != null) {
+            return existingUserDemographic;
+        }
+
         SkillLevel skillLevel = SkillLevelGenerator.getInstance().getOne(entityManager);
         entityManager.persist(skillLevel);
         entityManager.flush();
@@ -63,24 +73,22 @@ public class UserDemographicGenerator implements IOwnedEntityGenerator<UserDemog
     }
 
     @Override
+    public UserDemographic getOne(EntityManager entityManager) {
+        return createUserDemographic(entityManager);
+    }
+
+    @Override
+    public UserDemographic getOne(EntityManager entityManager, User user) {
+        return createUserDemographic(entityManager, user);
+    }
+
+    @Override
     public UserDemographic getOne(EntityManager entityManager, String username, String password) {
         User user = UserGenerator.getOne(username, password);
         entityManager.persist(user);
         entityManager.flush();
 
-        SkillLevel skillLevel = SkillLevelGenerator.getInstance().getOne(entityManager);
-        entityManager.persist(skillLevel);
-        entityManager.flush();
-
-        return new UserDemographic()
-            .createdOn(LocalDate.ofEpochDay(0L))
-            .lastLogin(LocalDate.ofEpochDay(0L))
-            .gender(Gender.Male)
-            .dateOfBirth(LocalDate.ofEpochDay(0L))
-            .height(1F)
-            .unitOfMeasure(UnitOfMeasure.Imperial)
-            .user(user)
-            .skillLevel(skillLevel);
+        return createUserDemographic(entityManager, user);
     }
 
     @Override
