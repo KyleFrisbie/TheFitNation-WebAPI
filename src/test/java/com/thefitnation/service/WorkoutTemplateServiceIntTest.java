@@ -211,4 +211,25 @@ public class WorkoutTemplateServiceIntTest {
         assertThat(testWorkoutTemplate).isNotNull();
         assertThat(testWorkoutTemplate.getId()).isEqualTo(workoutTemplate.getId());
     }
+
+    @Test
+    public void deleteOwnedWorkoutTemplate() {
+        Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
+        UserDemographic userDemographic = UserDemographicGenerator.getOne(entityManager, user.get());
+        entityManager.persist(userDemographic);
+        entityManager.flush();
+
+        WorkoutTemplate workoutTemplate = WorkoutTemplateGenerator.getInstance().getOne(entityManager, userDemographic);
+        entityManager.persist(workoutTemplate);
+        entityManager.flush();
+
+        int databaseSizeBeforeCreate = workoutTemplateRepository.findAll().size();
+
+        workoutTemplateService.delete(workoutTemplate.getId());
+
+        int databaseSizeAfterCreate = workoutTemplateRepository.findAll().size();
+
+        assertThat(databaseSizeAfterCreate).isEqualTo(databaseSizeBeforeCreate - 1);
+        assertThat(workoutTemplateService.findOne(workoutTemplate.getId())).isNull();
+    }
 }

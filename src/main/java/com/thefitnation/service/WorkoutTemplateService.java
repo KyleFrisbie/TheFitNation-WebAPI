@@ -29,29 +29,31 @@ public class WorkoutTemplateService {
     private final UserWorkoutTemplateRepository userWorkoutTemplateRepository;
     private final WorkoutTemplateMapper workoutTemplateMapper;
     private final WorkoutTemplateWithChildrenMapper workoutTemplateWithChildrenMapper;
+    private final SkillLevelRepository skillLevelRepository;
 
     /**
      * Constructor
-     *
-     * @param userRepository                    for getting user data
+     *  @param userRepository                    for getting user data
      * @param userDemographicRepository         for getting UserDemographic data
      * @param workoutTemplateRepository         for getting WorkoutTemplate data
      * @param userWorkoutTemplateRepository     for getting User data
      * @param workoutTemplateMapper             to map WorkoutTemplate to and from WorkoutTemplateDTO
      * @param workoutTemplateWithChildrenMapper to map WorkoutTemplateWithChildren to and from WorkoutTemplateWithChildrenDTO
+     * @param skillLevelRepository
      */
     public WorkoutTemplateService(UserRepository userRepository,
                                   UserDemographicRepository userDemographicRepository,
                                   WorkoutTemplateRepository workoutTemplateRepository,
                                   UserWorkoutTemplateRepository userWorkoutTemplateRepository,
                                   WorkoutTemplateMapper workoutTemplateMapper,
-                                  WorkoutTemplateWithChildrenMapper workoutTemplateWithChildrenMapper) {
+                                  WorkoutTemplateWithChildrenMapper workoutTemplateWithChildrenMapper, SkillLevelRepository skillLevelRepository) {
         this.userRepository = userRepository;
         this.userDemographicRepository = userDemographicRepository;
         this.workoutTemplateRepository = workoutTemplateRepository;
         this.userWorkoutTemplateRepository = userWorkoutTemplateRepository;
         this.workoutTemplateMapper = workoutTemplateMapper;
         this.workoutTemplateWithChildrenMapper = workoutTemplateWithChildrenMapper;
+        this.skillLevelRepository = skillLevelRepository;
     }
 
     /**
@@ -83,7 +85,10 @@ public class WorkoutTemplateService {
         }
         WorkoutTemplate workoutTemplate = workoutTemplateMapper.workoutTemplateDTOToWorkoutTemplate(workoutTemplateDTO);
         workoutTemplate = workoutTemplateRepository.save(workoutTemplate);
-        return workoutTemplateMapper.workoutTemplateToWorkoutTemplateDTO(workoutTemplate);
+
+        workoutTemplateDTO = workoutTemplateMapper.workoutTemplateToWorkoutTemplateDTO(workoutTemplate);
+        workoutTemplateDTO.setSkillLevelLevel(skillLevelRepository.findOne(workoutTemplateDTO.getSkillLevelId()).getLevel());
+        return workoutTemplateDTO;
     }
 
     /**
