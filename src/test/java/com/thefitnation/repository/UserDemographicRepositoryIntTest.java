@@ -32,7 +32,7 @@ public class UserDemographicRepositoryIntTest {
 
     @Test
     public void findAllWithEagerRelationships() {
-        UserDemographicGenerator.getInstance().getMany(em, NUMBER_OF_USER_DEMOGRAPHICS);
+        UserDemographicGenerator.getMany(em, NUMBER_OF_USER_DEMOGRAPHICS);
         List<UserDemographic> savedUserDemographics = userDemographicRepository.findAllWithEagerRelationships();
 
         assertThat(savedUserDemographics.size()).isEqualTo(NUMBER_OF_USER_DEMOGRAPHICS);
@@ -40,7 +40,7 @@ public class UserDemographicRepositoryIntTest {
 
     @Test
     public void findOneWithEagerRelationships() {
-        List<UserDemographic> savedUserDemographics = UserDemographicGenerator.getInstance().getMany(em, NUMBER_OF_USER_DEMOGRAPHICS);
+        List<UserDemographic> savedUserDemographics = UserDemographicGenerator.getMany(em, NUMBER_OF_USER_DEMOGRAPHICS);
         UserDemographic userDemographic = savedUserDemographics.get(0);
         UserDemographic foundUserDemographic = userDemographicRepository.findOne(userDemographic.getId());
         assertThat(foundUserDemographic).isNotNull();
@@ -52,7 +52,7 @@ public class UserDemographicRepositoryIntTest {
         em.persist(user);
         em.flush();
 
-        UserDemographic userDemographic = UserDemographicGenerator.getInstance().getOne(em, user);
+        UserDemographic userDemographic = UserDemographicGenerator.getOne(em, user);
         em.persist(userDemographic);
         em.flush();
 

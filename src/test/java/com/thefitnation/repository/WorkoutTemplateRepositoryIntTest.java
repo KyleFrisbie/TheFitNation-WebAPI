@@ -2,7 +2,9 @@ package com.thefitnation.repository;
 
 import com.thefitnation.TheFitNationApp;
 import com.thefitnation.domain.User;
+import com.thefitnation.domain.UserDemographic;
 import com.thefitnation.domain.WorkoutTemplate;
+import com.thefitnation.testTools.UserDemographicGenerator;
 import com.thefitnation.testTools.UserGenerator;
 import com.thefitnation.testTools.WorkoutTemplateGenerator;
 import org.junit.Test;
@@ -36,7 +38,11 @@ public class WorkoutTemplateRepositoryIntTest {
         entityManager.persist(user);
         entityManager.flush();
 
-        WorkoutTemplateGenerator.getInstance().getMany(entityManager, NUMBER_OF_WORKOUT_TEMPLATES, user);
+        UserDemographic userDemographic = UserDemographicGenerator.getOne(entityManager, user);
+        entityManager.persist(userDemographic);
+        entityManager.flush();
+
+        WorkoutTemplateGenerator.getInstance().getMany(entityManager, NUMBER_OF_WORKOUT_TEMPLATES, userDemographic);
 
         WorkoutTemplateGenerator.getInstance().getMany(entityManager, NUMBER_OF_WORKOUT_TEMPLATES);
         Page<WorkoutTemplate> savedWorkoutTemplates = workoutTemplateRepository.findAll(user.getLogin(), null);
@@ -50,7 +56,11 @@ public class WorkoutTemplateRepositoryIntTest {
         entityManager.persist(user);
         entityManager.flush();
 
-        WorkoutTemplate workoutTemplate = WorkoutTemplateGenerator.getInstance().getOne(entityManager, user);
+        UserDemographic userDemographic = UserDemographicGenerator.getOne(entityManager, user);
+        entityManager.persist(userDemographic);
+        entityManager.flush();
+
+        WorkoutTemplate workoutTemplate = WorkoutTemplateGenerator.getInstance().getOne(entityManager, userDemographic);
         entityManager.persist(workoutTemplate);
         entityManager.flush();
 

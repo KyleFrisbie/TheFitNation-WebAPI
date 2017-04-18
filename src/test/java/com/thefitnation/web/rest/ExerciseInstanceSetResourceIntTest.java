@@ -8,6 +8,7 @@ import com.thefitnation.service.dto.*;
 import com.thefitnation.service.mapper.*;
 import com.thefitnation.testTools.AuthUtil;
 import com.thefitnation.testTools.ExerciseInstanceSetGenerator;
+import com.thefitnation.testTools.UserDemographicGenerator;
 import com.thefitnation.web.rest.errors.*;
 
 import java.util.*;
@@ -123,7 +124,10 @@ public class ExerciseInstanceSetResourceIntTest {
     @Transactional
     public void createExerciseInstanceSet() throws Exception {
         Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
-        ExerciseInstanceSet exerciseInstanceSet = ExerciseInstanceSetGenerator.getInstance().getOne(em, user.get());
+        UserDemographic userDemographic = UserDemographicGenerator.getOne(em, user.get());
+        em.persist(userDemographic);
+        em.flush();
+        ExerciseInstanceSet exerciseInstanceSet = ExerciseInstanceSetGenerator.getInstance().getOne(em, userDemographic);
         int databaseSizeBeforeCreate = exerciseInstanceSetRepository.findAll().size();
 
         // Create the ExerciseInstanceSet
@@ -149,7 +153,10 @@ public class ExerciseInstanceSetResourceIntTest {
     @Transactional
     public void createExerciseInstanceSetWithExistingId() throws Exception {
         Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
-        ExerciseInstanceSet exerciseInstanceSet = ExerciseInstanceSetGenerator.getInstance().getOne(em, user.get());
+        UserDemographic userDemographic = UserDemographicGenerator.getOne(em, user.get());
+        em.persist(userDemographic);
+        em.flush();
+        ExerciseInstanceSet exerciseInstanceSet = ExerciseInstanceSetGenerator.getInstance().getOne(em, userDemographic);
         int databaseSizeBeforeCreate = exerciseInstanceSetRepository.findAll().size();
 
         // Create the ExerciseInstanceSet with an existing ID
@@ -248,7 +255,10 @@ public class ExerciseInstanceSetResourceIntTest {
     @Transactional
     public void getExerciseInstanceSet() throws Exception {
         Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
-        ExerciseInstanceSet exerciseInstanceSet = ExerciseInstanceSetGenerator.getInstance().getOne(em, user.get());
+        UserDemographic userDemographic = UserDemographicGenerator.getOne(em, user.get());
+        em.persist(userDemographic);
+        em.flush();
+        ExerciseInstanceSet exerciseInstanceSet = ExerciseInstanceSetGenerator.getInstance().getOne(em, userDemographic);
         exerciseInstanceSetRepository.saveAndFlush(exerciseInstanceSet);
 
         // Get the exerciseInstanceSet
@@ -308,7 +318,10 @@ public class ExerciseInstanceSetResourceIntTest {
     @Transactional
     public void updateNonExistingExerciseInstanceSet() throws Exception {
         Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
-        ExerciseInstanceSet exerciseInstanceSet = ExerciseInstanceSetGenerator.getInstance().getOne(em, user.get());
+        UserDemographic userDemographic = UserDemographicGenerator.getOne(em, user.get());
+        em.persist(userDemographic);
+        em.flush();
+        ExerciseInstanceSet exerciseInstanceSet = ExerciseInstanceSetGenerator.getInstance().getOne(em, userDemographic);
         int databaseSizeBeforeUpdate = exerciseInstanceSetRepository.findAll().size();
 
         // Create the ExerciseInstanceSet
@@ -329,7 +342,10 @@ public class ExerciseInstanceSetResourceIntTest {
     @Transactional
     public void deleteExerciseInstanceSet() throws Exception {
         Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
-        ExerciseInstanceSet exerciseInstanceSet = ExerciseInstanceSetGenerator.getInstance().getOne(em, user.get());
+        UserDemographic userDemographic = UserDemographicGenerator.getOne(em, user.get());
+        em.persist(userDemographic);
+        em.flush();
+        ExerciseInstanceSet exerciseInstanceSet = ExerciseInstanceSetGenerator.getInstance().getOne(em, userDemographic);
         exerciseInstanceSetRepository.saveAndFlush(exerciseInstanceSet);
         int databaseSizeBeforeDelete = exerciseInstanceSetRepository.findAll().size();
 
