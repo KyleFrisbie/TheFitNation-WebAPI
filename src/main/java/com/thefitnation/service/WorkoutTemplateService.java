@@ -63,6 +63,9 @@ public class WorkoutTemplateService {
         Optional<User> user = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin());
 
         if (user.isPresent()) {
+            if (workoutTemplateDTO.getUserDemographicId() != null) {
+                WorkoutTemplate dbWorkoutTemplate = workoutTemplateRepository.findOne(user.get().getLogin(), workoutTemplateDTO.getUserDemographicId());
+            }
             if (workoutTemplateDTO.getUserDemographicId() == null) {
                 WorkoutTemplate workoutTemplate = workoutTemplateMapper.workoutTemplateDTOToWorkoutTemplate(workoutTemplateDTO);
                 workoutTemplate.setUserDemographic(userDemographicRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin()));
