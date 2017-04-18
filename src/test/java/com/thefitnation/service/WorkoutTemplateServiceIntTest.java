@@ -7,6 +7,7 @@ import com.thefitnation.domain.WorkoutTemplate;
 import com.thefitnation.repository.UserRepository;
 import com.thefitnation.repository.WorkoutTemplateRepository;
 import com.thefitnation.service.dto.WorkoutTemplateDTO;
+import com.thefitnation.service.dto.WorkoutTemplateWithChildrenDTO;
 import com.thefitnation.service.mapper.WorkoutTemplateMapper;
 import com.thefitnation.testTools.AuthUtil;
 import com.thefitnation.testTools.UserDemographicGenerator;
@@ -15,10 +16,14 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
@@ -27,6 +32,13 @@ import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 @SpringBootTest(classes = TheFitNationApp.class)
 @Transactional
 public class WorkoutTemplateServiceIntTest {
+    private static final String UPDATED_NAME = "BBBBBBBBBB";
+    private static final LocalDate UPDATED_CREATED_ON = LocalDate.now(ZoneId.systemDefault());
+    private static final LocalDate UPDATED_LAST_UPDATED = LocalDate.now(ZoneId.systemDefault());
+    private static final Boolean UPDATED_IS_PRIVATE = true;
+    private static final String UPDATED_NOTES = "BBBBBBBBBB";
+
+    private static final int NUMBER_OF_WORKOUT_TEMPLATES = 10;
 
     @Autowired
     private EntityManager entityManager;
@@ -55,12 +67,12 @@ public class WorkoutTemplateServiceIntTest {
         int databaseSizeBeforeCreate = workoutTemplateRepository.findAll().size();
 
         WorkoutTemplateDTO workoutTemplateDTO = workoutTemplateMapper.workoutTemplateToWorkoutTemplateDTO(workoutTemplate);
-        WorkoutTemplateDTO testUserDemographicDTO = workoutTemplateService.save(workoutTemplateDTO);
+        WorkoutTemplateDTO testWorkoutTemplateDTO = workoutTemplateService.save(workoutTemplateDTO);
 
         int databaseSizeAfterCreate = workoutTemplateRepository.findAll().size();
         assertThat(databaseSizeAfterCreate).isEqualTo(databaseSizeBeforeCreate + 1);
-        assertThat(testUserDemographicDTO.getId()).isNotNull();
-        assertThat(testUserDemographicDTO.getUserDemographicId()).isEqualTo(userDemographic.getId());
+        assertThat(testWorkoutTemplateDTO.getId()).isNotNull();
+        assertThat(testWorkoutTemplateDTO.getUserDemographicId()).isEqualTo(userDemographic.getId());
     }
 
     @Test
@@ -74,32 +86,129 @@ public class WorkoutTemplateServiceIntTest {
         int databaseSizeBeforeCreate = workoutTemplateRepository.findAll().size();
 
         WorkoutTemplateDTO workoutTemplateDTO = workoutTemplateMapper.workoutTemplateToWorkoutTemplateDTO(workoutTemplate);
-        WorkoutTemplateDTO testUserDemographicDTO = workoutTemplateService.save(workoutTemplateDTO);
+        WorkoutTemplateDTO testWorkoutTemplateDTO = workoutTemplateService.save(workoutTemplateDTO);
 
         int databaseSizeAfterCreate = workoutTemplateRepository.findAll().size();
         assertThat(databaseSizeAfterCreate).isEqualTo(databaseSizeBeforeCreate);
-        assertThat(testUserDemographicDTO).isNull();
+        assertThat(testWorkoutTemplateDTO).isNull();
     }
 
     @Test
-    public void saveWorkoutTemplateWithoutUserDemographicAsLoggedInUser() {
+    public void saveWorkoutTemplateUserDoesntOwn() {
+        Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
+        UserDemographic userDemographic = UserDemographicGenerator.getOne(entityManager, user.get());
+        entityManager.persist(userDemographic);
+        entityManager.flush();
+
+        WorkoutTemplate workoutTemplate = WorkoutTemplateGenerator.getInstance().getOne(entityManager);
+        entityManager.persist(workoutTemplate);
+        entityManager.flush();
+
+        int databaseSizeBeforeCreate = workoutTemplateRepository.findAll().size();
+
+        WorkoutTemplateDTO workoutTemplateDTO = workoutTemplateMapper.workoutTemplateToWorkoutTemplateDTO(workoutTemplate);
+        WorkoutTemplateDTO testWorkoutTemplateDTO = workoutTemplateService.save(workoutTemplateDTO);
+
+        int databaseSizeAfterCreate = workoutTemplateRepository.findAll().size();
+        assertThat(databaseSizeAfterCreate).isEqualTo(databaseSizeBeforeCreate + 1);
+        assertThat(testWorkoutTemplateDTO.getId()).isNotNull();
+        assertThat(testWorkoutTemplateDTO.getUserDemographicId()).isEqualTo(userDemographic.getId());
+    }
+
+    @Test
+    public void updateWorkoutTemplate() {
         Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
         UserDemographic userDemographic = UserDemographicGenerator.getOne(entityManager, user.get());
         entityManager.persist(userDemographic);
         entityManager.flush();
 
         WorkoutTemplate workoutTemplate = WorkoutTemplateGenerator.getInstance().getOne(entityManager, userDemographic);
+        entityManager.persist(workoutTemplate);
+        entityManager.flush();
 
-        workoutTemplate.setUserDemographic(null);
+        workoutTemplate.setName(UPDATED_NAME);
+        workoutTemplate.setIsPrivate(UPDATED_IS_PRIVATE);
+        workoutTemplate.setNotes(UPDATED_NOTES);
 
         int databaseSizeBeforeCreate = workoutTemplateRepository.findAll().size();
 
         WorkoutTemplateDTO workoutTemplateDTO = workoutTemplateMapper.workoutTemplateToWorkoutTemplateDTO(workoutTemplate);
-        WorkoutTemplateDTO testUserDemographicDTO = workoutTemplateService.save(workoutTemplateDTO);
+        WorkoutTemplateDTO testWorkoutTemplateDTO = workoutTemplateService.save(workoutTemplateDTO);
+
+        int databaseSizeAfterCreate = workoutTemplateRepository.findAll().size();
+        assertThat(databaseSizeAfterCreate).isEqualTo(databaseSizeBeforeCreate);
+        assertThat(testWorkoutTemplateDTO.getId()).isNotNull();
+        assertThat(testWorkoutTemplateDTO.getId()).isEqualTo(workoutTemplate.getId());
+        assertThat(testWorkoutTemplateDTO.getUserDemographicId()).isEqualTo(userDemographic.getId());
+        assertThat(testWorkoutTemplateDTO.getName()).isEqualToIgnoringCase(UPDATED_NAME);
+        assertThat(testWorkoutTemplateDTO.getNotes()).isEqualToIgnoringCase(UPDATED_NOTES);
+        assertThat(testWorkoutTemplateDTO.getIsPrivate()).isEqualTo(UPDATED_IS_PRIVATE);
+    }
+
+    @Test
+    public void updateWorkoutTemplateUserDoesntOwn() {
+        Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
+        UserDemographic userDemographic = UserDemographicGenerator.getOne(entityManager, user.get());
+        entityManager.persist(userDemographic);
+        entityManager.flush();
+
+        WorkoutTemplate workoutTemplate = WorkoutTemplateGenerator.getInstance().getOne(entityManager);
+        entityManager.persist(workoutTemplate);
+        entityManager.flush();
+
+        workoutTemplate.setName(UPDATED_NAME);
+        workoutTemplate.setIsPrivate(UPDATED_IS_PRIVATE);
+        workoutTemplate.setNotes(UPDATED_NOTES);
+
+        int databaseSizeBeforeCreate = workoutTemplateRepository.findAll().size();
+
+        WorkoutTemplateDTO workoutTemplateDTO = workoutTemplateMapper.workoutTemplateToWorkoutTemplateDTO(workoutTemplate);
+        WorkoutTemplateDTO testWorkoutTemplateDTO = workoutTemplateService.save(workoutTemplateDTO);
 
         int databaseSizeAfterCreate = workoutTemplateRepository.findAll().size();
         assertThat(databaseSizeAfterCreate).isEqualTo(databaseSizeBeforeCreate + 1);
-        assertThat(testUserDemographicDTO.getId()).isNotNull();
-        assertThat(testUserDemographicDTO.getUserDemographicId()).isEqualTo(userDemographic.getId());
+        assertThat(testWorkoutTemplateDTO.getId()).isNotNull();
+        assertThat(testWorkoutTemplateDTO.getId()).isNotEqualTo(workoutTemplate.getId());
+        assertThat(testWorkoutTemplateDTO.getUserDemographicId()).isEqualTo(userDemographic.getId());
+        assertThat(testWorkoutTemplateDTO.getName()).isEqualToIgnoringCase(UPDATED_NAME);
+        assertThat(testWorkoutTemplateDTO.getNotes()).isEqualToIgnoringCase(UPDATED_NOTES);
+        assertThat(testWorkoutTemplateDTO.getIsPrivate()).isEqualTo(UPDATED_IS_PRIVATE);
+    }
+
+    @Test
+    public void findAllUserOwnedWorkoutTemplates() {
+        Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
+        UserDemographic userDemographic = UserDemographicGenerator.getOne(entityManager, user.get());
+        entityManager.persist(userDemographic);
+        entityManager.flush();
+
+        List<WorkoutTemplate> workoutTemplate = WorkoutTemplateGenerator.getInstance().getMany(entityManager, NUMBER_OF_WORKOUT_TEMPLATES, userDemographic);
+
+        WorkoutTemplateGenerator.getInstance().getMany(entityManager, NUMBER_OF_WORKOUT_TEMPLATES);
+        Page<WorkoutTemplateDTO> testWorkoutTemplatePage = workoutTemplateService.findAll(null);
+        List<WorkoutTemplateDTO> testWorkoutTemplateDTOs = testWorkoutTemplatePage.getContent();
+        assertThat(testWorkoutTemplateDTOs.size()).isEqualTo(NUMBER_OF_WORKOUT_TEMPLATES);
+        for (WorkoutTemplateDTO workoutTemplateDTO :
+            testWorkoutTemplateDTOs) {
+            assertThat(workoutTemplate.contains(workoutTemplateMapper.workoutTemplateDTOToWorkoutTemplate(workoutTemplateDTO)));
+            assertThat(workoutTemplateDTO.getUserDemographicId()).isEqualTo(userDemographic.getId());
+        }
+    }
+
+    @Test
+    public void findOneUserOwnedWorkoutTemplates() {
+        Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
+        UserDemographic userDemographic = UserDemographicGenerator.getOne(entityManager, user.get());
+        entityManager.persist(userDemographic);
+        entityManager.flush();
+
+        WorkoutTemplate workoutTemplate = WorkoutTemplateGenerator.getInstance().getOne(entityManager, userDemographic);
+        entityManager.persist(workoutTemplate);
+        entityManager.flush();
+
+        WorkoutTemplateWithChildrenDTO testWorkoutTemplate = workoutTemplateService.findOne(workoutTemplate.getId());
+
+        assertThat(testWorkoutTemplate).isNotNull();
+        assertThat(testWorkoutTemplate.getId()).isEqualTo(workoutTemplate.getId());
     }
 }
