@@ -55,25 +55,24 @@ public class UserWorkoutTemplateService {
      */
     public UserWorkoutTemplateDTO save(UserWorkoutTemplateDTO userWorkoutTemplateDTO) {
         log.debug("Request to save UserWorkoutTemplate : {}", userWorkoutTemplateDTO);
-        if (userWorkoutTemplateDTO.getUserDemographicId() == null) {
-            Optional<User> user = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin());
-            if (user.isPresent()) {
-                if (userWorkoutTemplateDTO.getUserDemographicId() ==  null){
-                    UserDemographic userDemographic = userDemographicRepository.findOneByUserWithEagerRelationships(user.get().getId());
-                    userWorkoutTemplateDTO.setUserDemographicId(userDemographic.getId());
-                    UserWorkoutTemplate userWorkoutTemplate = userWorkoutTemplateMapper.userWorkoutTemplateDTOToUserWorkoutTemplate(userWorkoutTemplateDTO);
-                    userWorkoutTemplate.setCreatedOn(LocalDate.now());
-                    userWorkoutTemplate.setLastUpdated(LocalDate.now());
-                    userWorkoutTemplate = userWorkoutTemplateRepository.save(userWorkoutTemplate);
-                    return userWorkoutTemplateMapper.userWorkoutTemplateToUserWorkoutTemplateDTO(userWorkoutTemplate);
-                } else {
-                    UserDemographic userDemographic = userDemographicRepository.findOneByUserWithEagerRelationships(user.get().getId());
-                    userWorkoutTemplateDTO.setUserDemographicId(userDemographic.getId());
-                    UserWorkoutTemplate userWorkoutTemplate = userWorkoutTemplateMapper.userWorkoutTemplateDTOToUserWorkoutTemplate(userWorkoutTemplateDTO);
-                    userWorkoutTemplate.setLastUpdated(LocalDate.now());
-                    userWorkoutTemplate = userWorkoutTemplateRepository.save(userWorkoutTemplate);
-                    return userWorkoutTemplateMapper.userWorkoutTemplateToUserWorkoutTemplateDTO(userWorkoutTemplate);
-                }
+        Optional<User> user = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin());
+
+        if (user.isPresent()) {
+            if (userWorkoutTemplateDTO.getUserDemographicId() != null) {
+                UserDemographic userDemographic = userDemographicRepository.findOneByUserWithEagerRelationships(user.get().getId());
+                userWorkoutTemplateDTO.setUserDemographicId(userDemographic.getId());
+                UserWorkoutTemplate userWorkoutTemplate = userWorkoutTemplateMapper.userWorkoutTemplateDTOToUserWorkoutTemplate(userWorkoutTemplateDTO);
+                userWorkoutTemplate.setCreatedOn(LocalDate.now());
+                userWorkoutTemplate.setLastUpdated(LocalDate.now());
+                userWorkoutTemplate = userWorkoutTemplateRepository.save(userWorkoutTemplate);
+                return userWorkoutTemplateMapper.userWorkoutTemplateToUserWorkoutTemplateDTO(userWorkoutTemplate);
+            } else {
+                UserDemographic userDemographic = userDemographicRepository.findOneByUserWithEagerRelationships(user.get().getId());
+                userWorkoutTemplateDTO.setUserDemographicId(userDemographic.getId());
+                UserWorkoutTemplate userWorkoutTemplate = userWorkoutTemplateMapper.userWorkoutTemplateDTOToUserWorkoutTemplate(userWorkoutTemplateDTO);
+                userWorkoutTemplate.setLastUpdated(LocalDate.now());
+                userWorkoutTemplate = userWorkoutTemplateRepository.save(userWorkoutTemplate);
+                return userWorkoutTemplateMapper.userWorkoutTemplateToUserWorkoutTemplateDTO(userWorkoutTemplate);
             }
         }
         return null;
