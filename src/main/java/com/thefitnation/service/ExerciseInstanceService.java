@@ -34,7 +34,7 @@ public class ExerciseInstanceService {
                                    UserExerciseInstanceRepository userExerciseInstanceRepository,
                                    UserExerciseInstanceSetRepository userExerciseInstanceSetRepository,
                                    ExerciseInstanceMapper exerciseInstanceMapper,
-                                   ExerciseInstanceSetMapper exerciseInstanceSetMapper,
+                                    ExerciseInstanceSetMapper exerciseInstanceSetMapper,
                                    UserRepository userRepository) {
         this.exerciseInstanceRepository = exerciseInstanceRepository;
         this.workoutInstanceRepository = workoutInstanceRepository;
