@@ -20,7 +20,7 @@ public interface UserExerciseInstanceRepository extends JpaRepository<UserExerci
     @Query("select userExerciseInstance " +
         "from UserExerciseInstance userExerciseInstance " +
         "where userExerciseInstance.userWorkoutInstance.userWorkoutTemplate.userDemographic.user.login = :login " +
-        "and exerciseInstance.id = :id")
+        "and userExerciseInstance.id = :id")
     UserExerciseInstance findOne(@Param(value = "login") String login, @Param(value = "id") Long id);
 
 }
