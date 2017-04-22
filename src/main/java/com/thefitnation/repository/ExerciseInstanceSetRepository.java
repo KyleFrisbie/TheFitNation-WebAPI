@@ -1,10 +1,9 @@
 package com.thefitnation.repository;
 
-import com.thefitnation.domain.ExerciseInstanceSet;
-
+import com.thefitnation.domain.*;
+import org.springframework.data.domain.*;
 import org.springframework.data.jpa.repository.*;
-
-import java.util.List;
+import org.springframework.data.repository.query.*;
 
 /**
  * Spring Data JPA repository for the ExerciseInstanceSet entity.
@@ -12,4 +11,14 @@ import java.util.List;
 @SuppressWarnings("unused")
 public interface ExerciseInstanceSetRepository extends JpaRepository<ExerciseInstanceSet,Long> {
 
+    @Query("select exerciseInstanceSet " +
+            "from ExerciseInstanceSet exerciseInstanceSet " +
+            "where exerciseInstanceSet.exerciseInstance.workoutInstance.workoutTemplate.userDemographic.user.login = :login")
+    Page<ExerciseInstanceSet> findAll(@Param(value = "login") String login, Pageable pageable);
+
+    @Query("select exerciseInstanceSet " +
+            "from ExerciseInstanceSet exerciseInstanceSet " +
+            "where exerciseInstanceSet.exerciseInstance.workoutInstance.workoutTemplate.userDemographic.user.login = :login " +
+                "and exerciseInstanceSet.id = :id")
+    ExerciseInstanceSet findOne(@Param(value = "login") String currentUserLogin, @Param(value = "id") Long id);
 }

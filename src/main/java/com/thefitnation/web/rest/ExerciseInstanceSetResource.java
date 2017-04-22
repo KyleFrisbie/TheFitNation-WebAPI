@@ -1,28 +1,21 @@
 package com.thefitnation.web.rest;
 
-import com.codahale.metrics.annotation.Timed;
-import com.thefitnation.service.ExerciseInstanceSetService;
-import com.thefitnation.web.rest.util.HeaderUtil;
-import com.thefitnation.web.rest.util.PaginationUtil;
-import com.thefitnation.service.dto.ExerciseInstanceSetDTO;
-import io.swagger.annotations.ApiParam;
-import io.github.jhipster.web.util.ResponseUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import com.codahale.metrics.annotation.*;
+import com.thefitnation.domain.*;
+import com.thefitnation.repository.*;
+import com.thefitnation.security.*;
+import com.thefitnation.service.*;
+import com.thefitnation.service.dto.*;
+import com.thefitnation.web.rest.util.*;
+import io.github.jhipster.web.util.*;
+import io.swagger.annotations.*;
+import java.net.*;
+import java.util.*;
+import javax.validation.*;
+import org.slf4j.*;
+import org.springframework.data.domain.*;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * REST controller for managing ExerciseInstanceSet.
@@ -34,11 +27,13 @@ public class ExerciseInstanceSetResource {
     private final Logger log = LoggerFactory.getLogger(ExerciseInstanceSetResource.class);
 
     private static final String ENTITY_NAME = "exerciseInstanceSet";
-        
-    private final ExerciseInstanceSetService exerciseInstanceSetService;
 
-    public ExerciseInstanceSetResource(ExerciseInstanceSetService exerciseInstanceSetService) {
+    private final ExerciseInstanceSetService exerciseInstanceSetService;
+    private final UserRepository userRepository;
+
+    public ExerciseInstanceSetResource(ExerciseInstanceSetService exerciseInstanceSetService, UserRepository userRepository) {
         this.exerciseInstanceSetService = exerciseInstanceSetService;
+        this.userRepository = userRepository;
     }
 
     /**
@@ -84,7 +79,7 @@ public class ExerciseInstanceSetResource {
     }
 
     /**
-     * GET  /exercise-instance-sets : get all the exerciseInstanceSets.
+     * GET  /exercise-instance-sets : get all the exerciseInstanceSets by current logged in user.
      *
      * @param pageable the pagination information
      * @return the ResponseEntity with status 200 (OK) and the list of exerciseInstanceSets in body
@@ -92,12 +87,22 @@ public class ExerciseInstanceSetResource {
      */
     @GetMapping("/exercise-instance-sets")
     @Timed
-    public ResponseEntity<List<ExerciseInstanceSetDTO>> getAllExerciseInstanceSets(@ApiParam Pageable pageable)
+    public ResponseEntity<List<ExerciseInstanceSetDTO>> getAllExerciseInstanceSetsByCurrUSer(@ApiParam Pageable pageable)
         throws URISyntaxException {
-        log.debug("REST request to get a page of ExerciseInstanceSets");
-        Page<ExerciseInstanceSetDTO> page = exerciseInstanceSetService.findAll(pageable);
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/exercise-instance-sets");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+
+        log.debug("REST request to get a page of ExerciseInstanceSets by current logged in user.");
+
+        Optional<User> user = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin());
+
+        if(user.isPresent()) {
+            Page<ExerciseInstanceSetDTO> page = exerciseInstanceSetService.findAll(pageable);
+            HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/exercise-instance-sets");
+            return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+        } else {
+            return ResponseEntity.badRequest()
+                .headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "invaliduser", "Unable to find User by token"))
+                .body(null);
+        }
     }
 
     /**
@@ -127,5 +132,4 @@ public class ExerciseInstanceSetResource {
         exerciseInstanceSetService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
-
 }

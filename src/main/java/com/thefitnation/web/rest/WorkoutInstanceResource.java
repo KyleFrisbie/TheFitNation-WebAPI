@@ -1,43 +1,34 @@
 package com.thefitnation.web.rest;
 
-import com.codahale.metrics.annotation.Timed;
-import com.thefitnation.service.WorkoutInstanceService;
-import com.thefitnation.web.rest.util.HeaderUtil;
-import com.thefitnation.web.rest.util.PaginationUtil;
-import com.thefitnation.service.dto.WorkoutInstanceDTO;
-import io.swagger.annotations.ApiParam;
-import io.github.jhipster.web.util.ResponseUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import com.codahale.metrics.annotation.*;
+import com.thefitnation.repository.*;
+import com.thefitnation.service.*;
+import com.thefitnation.service.dto.*;
+import com.thefitnation.web.rest.util.*;
+import io.github.jhipster.web.util.*;
+import io.swagger.annotations.*;
+import java.net.*;
+import java.util.*;
+import javax.validation.*;
+import org.slf4j.*;
+import org.springframework.data.domain.*;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * REST controller for managing WorkoutInstance.
  */
+
 @RestController
 @RequestMapping("/api")
 public class WorkoutInstanceResource {
 
     private final Logger log = LoggerFactory.getLogger(WorkoutInstanceResource.class);
-
     private static final String ENTITY_NAME = "workoutInstance";
-        
     private final WorkoutInstanceService workoutInstanceService;
 
-    public WorkoutInstanceResource(WorkoutInstanceService workoutInstanceService) {
+
+    public WorkoutInstanceResource(WorkoutInstanceService workoutInstanceService, UserRepository userRepository) {
         this.workoutInstanceService = workoutInstanceService;
     }
 
@@ -67,7 +58,7 @@ public class WorkoutInstanceResource {
      * @param workoutInstanceDTO the workoutInstanceDTO to update
      * @return the ResponseEntity with status 200 (OK) and with body the updated workoutInstanceDTO,
      * or with status 400 (Bad Request) if the workoutInstanceDTO is not valid,
-     * or with status 500 (Internal Server Error) if the workoutInstanceDTO couldnt be updated
+     * or with status 500 (Internal Server Error) if the workoutInstanceDTO couldn't be updated
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PutMapping("/workout-instances")
@@ -84,7 +75,7 @@ public class WorkoutInstanceResource {
     }
 
     /**
-     * GET  /workout-instances : get all the workoutInstances.
+     * GET  /workout-instances : get all the workoutInstances by current logged in user.
      *
      * @param pageable the pagination information
      * @return the ResponseEntity with status 200 (OK) and the list of workoutInstances in body
@@ -92,9 +83,8 @@ public class WorkoutInstanceResource {
      */
     @GetMapping("/workout-instances")
     @Timed
-    public ResponseEntity<List<WorkoutInstanceDTO>> getAllWorkoutInstances(@ApiParam Pageable pageable)
-        throws URISyntaxException {
-        log.debug("REST request to get a page of WorkoutInstances");
+    public ResponseEntity<List<WorkoutInstanceDTO>> getAllWorkoutInstances(@ApiParam Pageable pageable) throws URISyntaxException {
+        log.debug("REST request to get a page of WorkoutInstances by current logged in user");
         Page<WorkoutInstanceDTO> page = workoutInstanceService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/workout-instances");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);

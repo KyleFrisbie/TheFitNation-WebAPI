@@ -3,6 +3,7 @@ package com.thefitnation.web.rest;
 import com.thefitnation.TheFitNationApp;
 import com.thefitnation.domain.User;
 import com.thefitnation.repository.UserRepository;
+import com.thefitnation.service.UserDemographicService;
 import com.thefitnation.service.UserService;
 import com.thefitnation.service.MailService;
 
@@ -35,6 +36,9 @@ public class UserResourceIntTest {
     private UserRepository userRepository;
 
     @Autowired
+    private UserDemographicService userDemographicService;
+
+    @Autowired
     private MailService mailService;
 
     @Autowired
@@ -65,7 +69,8 @@ public class UserResourceIntTest {
 
     @Before
     public void setup() {
-        UserResource userResource = new UserResource(userRepository, mailService, userService);
+        UserResource userResource = new UserResource(userRepository, userDemographicService, mailService,
+            userService);
         this.restUserMockMvc = MockMvcBuilders.standaloneSetup(userResource).build();
     }
 

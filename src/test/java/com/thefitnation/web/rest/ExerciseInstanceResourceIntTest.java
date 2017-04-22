@@ -1,37 +1,31 @@
 package com.thefitnation.web.rest;
 
-import com.thefitnation.TheFitNationApp;
+import com.thefitnation.*;
+import com.thefitnation.domain.*;
+import com.thefitnation.repository.*;
+import com.thefitnation.service.*;
+import com.thefitnation.service.dto.*;
+import com.thefitnation.service.mapper.*;
+import com.thefitnation.testTools.AuthUtil;
+import com.thefitnation.testTools.ExerciseInstanceGenerator;
+import com.thefitnation.web.rest.errors.*;
+import java.util.*;
+import javax.persistence.*;
+import org.junit.*;
+import org.junit.runner.*;
+import org.mockito.*;
+import org.springframework.beans.factory.annotation.*;
+import org.springframework.boot.test.context.*;
+import org.springframework.data.web.*;
+import org.springframework.http.*;
+import org.springframework.http.converter.json.*;
+import org.springframework.test.context.junit4.*;
+import org.springframework.test.web.servlet.*;
+import org.springframework.test.web.servlet.setup.*;
+import org.springframework.transaction.annotation.*;
 
-import com.thefitnation.domain.ExerciseInstance;
-import com.thefitnation.domain.WorkoutInstance;
-import com.thefitnation.domain.Exercise;
-import com.thefitnation.domain.Unit;
-import com.thefitnation.domain.Unit;
-import com.thefitnation.repository.ExerciseInstanceRepository;
-import com.thefitnation.service.ExerciseInstanceService;
-import com.thefitnation.service.dto.ExerciseInstanceDTO;
-import com.thefitnation.service.mapper.ExerciseInstanceMapper;
-import com.thefitnation.web.rest.errors.ExceptionTranslator;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
-import org.springframework.http.MediaType;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.transaction.annotation.Transactional;
-
-import javax.persistence.EntityManager;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.hasItem;
+import static org.assertj.core.api.Assertions.*;
+import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -46,6 +40,9 @@ public class ExerciseInstanceResourceIntTest {
 
     private static final String DEFAULT_NOTES = "AAAAAAAAAA";
     private static final String UPDATED_NOTES = "BBBBBBBBBB";
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private ExerciseInstanceRepository exerciseInstanceRepository;
@@ -75,7 +72,7 @@ public class ExerciseInstanceResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        ExerciseInstanceResource exerciseInstanceResource = new ExerciseInstanceResource(exerciseInstanceService);
+        ExerciseInstanceResource exerciseInstanceResource = new ExerciseInstanceResource(exerciseInstanceService, userRepository);
         this.restExerciseInstanceMockMvc = MockMvcBuilders.standaloneSetup(exerciseInstanceResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -122,6 +119,8 @@ public class ExerciseInstanceResourceIntTest {
     @Test
     @Transactional
     public void createExerciseInstance() throws Exception {
+        Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
+        ExerciseInstance exerciseInstance = ExerciseInstanceGenerator.getInstance().getOne(em, user.get());
         int databaseSizeBeforeCreate = exerciseInstanceRepository.findAll().size();
 
         // Create the ExerciseInstance
@@ -163,10 +162,9 @@ public class ExerciseInstanceResourceIntTest {
     @Test
     @Transactional
     public void getAllExerciseInstances() throws Exception {
-        // Initialize the database
+        Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
+        ExerciseInstance exerciseInstance = ExerciseInstanceGenerator.getInstance().getOne(em, user.get());
         exerciseInstanceRepository.saveAndFlush(exerciseInstance);
-
-        // Get all the exerciseInstanceList
         restExerciseInstanceMockMvc.perform(get("/api/exercise-instances?sort=id,desc"))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
@@ -177,7 +175,9 @@ public class ExerciseInstanceResourceIntTest {
     @Test
     @Transactional
     public void getExerciseInstance() throws Exception {
-        // Initialize the database
+        Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
+        ExerciseInstance exerciseInstance = ExerciseInstanceGenerator.getInstance().getOne(em, user.get());
+        exerciseInstanceRepository.saveAndFlush(exerciseInstance);
         exerciseInstanceRepository.saveAndFlush(exerciseInstance);
 
         // Get the exerciseInstance
@@ -191,6 +191,8 @@ public class ExerciseInstanceResourceIntTest {
     @Test
     @Transactional
     public void getNonExistingExerciseInstance() throws Exception {
+        Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
+        ExerciseInstance exerciseInstance = ExerciseInstanceGenerator.getInstance().getOne(em, user.get());
         // Get the exerciseInstance
         restExerciseInstanceMockMvc.perform(get("/api/exercise-instances/{id}", Long.MAX_VALUE))
             .andExpect(status().isNotFound());
@@ -199,8 +201,10 @@ public class ExerciseInstanceResourceIntTest {
     @Test
     @Transactional
     public void updateExerciseInstance() throws Exception {
-        // Initialize the database
+        Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
+        ExerciseInstance exerciseInstance = ExerciseInstanceGenerator.getInstance().getOne(em, user.get());
         exerciseInstanceRepository.saveAndFlush(exerciseInstance);
+
         int databaseSizeBeforeUpdate = exerciseInstanceRepository.findAll().size();
 
         // Update the exerciseInstance
@@ -224,6 +228,8 @@ public class ExerciseInstanceResourceIntTest {
     @Test
     @Transactional
     public void updateNonExistingExerciseInstance() throws Exception {
+        Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
+        ExerciseInstance exerciseInstance = ExerciseInstanceGenerator.getInstance().getOne(em, user.get());
         int databaseSizeBeforeUpdate = exerciseInstanceRepository.findAll().size();
 
         // Create the ExerciseInstance
@@ -243,7 +249,8 @@ public class ExerciseInstanceResourceIntTest {
     @Test
     @Transactional
     public void deleteExerciseInstance() throws Exception {
-        // Initialize the database
+        Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
+        ExerciseInstance exerciseInstance = ExerciseInstanceGenerator.getInstance().getOne(em, user.get());
         exerciseInstanceRepository.saveAndFlush(exerciseInstance);
         int databaseSizeBeforeDelete = exerciseInstanceRepository.findAll().size();
 

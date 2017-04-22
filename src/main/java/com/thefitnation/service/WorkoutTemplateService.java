@@ -1,19 +1,16 @@
 package com.thefitnation.service;
 
-import com.thefitnation.domain.WorkoutTemplate;
-import com.thefitnation.repository.WorkoutTemplateRepository;
-import com.thefitnation.service.dto.WorkoutTemplateDTO;
-import com.thefitnation.service.mapper.WorkoutTemplateMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.stereotype.Service;
-
-import java.util.LinkedList;
-import java.util.List;
-import java.util.stream.Collectors;
+import com.thefitnation.domain.*;
+import com.thefitnation.repository.*;
+import com.thefitnation.security.*;
+import com.thefitnation.service.dto.*;
+import com.thefitnation.service.mapper.*;
+import java.time.*;
+import java.util.*;
+import org.slf4j.*;
+import org.springframework.data.domain.*;
+import org.springframework.stereotype.*;
+import org.springframework.transaction.annotation.*;
 
 /**
  * Service Implementation for managing WorkoutTemplate.
@@ -23,14 +20,35 @@ import java.util.stream.Collectors;
 public class WorkoutTemplateService {
 
     private final Logger log = LoggerFactory.getLogger(WorkoutTemplateService.class);
-    
+
+    private final UserRepository userRepository;
+    private final UserDemographicRepository userDemographicRepository;
     private final WorkoutTemplateRepository workoutTemplateRepository;
-
+    private final UserWorkoutTemplateRepository userWorkoutTemplateRepository;
     private final WorkoutTemplateMapper workoutTemplateMapper;
+    private final WorkoutTemplateWithChildrenMapper workoutTemplateWithChildrenMapper;
 
-    public WorkoutTemplateService(WorkoutTemplateRepository workoutTemplateRepository, WorkoutTemplateMapper workoutTemplateMapper) {
+    /**
+     * Constructor
+     * @param userRepository for getting user data
+     * @param userDemographicRepository for getting UserDemographic data
+     * @param workoutTemplateRepository for getting WorkoutTemplate data
+     * @param userWorkoutTemplateRepository for getting User data
+     * @param workoutTemplateMapper to map WorkoutTemplate to and from WorkoutTemplateDTO
+     * @param workoutTemplateWithChildrenMapper to map WorkoutTemplateWithChildren to and from WorkoutTemplateWithChildrenDTO
+     */
+    public WorkoutTemplateService(UserRepository userRepository,
+                                  UserDemographicRepository userDemographicRepository,
+                                  WorkoutTemplateRepository workoutTemplateRepository,
+                                  UserWorkoutTemplateRepository userWorkoutTemplateRepository,
+                                  WorkoutTemplateMapper workoutTemplateMapper,
+                                  WorkoutTemplateWithChildrenMapper workoutTemplateWithChildrenMapper) {
+        this.userRepository = userRepository;
+        this.userDemographicRepository = userDemographicRepository;
         this.workoutTemplateRepository = workoutTemplateRepository;
+        this.userWorkoutTemplateRepository = userWorkoutTemplateRepository;
         this.workoutTemplateMapper = workoutTemplateMapper;
+        this.workoutTemplateWithChildrenMapper = workoutTemplateWithChildrenMapper;
     }
 
     /**
@@ -41,23 +59,39 @@ public class WorkoutTemplateService {
      */
     public WorkoutTemplateDTO save(WorkoutTemplateDTO workoutTemplateDTO) {
         log.debug("Request to save WorkoutTemplate : {}", workoutTemplateDTO);
-        WorkoutTemplate workoutTemplate = workoutTemplateMapper.workoutTemplateDTOToWorkoutTemplate(workoutTemplateDTO);
-        workoutTemplate = workoutTemplateRepository.save(workoutTemplate);
-        WorkoutTemplateDTO result = workoutTemplateMapper.workoutTemplateToWorkoutTemplateDTO(workoutTemplate);
-        return result;
+
+        Optional<User> user = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin());
+
+        if (user.isPresent()) {
+            if (workoutTemplateDTO.getUserDemographicId() == null) {
+                WorkoutTemplate workoutTemplate = workoutTemplateMapper.workoutTemplateDTOToWorkoutTemplate(workoutTemplateDTO);
+                workoutTemplate.setUserDemographic(userDemographicRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin()));
+                workoutTemplate.setCreatedOn(LocalDate.now());
+                workoutTemplate.setLastUpdated(LocalDate.now());
+                workoutTemplate = workoutTemplateRepository.save(workoutTemplate);
+                return workoutTemplateMapper.workoutTemplateToWorkoutTemplateDTO(workoutTemplate);
+            } else {
+                WorkoutTemplate workoutTemplate = workoutTemplateMapper.workoutTemplateDTOToWorkoutTemplate(workoutTemplateDTO);
+                workoutTemplate.setLastUpdated(LocalDate.now());
+                workoutTemplate = workoutTemplateRepository.save(workoutTemplate);
+                return workoutTemplateMapper.workoutTemplateToWorkoutTemplateDTO(workoutTemplate);
+            }
+        }
+        return null;
     }
 
     /**
      *  Get all the workoutTemplates.
-     *  
+     *
      *  @param pageable the pagination information
      *  @return the list of entities
      */
     @Transactional(readOnly = true)
     public Page<WorkoutTemplateDTO> findAll(Pageable pageable) {
-        log.debug("Request to get all WorkoutTemplates");
-        Page<WorkoutTemplate> result = workoutTemplateRepository.findAll(pageable);
-        return result.map(workoutTemplate -> workoutTemplateMapper.workoutTemplateToWorkoutTemplateDTO(workoutTemplate));
+        log.debug("Request to get all WorkoutTemplates by current logged in user.");
+        String login = SecurityUtils.getCurrentUserLogin();
+        Page<WorkoutTemplate> result = workoutTemplateRepository.findAll(login, pageable);
+        return result.map(workoutTemplateMapper::workoutTemplateToWorkoutTemplateDTO);
     }
 
     /**
@@ -67,11 +101,11 @@ public class WorkoutTemplateService {
      *  @return the entity
      */
     @Transactional(readOnly = true)
-    public WorkoutTemplateDTO findOne(Long id) {
+    public WorkoutTemplateWithChildrenDTO findOne(Long id) {
         log.debug("Request to get WorkoutTemplate : {}", id);
-        WorkoutTemplate workoutTemplate = workoutTemplateRepository.findOne(id);
-        WorkoutTemplateDTO workoutTemplateDTO = workoutTemplateMapper.workoutTemplateToWorkoutTemplateDTO(workoutTemplate);
-        return workoutTemplateDTO;
+        String login = SecurityUtils.getCurrentUserLogin();
+        WorkoutTemplate workoutTemplate = workoutTemplateRepository.findOne(login, id);
+        return workoutTemplateWithChildrenMapper.workoutTemplateToWorkoutTemplateWithChildrenDTO(workoutTemplate);
     }
 
     /**
@@ -81,6 +115,24 @@ public class WorkoutTemplateService {
      */
     public void delete(Long id) {
         log.debug("Request to delete WorkoutTemplate : {}", id);
-        workoutTemplateRepository.delete(id);
+        if (workoutTemplateRepository.findOne(SecurityUtils.getCurrentUserLogin(), id).getId() != null) {
+            removeWorkoutTemplateFromRelatedItems(id);
+            workoutTemplateRepository.delete(id);
+        }
+    }
+
+    public void removeWorkoutTemplateFromRelatedItems(Long id) {
+        WorkoutTemplate workoutTemplate = workoutTemplateRepository.findOne(id);
+        if (workoutTemplate != null) {
+            log.debug("Request to remove ExerciseInstance from WorkoutInstance : {}", workoutTemplate.getId());
+            UserDemographic userDemographic = workoutTemplate.getUserDemographic();
+            userDemographic.removeWorkoutTemplate(workoutTemplate);
+            for (UserWorkoutTemplate userWorkoutTemplate :
+                workoutTemplate.getUserWorkoutTemplates()) {
+                userWorkoutTemplate.setWorkoutTemplate(null);
+                userWorkoutTemplateRepository.save(userWorkoutTemplate);
+            }
+            userDemographicRepository.save(userDemographic);
+        }
     }
 }
