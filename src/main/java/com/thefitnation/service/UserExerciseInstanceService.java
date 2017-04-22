@@ -1,25 +1,14 @@
 package com.thefitnation.service;
 
 import com.thefitnation.domain.*;
-import com.thefitnation.repository.ExerciseInstanceRepository;
-import com.thefitnation.repository.UserExerciseInstanceRepository;
-import com.thefitnation.repository.UserExerciseInstanceSetRepository;
-import com.thefitnation.repository.UserWorkoutInstanceRepository;
-import com.thefitnation.service.dto.UserExerciseInstanceDTO;
-import com.thefitnation.service.dto.UserExerciseInstanceSetDTO;
-import com.thefitnation.service.mapper.UserExerciseInstanceMapper;
-import com.thefitnation.service.mapper.UserExerciseInstanceSetMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import com.thefitnation.repository.*;
+import com.thefitnation.service.dto.*;
+import com.thefitnation.service.mapper.*;
+import java.util.*;
+import org.slf4j.*;
+import org.springframework.data.domain.*;
+import org.springframework.stereotype.*;
+import org.springframework.transaction.annotation.*;
 
 /**
  * Service Implementation for managing UserExerciseInstance.
@@ -31,17 +20,11 @@ public class UserExerciseInstanceService {
     private final Logger log = LoggerFactory.getLogger(UserExerciseInstanceService.class);
 
     private final UserExerciseInstanceRepository userExerciseInstanceRepository;
-
     private final UserExerciseInstanceSetRepository userExerciseInstanceSetRepository;
-
     private final UserWorkoutInstanceRepository userWorkoutInstanceRepository;
-
     private final ExerciseInstanceRepository exerciseInstanceRepository;
-
     private final UserExerciseInstanceMapper userExerciseInstanceMapper;
-
     private final UserExerciseInstanceSetMapper userExerciseInstanceSetMapper;
-
     private final UserExerciseInstanceSetService userExerciseInstanceSetService;
 
     public UserExerciseInstanceService(UserExerciseInstanceRepository userExerciseInstanceRepository, UserExerciseInstanceSetRepository userExerciseInstanceSetRepository, UserWorkoutInstanceRepository userWorkoutInstanceRepository, ExerciseInstanceRepository exerciseInstanceRepository, UserExerciseInstanceMapper userExerciseInstanceMapper, UserExerciseInstanceSetMapper userExerciseInstanceSetMapper, UserExerciseInstanceSetService userExerciseInstanceSetService) {
