@@ -73,15 +73,14 @@ public class WorkoutTemplateService {
             WorkoutTemplate dbWorkoutTemplate = workoutTemplateRepository.findOne(user.get().getLogin(), workoutTemplateDTO.getId());
             if (dbWorkoutTemplate == null) {
                 workoutTemplateDTO.setCreatedOn(LocalDate.now());
+                workoutTemplateDTO.setLastUpdated(LocalDate.now());
                 workoutTemplateDTO.setId(null);
             } else {
                 workoutTemplateDTO.setLastUpdated(LocalDate.now());
-                workoutTemplateDTO.setId(dbWorkoutTemplate.getId());
             }
         } else {
             workoutTemplateDTO.setCreatedOn(LocalDate.now());
             workoutTemplateDTO.setLastUpdated(LocalDate.now());
-            workoutTemplateDTO.setId(null);
         }
         WorkoutTemplate workoutTemplate = workoutTemplateMapper.workoutTemplateDTOToWorkoutTemplate(workoutTemplateDTO);
         workoutTemplate = workoutTemplateRepository.save(workoutTemplate);
