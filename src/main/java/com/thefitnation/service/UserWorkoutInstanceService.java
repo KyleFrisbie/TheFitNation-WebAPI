@@ -27,6 +27,7 @@ public class UserWorkoutInstanceService {
     private final UserExerciseInstanceMapper userExerciseInstanceMapper;
     private final UserExerciseInstanceService userExerciseInstanceService;
     private final UserRepository userRepository;
+    private final UserDemographicRepository userDemographicRepository;
 
     public UserWorkoutInstanceService(UserWorkoutInstanceRepository userWorkoutInstanceRepository,
                                       UserWorkoutTemplateRepository userWorkoutTemplateRepository,
@@ -34,7 +35,8 @@ public class UserWorkoutInstanceService {
                                       UserWorkoutInstanceMapper userWorkoutInstanceMapper,
                                       UserExerciseInstanceMapper userExerciseInstanceMapper,
                                       UserExerciseInstanceService userExerciseInstanceService,
-                                      UserRepository userRepository) {
+                                      UserRepository userRepository,
+                                      UserDemographicRepository userDemographicRepository) {
         this.userWorkoutInstanceRepository = userWorkoutInstanceRepository;
         this.userWorkoutTemplateRepository = userWorkoutTemplateRepository;
         this.workoutInstanceRepository = workoutInstanceRepository;
@@ -42,6 +44,7 @@ public class UserWorkoutInstanceService {
         this.userExerciseInstanceMapper = userExerciseInstanceMapper;
         this.userExerciseInstanceService = userExerciseInstanceService;
         this.userRepository = userRepository;
+        this.userDemographicRepository = userDemographicRepository;
     }
 
     /**
@@ -57,8 +60,10 @@ public class UserWorkoutInstanceService {
 
         Optional<User> user = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin());
         if (!user.isPresent()) { return null; }
-        if (!userWorkoutTemplateRepository
+
+        if (!userWorkoutInstanceRepository
             .findOne(userWorkoutInstanceDTO.getUserWorkoutTemplateId())
+            .getUserWorkoutTemplate()
             .getUserDemographic()
             .getUser()
             .getLogin().equals(SecurityUtils.getCurrentUserLogin())) {
@@ -68,6 +73,14 @@ public class UserWorkoutInstanceService {
         removeDereferencedUserExerciseInstances(userWorkoutInstance);
 
         userWorkoutInstance.setUserExerciseInstances(new HashSet<>());
+
+//        if (userWorkoutInstance.getId() == null) {
+//            userWorkoutInstance.setCreatedOn(LocalDate.now());
+//            userWorkoutInstance.setLastUpdated(LocalDate.now());
+//        } else {
+//            userWorkoutInstance.setLastUpdated(LocalDate.now());
+//        }
+
         userWorkoutInstance = userWorkoutInstanceRepository.save(userWorkoutInstance);
         addUserWorkoutInstanceToParent(userWorkoutInstance);
 
@@ -84,6 +97,66 @@ public class UserWorkoutInstanceService {
 
         return userWorkoutInstanceMapper.userWorkoutInstanceToUserWorkoutInstanceDTO(userWorkoutInstance);
 
+    }
+
+    /**
+     * Get all the userWorkoutInstances.
+     *
+     * @param pageable the pagination information
+     * @return the list of entities
+     */
+    @Transactional(readOnly = true)
+    public Page<UserWorkoutInstanceDTO> findAll(Pageable pageable) {
+        log.debug("Request to get all UserWorkoutInstances");
+        Optional<User> user = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin());
+        if (!user.isPresent()) {
+            return null;
+        }
+        Page<UserWorkoutInstance> result = userWorkoutInstanceRepository.findAll(SecurityUtils.getCurrentUserLogin(), pageable);
+        return result.map(userWorkoutInstanceMapper::userWorkoutInstanceToUserWorkoutInstanceDTO);
+    }
+
+    /**
+     * Get one userWorkoutInstance by id.
+     *
+     * @param id the id of the entity
+     * @return the entity
+     */
+    @Transactional(readOnly = true)
+    public UserWorkoutInstanceDTO findOne(Long id) {
+        log.debug("Request to get UserWorkoutInstance : {}", id);
+        Optional<User> user = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin());
+        if (!user.isPresent()) {
+            return null;
+        }
+        UserWorkoutInstance userWorkoutInstance = userWorkoutInstanceRepository.findOne(SecurityUtils.getCurrentUserLogin(), id);
+        return userWorkoutInstanceMapper.userWorkoutInstanceToUserWorkoutInstanceDTO(userWorkoutInstance);
+    }
+
+    /**
+     * Delete the  userWorkoutInstance by id.
+     *
+     * @param id the id of the entity
+     */
+    public void delete(Long id) {
+        log.debug("Request to delete UserWorkoutInstance : {}", id);
+        removeUserWorkoutInstanceFromRelatedItems(id);
+        userWorkoutInstanceRepository.delete(id);
+    }
+
+    public void removeUserWorkoutInstanceFromRelatedItems(Long id) {
+        UserWorkoutInstance userWorkoutInstance = userWorkoutInstanceRepository.findOne(id);
+        if (userWorkoutInstance != null) {
+            UserWorkoutTemplate userWorkoutTemplate = userWorkoutInstance.getUserWorkoutTemplate();
+            userWorkoutTemplate.removeUserWorkoutInstance(userWorkoutInstance);
+            userWorkoutTemplateRepository.save(userWorkoutTemplate);
+
+            if (userWorkoutInstance.getWorkoutInstance() != null) {
+                WorkoutInstance workoutInstance = userWorkoutInstance.getWorkoutInstance();
+                workoutInstance.removeUserWorkoutInstance(userWorkoutInstance);
+                workoutInstanceRepository.save(workoutInstance);
+            }
+        }
     }
 
     private void addUserWorkoutInstanceToParent(UserWorkoutInstance userWorkoutInstance) {
@@ -113,58 +186,6 @@ public class UserWorkoutInstanceService {
                 for (UserExerciseInstance userExerciseInstance : removedUserExerciseInstances) {
                     userExerciseInstanceService.delete(userExerciseInstance.getId());
                 }
-            }
-        }
-    }
-
-    /**
-     * Get all the userWorkoutInstances.
-     *
-     * @param pageable the pagination information
-     * @return the list of entities
-     */
-    @Transactional(readOnly = true)
-    public Page<UserWorkoutInstanceDTO> findAll(Pageable pageable) {
-        log.debug("Request to get all UserWorkoutInstances");
-        Page<UserWorkoutInstance> result = userWorkoutInstanceRepository.findAll(pageable);
-        return result.map(userWorkoutInstanceMapper::userWorkoutInstanceToUserWorkoutInstanceDTO);
-    }
-
-    /**
-     * Get one userWorkoutInstance by id.
-     *
-     * @param id the id of the entity
-     * @return the entity
-     */
-    @Transactional(readOnly = true)
-    public UserWorkoutInstanceDTO findOne(Long id) {
-        log.debug("Request to get UserWorkoutInstance : {}", id);
-        UserWorkoutInstance userWorkoutInstance = userWorkoutInstanceRepository.findOne(id);
-        return userWorkoutInstanceMapper.userWorkoutInstanceToUserWorkoutInstanceDTO(userWorkoutInstance);
-    }
-
-    /**
-     * Delete the  userWorkoutInstance by id.
-     *
-     * @param id the id of the entity
-     */
-    public void delete(Long id) {
-        log.debug("Request to delete UserWorkoutInstance : {}", id);
-        removeUserWorkoutInstanceFromRelatedItems(id);
-        userWorkoutInstanceRepository.delete(id);
-    }
-
-    public void removeUserWorkoutInstanceFromRelatedItems(Long id) {
-        UserWorkoutInstance userWorkoutInstance = userWorkoutInstanceRepository.findOne(id);
-        if (userWorkoutInstance != null) {
-            UserWorkoutTemplate userWorkoutTemplate = userWorkoutInstance.getUserWorkoutTemplate();
-            userWorkoutTemplate.removeUserWorkoutInstance(userWorkoutInstance);
-            userWorkoutTemplateRepository.save(userWorkoutTemplate);
-
-            if (userWorkoutInstance.getWorkoutInstance() != null) {
-                WorkoutInstance workoutInstance = userWorkoutInstance.getWorkoutInstance();
-                workoutInstance.removeUserWorkoutInstance(userWorkoutInstance);
-                workoutInstanceRepository.save(workoutInstance);
             }
         }
     }
