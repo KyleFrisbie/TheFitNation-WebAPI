@@ -5,6 +5,7 @@ import com.thefitnation.repository.*;
 import com.thefitnation.security.*;
 import com.thefitnation.service.dto.*;
 import com.thefitnation.service.mapper.*;
+import java.time.*;
 import java.util.*;
 import org.slf4j.*;
 import org.springframework.data.domain.*;
@@ -27,7 +28,6 @@ public class UserWorkoutInstanceService {
     private final UserExerciseInstanceMapper userExerciseInstanceMapper;
     private final UserExerciseInstanceService userExerciseInstanceService;
     private final UserRepository userRepository;
-    private final UserDemographicRepository userDemographicRepository;
 
     public UserWorkoutInstanceService(UserWorkoutInstanceRepository userWorkoutInstanceRepository,
                                       UserWorkoutTemplateRepository userWorkoutTemplateRepository,
@@ -44,7 +44,6 @@ public class UserWorkoutInstanceService {
         this.userExerciseInstanceMapper = userExerciseInstanceMapper;
         this.userExerciseInstanceService = userExerciseInstanceService;
         this.userRepository = userRepository;
-        this.userDemographicRepository = userDemographicRepository;
     }
 
     /**
@@ -61,31 +60,25 @@ public class UserWorkoutInstanceService {
         Optional<User> user = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin());
         if (!user.isPresent()) { return null; }
 
-        if (!userWorkoutInstanceRepository
-            .findOne(userWorkoutInstanceDTO.getUserWorkoutTemplateId())
-            .getUserWorkoutTemplate()
-            .getUserDemographic()
-            .getUser()
-            .getLogin().equals(SecurityUtils.getCurrentUserLogin())) {
+        /* ensure user owns this object */
+        if (!userWorkoutTemplateRepository
+            .findOne(userWorkoutInstanceDTO.getUserWorkoutTemplateId()).getUserDemographic().getUser().getLogin().equals(SecurityUtils.getCurrentUserLogin())) {
             return null;
         }
 
         removeDereferencedUserExerciseInstances(userWorkoutInstance);
-
         userWorkoutInstance.setUserExerciseInstances(new HashSet<>());
 
-//        if (userWorkoutInstance.getId() == null) {
-//            userWorkoutInstance.setCreatedOn(LocalDate.now());
-//            userWorkoutInstance.setLastUpdated(LocalDate.now());
-//        } else {
-//            userWorkoutInstance.setLastUpdated(LocalDate.now());
-//        }
+        if (userWorkoutInstance.getId() == null) {
+            userWorkoutInstance.setCreatedOn(LocalDate.now());
+            userWorkoutInstance.setLastUpdated(LocalDate.now());
+        } else {
+            userWorkoutInstance.setLastUpdated(LocalDate.now());
+        }
 
         userWorkoutInstance = userWorkoutInstanceRepository.save(userWorkoutInstance);
         addUserWorkoutInstanceToParent(userWorkoutInstance);
-
         List<UserExerciseInstanceDTO> userExerciseInstanceDTOs = userWorkoutInstanceDTO.getUserExerciseInstances();
-
         if (userExerciseInstanceDTOs != null && userExerciseInstanceDTOs.size() > 0) {
             List<UserExerciseInstanceDTO> savedUserExerciseInstanceDTOs = new ArrayList<>();
             for (UserExerciseInstanceDTO userExerciseInstanceDTO : userExerciseInstanceDTOs) {
@@ -140,8 +133,10 @@ public class UserWorkoutInstanceService {
      */
     public void delete(Long id) {
         log.debug("Request to delete UserWorkoutInstance : {}", id);
-        removeUserWorkoutInstanceFromRelatedItems(id);
-        userWorkoutInstanceRepository.delete(id);
+        if (userWorkoutInstanceRepository.findOne(SecurityUtils.getCurrentUserLogin(), id) != null) {
+            removeUserWorkoutInstanceFromRelatedItems(id);
+            userWorkoutInstanceRepository.delete(id);
+        }
     }
 
     public void removeUserWorkoutInstanceFromRelatedItems(Long id) {
