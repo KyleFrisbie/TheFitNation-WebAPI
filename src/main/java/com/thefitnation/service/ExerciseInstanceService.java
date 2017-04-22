@@ -27,8 +27,6 @@ public class ExerciseInstanceService {
     private final ExerciseInstanceMapper exerciseInstanceMapper;
     private final ExerciseInstanceSetMapper exerciseInstanceSetMapper;
     private final UserRepository userRepository;
-    private final ExerciseRepository exerciseRepository;
-    private final UnitRepository unitRepository;
 
     public ExerciseInstanceService(ExerciseInstanceRepository exerciseInstanceRepository,
                                    WorkoutInstanceRepository workoutInstanceRepository,
@@ -36,8 +34,8 @@ public class ExerciseInstanceService {
                                    UserExerciseInstanceRepository userExerciseInstanceRepository,
                                    UserExerciseInstanceSetRepository userExerciseInstanceSetRepository,
                                    ExerciseInstanceMapper exerciseInstanceMapper,
-                                   ExerciseInstanceSetMapper exerciseInstanceSetMapper,
-                                   UserRepository userRepository, ExerciseRepository exerciseRepository, UnitRepository unitRepository) {
+                                    ExerciseInstanceSetMapper exerciseInstanceSetMapper,
+                                   UserRepository userRepository) {
         this.exerciseInstanceRepository = exerciseInstanceRepository;
         this.workoutInstanceRepository = workoutInstanceRepository;
         this.exerciseInstanceSetRepository = exerciseInstanceSetRepository;
@@ -46,8 +44,6 @@ public class ExerciseInstanceService {
         this.exerciseInstanceMapper = exerciseInstanceMapper;
         this.exerciseInstanceSetMapper = exerciseInstanceSetMapper;
         this.userRepository = userRepository;
-        this.exerciseRepository = exerciseRepository;
-        this.unitRepository = unitRepository;
     }
 
     /**
@@ -77,11 +73,6 @@ public class ExerciseInstanceService {
                 exerciseInstanceSets = exerciseInstanceSetRepository.save(exerciseInstanceSets);
                 exerciseInstance.setExerciseInstanceSets(new HashSet<>(exerciseInstanceSets));
             }
-
-            exerciseInstance.setExercise(exerciseRepository.findOneWithEagerRelationships(exerciseInstance.getExercise().getId()));
-            exerciseInstance.setRepUnit(unitRepository.findOne(exerciseInstance.getRepUnit().getId()));
-            exerciseInstance.setEffortUnit(unitRepository.findOne(exerciseInstance.getEffortUnit().getId()));
-
             return exerciseInstanceMapper.exerciseInstanceToExerciseInstanceDTO(exerciseInstance);
         }
         return null;
