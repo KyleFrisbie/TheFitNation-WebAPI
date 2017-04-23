@@ -2,12 +2,16 @@ package com.thefitnation.web.rest;
 
 import com.thefitnation.TheFitNationApp;
 
-import com.thefitnation.domain.UserExerciseInstance;
-import com.thefitnation.domain.UserWorkoutInstance;
+import com.thefitnation.domain.*;
 import com.thefitnation.repository.UserExerciseInstanceRepository;
+import com.thefitnation.repository.UserRepository;
 import com.thefitnation.service.UserExerciseInstanceService;
 import com.thefitnation.service.dto.UserExerciseInstanceDTO;
 import com.thefitnation.service.mapper.UserExerciseInstanceMapper;
+import com.thefitnation.testTools.AuthUtil;
+import com.thefitnation.testTools.ExerciseInstanceGenerator;
+import com.thefitnation.testTools.UserDemographicGenerator;
+import com.thefitnation.testTools.UserExerciseInstanceGenerator;
 import com.thefitnation.web.rest.errors.ExceptionTranslator;
 
 import org.junit.Before;
@@ -26,6 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
@@ -43,6 +48,9 @@ public class UserExerciseInstanceResourceIntTest {
 
     private static final String DEFAULT_NOTES = "AAAAAAAAAA";
     private static final String UPDATED_NOTES = "BBBBBBBBBB";
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private UserExerciseInstanceRepository userExerciseInstanceRepository;
@@ -81,13 +89,13 @@ public class UserExerciseInstanceResourceIntTest {
 
     /**
      * Create an entity for this test.
-     *
+     * <p>
      * This is a static method, as tests for other entities might also need it,
      * if they test an entity which requires the current entity.
      */
     public static UserExerciseInstance createEntity(EntityManager em) {
         UserExerciseInstance userExerciseInstance = new UserExerciseInstance()
-                .notes(DEFAULT_NOTES);
+            .notes(DEFAULT_NOTES);
         // Add required entity
         UserWorkoutInstance userWorkoutInstance = UserWorkoutInstanceResourceIntTest.createEntity(em);
         em.persist(userWorkoutInstance);
@@ -104,6 +112,12 @@ public class UserExerciseInstanceResourceIntTest {
     @Test
     @Transactional
     public void createUserExerciseInstance() throws Exception {
+        Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
+        UserDemographic userDemographic = UserDemographicGenerator.getOne(em, user.get());
+        em.persist(userDemographic);
+        em.flush();
+
+        UserExerciseInstance userExerciseInstance = UserExerciseInstanceGenerator.getInstance().getOne(em, userDemographic);
         int databaseSizeBeforeCreate = userExerciseInstanceRepository.findAll().size();
 
         // Create the UserExerciseInstance
@@ -145,6 +159,12 @@ public class UserExerciseInstanceResourceIntTest {
     @Test
     @Transactional
     public void getAllUserExerciseInstances() throws Exception {
+        Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
+        UserDemographic userDemographic = UserDemographicGenerator.getOne(em, user.get());
+        em.persist(userDemographic);
+        em.flush();
+
+        UserExerciseInstance userExerciseInstance = UserExerciseInstanceGenerator.getInstance().getOne(em, userDemographic);
         // Initialize the database
         userExerciseInstanceRepository.saveAndFlush(userExerciseInstance);
 
@@ -159,6 +179,12 @@ public class UserExerciseInstanceResourceIntTest {
     @Test
     @Transactional
     public void getUserExerciseInstance() throws Exception {
+        Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
+        UserDemographic userDemographic = UserDemographicGenerator.getOne(em, user.get());
+        em.persist(userDemographic);
+        em.flush();
+
+        UserExerciseInstance userExerciseInstance = UserExerciseInstanceGenerator.getInstance().getOne(em, userDemographic);
         // Initialize the database
         userExerciseInstanceRepository.saveAndFlush(userExerciseInstance);
 
@@ -188,7 +214,7 @@ public class UserExerciseInstanceResourceIntTest {
         // Update the userExerciseInstance
         UserExerciseInstance updatedUserExerciseInstance = userExerciseInstanceRepository.findOne(userExerciseInstance.getId());
         updatedUserExerciseInstance
-                .notes(UPDATED_NOTES);
+            .notes(UPDATED_NOTES);
         UserExerciseInstanceDTO userExerciseInstanceDTO = userExerciseInstanceMapper.userExerciseInstanceToUserExerciseInstanceDTO(updatedUserExerciseInstance);
 
         restUserExerciseInstanceMockMvc.perform(put("/api/user-exercise-instances")
@@ -206,6 +232,12 @@ public class UserExerciseInstanceResourceIntTest {
     @Test
     @Transactional
     public void updateNonExistingUserExerciseInstance() throws Exception {
+        Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
+        UserDemographic userDemographic = UserDemographicGenerator.getOne(em, user.get());
+        em.persist(userDemographic);
+        em.flush();
+
+        UserExerciseInstance userExerciseInstance = UserExerciseInstanceGenerator.getInstance().getOne(em, userDemographic);
         int databaseSizeBeforeUpdate = userExerciseInstanceRepository.findAll().size();
 
         // Create the UserExerciseInstance
@@ -225,6 +257,12 @@ public class UserExerciseInstanceResourceIntTest {
     @Test
     @Transactional
     public void deleteUserExerciseInstance() throws Exception {
+        Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
+        UserDemographic userDemographic = UserDemographicGenerator.getOne(em, user.get());
+        em.persist(userDemographic);
+        em.flush();
+
+        UserExerciseInstance userExerciseInstance = UserExerciseInstanceGenerator.getInstance().getOne(em, userDemographic);
         // Initialize the database
         userExerciseInstanceRepository.saveAndFlush(userExerciseInstance);
         int databaseSizeBeforeDelete = userExerciseInstanceRepository.findAll().size();

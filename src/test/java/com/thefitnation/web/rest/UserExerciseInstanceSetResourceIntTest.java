@@ -2,12 +2,16 @@ package com.thefitnation.web.rest;
 
 import com.thefitnation.TheFitNationApp;
 
-import com.thefitnation.domain.UserExerciseInstanceSet;
-import com.thefitnation.domain.UserExerciseInstance;
+import com.thefitnation.domain.*;
 import com.thefitnation.repository.UserExerciseInstanceSetRepository;
+import com.thefitnation.repository.UserRepository;
 import com.thefitnation.service.UserExerciseInstanceSetService;
 import com.thefitnation.service.dto.UserExerciseInstanceSetDTO;
 import com.thefitnation.service.mapper.UserExerciseInstanceSetMapper;
+import com.thefitnation.testTools.AuthUtil;
+import com.thefitnation.testTools.ExerciseInstanceSetGenerator;
+import com.thefitnation.testTools.UserDemographicGenerator;
+import com.thefitnation.testTools.UserExerciseInstanceSetGenerator;
 import com.thefitnation.web.rest.errors.ExceptionTranslator;
 
 import org.junit.Before;
@@ -26,6 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
@@ -55,6 +60,9 @@ public class UserExerciseInstanceSetResourceIntTest {
 
     private static final String DEFAULT_NOTES = "AAAAAAAAAA";
     private static final String UPDATED_NOTES = "BBBBBBBBBB";
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private UserExerciseInstanceSetRepository userExerciseInstanceSetRepository;
@@ -120,6 +128,11 @@ public class UserExerciseInstanceSetResourceIntTest {
     @Test
     @Transactional
     public void createUserExerciseInstanceSet() throws Exception {
+        Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
+        UserDemographic userDemographic = UserDemographicGenerator.getOne(em, user.get());
+        em.persist(userDemographic);
+        em.flush();
+        UserExerciseInstanceSet userExerciseInstanceSet = UserExerciseInstanceSetGenerator.getInstance().getOne(em, userDemographic);
         int databaseSizeBeforeCreate = userExerciseInstanceSetRepository.findAll().size();
 
         // Create the UserExerciseInstanceSet
@@ -222,6 +235,11 @@ public class UserExerciseInstanceSetResourceIntTest {
     @Test
     @Transactional
     public void getAllUserExerciseInstanceSets() throws Exception {
+        Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
+        UserDemographic userDemographic = UserDemographicGenerator.getOne(em, user.get());
+        em.persist(userDemographic);
+        em.flush();
+        UserExerciseInstanceSet userExerciseInstanceSet = UserExerciseInstanceSetGenerator.getInstance().getOne(em, userDemographic);
         // Initialize the database
         userExerciseInstanceSetRepository.saveAndFlush(userExerciseInstanceSet);
 
@@ -240,6 +258,11 @@ public class UserExerciseInstanceSetResourceIntTest {
     @Test
     @Transactional
     public void getUserExerciseInstanceSet() throws Exception {
+        Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
+        UserDemographic userDemographic = UserDemographicGenerator.getOne(em, user.get());
+        em.persist(userDemographic);
+        em.flush();
+        UserExerciseInstanceSet userExerciseInstanceSet = UserExerciseInstanceSetGenerator.getInstance().getOne(em, userDemographic);
         // Initialize the database
         userExerciseInstanceSetRepository.saveAndFlush(userExerciseInstanceSet);
 
@@ -266,6 +289,11 @@ public class UserExerciseInstanceSetResourceIntTest {
     @Test
     @Transactional
     public void updateUserExerciseInstanceSet() throws Exception {
+        Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
+        UserDemographic userDemographic = UserDemographicGenerator.getOne(em, user.get());
+        em.persist(userDemographic);
+        em.flush();
+        UserExerciseInstanceSet userExerciseInstanceSet = UserExerciseInstanceSetGenerator.getInstance().getOne(em, userDemographic);
         // Initialize the database
         userExerciseInstanceSetRepository.saveAndFlush(userExerciseInstanceSet);
         int databaseSizeBeforeUpdate = userExerciseInstanceSetRepository.findAll().size();
@@ -299,6 +327,11 @@ public class UserExerciseInstanceSetResourceIntTest {
     @Test
     @Transactional
     public void updateNonExistingUserExerciseInstanceSet() throws Exception {
+        Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
+        UserDemographic userDemographic = UserDemographicGenerator.getOne(em, user.get());
+        em.persist(userDemographic);
+        em.flush();
+        UserExerciseInstanceSet userExerciseInstanceSet = UserExerciseInstanceSetGenerator.getInstance().getOne(em, userDemographic);
         int databaseSizeBeforeUpdate = userExerciseInstanceSetRepository.findAll().size();
 
         // Create the UserExerciseInstanceSet
@@ -318,6 +351,11 @@ public class UserExerciseInstanceSetResourceIntTest {
     @Test
     @Transactional
     public void deleteUserExerciseInstanceSet() throws Exception {
+        Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
+        UserDemographic userDemographic = UserDemographicGenerator.getOne(em, user.get());
+        em.persist(userDemographic);
+        em.flush();
+        UserExerciseInstanceSet userExerciseInstanceSet = UserExerciseInstanceSetGenerator.getInstance().getOne(em, userDemographic);
         // Initialize the database
         userExerciseInstanceSetRepository.saveAndFlush(userExerciseInstanceSet);
         int databaseSizeBeforeDelete = userExerciseInstanceSetRepository.findAll().size();
