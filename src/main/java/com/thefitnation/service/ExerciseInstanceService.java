@@ -88,7 +88,6 @@ public class ExerciseInstanceService {
     public Page<ExerciseInstanceDTO> findAll(Pageable pageable) {
         log.debug("Request to get all ExerciseInstances");
         String login = SecurityUtils.getCurrentUserLogin();
-
         Page<ExerciseInstance> result = exerciseInstanceRepository.findAll(login, pageable);
         return result.map(exerciseInstanceMapper::exerciseInstanceToExerciseInstanceDTO);
     }
