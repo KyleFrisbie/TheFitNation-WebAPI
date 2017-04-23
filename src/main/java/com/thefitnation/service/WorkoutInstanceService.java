@@ -158,6 +158,12 @@ public class WorkoutInstanceService {
     private void removeWorkoutInstanceFromRelatedItems(Long id) {
         WorkoutInstance workoutInstance = workoutInstanceRepository.findOne(id);
         if (workoutInstance != null) {
+            Set<ExerciseInstance> exerciseInstances = new HashSet<>(workoutInstance.getExerciseInstances());
+            for (Iterator<ExerciseInstance> iterator = exerciseInstances.iterator(); iterator.hasNext();) {
+                ExerciseInstance exerciseInstance = iterator.next();
+                iterator.remove();
+                exerciseInstanceService.delete(exerciseInstance.getId());
+            }
             WorkoutTemplate workoutTemplate = workoutInstance.getWorkoutTemplate();
             workoutTemplate.removeWorkoutInstance(workoutInstance);
             for (UserWorkoutInstance userWorkoutInstance :

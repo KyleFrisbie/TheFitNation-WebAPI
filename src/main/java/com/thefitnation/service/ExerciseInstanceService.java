@@ -27,6 +27,7 @@ public class ExerciseInstanceService {
     private final ExerciseInstanceMapper exerciseInstanceMapper;
     private final ExerciseInstanceSetMapper exerciseInstanceSetMapper;
     private final UserRepository userRepository;
+    private final ExerciseInstanceSetService exerciseInstanceSetService;
 
     public ExerciseInstanceService(ExerciseInstanceRepository exerciseInstanceRepository,
                                    WorkoutInstanceRepository workoutInstanceRepository,
@@ -34,8 +35,8 @@ public class ExerciseInstanceService {
                                    UserExerciseInstanceRepository userExerciseInstanceRepository,
                                    UserExerciseInstanceSetRepository userExerciseInstanceSetRepository,
                                    ExerciseInstanceMapper exerciseInstanceMapper,
-                                    ExerciseInstanceSetMapper exerciseInstanceSetMapper,
-                                   UserRepository userRepository) {
+                                   ExerciseInstanceSetMapper exerciseInstanceSetMapper,
+                                   UserRepository userRepository, ExerciseInstanceSetService exerciseInstanceSetService) {
         this.exerciseInstanceRepository = exerciseInstanceRepository;
         this.workoutInstanceRepository = workoutInstanceRepository;
         this.exerciseInstanceSetRepository = exerciseInstanceSetRepository;
@@ -44,6 +45,7 @@ public class ExerciseInstanceService {
         this.exerciseInstanceMapper = exerciseInstanceMapper;
         this.exerciseInstanceSetMapper = exerciseInstanceSetMapper;
         this.userRepository = userRepository;
+        this.exerciseInstanceSetService = exerciseInstanceSetService;
     }
 
     /**
@@ -122,6 +124,12 @@ public class ExerciseInstanceService {
     private void removeExerciseInstanceFromRelatedItems(Long id) {
         ExerciseInstance exerciseInstance = exerciseInstanceRepository.findOne(id);
         if (exerciseInstance != null) {
+            Set<ExerciseInstanceSet> exerciseInstanceSets = new HashSet<>(exerciseInstance.getExerciseInstanceSets());
+            for (Iterator<ExerciseInstanceSet> iterator = exerciseInstanceSets.iterator(); iterator.hasNext();) {
+                ExerciseInstanceSet exerciseInstanceSet = iterator.next();
+                iterator.remove();
+                exerciseInstanceSetService.delete(exerciseInstanceSet.getId());
+            }
             WorkoutInstance workoutInstance = exerciseInstance.getWorkoutInstance();
             workoutInstance.removeExerciseInstance(exerciseInstance);
             for (UserExerciseInstance userExerciseInstance :

@@ -3,10 +3,10 @@ package com.thefitnation.repository;
 import com.thefitnation.TheFitNationApp;
 import com.thefitnation.domain.User;
 import com.thefitnation.domain.UserDemographic;
-import com.thefitnation.domain.WorkoutTemplate;
+import com.thefitnation.domain.WorkoutInstance;
 import com.thefitnation.testTools.UserDemographicGenerator;
 import com.thefitnation.testTools.UserGenerator;
-import com.thefitnation.testTools.WorkoutTemplateGenerator;
+import com.thefitnation.testTools.WorkoutInstanceGenerator;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +24,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Transactional
 public class WorkoutInstanceRepositoryIntTest {
 
-    private static final int NUMBER_OF_WORKOUT_TEMPLATES = 10;
+    private static final int NUMBER_OF_WORKOUT_INSTANCES = 10;
 
     @Autowired
     private EntityManager entityManager;
@@ -42,12 +42,12 @@ public class WorkoutInstanceRepositoryIntTest {
         entityManager.persist(userDemographic);
         entityManager.flush();
 
-        WorkoutTemplateGenerator.getInstance().getMany(entityManager, NUMBER_OF_WORKOUT_TEMPLATES, userDemographic);
+        WorkoutInstanceGenerator.getInstance().getMany(entityManager, NUMBER_OF_WORKOUT_INSTANCES, userDemographic);
 
-        WorkoutTemplateGenerator.getInstance().getMany(entityManager, NUMBER_OF_WORKOUT_TEMPLATES);
-        Page<WorkoutTemplate> savedWorkoutTemplates = workoutInstanceRepository.findAll(user.getLogin(), null);
+        WorkoutInstanceGenerator.getInstance().getMany(entityManager, NUMBER_OF_WORKOUT_INSTANCES);
+        Page<WorkoutInstance> workoutInstances = workoutInstanceRepository.findAll(user.getLogin(), null);
 
-        assertThat(savedWorkoutTemplates.getTotalElements()).isEqualTo(NUMBER_OF_WORKOUT_TEMPLATES);
+        assertThat(workoutInstances.getTotalElements()).isEqualTo(NUMBER_OF_WORKOUT_INSTANCES);
     }
 
     @Test
@@ -60,13 +60,13 @@ public class WorkoutInstanceRepositoryIntTest {
         entityManager.persist(userDemographic);
         entityManager.flush();
 
-        WorkoutTemplate workoutTemplate = WorkoutTemplateGenerator.getInstance().getOne(entityManager, userDemographic);
-        entityManager.persist(workoutTemplate);
+        WorkoutInstance workoutInstance = WorkoutInstanceGenerator.getInstance().getOne(entityManager, userDemographic);
+        entityManager.persist(workoutInstance);
         entityManager.flush();
 
-        WorkoutTemplate savedWorkoutTemplate = workoutInstanceRepository.findOne(user.getLogin(), workoutTemplate.getId());
+        WorkoutInstance savedWorkoutInstance = workoutInstanceRepository.findOne(user.getLogin(), workoutInstance.getId());
 
-        assertThat(savedWorkoutTemplate.getId()).isEqualTo(workoutTemplate.getId());
-        assertThat(savedWorkoutTemplate.getUserDemographic().getUser().getId()).isEqualTo(user.getId());
+        assertThat(savedWorkoutInstance.getId()).isEqualTo(workoutInstance.getId());
+        assertThat(savedWorkoutInstance.getWorkoutTemplate().getUserDemographic().getUser().getId()).isEqualTo(user.getId());
     }
 }

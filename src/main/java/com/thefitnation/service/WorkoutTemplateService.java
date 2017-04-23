@@ -30,23 +30,25 @@ public class WorkoutTemplateService {
     private final WorkoutTemplateMapper workoutTemplateMapper;
     private final WorkoutTemplateWithChildrenMapper workoutTemplateWithChildrenMapper;
     private final SkillLevelRepository skillLevelRepository;
+    private final WorkoutInstanceService workoutInstanceService;
 
     /**
      * Constructor
-     *  @param userRepository                    for getting user data
+     * @param userRepository                    for getting user data
      * @param userDemographicRepository         for getting UserDemographic data
      * @param workoutTemplateRepository         for getting WorkoutTemplate data
      * @param userWorkoutTemplateRepository     for getting User data
      * @param workoutTemplateMapper             to map WorkoutTemplate to and from WorkoutTemplateDTO
      * @param workoutTemplateWithChildrenMapper to map WorkoutTemplateWithChildren to and from WorkoutTemplateWithChildrenDTO
      * @param skillLevelRepository
+     * @param workoutInstanceService
      */
     public WorkoutTemplateService(UserRepository userRepository,
                                   UserDemographicRepository userDemographicRepository,
                                   WorkoutTemplateRepository workoutTemplateRepository,
                                   UserWorkoutTemplateRepository userWorkoutTemplateRepository,
                                   WorkoutTemplateMapper workoutTemplateMapper,
-                                  WorkoutTemplateWithChildrenMapper workoutTemplateWithChildrenMapper, SkillLevelRepository skillLevelRepository) {
+                                  WorkoutTemplateWithChildrenMapper workoutTemplateWithChildrenMapper, SkillLevelRepository skillLevelRepository, WorkoutInstanceService workoutInstanceService) {
         this.userRepository = userRepository;
         this.userDemographicRepository = userDemographicRepository;
         this.workoutTemplateRepository = workoutTemplateRepository;
@@ -54,6 +56,7 @@ public class WorkoutTemplateService {
         this.workoutTemplateMapper = workoutTemplateMapper;
         this.workoutTemplateWithChildrenMapper = workoutTemplateWithChildrenMapper;
         this.skillLevelRepository = skillLevelRepository;
+        this.workoutInstanceService = workoutInstanceService;
     }
 
     /**
@@ -135,6 +138,12 @@ public class WorkoutTemplateService {
         WorkoutTemplate workoutTemplate = workoutTemplateRepository.findOne(id);
         if (workoutTemplate != null) {
             log.debug("Request to remove ExerciseInstance from WorkoutInstance : {}", workoutTemplate.getId());
+            Set<WorkoutInstance> workoutInstances = new HashSet<>(workoutTemplate.getWorkoutInstances());
+            for (Iterator<WorkoutInstance> iterator = workoutInstances.iterator(); iterator.hasNext();) {
+                WorkoutInstance workoutInstance = iterator.next();
+                iterator.remove();
+                workoutInstanceService.delete(workoutInstance.getId());
+            }
             UserDemographic userDemographic = workoutTemplate.getUserDemographic();
             userDemographic.removeWorkoutTemplate(workoutTemplate);
             for (UserWorkoutTemplate userWorkoutTemplate :

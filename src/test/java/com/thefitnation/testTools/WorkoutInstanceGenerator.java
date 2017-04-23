@@ -1,13 +1,11 @@
 package com.thefitnation.testTools;
 
-import com.thefitnation.domain.User;
 import com.thefitnation.domain.UserDemographic;
 import com.thefitnation.domain.WorkoutInstance;
 import com.thefitnation.domain.WorkoutTemplate;
 
 import javax.persistence.EntityManager;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
