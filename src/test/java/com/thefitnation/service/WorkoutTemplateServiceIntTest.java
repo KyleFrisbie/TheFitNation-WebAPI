@@ -3,14 +3,17 @@ package com.thefitnation.service;
 import com.thefitnation.TheFitNationApp;
 import com.thefitnation.domain.User;
 import com.thefitnation.domain.UserDemographic;
+import com.thefitnation.domain.UserWorkoutTemplate;
 import com.thefitnation.domain.WorkoutTemplate;
 import com.thefitnation.repository.UserRepository;
+import com.thefitnation.repository.UserWorkoutTemplateRepository;
 import com.thefitnation.repository.WorkoutTemplateRepository;
 import com.thefitnation.service.dto.WorkoutTemplateDTO;
 import com.thefitnation.service.dto.WorkoutTemplateWithChildrenDTO;
 import com.thefitnation.service.mapper.WorkoutTemplateMapper;
 import com.thefitnation.testTools.AuthUtil;
 import com.thefitnation.testTools.UserDemographicGenerator;
+import com.thefitnation.testTools.UserWorkoutTemplateGenerator;
 import com.thefitnation.testTools.WorkoutTemplateGenerator;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -48,6 +51,9 @@ public class WorkoutTemplateServiceIntTest {
 
     @Autowired
     private WorkoutTemplateRepository workoutTemplateRepository;
+
+    @Autowired
+    private UserWorkoutTemplateRepository userWorkoutTemplateRepository;
 
     @Autowired
     private UserRepository userRepository;
@@ -231,5 +237,38 @@ public class WorkoutTemplateServiceIntTest {
 
         assertThat(databaseSizeAfterCreate).isEqualTo(databaseSizeBeforeCreate - 1);
         assertThat(workoutTemplateService.findOne(workoutTemplate.getId())).isNull();
+    }
+
+    @Test
+    public void deleteOwnedWorkoutTemplateWithChildren() {
+        Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
+        UserDemographic userDemographic = UserDemographicGenerator.getOne(entityManager, user.get());
+        entityManager.persist(userDemographic);
+        entityManager.flush();
+
+        WorkoutTemplate workoutTemplate = WorkoutTemplateGenerator.getInstance().getOne(entityManager, userDemographic);
+        entityManager.persist(workoutTemplate);
+        entityManager.flush();
+
+        UserWorkoutTemplate userWorkoutTemplate = UserWorkoutTemplateGenerator.getInstance().getOne(entityManager, userDemographic, workoutTemplate);
+        entityManager.persist(userWorkoutTemplate);
+        entityManager.flush();
+
+        workoutTemplate.addUserWorkoutTemplate(userWorkoutTemplate);
+
+        int numberOfDBWorkoutTemplatesBeforeDelete = workoutTemplateRepository.findAll().size();
+        int numberOfDBUserWorkoutTemplatesBeforeDelete = userWorkoutTemplateRepository.findAll().size();
+
+        workoutTemplateService.delete(workoutTemplate.getId());
+
+        int numberOfDBWorkoutTemplatesAfterDelete = workoutTemplateRepository.findAll().size();
+        int numberOfDBUserWorkoutTemplatesAfterDelete = userWorkoutTemplateRepository.findAll().size();
+
+        assertThat(numberOfDBWorkoutTemplatesAfterDelete).isEqualTo(numberOfDBWorkoutTemplatesBeforeDelete - 1);
+        assertThat(numberOfDBUserWorkoutTemplatesAfterDelete).isEqualTo(numberOfDBUserWorkoutTemplatesBeforeDelete);
+        assertThat(workoutTemplateService.findOne(workoutTemplate.getId())).isNull();
+        UserWorkoutTemplate dbUserWorkoutTemplate = userWorkoutTemplateRepository.findOne(userWorkoutTemplate.getId());
+        assertThat(dbUserWorkoutTemplate).isNotNull();
+        assertThat(dbUserWorkoutTemplate.getWorkoutTemplate()).isNull();
     }
 }

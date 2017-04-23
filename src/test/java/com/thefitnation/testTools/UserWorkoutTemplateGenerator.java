@@ -2,6 +2,7 @@ package com.thefitnation.testTools;
 
 import com.thefitnation.domain.UserDemographic;
 import com.thefitnation.domain.UserWorkoutTemplate;
+import com.thefitnation.domain.WorkoutTemplate;
 
 import javax.persistence.EntityManager;
 import java.time.LocalDate;
@@ -33,6 +34,15 @@ public class UserWorkoutTemplateGenerator implements IOwnedEntityGenerator<UserW
             .userDemographic(userDemographic);
     }
 
+    private UserWorkoutTemplate getUserWorkoutTemplate(UserDemographic userDemographic, WorkoutTemplate workoutTemplate) {
+        return new UserWorkoutTemplate()
+            .createdOn(DEFAULT_CREATED_ON)
+            .lastUpdated(DEFAULT_LAST_UPDATED)
+            .notes(DEFAULT_NOTES)
+            .userDemographic(userDemographic)
+            .workoutTemplate(workoutTemplate);
+    }
+
     @Override
     public UserWorkoutTemplate getOne(EntityManager entityManager) {
         UserDemographic userDemographic = UserDemographicGenerator.getOne(entityManager);
@@ -45,6 +55,10 @@ public class UserWorkoutTemplateGenerator implements IOwnedEntityGenerator<UserW
     @Override
     public UserWorkoutTemplate getOne(EntityManager entityManager,  UserDemographic userDemographic) {
         return getUserWorkoutTemplate(userDemographic);
+    }
+
+    public UserWorkoutTemplate getOne(EntityManager entityManager, UserDemographic userDemographic, WorkoutTemplate workoutTemplate) {
+        return getUserWorkoutTemplate(userDemographic, workoutTemplate);
     }
 
     @Override
@@ -64,6 +78,17 @@ public class UserWorkoutTemplateGenerator implements IOwnedEntityGenerator<UserW
         List<UserWorkoutTemplate> workoutTemplates = new ArrayList<>(count);
         for (int i = 0; i < count; i++) {
             UserWorkoutTemplate userWorkoutTemplate = getOne(entityManager, userDemographic);
+            entityManager.persist(userWorkoutTemplate);
+            entityManager.flush();
+            workoutTemplates.add(userWorkoutTemplate);
+        }
+        return workoutTemplates;
+    }
+
+    public List<UserWorkoutTemplate> getMany(EntityManager entityManager, int count,  UserDemographic userDemographic, WorkoutTemplate workoutTemplate) {
+        List<UserWorkoutTemplate> workoutTemplates = new ArrayList<>(count);
+        for (int i = 0; i < count; i++) {
+            UserWorkoutTemplate userWorkoutTemplate = getOne(entityManager, userDemographic, workoutTemplate);
             entityManager.persist(userWorkoutTemplate);
             entityManager.flush();
             workoutTemplates.add(userWorkoutTemplate);

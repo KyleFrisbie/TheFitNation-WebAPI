@@ -1,13 +1,11 @@
 package com.thefitnation.testTools;
 
-import com.thefitnation.domain.SkillLevel;
-import com.thefitnation.domain.User;
-import com.thefitnation.domain.UserDemographic;
-import com.thefitnation.domain.WorkoutTemplate;
+import com.thefitnation.domain.*;
 
 import javax.persistence.EntityManager;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 public class WorkoutTemplateGenerator implements IOwnedEntityGenerator<WorkoutTemplate> {
@@ -48,6 +46,18 @@ public class WorkoutTemplateGenerator implements IOwnedEntityGenerator<WorkoutTe
             .userDemographic(userDemographic);
     }
 
+    private WorkoutTemplate getWorkoutTemplateWithChildren(EntityManager entityManager, UserDemographic userDemographic, List<UserWorkoutTemplate> userWorkoutTemplates) {
+        return new WorkoutTemplate()
+            .name(DEFAULT_NAME)
+            .createdOn(DEFAULT_CREATED_ON)
+            .lastUpdated(DEFAULT_LAST_UPDATED)
+            .isPrivate(DEFAULT_IS_PRIVATE)
+            .notes(DEFAULT_NOTES)
+            .skillLevel(getSkillLevel(entityManager))
+            .userDemographic(userDemographic)
+            .userWorkoutTemplates(new HashSet<>(userWorkoutTemplates));
+    }
+
     @Override
     public WorkoutTemplate getOne(EntityManager entityManager) {
         UserDemographic userDemographic = UserDemographicGenerator.getOne(entityManager);
@@ -60,6 +70,10 @@ public class WorkoutTemplateGenerator implements IOwnedEntityGenerator<WorkoutTe
     @Override
     public WorkoutTemplate getOne(EntityManager entityManager,  UserDemographic userDemographic) {
         return getWorkoutTemplate(entityManager, userDemographic);
+    }
+
+    public WorkoutTemplate getOneWithChildren(EntityManager entityManager, UserDemographic userDemographic, List<UserWorkoutTemplate> userWorkoutTemplates) {
+        return getWorkoutTemplateWithChildren(entityManager, userDemographic, userWorkoutTemplates);
     }
 
     @Override
