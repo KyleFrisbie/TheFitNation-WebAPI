@@ -71,7 +71,7 @@ public class WorkoutTemplateResource {
         WorkoutTemplateDTO result = workoutTemplateService.save(workoutTemplateDTO);
 
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, workoutTemplateDTO.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
     }
 

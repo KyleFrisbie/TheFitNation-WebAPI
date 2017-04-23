@@ -2,7 +2,9 @@ package com.thefitnation.repository;
 
 import com.thefitnation.TheFitNationApp;
 import com.thefitnation.domain.User;
+import com.thefitnation.domain.UserDemographic;
 import com.thefitnation.domain.UserWeight;
+import com.thefitnation.testTools.UserDemographicGenerator;
 import com.thefitnation.testTools.UserGenerator;
 import com.thefitnation.testTools.UserWeightGenerator;
 import org.junit.Test;
@@ -37,8 +39,10 @@ public class UserWeightRepositoryIntTest {
         User user = UserGenerator.getOne();
         em.persist(user);
         em.flush();
-
-        List<UserWeight> userWeights = UserWeightGenerator.getInstance().getMany(em, NUMBER_OF_USER_WEIGHTS, user);
+        UserDemographic userDemographic = UserDemographicGenerator.getOne(em, user);
+        em.persist(userDemographic);
+        em.flush();
+        List<UserWeight> userWeights = UserWeightGenerator.getInstance().getMany(em, NUMBER_OF_USER_WEIGHTS, userDemographic);
         Page<UserWeight> savedUserWeights = userWeightRepository.findAllByUserId(null, user.getId());
 
         assertThat(savedUserWeights.getTotalElements()).isEqualTo(NUMBER_OF_USER_WEIGHTS);
@@ -52,8 +56,11 @@ public class UserWeightRepositoryIntTest {
         User user = UserGenerator.getOne();
         em.persist(user);
         em.flush();
+        UserDemographic userDemographic = UserDemographicGenerator.getOne(em, user);
+        em.persist(userDemographic);
+        em.flush();
 
-        List<UserWeight> userWeights = UserWeightGenerator.getInstance().getMany(em, NUMBER_OF_USER_WEIGHTS, user);
+        List<UserWeight> userWeights = UserWeightGenerator.getInstance().getMany(em, NUMBER_OF_USER_WEIGHTS, userDemographic);
         UserWeight userWeight = userWeights.get(0);
         Optional<UserWeight> foundUserWeight = userWeightRepository.findOneByUserId(userWeight.getId(), user.getId());
         assertThat(foundUserWeight.isPresent());

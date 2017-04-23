@@ -2,12 +2,18 @@ package com.thefitnation.web.rest;
 
 import com.thefitnation.TheFitNationApp;
 
+import com.thefitnation.domain.User;
 import com.thefitnation.domain.UserWorkoutTemplate;
 import com.thefitnation.domain.UserDemographic;
+import com.thefitnation.repository.UserRepository;
 import com.thefitnation.repository.UserWorkoutTemplateRepository;
+import com.thefitnation.security.SecurityUtils;
 import com.thefitnation.service.UserWorkoutTemplateService;
 import com.thefitnation.service.dto.UserWorkoutTemplateDTO;
 import com.thefitnation.service.mapper.UserWorkoutTemplateMapper;
+import com.thefitnation.testTools.AuthUtil;
+import com.thefitnation.testTools.UserDemographicGenerator;
+import com.thefitnation.testTools.UserWorkoutTemplateGenerator;
 import com.thefitnation.web.rest.errors.ExceptionTranslator;
 
 import org.junit.Before;
@@ -28,6 +34,7 @@ import javax.persistence.EntityManager;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
@@ -43,6 +50,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = TheFitNationApp.class)
 public class UserWorkoutTemplateResourceIntTest {
 
+    private static final int NUMBER_OF_USER_WORKOUT_TEMPLATES = 10;
+
     private static final LocalDate DEFAULT_CREATED_ON = LocalDate.ofEpochDay(0L);
     private static final LocalDate UPDATED_CREATED_ON = LocalDate.now(ZoneId.systemDefault());
 
@@ -51,6 +60,9 @@ public class UserWorkoutTemplateResourceIntTest {
 
     private static final String DEFAULT_NOTES = "AAAAAAAAAA";
     private static final String UPDATED_NOTES = "BBBBBBBBBB";
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private UserWorkoutTemplateRepository userWorkoutTemplateRepository;
@@ -114,6 +126,12 @@ public class UserWorkoutTemplateResourceIntTest {
     @Test
     @Transactional
     public void createUserWorkoutTemplate() throws Exception {
+        Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
+        UserDemographic userDemographic = UserDemographicGenerator.getOne(em, user.get());
+        em.persist(userDemographic);
+        em.flush();
+        UserWorkoutTemplate userWorkoutTemplate = UserWorkoutTemplateGenerator.getInstance().getOne(em, userDemographic);
+
         int databaseSizeBeforeCreate = userWorkoutTemplateRepository.findAll().size();
 
         // Create the UserWorkoutTemplate
@@ -128,8 +146,8 @@ public class UserWorkoutTemplateResourceIntTest {
         List<UserWorkoutTemplate> userWorkoutTemplateList = userWorkoutTemplateRepository.findAll();
         assertThat(userWorkoutTemplateList).hasSize(databaseSizeBeforeCreate + 1);
         UserWorkoutTemplate testUserWorkoutTemplate = userWorkoutTemplateList.get(userWorkoutTemplateList.size() - 1);
-        assertThat(testUserWorkoutTemplate.getCreatedOn()).isEqualTo(DEFAULT_CREATED_ON);
-        assertThat(testUserWorkoutTemplate.getLastUpdated()).isEqualTo(DEFAULT_LAST_UPDATED);
+        assertThat(testUserWorkoutTemplate.getCreatedOn()).isEqualTo(LocalDate.now());
+        assertThat(testUserWorkoutTemplate.getLastUpdated()).isEqualTo(LocalDate.now());
         assertThat(testUserWorkoutTemplate.getNotes()).isEqualTo(DEFAULT_NOTES);
     }
 
@@ -195,14 +213,18 @@ public class UserWorkoutTemplateResourceIntTest {
     @Test
     @Transactional
     public void getAllUserWorkoutTemplates() throws Exception {
-        // Initialize the database
-        userWorkoutTemplateRepository.saveAndFlush(userWorkoutTemplate);
+        Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
+        UserDemographic userDemographic = UserDemographicGenerator.getOne(em, user.get());
+        em.persist(userDemographic);
+        em.flush();
+        List<UserWorkoutTemplate> userWorkoutTemplates = UserWorkoutTemplateGenerator.getInstance().getMany(em, NUMBER_OF_USER_WORKOUT_TEMPLATES, userDemographic);
+        UserWorkoutTemplateGenerator.getInstance().getMany(em, NUMBER_OF_USER_WORKOUT_TEMPLATES);
 
         // Get all the userWorkoutTemplateList
         restUserWorkoutTemplateMockMvc.perform(get("/api/user-workout-templates?sort=id,desc"))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(userWorkoutTemplate.getId().intValue())))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(userWorkoutTemplates.get(0).getId().intValue())))
             .andExpect(jsonPath("$.[*].createdOn").value(hasItem(DEFAULT_CREATED_ON.toString())))
             .andExpect(jsonPath("$.[*].lastUpdated").value(hasItem(DEFAULT_LAST_UPDATED.toString())))
             .andExpect(jsonPath("$.[*].notes").value(hasItem(DEFAULT_NOTES.toString())));
@@ -211,7 +233,11 @@ public class UserWorkoutTemplateResourceIntTest {
     @Test
     @Transactional
     public void getUserWorkoutTemplate() throws Exception {
-        // Initialize the database
+        Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
+        UserDemographic userDemographic = UserDemographicGenerator.getOne(em, user.get());
+        em.persist(userDemographic);
+        em.flush();
+        UserWorkoutTemplate userWorkoutTemplate = UserWorkoutTemplateGenerator.getInstance().getOne(em, userDemographic);
         userWorkoutTemplateRepository.saveAndFlush(userWorkoutTemplate);
 
         // Get the userWorkoutTemplate
@@ -264,6 +290,11 @@ public class UserWorkoutTemplateResourceIntTest {
     @Test
     @Transactional
     public void updateNonExistingUserWorkoutTemplate() throws Exception {
+        Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
+        UserDemographic userDemographic = UserDemographicGenerator.getOne(em, user.get());
+        em.persist(userDemographic);
+        em.flush();
+        UserWorkoutTemplate userWorkoutTemplate = UserWorkoutTemplateGenerator.getInstance().getOne(em, userDemographic);
         int databaseSizeBeforeUpdate = userWorkoutTemplateRepository.findAll().size();
 
         // Create the UserWorkoutTemplate
@@ -283,6 +314,14 @@ public class UserWorkoutTemplateResourceIntTest {
     @Test
     @Transactional
     public void deleteUserWorkoutTemplate() throws Exception {
+        Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
+        UserDemographic userDemographic = UserDemographicGenerator.getOne(em, user.get());
+        em.persist(userDemographic);
+        em.flush();
+        UserWorkoutTemplate userWorkoutTemplate = UserWorkoutTemplateGenerator.getInstance().getOne(em, userDemographic);
+        em.persist(userWorkoutTemplate);
+        em.flush();
+
         // Initialize the database
         userWorkoutTemplateRepository.saveAndFlush(userWorkoutTemplate);
         int databaseSizeBeforeDelete = userWorkoutTemplateRepository.findAll().size();

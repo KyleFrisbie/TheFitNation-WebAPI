@@ -69,7 +69,7 @@ public class UserDemographicServiceIntTest {
     @Test
     public void saveNewUserDemographicAsLoggedInUser() {
         Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
-        UserDemographic userDemographic = UserDemographicGenerator.getInstance().getOne(em, user.get());
+        UserDemographic userDemographic = UserDemographicGenerator.getOne(em, user.get());
 
         int databaseSizeBeforeCreate = userDemographicRepository.findAll().size();
 
@@ -85,7 +85,7 @@ public class UserDemographicServiceIntTest {
     @Test
     public void saveNewUserDemographicNotOwnedByLoggedInUser() {
         Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
-        UserDemographic userDemographic = UserDemographicGenerator.getInstance().getOne(em);
+        UserDemographic userDemographic = UserDemographicGenerator.getOne(em);
         em.persist(userDemographic);
         em.flush();
 
@@ -104,7 +104,7 @@ public class UserDemographicServiceIntTest {
 
     @Test
     public void saveNewUserDemographicWithoutValidLogin() {
-        UserDemographic userDemographic = UserDemographicGenerator.getInstance().getOne(em);
+        UserDemographic userDemographic = UserDemographicGenerator.getOne(em);
 
         int databaseSizeBeforeCreate = userDemographicRepository.findAll().size();
 
@@ -119,7 +119,7 @@ public class UserDemographicServiceIntTest {
     @Test
     public void saveNewUserDemographicAsAdmin() {
         Optional<User> user = AuthUtil.logInUser("admin", "admin", userRepository);
-        UserDemographic userDemographic = UserDemographicGenerator.getInstance().getOne(em);
+        UserDemographic userDemographic = UserDemographicGenerator.getOne(em);
 
         int databaseSizeBeforeUpdate = userDemographicRepository.findAll().size();
 
@@ -135,7 +135,7 @@ public class UserDemographicServiceIntTest {
     @Test
     public void updateUserDemographicForUser() {
         Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
-        UserDemographic userDemographic = UserDemographicGenerator.getInstance().getOne(em, user.get());
+        UserDemographic userDemographic = UserDemographicGenerator.getOne(em, user.get());
         em.persist(userDemographic);
         em.flush();
 
@@ -164,7 +164,7 @@ public class UserDemographicServiceIntTest {
     public void findAllUserDemographicsForAdmin() {
         AuthUtil.logInUser("admin", "admin", userRepository);
         int numberOfUserDemographics = 10;
-        List<UserDemographic> originalUserDemographics = UserDemographicGenerator.getInstance().getMany(em, numberOfUserDemographics);
+        List<UserDemographic> originalUserDemographics = UserDemographicGenerator.getMany(em, numberOfUserDemographics);
 
         Page<UserDemographicDTO> testUserDemographicDTOs = userDemographicService.findAll(null);
 
@@ -179,7 +179,7 @@ public class UserDemographicServiceIntTest {
     public void findAllUserDemographicsForUser() {
         AuthUtil.logInUser("user", "user", userRepository);
         int numberOfUserDemographics = 10;
-        UserDemographicGenerator.getInstance().getMany(em, numberOfUserDemographics);
+        UserDemographicGenerator.getMany(em, numberOfUserDemographics);
 
         Page<UserDemographicDTO> testUserDemographicDTOs = userDemographicService.findAll(null);
 
@@ -189,7 +189,7 @@ public class UserDemographicServiceIntTest {
     @Test
     public void findOneUserDemographicsById() {
         Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
-        UserDemographic userDemographic = UserDemographicGenerator.getInstance().getOne(em, user.get());
+        UserDemographic userDemographic = UserDemographicGenerator.getOne(em, user.get());
         em.persist(userDemographic);
         em.flush();
 
@@ -202,7 +202,7 @@ public class UserDemographicServiceIntTest {
     @Test
     public void findOneUserDemographicsByIdNotOwnedByUser() {
         Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
-        UserDemographic userDemographic = UserDemographicGenerator.getInstance().getOne(em);
+        UserDemographic userDemographic = UserDemographicGenerator.getOne(em);
         em.persist(userDemographic);
         em.flush();
 
@@ -213,7 +213,7 @@ public class UserDemographicServiceIntTest {
     @Test
     public void findOneUserDemographicsByIdNotOwnedByAdmin() {
         Optional<User> user = AuthUtil.logInUser("admin", "admin", userRepository);
-        UserDemographic userDemographic = UserDemographicGenerator.getInstance().getOne(em);
+        UserDemographic userDemographic = UserDemographicGenerator.getOne(em);
         em.persist(userDemographic);
         em.flush();
 
@@ -226,7 +226,7 @@ public class UserDemographicServiceIntTest {
     @Test
     public void deleteUserDemographicsById() {
         Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
-        UserDemographic userDemographic = UserDemographicGenerator.getInstance().getOne(em, user.get());
+        UserDemographic userDemographic = UserDemographicGenerator.getOne(em, user.get());
         em.persist(userDemographic);
         em.flush();
 
@@ -238,7 +238,7 @@ public class UserDemographicServiceIntTest {
     @Test
     public void deleteOneUserDemographicsAsAdmin() {
         Optional<User> user = AuthUtil.logInUser("admin", "admin", userRepository);
-        UserDemographic userDemographic = UserDemographicGenerator.getInstance().getOne(em, user.get());
+        UserDemographic userDemographic = UserDemographicGenerator.getOne(em, user.get());
         em.persist(userDemographic);
         em.flush();
 

@@ -8,6 +8,7 @@ import com.thefitnation.service.dto.*;
 import com.thefitnation.service.mapper.*;
 import com.thefitnation.testTools.AuthUtil;
 import com.thefitnation.testTools.ExerciseInstanceGenerator;
+import com.thefitnation.testTools.UserDemographicGenerator;
 import com.thefitnation.web.rest.errors.*;
 import java.util.*;
 import javax.persistence.*;
@@ -120,7 +121,11 @@ public class ExerciseInstanceResourceIntTest {
     @Transactional
     public void createExerciseInstance() throws Exception {
         Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
-        ExerciseInstance exerciseInstance = ExerciseInstanceGenerator.getInstance().getOne(em, user.get());
+        UserDemographic userDemographic = UserDemographicGenerator.getOne(em, user.get());
+        em.persist(userDemographic);
+        em.flush();
+
+        ExerciseInstance exerciseInstance = ExerciseInstanceGenerator.getInstance().getOne(em, userDemographic);
         int databaseSizeBeforeCreate = exerciseInstanceRepository.findAll().size();
 
         // Create the ExerciseInstance
@@ -163,7 +168,10 @@ public class ExerciseInstanceResourceIntTest {
     @Transactional
     public void getAllExerciseInstances() throws Exception {
         Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
-        ExerciseInstance exerciseInstance = ExerciseInstanceGenerator.getInstance().getOne(em, user.get());
+        UserDemographic userDemographic = UserDemographicGenerator.getOne(em, user.get());
+        em.persist(userDemographic);
+        em.flush();
+        ExerciseInstance exerciseInstance = ExerciseInstanceGenerator.getInstance().getOne(em, userDemographic);
         exerciseInstanceRepository.saveAndFlush(exerciseInstance);
         restExerciseInstanceMockMvc.perform(get("/api/exercise-instances?sort=id,desc"))
             .andExpect(status().isOk())
@@ -176,7 +184,10 @@ public class ExerciseInstanceResourceIntTest {
     @Transactional
     public void getExerciseInstance() throws Exception {
         Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
-        ExerciseInstance exerciseInstance = ExerciseInstanceGenerator.getInstance().getOne(em, user.get());
+        UserDemographic userDemographic = UserDemographicGenerator.getOne(em, user.get());
+        em.persist(userDemographic);
+        em.flush();
+        ExerciseInstance exerciseInstance = ExerciseInstanceGenerator.getInstance().getOne(em, userDemographic);
         exerciseInstanceRepository.saveAndFlush(exerciseInstance);
         exerciseInstanceRepository.saveAndFlush(exerciseInstance);
 
@@ -192,7 +203,10 @@ public class ExerciseInstanceResourceIntTest {
     @Transactional
     public void getNonExistingExerciseInstance() throws Exception {
         Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
-        ExerciseInstance exerciseInstance = ExerciseInstanceGenerator.getInstance().getOne(em, user.get());
+        UserDemographic userDemographic = UserDemographicGenerator.getOne(em, user.get());
+        em.persist(userDemographic);
+        em.flush();
+        ExerciseInstance exerciseInstance = ExerciseInstanceGenerator.getInstance().getOne(em, userDemographic);
         // Get the exerciseInstance
         restExerciseInstanceMockMvc.perform(get("/api/exercise-instances/{id}", Long.MAX_VALUE))
             .andExpect(status().isNotFound());
@@ -202,7 +216,10 @@ public class ExerciseInstanceResourceIntTest {
     @Transactional
     public void updateExerciseInstance() throws Exception {
         Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
-        ExerciseInstance exerciseInstance = ExerciseInstanceGenerator.getInstance().getOne(em, user.get());
+        UserDemographic userDemographic = UserDemographicGenerator.getOne(em, user.get());
+        em.persist(userDemographic);
+        em.flush();
+        ExerciseInstance exerciseInstance = ExerciseInstanceGenerator.getInstance().getOne(em, userDemographic);
         exerciseInstanceRepository.saveAndFlush(exerciseInstance);
 
         int databaseSizeBeforeUpdate = exerciseInstanceRepository.findAll().size();
@@ -229,7 +246,10 @@ public class ExerciseInstanceResourceIntTest {
     @Transactional
     public void updateNonExistingExerciseInstance() throws Exception {
         Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
-        ExerciseInstance exerciseInstance = ExerciseInstanceGenerator.getInstance().getOne(em, user.get());
+        UserDemographic userDemographic = UserDemographicGenerator.getOne(em, user.get());
+        em.persist(userDemographic);
+        em.flush();
+        ExerciseInstance exerciseInstance = ExerciseInstanceGenerator.getInstance().getOne(em, userDemographic);
         int databaseSizeBeforeUpdate = exerciseInstanceRepository.findAll().size();
 
         // Create the ExerciseInstance
@@ -250,7 +270,10 @@ public class ExerciseInstanceResourceIntTest {
     @Transactional
     public void deleteExerciseInstance() throws Exception {
         Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
-        ExerciseInstance exerciseInstance = ExerciseInstanceGenerator.getInstance().getOne(em, user.get());
+        UserDemographic userDemographic = UserDemographicGenerator.getOne(em, user.get());
+        em.persist(userDemographic);
+        em.flush();
+        ExerciseInstance exerciseInstance = ExerciseInstanceGenerator.getInstance().getOne(em, userDemographic);
         exerciseInstanceRepository.saveAndFlush(exerciseInstance);
         int databaseSizeBeforeDelete = exerciseInstanceRepository.findAll().size();
 
