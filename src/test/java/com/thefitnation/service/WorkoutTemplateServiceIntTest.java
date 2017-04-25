@@ -36,8 +36,6 @@ import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 @Transactional
 public class WorkoutTemplateServiceIntTest {
     private static final String UPDATED_NAME = "BBBBBBBBBB";
-    private static final LocalDate UPDATED_CREATED_ON = LocalDate.now(ZoneId.systemDefault());
-    private static final LocalDate UPDATED_LAST_UPDATED = LocalDate.now(ZoneId.systemDefault());
     private static final Boolean UPDATED_IS_PRIVATE = true;
     private static final String UPDATED_NOTES = "BBBBBBBBBB";
 
@@ -188,7 +186,7 @@ public class WorkoutTemplateServiceIntTest {
         entityManager.persist(userDemographic);
         entityManager.flush();
 
-        List<WorkoutTemplate> workoutTemplate = WorkoutTemplateGenerator.getInstance().getMany(entityManager, NUMBER_OF_WORKOUT_TEMPLATES, userDemographic);
+        List<WorkoutTemplate> workoutTemplates = WorkoutTemplateGenerator.getInstance().getMany(entityManager, NUMBER_OF_WORKOUT_TEMPLATES, userDemographic);
 
         WorkoutTemplateGenerator.getInstance().getMany(entityManager, NUMBER_OF_WORKOUT_TEMPLATES);
         Page<WorkoutTemplateDTO> testWorkoutTemplatePage = workoutTemplateService.findAll(null);
@@ -196,7 +194,7 @@ public class WorkoutTemplateServiceIntTest {
         assertThat(testWorkoutTemplateDTOs.size()).isEqualTo(NUMBER_OF_WORKOUT_TEMPLATES);
         for (WorkoutTemplateDTO workoutTemplateDTO :
             testWorkoutTemplateDTOs) {
-            assertThat(workoutTemplate.contains(workoutTemplateMapper.workoutTemplateDTOToWorkoutTemplate(workoutTemplateDTO)));
+            assertThat(workoutTemplates.contains(workoutTemplateMapper.workoutTemplateDTOToWorkoutTemplate(workoutTemplateDTO)));
             assertThat(workoutTemplateDTO.getUserDemographicId()).isEqualTo(userDemographic.getId());
         }
     }

@@ -138,7 +138,7 @@ public class WorkoutInstanceService {
      */
     public void delete(Long id) {
         log.debug("Request to delete WorkoutInstance : {}", id);
-        if (workoutInstanceRepository.findOne(SecurityUtils.getCurrentUserLogin(), id).getId() != null) {
+        if (workoutInstanceRepository.findOne(SecurityUtils.getCurrentUserLogin(), id) != null) {
             removeWorkoutInstanceFromRelatedItems(id);
             workoutInstanceRepository.delete(id);
         }
