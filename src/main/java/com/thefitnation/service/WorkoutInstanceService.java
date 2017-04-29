@@ -5,10 +5,8 @@ import com.thefitnation.repository.*;
 import com.thefitnation.security.*;
 import com.thefitnation.service.dto.*;
 import com.thefitnation.service.mapper.*;
-
 import java.time.*;
 import java.util.*;
-
 import org.slf4j.*;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.*;
@@ -68,6 +66,7 @@ public class WorkoutInstanceService {
 
         Optional<User> user = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin());
         if (user.isPresent()) {
+
             if (!workoutTemplateRepository
                 .findOne(workoutInstanceDTO.getWorkoutTemplateId())
                 .getUserDemographic()
