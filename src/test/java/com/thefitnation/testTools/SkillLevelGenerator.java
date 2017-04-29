@@ -6,6 +6,8 @@ import javax.persistence.EntityManager;
 
 public class SkillLevelGenerator implements IUnownedEntityGenerator<SkillLevel> {
 
+    private static int NAME_COUNTER = 0;
+
     private static final String DEFAULT_NAME = "AAAAAAAAAA";
 
     private static SkillLevelGenerator instance;
@@ -21,6 +23,6 @@ public class SkillLevelGenerator implements IUnownedEntityGenerator<SkillLevel> 
 
     @Override
     public SkillLevel getOne(EntityManager entityManager) {
-        return new SkillLevel().level(DEFAULT_NAME);
+        return new SkillLevel().level(DEFAULT_NAME + NAME_COUNTER++);
     }
 }

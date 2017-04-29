@@ -9,6 +9,8 @@ import javax.persistence.EntityManager;
  */
 public class ExerciseFamilyGenerator implements IUnownedEntityGenerator<ExerciseFamily> {
 
+    private static int NAME_COUNTER = 0;
+
     private static final String DEFAULT_NAME = "AAAAAAAAAA";
 
     private static ExerciseFamilyGenerator instance;
@@ -25,6 +27,6 @@ public class ExerciseFamilyGenerator implements IUnownedEntityGenerator<Exercise
     @Override
     public ExerciseFamily getOne(EntityManager entityManager) {
         return new ExerciseFamily()
-            .name(DEFAULT_NAME);
+            .name(DEFAULT_NAME + NAME_COUNTER++);
     }
 }
