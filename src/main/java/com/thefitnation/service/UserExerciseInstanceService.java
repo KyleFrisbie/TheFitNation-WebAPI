@@ -53,6 +53,10 @@ public class UserExerciseInstanceService {
         if (!user.isPresent()) {
             return null;
         }
+        UserWorkoutInstance userWorkoutInstance = userWorkoutInstanceRepository.findOne(user.get().getLogin(), userExerciseInstanceDTO.getUserWorkoutInstanceId());
+        if (userWorkoutInstance == null) {
+            return null;
+        }
         UserExerciseInstance userExerciseInstance = userExerciseInstanceMapper.userExerciseInstanceDTOToUserExerciseInstance(userExerciseInstanceDTO);
 
         removeDereferencedUserExerciseInstanceSets(userExerciseInstance);

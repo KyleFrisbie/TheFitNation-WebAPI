@@ -80,7 +80,7 @@ public class UserWorkoutTemplateResource {
         }
         UserWorkoutTemplateDTO result = userWorkoutTemplateService.save(userWorkoutTemplateDTO);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, userWorkoutTemplateDTO.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
     }
 

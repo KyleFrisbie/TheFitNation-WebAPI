@@ -34,7 +34,7 @@ public class UserExerciseInstanceSetResource {
     private final Logger log = LoggerFactory.getLogger(UserExerciseInstanceSetResource.class);
 
     private static final String ENTITY_NAME = "userExerciseInstanceSet";
-        
+
     private final UserExerciseInstanceSetService userExerciseInstanceSetService;
 
     public UserExerciseInstanceSetResource(UserExerciseInstanceSetService userExerciseInstanceSetService) {
@@ -79,7 +79,7 @@ public class UserExerciseInstanceSetResource {
         }
         UserExerciseInstanceSetDTO result = userExerciseInstanceSetService.save(userExerciseInstanceSetDTO);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, userExerciseInstanceSetDTO.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
     }
 

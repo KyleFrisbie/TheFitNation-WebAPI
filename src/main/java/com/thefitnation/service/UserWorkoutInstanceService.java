@@ -5,8 +5,10 @@ import com.thefitnation.repository.*;
 import com.thefitnation.security.*;
 import com.thefitnation.service.dto.*;
 import com.thefitnation.service.mapper.*;
+
 import java.time.*;
 import java.util.*;
+
 import org.slf4j.*;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.*;
@@ -54,26 +56,23 @@ public class UserWorkoutInstanceService {
      */
     public UserWorkoutInstanceDTO save(UserWorkoutInstanceDTO userWorkoutInstanceDTO) {
         log.debug("Request to save UserWorkoutInstance : {}", userWorkoutInstanceDTO);
-        UserWorkoutInstance userWorkoutInstance = userWorkoutInstanceMapper.userWorkoutInstanceDTOToUserWorkoutInstance(userWorkoutInstanceDTO);
-
-
         Optional<User> user = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin());
-        if (!user.isPresent()) { return null; }
-
+        if (!user.isPresent()) {
+            return null;
+        }
         /* ensure user owns this object */
         if (!userWorkoutTemplateRepository
             .findOne(userWorkoutInstanceDTO.getUserWorkoutTemplateId()).getUserDemographic().getUser().getLogin().equals(SecurityUtils.getCurrentUserLogin())) {
             return null;
         }
 
+        UserWorkoutInstance userWorkoutInstance = userWorkoutInstanceMapper.userWorkoutInstanceDTOToUserWorkoutInstance(userWorkoutInstanceDTO);
         removeDereferencedUserExerciseInstances(userWorkoutInstance);
         userWorkoutInstance.setUserExerciseInstances(new HashSet<>());
 
+        userWorkoutInstance.setLastUpdated(LocalDate.now());
         if (userWorkoutInstance.getId() == null) {
             userWorkoutInstance.setCreatedOn(LocalDate.now());
-            userWorkoutInstance.setLastUpdated(LocalDate.now());
-        } else {
-            userWorkoutInstance.setLastUpdated(LocalDate.now());
         }
 
         userWorkoutInstance = userWorkoutInstanceRepository.save(userWorkoutInstance);
