@@ -1,21 +1,20 @@
 package com.thefitnation.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-
+import com.fasterxml.jackson.annotation.*;
+import java.io.*;
+import java.util.*;
 import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import javax.validation.constraints.*;
-import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.Objects;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.*;
 
 /**
  * A Exercise.
  */
 @Entity
-@Table(name = "exercise")
+@Table(name = "exercise", uniqueConstraints = @UniqueConstraint(columnNames = {"name"}))
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Exercise implements Serializable {
 
@@ -69,17 +68,21 @@ public class Exercise implements Serializable {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public Exercise name(String name) {
         this.name = name;
         return this;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getImageUri() {
         return imageUri;
+    }
+
+    public void setImageUri(String imageUri) {
+        this.imageUri = imageUri;
     }
 
     public Exercise imageUri(String imageUri) {
@@ -87,12 +90,12 @@ public class Exercise implements Serializable {
         return this;
     }
 
-    public void setImageUri(String imageUri) {
-        this.imageUri = imageUri;
-    }
-
     public String getNotes() {
         return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
     }
 
     public Exercise notes(String notes) {
@@ -100,12 +103,12 @@ public class Exercise implements Serializable {
         return this;
     }
 
-    public void setNotes(String notes) {
-        this.notes = notes;
-    }
-
     public SkillLevel getSkillLevel() {
         return skillLevel;
+    }
+
+    public void setSkillLevel(SkillLevel skillLevel) {
+        this.skillLevel = skillLevel;
     }
 
     public Exercise skillLevel(SkillLevel skillLevel) {
@@ -113,12 +116,12 @@ public class Exercise implements Serializable {
         return this;
     }
 
-    public void setSkillLevel(SkillLevel skillLevel) {
-        this.skillLevel = skillLevel;
-    }
-
     public Set<ExerciseInstance> getExerciseInstances() {
         return exerciseInstances;
+    }
+
+    public void setExerciseInstances(Set<ExerciseInstance> exerciseInstances) {
+        this.exerciseInstances = exerciseInstances;
     }
 
     public Exercise exerciseInstances(Set<ExerciseInstance> exerciseInstances) {
@@ -138,12 +141,12 @@ public class Exercise implements Serializable {
         return this;
     }
 
-    public void setExerciseInstances(Set<ExerciseInstance> exerciseInstances) {
-        this.exerciseInstances = exerciseInstances;
-    }
-
     public Set<Muscle> getMuscles() {
         return muscles;
+    }
+
+    public void setMuscles(Set<Muscle> muscles) {
+        this.muscles = muscles;
     }
 
     public Exercise muscles(Set<Muscle> muscles) {
@@ -163,21 +166,17 @@ public class Exercise implements Serializable {
         return this;
     }
 
-    public void setMuscles(Set<Muscle> muscles) {
-        this.muscles = muscles;
-    }
-
     public ExerciseFamily getExerciseFamily() {
         return exerciseFamily;
+    }
+
+    public void setExerciseFamily(ExerciseFamily exerciseFamily) {
+        this.exerciseFamily = exerciseFamily;
     }
 
     public Exercise exerciseFamily(ExerciseFamily exerciseFamily) {
         this.exerciseFamily = exerciseFamily;
         return this;
-    }
-
-    public void setExerciseFamily(ExerciseFamily exerciseFamily) {
-        this.exerciseFamily = exerciseFamily;
     }
 
     @Override

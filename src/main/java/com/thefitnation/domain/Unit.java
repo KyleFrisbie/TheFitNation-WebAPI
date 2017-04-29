@@ -1,18 +1,19 @@
 package com.thefitnation.domain;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-
+import java.io.*;
+import java.util.*;
 import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import javax.validation.constraints.*;
-import java.io.Serializable;
-import java.util.Objects;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.*;
 
 /**
  * A Unit.
  */
 @Entity
-@Table(name = "unit")
+@Table(name = "unit", uniqueConstraints = @UniqueConstraint(columnNames = {"name"}))
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Unit implements Serializable {
 
@@ -39,13 +40,13 @@ public class Unit implements Serializable {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public Unit name(String name) {
         this.name = name;
         return this;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     @Override
