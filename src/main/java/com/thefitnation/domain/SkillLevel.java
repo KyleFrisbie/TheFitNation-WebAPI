@@ -1,18 +1,19 @@
 package com.thefitnation.domain;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-
+import java.io.*;
+import java.util.*;
 import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import javax.validation.constraints.*;
-import java.io.Serializable;
-import java.util.Objects;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.*;
 
 /**
  * A SkillLevel.
  */
 @Entity
-@Table(name = "skill_level")
+@Table(name = "skill_level", uniqueConstraints = @UniqueConstraint(columnNames = {"level"}))
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class SkillLevel implements Serializable {
 
@@ -39,13 +40,13 @@ public class SkillLevel implements Serializable {
         return level;
     }
 
+    public void setLevel(String level) {
+        this.level = level;
+    }
+
     public SkillLevel level(String level) {
         this.level = level;
         return this;
-    }
-
-    public void setLevel(String level) {
-        this.level = level;
     }
 
     @Override

@@ -1,21 +1,21 @@
 package com.thefitnation.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-
+import com.fasterxml.jackson.annotation.*;
+import java.io.*;
+import java.util.*;
 import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import javax.validation.constraints.*;
-import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.Objects;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.*;
 
 /**
  * A Muscle.
  */
 @Entity
-@Table(name = "muscle")
+@Table(name = "muscle",
+    uniqueConstraints = @UniqueConstraint(columnNames = {"name"}))
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Muscle implements Serializable {
 
@@ -51,17 +51,21 @@ public class Muscle implements Serializable {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public Muscle name(String name) {
         this.name = name;
         return this;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public Set<Exercise> getExercises() {
         return exercises;
+    }
+
+    public void setExercises(Set<Exercise> exercises) {
+        this.exercises = exercises;
     }
 
     public Muscle exercises(Set<Exercise> exercises) {
@@ -81,21 +85,17 @@ public class Muscle implements Serializable {
         return this;
     }
 
-    public void setExercises(Set<Exercise> exercises) {
-        this.exercises = exercises;
-    }
-
     public BodyPart getBodyPart() {
         return bodyPart;
+    }
+
+    public void setBodyPart(BodyPart bodyPart) {
+        this.bodyPart = bodyPart;
     }
 
     public Muscle bodyPart(BodyPart bodyPart) {
         this.bodyPart = bodyPart;
         return this;
-    }
-
-    public void setBodyPart(BodyPart bodyPart) {
-        this.bodyPart = bodyPart;
     }
 
     @Override
