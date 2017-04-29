@@ -14,7 +14,7 @@
 				{
 					"name": "Get OAuth2 Token for User",
 					"request": {
-						"url": "http://localhost:8080/oauth/token",
+						"url": "{{root-address}}/oauth/token",
 						"method": "POST",
 						"header": [
 							{
@@ -77,7 +77,7 @@
 				{
 					"name": "Refresh OAuth2 Token for User",
 					"request": {
-						"url": "http://localhost:8080/oauth/token",
+						"url": "{{root-address}}/oauth/token",
 						"method": "POST",
 						"header": [
 							{
@@ -134,7 +134,7 @@
 				{
 					"name": "Register New User",
 					"request": {
-						"url": "http://localhost:8080/api/register",
+						"url": "{{root-address}}/api/register",
 						"method": "POST",
 						"header": [
 							{
@@ -154,12 +154,12 @@
 				{
 					"name": "Authenticate Bearer Token",
 					"request": {
-						"url": "http://localhost:8080/api/authenticate",
+						"url": "{{root-address}}/api/authenticate",
 						"method": "GET",
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "Bearer 1f6055c3-4740-4be5-9b8f-d0f492db6f90",
+								"value": "Bearer {{token}}",
 								"description": ""
 							}
 						],
@@ -171,7 +171,7 @@
 				{
 					"name": "Update Account",
 					"request": {
-						"url": "http://localhost:8080/api/account",
+						"url": "{{root-address}}/api/account",
 						"method": "POST",
 						"header": [
 							{
@@ -186,7 +186,7 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "Bearer 5cd017fe-c5c8-4665-8f0a-18cb5acf1ba4",
+								"value": "Bearer {{token}}",
 								"description": ""
 							}
 						],
@@ -201,7 +201,7 @@
 				{
 					"name": "Change Password",
 					"request": {
-						"url": "http://localhost:8080/api/account/change_password",
+						"url": "{{root-address}}/api/account/change_password",
 						"method": "POST",
 						"header": [
 							{
@@ -216,7 +216,7 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "Bearer 23f0cf96-1701-4e9d-9160-9caf98fd6a5b",
+								"value": "Bearer {{token}}",
 								"description": ""
 							}
 						],
@@ -231,12 +231,12 @@
 				{
 					"name": "Deactivate Account",
 					"request": {
-						"url": "http://localhost:8080/api/account/deactivate",
+						"url": "{{root-address}}/api/account/deactivate",
 						"method": "GET",
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "Bearer ac4cc37a-d3b2-428d-8660-069676a00976",
+								"value": "Bearer {{token}}",
 								"description": ""
 							}
 						],
@@ -248,7 +248,7 @@
 				{
 					"name": "Reactivate Account",
 					"request": {
-						"url": "http://localhost:8080/api/account/reactivate",
+						"url": "{{root-address}}/api/account/reactivate",
 						"method": "POST",
 						"header": [
 							{
@@ -274,7 +274,7 @@
 				{
 					"name": "Create Exercise",
 					"request": {
-						"url": "http://localhost:8080/api/exercises",
+						"url": "{{root-address}}/api/exercises",
 						"method": "POST",
 						"header": [
 							{
@@ -284,7 +284,7 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "Bearer 7bcd1866-5d8c-4053-9fb2-e76e8b4447dd",
+								"value": "Bearer {{token}}",
 								"description": ""
 							}
 						],
@@ -299,7 +299,7 @@
 				{
 					"name": "Get All Exercises",
 					"request": {
-						"url": "http://localhost:8080/api/exercises",
+						"url": "{{root-address}}/api/exercises",
 						"method": "GET",
 						"header": [
 							{
@@ -325,7 +325,7 @@
 				{
 					"name": "Get All ExerciseInstances",
 					"request": {
-						"url": "http://localhost:8080/api/exercise-instances",
+						"url": "{{root-address}}/api/exercise-instances",
 						"method": "GET",
 						"header": [
 							{
@@ -335,7 +335,7 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "Bearer fb2bca89-1712-427c-bf49-db5ed21d115c",
+								"value": "Bearer {{token}}",
 								"description": ""
 							}
 						],
@@ -347,12 +347,12 @@
 				{
 					"name": "Get ExerciseInstance By Id",
 					"request": {
-						"url": "http://localhost:8080/api/exercise-instances/6701",
+						"url": "{{root-address}}/api/exercise-instances/6701",
 						"method": "GET",
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "Bearer 88023e31-1689-4699-8c42-a18214d57b19",
+								"value": "Bearer {{token}}",
 								"description": ""
 							}
 						],
@@ -364,7 +364,7 @@
 				{
 					"name": "Create ExerciseInstance",
 					"request": {
-						"url": "http://localhost:8080/api/exercise-instances",
+						"url": "{{root-address}}/api/exercise-instances",
 						"method": "POST",
 						"header": [
 							{
@@ -379,7 +379,7 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "Bearer 9a4026cc-4afe-4416-a274-61810f478ee6",
+								"value": "Bearer {{token}}",
 								"description": ""
 							}
 						],
@@ -394,7 +394,7 @@
 				{
 					"name": "Update ExerciseInstance",
 					"request": {
-						"url": "http://localhost:8080/api/exercise-instances",
+						"url": "{{root-address}}/api/exercise-instances",
 						"method": "PUT",
 						"header": [
 							{
@@ -409,7 +409,7 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "Bearer aee6e0b8-fc84-4e73-8357-d6a3073c5536",
+								"value": "Bearer {{token}}",
 								"description": ""
 							}
 						],
@@ -424,12 +424,12 @@
 				{
 					"name": "Delete ExerciseInstance By Id",
 					"request": {
-						"url": "http://localhost:8080/api/exercise-instances/11251",
+						"url": "{{root-address}}/api/exercise-instances/11251",
 						"method": "DELETE",
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "Bearer 2191a7f5-313f-471b-9c4f-807ffa630751",
+								"value": "Bearer {{token}}",
 								"description": ""
 							}
 						],
@@ -447,12 +447,12 @@
 				{
 					"name": "Get All ExerciseInstanceSets",
 					"request": {
-						"url": "http://localhost:8080/api/exercise-instance-sets",
+						"url": "{{root-address}}/api/exercise-instance-sets",
 						"method": "GET",
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "Bearer 9a4026cc-4afe-4416-a274-61810f478ee6",
+								"value": "Bearer {{token}}",
 								"description": ""
 							}
 						],
@@ -464,12 +464,12 @@
 				{
 					"name": "Get ExerciseInstanceSet By Id",
 					"request": {
-						"url": "http://localhost:8080/api/exercise-instance-sets/10910",
+						"url": "{{root-address}}/api/exercise-instance-sets/10910",
 						"method": "GET",
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "Bearer 3dcbc283-88d2-4fa9-90eb-18d681cf6459",
+								"value": "Bearer {{token}}",
 								"description": ""
 							}
 						],
@@ -481,7 +481,7 @@
 				{
 					"name": "Create ExerciseInstanceSet",
 					"request": {
-						"url": "http://localhost:8080/api/exercise-instance-sets",
+						"url": "{{root-address}}/api/exercise-instance-sets",
 						"method": "POST",
 						"header": [
 							{
@@ -496,7 +496,7 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "Bearer 3dcbc283-88d2-4fa9-90eb-18d681cf6459",
+								"value": "Bearer {{token}}",
 								"description": ""
 							}
 						],
@@ -511,7 +511,7 @@
 				{
 					"name": "Update ExerciseInstanceSet",
 					"request": {
-						"url": "http://localhost:8080/api/exercise-instance-sets",
+						"url": "{{root-address}}/api/exercise-instance-sets",
 						"method": "PUT",
 						"header": [
 							{
@@ -526,7 +526,7 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "Bearer 3dcbc283-88d2-4fa9-90eb-18d681cf6459",
+								"value": "Bearer {{token}}",
 								"description": ""
 							}
 						],
@@ -541,12 +541,12 @@
 				{
 					"name": "Delete ExerciseInstanceSet By Id",
 					"request": {
-						"url": "http://localhost:8080/api/exercise-instance-sets/10913",
+						"url": "{{root-address}}/api/exercise-instance-sets/10913",
 						"method": "DELETE",
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "Bearer 2191a7f5-313f-471b-9c4f-807ffa630751",
+								"value": "Bearer {{token}}",
 								"description": ""
 							}
 						],
@@ -564,12 +564,12 @@
 				{
 					"name": "Get All Gyms",
 					"request": {
-						"url": "http://localhost:8080/api/gyms",
+						"url": "{{root-address}}/api/gyms",
 						"method": "GET",
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "bearer 1bd770b1-44d0-430f-a4ab-a72673107659",
+								"value": "bearer {{token}}",
 								"description": ""
 							}
 						],
@@ -587,7 +587,7 @@
 				{
 					"name": "Get Muscle by Name",
 					"request": {
-						"url": "http://localhost:8080/api/muscles/name/Biceps",
+						"url": "{{root-address}}/api/muscles/name/Biceps",
 						"method": "GET",
 						"header": [
 							{
@@ -597,7 +597,7 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "Bearer b4e5c0b8-8357-4482-84e7-24bd7d2fa738",
+								"value": "Bearer {{token}}",
 								"description": ""
 							}
 						],
@@ -615,12 +615,12 @@
 				{
 					"name": "Get All SkillLevels",
 					"request": {
-						"url": "http://localhost:8080/api/skill-levels",
+						"url": "{{root-address}}/api/skill-levels",
 						"method": "GET",
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "Bearer f03f7b3f-68fe-4704-b258-097ac856a4ac",
+								"value": "Bearer {{token}}",
 								"description": ""
 							}
 						],
@@ -638,12 +638,12 @@
 				{
 					"name": "Get All Users",
 					"request": {
-						"url": "http://localhost:8080/api/users",
+						"url": "{{root-address}}/api/users",
 						"method": "GET",
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "bearer 7fb202e3-0a48-49ba-a314-110d3f7361a0",
+								"value": "bearer {{token}}",
 								"description": ""
 							}
 						],
@@ -655,7 +655,7 @@
 				{
 					"name": "Get User by Login (Like \"admin\", or \"kyle\")",
 					"request": {
-						"url": "http://localhost:8080/api/users/admin",
+						"url": "{{root-address}}/api/users/admin",
 						"method": "GET",
 						"header": [
 							{
@@ -665,7 +665,7 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "Bearer 7fb202e3-0a48-49ba-a314-110d3f7361a0",
+								"value": "Bearer {{root-address}}",
 								"description": ""
 							}
 						],
@@ -677,7 +677,7 @@
 				{
 					"name": "Create user",
 					"request": {
-						"url": "http://localhost:8080/api/users",
+						"url": "{{root-address}}/api/users",
 						"method": "POST",
 						"header": [
 							{
@@ -687,7 +687,7 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "Bearer f03f7b3f-68fe-4704-b258-097ac856a4ac",
+								"value": "Bearer {{token}}",
 								"description": ""
 							}
 						],
@@ -708,7 +708,7 @@
 				{
 					"name": "Update User Demographic by Logged In User",
 					"request": {
-						"url": "http://localhost:8080/api/user-demographics",
+						"url": "{{root-address}}/api/user-demographics",
 						"method": "PUT",
 						"header": [
 							{
@@ -723,13 +723,13 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "Bearer d54ff6a6-318c-47e0-b8e8-d0ea159158a9",
+								"value": "Bearer {{token}}",
 								"description": ""
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"createdOn\": \"2017-04-10\",\n  \"lastLogin\": \"2017-04-10\",\n  \"gender\": \"Female\",\n  \"dateOfBirth\": \"2000-03-11\",\n  \"height\": 75,\n  \"unitOfMeasure\": \"Imperial\",\n  \"userLogin\": \"user\",\n  \"gyms\": [],\n  \"skillLevelId\": 1001,\n  \"skillLevelLevel\": \"Beginner\"\n}"
+							"raw": "{\n  \"id\": 3304,\n  \"createdOn\": \"2017-04-27\",\n  \"lastLogin\": \"2017-04-27\",\n  \"gender\": \"Male\",\n  \"dateOfBirth\": \"2017-04-01\",\n  \"height\": 791,\n  \"unitOfMeasure\": \"Imperial\",\n  \"userId\": 3253,\n  \"userLogin\": \"jeremy3\",\n  \"gyms\": [],\n  \"skillLevelId\": 1052,\n  \"skillLevelLevel\": \"Intermediate\"\n}"
 						},
 						"description": "failing"
 					},
@@ -738,12 +738,12 @@
 				{
 					"name": "Get All UserDemographics",
 					"request": {
-						"url": "http://localhost:8080/api/user-demographics",
+						"url": "{{root-address}}/api/user-demographics",
 						"method": "GET",
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "Bearer d54ff6a6-318c-47e0-b8e8-d0ea159158a9",
+								"value": "Bearer {{token}}",
 								"description": ""
 							}
 						],
@@ -758,12 +758,12 @@
 				{
 					"name": "Get UserDemographic By Id",
 					"request": {
-						"url": "http://localhost:8080/api/user-demographics/1051",
+						"url": "{{root-address}}/api/user-demographics/1051",
 						"method": "GET",
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "Bearer d54ff6a6-318c-47e0-b8e8-d0ea159158a9",
+								"value": "Bearer {{token}}",
 								"description": ""
 							}
 						],
@@ -775,12 +775,12 @@
 				{
 					"name": "Get UserDemographic for Logged In User",
 					"request": {
-						"url": "http://localhost:8080/api/users/user-demographic",
+						"url": "{{root-address}}/api/users/user-demographic",
 						"method": "GET",
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "Bearer f530baf6-2053-401d-a38b-1c91ee6a23dd",
+								"value": "Bearer {{token}}",
 								"description": ""
 							}
 						],
@@ -798,7 +798,7 @@
 				{
 					"name": "Get All UserExerciseInstances",
 					"request": {
-						"url": "http://localhost:8080/api/user-exercise-instances",
+						"url": "{{root-address}}/api/user-exercise-instances",
 						"method": "GET",
 						"header": [
 							{
@@ -808,7 +808,7 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "Bearer 8cbe27a3-7e10-488e-a72e-3bed87094c2e",
+								"value": "Bearer {{token}}",
 								"description": ""
 							}
 						],
@@ -820,7 +820,7 @@
 				{
 					"name": "Get UserExerciseInstance By Id",
 					"request": {
-						"url": "http://localhost:8080/api/user-exercise-instances/14801",
+						"url": "{{root-address}}/api/user-exercise-instances/14801",
 						"method": "GET",
 						"header": [
 							{
@@ -830,7 +830,7 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "Bearer 8cbe27a3-7e10-488e-a72e-3bed87094c2e",
+								"value": "Bearer {{token}}",
 								"description": ""
 							}
 						],
@@ -842,7 +842,7 @@
 				{
 					"name": "Create UserExerciseInstance",
 					"request": {
-						"url": "http://localhost:8080/api/user-exercise-instances",
+						"url": "{{root-address}}/api/user-exercise-instances",
 						"method": "POST",
 						"header": [
 							{
@@ -857,7 +857,7 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "Bearer 8cbe27a3-7e10-488e-a72e-3bed87094c2e",
+								"value": "Bearer {{token}}",
 								"description": ""
 							}
 						],
@@ -872,7 +872,7 @@
 				{
 					"name": "Update UserExerciseInstance",
 					"request": {
-						"url": "http://localhost:8080/api/user-exercise-instances",
+						"url": "{{root-address}}/api/user-exercise-instances",
 						"method": "PUT",
 						"header": [
 							{
@@ -887,7 +887,7 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "Bearer 8cbe27a3-7e10-488e-a72e-3bed87094c2e",
+								"value": "Bearer {{token}}",
 								"description": ""
 							}
 						],
@@ -902,7 +902,7 @@
 				{
 					"name": "Delete UserExerciseInstance By Id",
 					"request": {
-						"url": "http://localhost:8080/api/user-exercise-instances/13451",
+						"url": "{{root-address}}/api/user-exercise-instances/13451",
 						"method": "DELETE",
 						"header": [
 							{
@@ -912,7 +912,7 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "Bearer 8cbe27a3-7e10-488e-a72e-3bed87094c2e",
+								"value": "Bearer {{token}}",
 								"description": ""
 							}
 						],
@@ -930,7 +930,7 @@
 				{
 					"name": "Get All UserExerciseInstanceSets",
 					"request": {
-						"url": "http://localhost:8080/api/user-exercise-instance-sets",
+						"url": "{{root-address}}/api/user-exercise-instance-sets",
 						"method": "GET",
 						"header": [
 							{
@@ -940,7 +940,7 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "Bearer 8cbe27a3-7e10-488e-a72e-3bed87094c2e",
+								"value": "Bearer {{token}}",
 								"description": ""
 							}
 						],
@@ -952,7 +952,7 @@
 				{
 					"name": "Get UserExerciseInstanceSet By Id",
 					"request": {
-						"url": "http://localhost:8080/api/user-exercise-instance-sets/15351",
+						"url": "{{root-address}}/api/user-exercise-instance-sets/15351",
 						"method": "GET",
 						"header": [
 							{
@@ -962,7 +962,7 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "Bearer 9a4026cc-4afe-4416-a274-61810f478ee6",
+								"value": "Bearer {{token}}",
 								"description": ""
 							}
 						],
@@ -974,7 +974,7 @@
 				{
 					"name": "Create UserExerciseInstanceSet",
 					"request": {
-						"url": "http://localhost:8080/api/user-exercise-instance-sets",
+						"url": "{{root-address}}/api/user-exercise-instance-sets",
 						"method": "POST",
 						"header": [
 							{
@@ -989,7 +989,7 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "Bearer 9a4026cc-4afe-4416-a274-61810f478ee6",
+								"value": "Bearer {{token}}",
 								"description": ""
 							}
 						],
@@ -1004,7 +1004,7 @@
 				{
 					"name": "Update UserExerciseInstanceSet",
 					"request": {
-						"url": "http://localhost:8080/api/user-exercise-instance-sets",
+						"url": "{{root-address}}/api/user-exercise-instance-sets",
 						"method": "PUT",
 						"header": [
 							{
@@ -1019,7 +1019,7 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "Bearer 8cbe27a3-7e10-488e-a72e-3bed87094c2e",
+								"value": "Bearer {{token}}",
 								"description": ""
 							}
 						],
@@ -1034,7 +1034,7 @@
 				{
 					"name": "Delete UserExerciseInstanceSet By Id",
 					"request": {
-						"url": "http://localhost:8080/api/user-exercise-instance-sets/13351",
+						"url": "{{root-address}}/api/user-exercise-instance-sets/13351",
 						"method": "DELETE",
 						"header": [
 							{
@@ -1044,7 +1044,7 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "Bearer 8cbe27a3-7e10-488e-a72e-3bed87094c2e",
+								"value": "Bearer {{token}}",
 								"description": ""
 							}
 						],
@@ -1062,7 +1062,7 @@
 				{
 					"name": "Create User Weight",
 					"request": {
-						"url": "http://localhost:8080/api/user-weights",
+						"url": "{{root-address}}/api/user-weights",
 						"method": "POST",
 						"header": [
 							{
@@ -1077,7 +1077,7 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "Bearer d54ff6a6-318c-47e0-b8e8-d0ea159158a9",
+								"value": "Bearer {{token}}",
 								"description": ""
 							}
 						],
@@ -1092,7 +1092,7 @@
 				{
 					"name": "Update User Weight",
 					"request": {
-						"url": "http://localhost:8080/api/user-weights",
+						"url": "{{root-address}}/api/user-weights",
 						"method": "PUT",
 						"header": [
 							{
@@ -1107,7 +1107,7 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "Bearer d54ff6a6-318c-47e0-b8e8-d0ea159158a9",
+								"value": "Bearer {{token}}",
 								"description": ""
 							}
 						],
@@ -1122,12 +1122,12 @@
 				{
 					"name": "Delete User Weight",
 					"request": {
-						"url": "http://localhost:8080/api/user-weights/17402",
+						"url": "{{root-address}}/api/user-weights/17402",
 						"method": "DELETE",
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "Bearer d54ff6a6-318c-47e0-b8e8-d0ea159158a9",
+								"value": "Bearer {{token}}",
 								"description": ""
 							}
 						],
@@ -1142,12 +1142,12 @@
 				{
 					"name": "Get User Weight by ID",
 					"request": {
-						"url": "http://localhost:8080/api/user-weights/17401",
+						"url": "{{root-address}}/api/user-weights/17401",
 						"method": "GET",
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "Bearer d54ff6a6-318c-47e0-b8e8-d0ea159158a9",
+								"value": "Bearer {{token}}",
 								"description": ""
 							}
 						],
@@ -1162,12 +1162,12 @@
 				{
 					"name": "Get All User Weights",
 					"request": {
-						"url": "http://localhost:8080/api/user-weights",
+						"url": "{{root-address}}/api/user-weights",
 						"method": "GET",
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "Bearer d54ff6a6-318c-47e0-b8e8-d0ea159158a9",
+								"value": "Bearer {{token}}",
 								"description": ""
 							}
 						],
@@ -1185,7 +1185,7 @@
 				{
 					"name": "Get All UserWorkoutInstances",
 					"request": {
-						"url": "http://localhost:8080/api/user-workout-instances",
+						"url": "{{root-address}}/api/user-workout-instances",
 						"method": "GET",
 						"header": [
 							{
@@ -1207,7 +1207,7 @@
 				{
 					"name": "Get UserWorkout Instance By Id",
 					"request": {
-						"url": "http://localhost:8080/api/user-workout-instances/27301",
+						"url": "{{root-address}}/api/user-workout-instances/27301",
 						"method": "GET",
 						"header": [
 							{
@@ -1224,7 +1224,7 @@
 				{
 					"name": "Create UserWorkoutInstance",
 					"request": {
-						"url": "http://localhost:8080/api/user-workout-instances",
+						"url": "{{root-address}}/api/user-workout-instances",
 						"method": "POST",
 						"header": [
 							{
@@ -1254,7 +1254,7 @@
 				{
 					"name": "Update UserWorkoutInstance",
 					"request": {
-						"url": "http://localhost:8080/api/user-workout-instances",
+						"url": "{{root-address}}/api/user-workout-instances",
 						"method": "PUT",
 						"header": [
 							{
@@ -1284,7 +1284,7 @@
 				{
 					"name": "Delete UserWorkoutInstance By Id",
 					"request": {
-						"url": "http://localhost:8080/api/user-workout-instances/25951",
+						"url": "{{root-address}}/api/user-workout-instances/25951",
 						"method": "DELETE",
 						"header": [
 							{
@@ -1307,7 +1307,7 @@
 				{
 					"name": "Get All UserWorkoutTemplates",
 					"request": {
-						"url": "http://localhost:8080/api/user-workout-templates",
+						"url": "{{root-address}}/api/user-workout-templates",
 						"method": "GET",
 						"header": [
 							{
@@ -1329,7 +1329,7 @@
 				{
 					"name": "Get UserWorkoutTemplate By Id",
 					"request": {
-						"url": "http://localhost:8080/api/user-workout-templates/27652",
+						"url": "{{root-address}}/api/user-workout-templates/27652",
 						"method": "GET",
 						"header": [
 							{
@@ -1346,7 +1346,7 @@
 				{
 					"name": "Create UserWorkoutTemplate",
 					"request": {
-						"url": "http://localhost:8080/api/user-workout-templates",
+						"url": "{{root-address}}/api/user-workout-templates",
 						"method": "POST",
 						"header": [
 							{
@@ -1376,7 +1376,7 @@
 				{
 					"name": "Update UserWorkoutTemplate",
 					"request": {
-						"url": "http://localhost:8080/api/user-workout-templates",
+						"url": "{{root-address}}/api/user-workout-templates",
 						"method": "PUT",
 						"header": [
 							{
@@ -1406,7 +1406,7 @@
 				{
 					"name": "Delete UserWorkoutTemplate By Id",
 					"request": {
-						"url": "http://localhost:8080/api/user-workout-templates/26851",
+						"url": "{{root-address}}/api/user-workout-templates/26851",
 						"method": "DELETE",
 						"header": [
 							{
@@ -1429,7 +1429,7 @@
 				{
 					"name": "Get All WorkoutInstances",
 					"request": {
-						"url": "http://localhost:8080/api/workout-instances",
+						"url": "{{root-address}}/api/workout-instances",
 						"method": "GET",
 						"header": [
 							{
@@ -1451,7 +1451,7 @@
 				{
 					"name": "Get Workout Instance By Id",
 					"request": {
-						"url": "http://localhost:8080/api/workout-instances/26701",
+						"url": "{{root-address}}/api/workout-instances/26701",
 						"method": "GET",
 						"header": [
 							{
@@ -1468,7 +1468,7 @@
 				{
 					"name": "Create WorkoutInstance",
 					"request": {
-						"url": "http://localhost:8080/api/workout-instances",
+						"url": "{{root-address}}/api/workout-instances",
 						"method": "POST",
 						"header": [
 							{
@@ -1498,7 +1498,7 @@
 				{
 					"name": "Delete Workout Instance By Id",
 					"request": {
-						"url": "http://localhost:8080/api/workout-instances/27501",
+						"url": "{{root-address}}/api/workout-instances/27501",
 						"method": "DELETE",
 						"header": [
 							{
@@ -1515,7 +1515,7 @@
 				{
 					"name": "Update WorkoutInstance",
 					"request": {
-						"url": "http://localhost:8080/api/workout-instances",
+						"url": "{{root-address}}/api/workout-instances",
 						"method": "PUT",
 						"header": [
 							{
@@ -1551,7 +1551,7 @@
 				{
 					"name": "Get All WorkoutTemplates",
 					"request": {
-						"url": "http://localhost:8080/api/workout-templates",
+						"url": "{{root-address}}/api/workout-templates",
 						"method": "GET",
 						"header": [
 							{
@@ -1561,7 +1561,7 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "Bearer fb2bca89-1712-427c-bf49-db5ed21d115c",
+								"value": "Bearer {{token}}",
 								"description": ""
 							}
 						],
@@ -1573,7 +1573,7 @@
 				{
 					"name": "Get WorkoutTemplate By Id",
 					"request": {
-						"url": "http://localhost:8080/api/workout-templates/27801",
+						"url": "{{root-address}}/api/workout-templates/27801",
 						"method": "GET",
 						"header": [
 							{
@@ -1590,7 +1590,7 @@
 				{
 					"name": "Create WorkoutTemplate",
 					"request": {
-						"url": "http://localhost:8080/api/workout-templates",
+						"url": "{{root-address}}/api/workout-templates",
 						"method": "POST",
 						"header": [
 							{
@@ -1620,7 +1620,7 @@
 				{
 					"name": "Update WorkoutTemplate",
 					"request": {
-						"url": "http://localhost:8080/api/workout-templates",
+						"url": "{{root-address}}/api/workout-templates",
 						"method": "PUT",
 						"header": [
 							{
@@ -1650,7 +1650,7 @@
 				{
 					"name": "Delete WorkoutTemplate By Id",
 					"request": {
-						"url": "http://localhost:8080/api/workout-templates/27801",
+						"url": "{{root-address}}/api/workout-templates/27801",
 						"method": "DELETE",
 						"header": [
 							{
