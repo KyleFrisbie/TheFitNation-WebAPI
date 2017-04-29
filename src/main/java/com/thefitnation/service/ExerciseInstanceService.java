@@ -59,6 +59,10 @@ public class ExerciseInstanceService {
 
         Optional<User> user = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin());
         if (user.isPresent()) {
+            WorkoutInstance workoutInstance = workoutInstanceRepository.findOne(user.get().getLogin(), exerciseInstanceDTO.getWorkoutInstanceId());
+            if (workoutInstance == null) {
+                return null;
+            }
             ExerciseInstance exerciseInstance = exerciseInstanceMapper.exerciseInstanceDTOToExerciseInstance(exerciseInstanceDTO);
             removeDereferenceExerciseInstanceSets(exerciseInstance);
             exerciseInstance.setExerciseInstanceSets(new HashSet<>());

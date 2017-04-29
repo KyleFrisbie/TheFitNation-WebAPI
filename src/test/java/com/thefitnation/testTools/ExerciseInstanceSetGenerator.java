@@ -9,9 +9,7 @@ import javax.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by kylel on 4/15/2017.
- */
+
 public class ExerciseInstanceSetGenerator implements IOwnedEntityGenerator<ExerciseInstanceSet> {
 
     private static final Integer DEFAULT_ORDER_NUMBER = 1;
