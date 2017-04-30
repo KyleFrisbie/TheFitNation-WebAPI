@@ -16,10 +16,8 @@ public class UserDemographicDTO implements Serializable {
 
     private Long id;
 
-    @NotNull
     private LocalDate createdOn;
 
-    @NotNull
     private LocalDate lastLogin;
 
     private Gender gender;
