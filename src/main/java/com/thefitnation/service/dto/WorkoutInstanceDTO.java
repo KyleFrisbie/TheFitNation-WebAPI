@@ -15,10 +15,8 @@ public class WorkoutInstanceDTO implements Serializable {
 
     private String name;
 
-    @NotNull
     private LocalDate createdOn;
 
-    @NotNull
     private LocalDate lastUpdated;
 
     private Float restBetweenInstances;

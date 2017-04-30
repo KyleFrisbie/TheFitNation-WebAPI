@@ -46,6 +46,10 @@ public class UserExerciseInstanceSetService {
         if (!user.isPresent()) {
             return null;
         }
+        UserExerciseInstance userExerciseInstance = userExerciseInstanceRepository.findOne(user.get().getLogin(), userExerciseInstanceSetDTO.getUserExerciseInstanceId());
+        if (userExerciseInstance == null) {
+            return null;
+        }
         UserExerciseInstanceSet userExerciseInstanceSet = userExerciseInstanceSetMapper.userExerciseInstanceSetDTOToUserExerciseInstanceSet(userExerciseInstanceSetDTO);
         userExerciseInstanceSet = userExerciseInstanceSetRepository.save(userExerciseInstanceSet);
         addUserExerciseInstanceSetToParent(userExerciseInstanceSet);

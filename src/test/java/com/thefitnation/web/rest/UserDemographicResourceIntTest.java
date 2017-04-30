@@ -185,50 +185,6 @@ public class UserDemographicResourceIntTest {
 
     @Test
     @Transactional
-    public void checkCreatedOnIsRequired() throws Exception {
-        Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
-        UserDemographic userDemographic = UserDemographicGenerator.getOne(em, user.get());
-
-        int databaseSizeBeforeTest = userDemographicRepository.findAll().size();
-        // set the field null
-        userDemographic.setCreatedOn(null);
-
-        // Create the UserDemographic, which fails.
-        UserDemographicDTO userDemographicDTO = userDemographicMapper.userDemographicToUserDemographicDTO(userDemographic);
-
-        restUserDemographicMockMvc.perform(post("/api/user-demographics")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(userDemographicDTO)))
-            .andExpect(status().isBadRequest());
-
-        List<UserDemographic> userDemographicList = userDemographicRepository.findAll();
-        assertThat(userDemographicList).hasSize(databaseSizeBeforeTest);
-    }
-
-    @Test
-    @Transactional
-    public void checkLastLoginIsRequired() throws Exception {
-        Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
-        UserDemographic userDemographic = UserDemographicGenerator.getOne(em, user.get());
-
-        int databaseSizeBeforeTest = userDemographicRepository.findAll().size();
-        // set the field null
-        userDemographic.setLastLogin(null);
-
-        // Create the UserDemographic, which fails.
-        UserDemographicDTO userDemographicDTO = userDemographicMapper.userDemographicToUserDemographicDTO(userDemographic);
-
-        restUserDemographicMockMvc.perform(post("/api/user-demographics")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(userDemographicDTO)))
-            .andExpect(status().isBadRequest());
-
-        List<UserDemographic> userDemographicList = userDemographicRepository.findAll();
-        assertThat(userDemographicList).hasSize(databaseSizeBeforeTest);
-    }
-
-    @Test
-    @Transactional
     public void checkDateOfBirthIsRequired() throws Exception {
         Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
         UserDemographic userDemographic = UserDemographicGenerator.getOne(em, user.get());

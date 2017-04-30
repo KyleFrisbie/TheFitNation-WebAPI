@@ -191,7 +191,7 @@ public class WorkoutInstanceService {
                             userExerciseInstance.setExerciseInstance(null);
                             userExerciseInstanceRepository.save(userExerciseInstance);
                         }
-                        exerciseInstanceRepository.delete(exerciseInstance);
+                        exerciseInstanceService.delete(exerciseInstance.getId());
                     }
                 }
             }

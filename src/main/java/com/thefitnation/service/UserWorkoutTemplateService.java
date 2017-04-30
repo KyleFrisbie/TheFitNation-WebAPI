@@ -5,8 +5,10 @@ import com.thefitnation.repository.*;
 import com.thefitnation.security.*;
 import com.thefitnation.service.dto.*;
 import com.thefitnation.service.mapper.*;
+
 import java.time.*;
 import java.util.*;
+
 import org.slf4j.*;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.*;
@@ -56,36 +58,38 @@ public class UserWorkoutTemplateService {
     public UserWorkoutTemplateDTO save(UserWorkoutTemplateDTO userWorkoutTemplateDTO) {
         log.debug("Request to save UserWorkoutTemplate : {}", userWorkoutTemplateDTO);
         Optional<User> user = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin());
-        if (!user.isPresent()) { return null; }
-
-        if (!userDemographicRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin()).getId()
-            .equals(userWorkoutTemplateDTO.getUserDemographicId())) {
-            userWorkoutTemplateDTO.setUserDemographicId(userDemographicRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin()).getId());
+        if (!user.isPresent()) {
+            return null;
         }
-
-        if (userWorkoutTemplateDTO.getUserDemographicId() != null) {
-            UserDemographic userDemographic = userDemographicRepository.findOneByUserWithEagerRelationships(user.get().getId());
-            userWorkoutTemplateDTO.setUserDemographicId(userDemographic.getId());
-            UserWorkoutTemplate userWorkoutTemplate = userWorkoutTemplateMapper.userWorkoutTemplateDTOToUserWorkoutTemplate(userWorkoutTemplateDTO);
-            userWorkoutTemplate.setCreatedOn(LocalDate.now());
-            userWorkoutTemplate.setLastUpdated(LocalDate.now());
-            userWorkoutTemplate = userWorkoutTemplateRepository.save(userWorkoutTemplate);
-            return userWorkoutTemplateMapper.userWorkoutTemplateToUserWorkoutTemplateDTO(userWorkoutTemplate);
+        userWorkoutTemplateDTO.setUserDemographicId(userDemographicRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin()).getId());
+        if (userWorkoutTemplateDTO.getId() != null) {
+            UserWorkoutTemplate dbUserWorkoutTemplate = userWorkoutTemplateRepository.findOne(user.get().getLogin(), userWorkoutTemplateDTO.getId());
+            if (dbUserWorkoutTemplate == null) {
+                userWorkoutTemplateDTO.setCreatedOn(LocalDate.now());
+                userWorkoutTemplateDTO.setLastUpdated(LocalDate.now());
+                userWorkoutTemplateDTO.setId(null);
+            } else {
+                userWorkoutTemplateDTO.setLastUpdated(LocalDate.now());
+            }
         } else {
-            UserDemographic userDemographic = userDemographicRepository.findOneByUserWithEagerRelationships(user.get().getId());
-            userWorkoutTemplateDTO.setUserDemographicId(userDemographic.getId());
-            UserWorkoutTemplate userWorkoutTemplate = userWorkoutTemplateMapper.userWorkoutTemplateDTOToUserWorkoutTemplate(userWorkoutTemplateDTO);
-            userWorkoutTemplate.setLastUpdated(LocalDate.now());
-            userWorkoutTemplate = userWorkoutTemplateRepository.save(userWorkoutTemplate);
-            return userWorkoutTemplateMapper.userWorkoutTemplateToUserWorkoutTemplateDTO(userWorkoutTemplate);
+            userWorkoutTemplateDTO.setCreatedOn(LocalDate.now());
+            userWorkoutTemplateDTO.setLastUpdated(LocalDate.now());
         }
+        UserWorkoutTemplate userWorkoutTemplate = userWorkoutTemplateMapper.userWorkoutTemplateDTOToUserWorkoutTemplate(userWorkoutTemplateDTO);
+        userWorkoutTemplate = userWorkoutTemplateRepository.save(userWorkoutTemplate);
+
+        userWorkoutTemplateDTO = userWorkoutTemplateMapper.userWorkoutTemplateToUserWorkoutTemplateDTO(userWorkoutTemplate);
+        if (userWorkoutTemplateDTO.getWorkoutTemplateId() != null) {
+            userWorkoutTemplateDTO.setWorkoutTemplateName(workoutTemplateRepository.findOne(userWorkoutTemplateDTO.getWorkoutTemplateId()).getName());
+        }
+        return userWorkoutTemplateDTO;
     }
 
     /**
-     *  Get all the userWorkoutTemplates.
+     * Get all the userWorkoutTemplates.
      *
-     *  @param pageable the pagination information
-     *  @return the list of entities
+     * @param pageable the pagination information
+     * @return the list of entities
      */
     @Transactional(readOnly = true)
     public Page<UserWorkoutTemplateDTO> findAll(Pageable pageable) {
@@ -95,10 +99,10 @@ public class UserWorkoutTemplateService {
     }
 
     /**
-     *  Get one userWorkoutTemplate by id.
+     * Get one userWorkoutTemplate by id.
      *
-     *  @param id the id of the entity
-     *  @return the entity
+     * @param id the id of the entity
+     * @return the entity
      */
     @Transactional(readOnly = true)
     public UserWorkoutTemplateWithChildrenDTO findOne(Long id) {
@@ -108,9 +112,9 @@ public class UserWorkoutTemplateService {
     }
 
     /**
-     *  Delete the  userWorkoutTemplate by id.
+     * Delete the  userWorkoutTemplate by id.
      *
-     *  @param id the id of the entity
+     * @param id the id of the entity
      */
     public void delete(Long id) {
         log.debug("Request to delete UserWorkoutTemplate : {}", id);

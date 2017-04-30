@@ -199,44 +199,6 @@ public class WorkoutTemplateResourceIntTest {
 
     @Test
     @Transactional
-    public void checkCreatedOnIsRequired() throws Exception {
-        int databaseSizeBeforeTest = workoutTemplateRepository.findAll().size();
-        // set the field null
-        workoutTemplate.setCreatedOn(null);
-
-        // Create the WorkoutTemplate, which fails.
-        WorkoutTemplateDTO workoutTemplateDTO = workoutTemplateMapper.workoutTemplateToWorkoutTemplateDTO(workoutTemplate);
-
-        restWorkoutTemplateMockMvc.perform(post("/api/workout-templates")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(workoutTemplateDTO)))
-            .andExpect(status().isBadRequest());
-
-        List<WorkoutTemplate> workoutTemplateList = workoutTemplateRepository.findAll();
-        assertThat(workoutTemplateList).hasSize(databaseSizeBeforeTest);
-    }
-
-    @Test
-    @Transactional
-    public void checkLastUpdatedIsRequired() throws Exception {
-        int databaseSizeBeforeTest = workoutTemplateRepository.findAll().size();
-        // set the field null
-        workoutTemplate.setLastUpdated(null);
-
-        // Create the WorkoutTemplate, which fails.
-        WorkoutTemplateDTO workoutTemplateDTO = workoutTemplateMapper.workoutTemplateToWorkoutTemplateDTO(workoutTemplate);
-
-        restWorkoutTemplateMockMvc.perform(post("/api/workout-templates")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(workoutTemplateDTO)))
-            .andExpect(status().isBadRequest());
-
-        List<WorkoutTemplate> workoutTemplateList = workoutTemplateRepository.findAll();
-        assertThat(workoutTemplateList).hasSize(databaseSizeBeforeTest);
-    }
-
-    @Test
-    @Transactional
     public void checkIsPrivateIsRequired() throws Exception {
         int databaseSizeBeforeTest = workoutTemplateRepository.findAll().size();
         // set the field null

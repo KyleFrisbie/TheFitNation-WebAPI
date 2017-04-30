@@ -292,6 +292,12 @@ public class UserWorkoutInstanceResourceIntTest {
     @Test
     @Transactional
     public void updateUserWorkoutInstance() throws Exception {
+        Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
+        UserDemographic userDemographic = UserDemographicGenerator.getOne(em, user.get());
+        em.persist(userDemographic);
+        em.flush();
+
+        UserWorkoutInstance userWorkoutInstance = UserWorkoutInstanceGenerator.getInstance().getOne(em, userDemographic);
         // Initialize the database
         userWorkoutInstanceRepository.saveAndFlush(userWorkoutInstance);
         int databaseSizeBeforeUpdate = userWorkoutInstanceRepository.findAll().size();

@@ -18,10 +18,8 @@ public class WorkoutTemplateDTO implements Serializable {
     @Size(min = 1)
     private String name;
 
-    @NotNull
     private LocalDate createdOn;
 
-    @NotNull
     private LocalDate lastUpdated;
 
     @NotNull

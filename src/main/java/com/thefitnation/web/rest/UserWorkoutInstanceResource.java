@@ -69,7 +69,7 @@ public class UserWorkoutInstanceResource {
         }
         UserWorkoutInstanceDTO result = userWorkoutInstanceService.save(userWorkoutInstanceDTO);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, userWorkoutInstanceDTO.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
     }
 
