@@ -1,12 +1,11 @@
 package com.thefitnation.testTools;
 
-import com.thefitnation.domain.User;
+import com.thefitnation.domain.UserDemographic;
 import com.thefitnation.domain.WorkoutInstance;
 import com.thefitnation.domain.WorkoutTemplate;
 
 import javax.persistence.EntityManager;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,17 +50,8 @@ public class WorkoutInstanceGenerator implements IOwnedEntityGenerator<WorkoutIn
     }
 
     @Override
-    public WorkoutInstance getOne(EntityManager entityManager, User user) {
-        WorkoutTemplate workoutTemplate = WorkoutTemplateGenerator.getInstance().getOne(entityManager, user);
-        entityManager.persist(workoutTemplate);
-        entityManager.flush();
-
-        return createWorkoutInstance(workoutTemplate);
-    }
-
-    @Override
-    public WorkoutInstance getOne(EntityManager entityManager, String username, String password) {
-        WorkoutTemplate workoutTemplate = WorkoutTemplateGenerator.getInstance().getOne(entityManager, username, password);
+    public WorkoutInstance getOne(EntityManager entityManager, UserDemographic userDemographic) {
+        WorkoutTemplate workoutTemplate = WorkoutTemplateGenerator.getInstance().getOne(entityManager, userDemographic);
         entityManager.persist(workoutTemplate);
         entityManager.flush();
 
@@ -81,22 +71,10 @@ public class WorkoutInstanceGenerator implements IOwnedEntityGenerator<WorkoutIn
     }
 
     @Override
-    public List<WorkoutInstance> getMany(EntityManager entityManager, int count, User user) {
+    public List<WorkoutInstance> getMany(EntityManager entityManager, int count, UserDemographic userDemographic) {
         List<WorkoutInstance> workoutInstances = new ArrayList<>(count);
         for (int i = 0; i < count; i++) {
-            WorkoutInstance workoutInstance = getOne(entityManager, user);
-            entityManager.persist(workoutInstance);
-            entityManager.flush();
-            workoutInstances.add(workoutInstance);
-        }
-        return workoutInstances;
-    }
-
-    @Override
-    public List<WorkoutInstance> getMany(EntityManager entityManager, int count, String username, String password) {
-        List<WorkoutInstance> workoutInstances = new ArrayList<>(count);
-        for (int i = 0; i < count; i++) {
-            WorkoutInstance workoutInstance = getOne(entityManager, username, password);
+            WorkoutInstance workoutInstance = getOne(entityManager, userDemographic);
             entityManager.persist(workoutInstance);
             entityManager.flush();
             workoutInstances.add(workoutInstance);

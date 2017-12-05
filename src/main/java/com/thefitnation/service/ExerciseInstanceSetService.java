@@ -48,6 +48,10 @@ public class ExerciseInstanceSetService {
         ExerciseInstanceSet exerciseInstanceSet = exerciseInstanceSetMapper.exerciseInstanceSetDTOToExerciseInstanceSet(exerciseInstanceSetDTO);
         Optional<User> user = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin());
         if (user.isPresent()) {
+            ExerciseInstance exerciseInstance = exerciseInstanceRepository.findOne(user.get().getLogin(), exerciseInstanceSetDTO.getExerciseInstanceId());
+            if (exerciseInstance == null) {
+                return null;
+            }
             exerciseInstanceSet = exerciseInstanceSetRepository.save(exerciseInstanceSet);
             addExerciseInstanceSetToParent(exerciseInstanceSet);
             return exerciseInstanceSetMapper.exerciseInstanceSetToExerciseInstanceSetDTO(exerciseInstanceSet);

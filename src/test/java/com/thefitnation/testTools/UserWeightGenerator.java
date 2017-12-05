@@ -25,7 +25,7 @@ public class UserWeightGenerator implements IOwnedEntityGenerator<UserWeight> {
 
     @Override
     public UserWeight getOne(EntityManager entityManager) {
-        UserDemographic userDemographic = UserDemographicGenerator.getInstance().getOne(entityManager);
+        UserDemographic userDemographic = UserDemographicGenerator.getOne(entityManager);
         entityManager.persist(userDemographic);
         entityManager.flush();
 
@@ -37,25 +37,7 @@ public class UserWeightGenerator implements IOwnedEntityGenerator<UserWeight> {
     }
 
     @Override
-    public UserWeight getOne(EntityManager entityManager, User user) {
-        UserDemographic userDemographic = UserDemographicGenerator.getInstance().getOne(entityManager, user);
-        entityManager.persist(userDemographic);
-        entityManager.flush();
-
-        UserWeight userWeight = new UserWeight()
-            .weightDate(LocalDate.ofEpochDay(0L))
-            .weight(1F);
-        userWeight.setUserDemographic(userDemographic);
-        return userWeight;
-    }
-
-    @Override
-    public UserWeight getOne(EntityManager entityManager, String username, String password) {
-        UserDemographic userDemographic = UserDemographicGenerator.getInstance().getOne(entityManager, username, password);
-        entityManager.persist(userDemographic);
-        entityManager.flush();
-
-        UserWeight userWeight = new UserWeight()
+    public UserWeight getOne(EntityManager entityManager, UserDemographic userDemographic) {UserWeight userWeight = new UserWeight()
             .weightDate(LocalDate.ofEpochDay(0L))
             .weight(1F);
         userWeight.setUserDemographic(userDemographic);
@@ -75,18 +57,7 @@ public class UserWeightGenerator implements IOwnedEntityGenerator<UserWeight> {
     }
 
     @Override
-    public List<UserWeight> getMany(EntityManager entityManager, int count, User user) {
-        UserDemographic userDemographic = UserDemographicGenerator.getInstance().getOne(entityManager, user);
-        entityManager.persist(userDemographic);
-        entityManager.flush();
-        return createUserWeightsForUserDemographic(entityManager, count, userDemographic);
-    }
-
-    @Override
-    public List<UserWeight> getMany(EntityManager entityManager, int count, String username, String password) {
-        UserDemographic userDemographic = UserDemographicGenerator.getInstance().getOne(entityManager, username, password);
-        entityManager.persist(userDemographic);
-        entityManager.flush();
+    public List<UserWeight> getMany(EntityManager entityManager, int count,  UserDemographic userDemographic) {
         return createUserWeightsForUserDemographic(entityManager, count, userDemographic);
     }
 

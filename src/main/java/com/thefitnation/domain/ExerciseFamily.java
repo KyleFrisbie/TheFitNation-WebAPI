@@ -1,21 +1,20 @@
 package com.thefitnation.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-
+import com.fasterxml.jackson.annotation.*;
+import java.io.*;
+import java.util.*;
 import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import javax.validation.constraints.*;
-import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.Objects;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.*;
 
 /**
  * A ExerciseFamily.
  */
 @Entity
-@Table(name = "exercise_family")
+@Table(name = "exercise_family", uniqueConstraints = @UniqueConstraint(columnNames = {"name"}))
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class ExerciseFamily implements Serializable {
 
@@ -47,17 +46,21 @@ public class ExerciseFamily implements Serializable {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public ExerciseFamily name(String name) {
         this.name = name;
         return this;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public Set<Exercise> getExercises() {
         return exercises;
+    }
+
+    public void setExercises(Set<Exercise> exercises) {
+        this.exercises = exercises;
     }
 
     public ExerciseFamily exercises(Set<Exercise> exercises) {
@@ -75,10 +78,6 @@ public class ExerciseFamily implements Serializable {
         this.exercises.remove(exercise);
         exercise.setExerciseFamily(null);
         return this;
-    }
-
-    public void setExercises(Set<Exercise> exercises) {
-        this.exercises = exercises;
     }
 
     @Override

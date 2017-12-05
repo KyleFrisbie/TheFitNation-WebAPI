@@ -142,7 +142,7 @@ public class UserDemographicResourceIntTest {
     @Transactional
     public void createUserDemographic() throws Exception {
         Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
-        UserDemographic userDemographic = UserDemographicGenerator.getInstance().getOne(em, user.get());
+        UserDemographic userDemographic = UserDemographicGenerator.getOne(em, user.get());
         UserDemographicDTO userDemographicDTO = userDemographicMapper.userDemographicToUserDemographicDTO(userDemographic);
 
         int databaseSizeBeforeCreate = userDemographicRepository.findAll().size();
@@ -167,7 +167,7 @@ public class UserDemographicResourceIntTest {
     @Transactional
     public void createUserDemographicWithExistingId() throws Exception {
         Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
-        UserDemographic userDemographic = UserDemographicGenerator.getInstance().getOne(em, user.get());
+        UserDemographic userDemographic = UserDemographicGenerator.getOne(em, user.get());
         em.persist(userDemographic);
         em.flush();
         UserDemographicDTO userDemographicDTO = userDemographicMapper.userDemographicToUserDemographicDTO(userDemographic);
@@ -185,53 +185,9 @@ public class UserDemographicResourceIntTest {
 
     @Test
     @Transactional
-    public void checkCreatedOnIsRequired() throws Exception {
-        Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
-        UserDemographic userDemographic = UserDemographicGenerator.getInstance().getOne(em, user.get());
-
-        int databaseSizeBeforeTest = userDemographicRepository.findAll().size();
-        // set the field null
-        userDemographic.setCreatedOn(null);
-
-        // Create the UserDemographic, which fails.
-        UserDemographicDTO userDemographicDTO = userDemographicMapper.userDemographicToUserDemographicDTO(userDemographic);
-
-        restUserDemographicMockMvc.perform(post("/api/user-demographics")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(userDemographicDTO)))
-            .andExpect(status().isBadRequest());
-
-        List<UserDemographic> userDemographicList = userDemographicRepository.findAll();
-        assertThat(userDemographicList).hasSize(databaseSizeBeforeTest);
-    }
-
-    @Test
-    @Transactional
-    public void checkLastLoginIsRequired() throws Exception {
-        Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
-        UserDemographic userDemographic = UserDemographicGenerator.getInstance().getOne(em, user.get());
-
-        int databaseSizeBeforeTest = userDemographicRepository.findAll().size();
-        // set the field null
-        userDemographic.setLastLogin(null);
-
-        // Create the UserDemographic, which fails.
-        UserDemographicDTO userDemographicDTO = userDemographicMapper.userDemographicToUserDemographicDTO(userDemographic);
-
-        restUserDemographicMockMvc.perform(post("/api/user-demographics")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(userDemographicDTO)))
-            .andExpect(status().isBadRequest());
-
-        List<UserDemographic> userDemographicList = userDemographicRepository.findAll();
-        assertThat(userDemographicList).hasSize(databaseSizeBeforeTest);
-    }
-
-    @Test
-    @Transactional
     public void checkDateOfBirthIsRequired() throws Exception {
         Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
-        UserDemographic userDemographic = UserDemographicGenerator.getInstance().getOne(em, user.get());
+        UserDemographic userDemographic = UserDemographicGenerator.getOne(em, user.get());
 
         int databaseSizeBeforeTest = userDemographicRepository.findAll().size();
         // set the field null
@@ -253,7 +209,7 @@ public class UserDemographicResourceIntTest {
     @Transactional
     public void checkUnitOfMeasureIsRequired() throws Exception {
         Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
-        UserDemographic userDemographic = UserDemographicGenerator.getInstance().getOne(em, user.get());
+        UserDemographic userDemographic = UserDemographicGenerator.getOne(em, user.get());
 
         int databaseSizeBeforeTest = userDemographicRepository.findAll().size();
         // set the field null
@@ -276,7 +232,7 @@ public class UserDemographicResourceIntTest {
     public void getAllUserDemographicsByAdmin() throws Exception {
         Optional<User> user = AuthUtil.logInUser("admin", "admin", userRepository);
         int numberOfUserDemographics = 10;
-        List<UserDemographic> userDemographics = UserDemographicGenerator.getInstance().getMany(em, numberOfUserDemographics);
+        List<UserDemographic> userDemographics = UserDemographicGenerator.getMany(em, numberOfUserDemographics);
 
         // Get all the userDemographicList
         restUserDemographicMockMvc.perform(get("/api/user-demographics?sort=id,desc"))
@@ -295,7 +251,7 @@ public class UserDemographicResourceIntTest {
     public void getAllUserDemographicsByUser() throws Exception {
         Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
         int numberOfUserDemographics = 10;
-        List<UserDemographic> userDemographics = UserDemographicGenerator.getInstance().getMany(em, numberOfUserDemographics);
+        List<UserDemographic> userDemographics = UserDemographicGenerator.getMany(em, numberOfUserDemographics);
         userDemographicRepository.saveAndFlush(userDemographic);
 
         // Get all the userDemographicList
@@ -307,7 +263,7 @@ public class UserDemographicResourceIntTest {
     @Transactional
     public void getUserDemographicOwnedByUser() throws Exception {
         Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
-        UserDemographic userDemographic = UserDemographicGenerator.getInstance().getOne(em, user.get());
+        UserDemographic userDemographic = UserDemographicGenerator.getOne(em, user.get());
         em.persist(userDemographic);
         em.flush();
 
@@ -329,7 +285,7 @@ public class UserDemographicResourceIntTest {
     @Transactional
     public void getUserDemographicNotOwnedByUser() throws Exception {
         Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
-        UserDemographic userDemographic = UserDemographicGenerator.getInstance().getOne(em);
+        UserDemographic userDemographic = UserDemographicGenerator.getOne(em);
         em.persist(userDemographic);
         em.flush();
 
@@ -342,7 +298,7 @@ public class UserDemographicResourceIntTest {
     @Transactional
     public void getUserDemographicOwnedByAdmin() throws Exception {
         AuthUtil.logInUser("admin", "admin", userRepository);
-        UserDemographic userDemographic = UserDemographicGenerator.getInstance().getOne(em);
+        UserDemographic userDemographic = UserDemographicGenerator.getOne(em);
         em.persist(userDemographic);
         em.flush();
 
@@ -371,7 +327,7 @@ public class UserDemographicResourceIntTest {
     @Transactional
     public void updateUserDemographicOwnedByUser() throws Exception {
         Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
-        UserDemographic userDemographic = UserDemographicGenerator.getInstance().getOne(em, user.get());
+        UserDemographic userDemographic = UserDemographicGenerator.getOne(em, user.get());
         em.persist(userDemographic);
         em.flush();
 
@@ -411,7 +367,7 @@ public class UserDemographicResourceIntTest {
     @Transactional
     public void updateUserDemographicNotOwnedByUser() throws Exception {
         Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
-        UserDemographic userDemographic = UserDemographicGenerator.getInstance().getOne(em);
+        UserDemographic userDemographic = UserDemographicGenerator.getOne(em);
         em.persist(userDemographic);
         em.flush();
 
@@ -451,7 +407,7 @@ public class UserDemographicResourceIntTest {
     @Transactional
     public void updateNonExistingUserDemographic() throws Exception {
         Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
-        UserDemographic userDemographic = UserDemographicGenerator.getInstance().getOne(em, user.get());
+        UserDemographic userDemographic = UserDemographicGenerator.getOne(em, user.get());
         UserDemographicDTO userDemographicDTO = userDemographicMapper.userDemographicToUserDemographicDTO(userDemographic);
 
         int databaseSizeBeforeUpdate = userDemographicRepository.findAll().size();
@@ -472,7 +428,7 @@ public class UserDemographicResourceIntTest {
     @Transactional
     public void deleteUserDemographic() throws Exception {
         Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
-        UserDemographic userDemographic = UserDemographicGenerator.getInstance().getOne(em, user.get());
+        UserDemographic userDemographic = UserDemographicGenerator.getOne(em, user.get());
         em.persist(userDemographic);
         em.flush();
 
@@ -491,7 +447,7 @@ public class UserDemographicResourceIntTest {
     @Transactional
     public void deleteUserDemographicByAdmin() throws Exception {
         Optional<User> user = AuthUtil.logInUser("admin", "admin", userRepository);
-        UserDemographic userDemographic = UserDemographicGenerator.getInstance().getOne(em, user.get());
+        UserDemographic userDemographic = UserDemographicGenerator.getOne(em, user.get());
         em.persist(userDemographic);
         em.flush();
         int databaseSizeBeforeDelete = userDemographicRepository.findAll().size();

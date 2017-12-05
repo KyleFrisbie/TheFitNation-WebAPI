@@ -5,10 +5,8 @@ import com.thefitnation.repository.*;
 import com.thefitnation.security.*;
 import com.thefitnation.service.dto.*;
 import com.thefitnation.service.mapper.*;
-
 import java.time.*;
 import java.util.*;
-
 import org.slf4j.*;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.*;
@@ -68,6 +66,7 @@ public class WorkoutInstanceService {
 
         Optional<User> user = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin());
         if (user.isPresent()) {
+
             if (!workoutTemplateRepository
                 .findOne(workoutInstanceDTO.getWorkoutTemplateId())
                 .getUserDemographic()
@@ -138,7 +137,7 @@ public class WorkoutInstanceService {
      */
     public void delete(Long id) {
         log.debug("Request to delete WorkoutInstance : {}", id);
-        if (workoutInstanceRepository.findOne(SecurityUtils.getCurrentUserLogin(), id).getId() != null) {
+        if (workoutInstanceRepository.findOne(SecurityUtils.getCurrentUserLogin(), id) != null) {
             removeWorkoutInstanceFromRelatedItems(id);
             workoutInstanceRepository.delete(id);
         }
@@ -158,6 +157,12 @@ public class WorkoutInstanceService {
     private void removeWorkoutInstanceFromRelatedItems(Long id) {
         WorkoutInstance workoutInstance = workoutInstanceRepository.findOne(id);
         if (workoutInstance != null) {
+            Set<ExerciseInstance> exerciseInstances = new HashSet<>(workoutInstance.getExerciseInstances());
+            for (Iterator<ExerciseInstance> iterator = exerciseInstances.iterator(); iterator.hasNext();) {
+                ExerciseInstance exerciseInstance = iterator.next();
+                iterator.remove();
+                exerciseInstanceService.delete(exerciseInstance.getId());
+            }
             WorkoutTemplate workoutTemplate = workoutInstance.getWorkoutTemplate();
             workoutTemplate.removeWorkoutInstance(workoutInstance);
             for (UserWorkoutInstance userWorkoutInstance :
@@ -186,7 +191,7 @@ public class WorkoutInstanceService {
                             userExerciseInstance.setExerciseInstance(null);
                             userExerciseInstanceRepository.save(userExerciseInstance);
                         }
-                        exerciseInstanceRepository.delete(exerciseInstance);
+                        exerciseInstanceService.delete(exerciseInstance.getId());
                     }
                 }
             }

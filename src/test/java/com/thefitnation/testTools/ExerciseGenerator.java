@@ -24,6 +24,8 @@ public class ExerciseGenerator implements IUnownedEntityGenerator<Exercise> {
         return instance;
     }
 
+    private static int NAME_COUNTER = 0;
+
     private static final String DEFAULT_NAME = "AAAAAAAAAA";
     private static final String DEFAULT_IMAGE_URI = "AAAAAAAAAA";
     private static final String DEFAULT_NOTES = "AAAAAAAAAA";
@@ -46,7 +48,7 @@ public class ExerciseGenerator implements IUnownedEntityGenerator<Exercise> {
         entityManager.flush();
 
         return new Exercise()
-            .name(DEFAULT_NAME)
+            .name(DEFAULT_NAME + NAME_COUNTER++)
             .imageUri(DEFAULT_IMAGE_URI)
             .notes(DEFAULT_NOTES)
             .skillLevel(skillLevel)

@@ -9,6 +9,8 @@ import javax.persistence.EntityManager;
  */
 public class BodyPartGenerator implements IUnownedEntityGenerator<BodyPart> {
 
+    private static int NAME_COUNTER = 0;
+
     private static final String DEFAULT_NAME = "AAAAAAAAAA";
 
     private static BodyPartGenerator instance;
@@ -25,6 +27,6 @@ public class BodyPartGenerator implements IUnownedEntityGenerator<BodyPart> {
     @Override
     public BodyPart getOne(EntityManager entityManager) {
         return new BodyPart()
-            .name(DEFAULT_NAME);
+            .name(DEFAULT_NAME + NAME_COUNTER++);
     }
 }

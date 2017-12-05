@@ -3,14 +3,13 @@ package com.thefitnation.testTools;
 import com.thefitnation.domain.ExerciseInstance;
 import com.thefitnation.domain.ExerciseInstanceSet;
 import com.thefitnation.domain.User;
+import com.thefitnation.domain.UserDemographic;
 
 import javax.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by kylel on 4/15/2017.
- */
+
 public class ExerciseInstanceSetGenerator implements IOwnedEntityGenerator<ExerciseInstanceSet> {
 
     private static final Integer DEFAULT_ORDER_NUMBER = 1;
@@ -50,17 +49,8 @@ public class ExerciseInstanceSetGenerator implements IOwnedEntityGenerator<Exerc
     }
 
     @Override
-    public ExerciseInstanceSet getOne(EntityManager entityManager, User user) {
-        ExerciseInstance exerciseInstance = ExerciseInstanceGenerator.getInstance().getOne(entityManager, user);
-        entityManager.persist(exerciseInstance);
-        entityManager.flush();
-
-        return createExerciseInstanceSet(exerciseInstance);
-    }
-
-    @Override
-    public ExerciseInstanceSet getOne(EntityManager entityManager, String username, String password) {
-        ExerciseInstance exerciseInstance = ExerciseInstanceGenerator.getInstance().getOne(entityManager, username, password);
+    public ExerciseInstanceSet getOne(EntityManager entityManager, UserDemographic userDemographic) {
+        ExerciseInstance exerciseInstance = ExerciseInstanceGenerator.getInstance().getOne(entityManager, userDemographic);
         entityManager.persist(exerciseInstance);
         entityManager.flush();
 
@@ -80,22 +70,10 @@ public class ExerciseInstanceSetGenerator implements IOwnedEntityGenerator<Exerc
     }
 
     @Override
-    public List<ExerciseInstanceSet> getMany(EntityManager entityManager, int count, User user) {
+    public List<ExerciseInstanceSet> getMany(EntityManager entityManager, int count, UserDemographic userDemographic) {
         List<ExerciseInstanceSet> exerciseInstanceSets  = new ArrayList<>(count);
         for (int i = 0; i < count; i++) {
-            ExerciseInstanceSet exerciseInstanceSet = getOne(entityManager, user);
-            entityManager.persist(exerciseInstanceSet);
-            entityManager.flush();
-            exerciseInstanceSets.add(exerciseInstanceSet);
-        }
-        return exerciseInstanceSets;
-    }
-
-    @Override
-    public List<ExerciseInstanceSet> getMany(EntityManager entityManager, int count, String username, String password) {
-        List<ExerciseInstanceSet> exerciseInstanceSets  = new ArrayList<>(count);
-        for (int i = 0; i < count; i++) {
-            ExerciseInstanceSet exerciseInstanceSet = getOne(entityManager, username, password);
+            ExerciseInstanceSet exerciseInstanceSet = getOne(entityManager, userDemographic);
             entityManager.persist(exerciseInstanceSet);
             entityManager.flush();
             exerciseInstanceSets.add(exerciseInstanceSet);

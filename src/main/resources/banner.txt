@@ -1,10 +1,9 @@
 
-  ${AnsiColor.GREEN}      ██╗${AnsiColor.RED} ██╗   ██╗ ████████╗ ███████╗   ██████╗ ████████╗ ████████╗ ███████╗
-  ${AnsiColor.GREEN}      ██║${AnsiColor.RED} ██║   ██║ ╚══██╔══╝ ██╔═══██╗ ██╔════╝ ╚══██╔══╝ ██╔═════╝ ██╔═══██╗
-  ${AnsiColor.GREEN}      ██║${AnsiColor.RED} ████████║    ██║    ███████╔╝ ╚█████╗     ██║    ██████╗   ███████╔╝
-  ${AnsiColor.GREEN}██╗   ██║${AnsiColor.RED} ██╔═══██║    ██║    ██╔════╝   ╚═══██╗    ██║    ██╔═══╝   ██╔══██║
-  ${AnsiColor.GREEN}╚██████╔╝${AnsiColor.RED} ██║   ██║ ████████╗ ██║       ██████╔╝    ██║    ████████╗ ██║  ╚██╗
-  ${AnsiColor.GREEN} ╚═════╝ ${AnsiColor.RED} ╚═╝   ╚═╝ ╚═══════╝ ╚═╝       ╚═════╝     ╚═╝    ╚═══════╝ ╚═╝   ╚═╝
+${AnsiColor.BRIGHT_BLACK} ______         ${AnsiColor.BLUE} ______       ${AnsiColor.BRIGHT_GREEN}  _ __
+${AnsiColor.BRIGHT_BLACK}(  /     /      ${AnsiColor.BLUE}(  /    o _/_ ${AnsiColor.BRIGHT_GREEN} ( /  )      _/_ o
+${AnsiColor.BRIGHT_BLACK}  /     /_  _   ${AnsiColor.BLUE} -/--  ,  /   ${AnsiColor.BRIGHT_GREEN}  /  /  __,  /  ,  __ _ _
+${AnsiColor.BRIGHT_BLACK}_/     / /_(/_  ${AnsiColor.BLUE}_/     (_(__  ${AnsiColor.BRIGHT_GREEN} /  (_ (_/(_(__ (_(_)/ / /_
+
 
 ${AnsiColor.BRIGHT_BLUE}:: JHipster 🤓  :: Running Spring Boot ${spring-boot.version} ::
 :: http://jhipster.github.io ::${AnsiColor.DEFAULT}

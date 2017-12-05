@@ -10,6 +10,8 @@ import javax.persistence.EntityManager;
  */
 public class MuscleGenerator implements IUnownedEntityGenerator<Muscle> {
 
+    private static int NAME_COUNTER = 0;
+
     private static final String DEFAULT_NAME = "AAAAAAAAAA";
 
     private static MuscleGenerator instance;
@@ -30,7 +32,7 @@ public class MuscleGenerator implements IUnownedEntityGenerator<Muscle> {
         entityManager.flush();
 
         return new Muscle()
-            .name(DEFAULT_NAME)
+            .name(DEFAULT_NAME + NAME_COUNTER++)
             .bodyPart(bodyPart);
     }
 }

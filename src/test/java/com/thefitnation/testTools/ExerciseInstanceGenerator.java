@@ -51,17 +51,8 @@ public class ExerciseInstanceGenerator implements IOwnedEntityGenerator<Exercise
     }
 
     @Override
-    public ExerciseInstance getOne(EntityManager entityManager, User user) {
-        WorkoutInstance workoutInstance = WorkoutInstanceGenerator.getInstance().getOne(entityManager, user);
-        entityManager.persist(workoutInstance);
-        entityManager.flush();
-
-        return createExerciseInstance(entityManager, workoutInstance);
-    }
-
-    @Override
-    public ExerciseInstance getOne(EntityManager entityManager, String username, String password) {
-        WorkoutInstance workoutInstance = WorkoutInstanceGenerator.getInstance().getOne(entityManager, username, password);
+    public ExerciseInstance getOne(EntityManager entityManager, UserDemographic userDemographic) {
+        WorkoutInstance workoutInstance = WorkoutInstanceGenerator.getInstance().getOne(entityManager, userDemographic);
         entityManager.persist(workoutInstance);
         entityManager.flush();
 
@@ -81,22 +72,10 @@ public class ExerciseInstanceGenerator implements IOwnedEntityGenerator<Exercise
     }
 
     @Override
-    public List<ExerciseInstance> getMany(EntityManager entityManager, int count, User user) {
+    public List<ExerciseInstance> getMany(EntityManager entityManager, int count, UserDemographic userDemographic) {
         List<ExerciseInstance> exerciseInstances  = new ArrayList<>(count);
         for (int i = 0; i < count; i++) {
-            ExerciseInstance exerciseInstance = getOne(entityManager, user);
-            entityManager.persist(exerciseInstance);
-            entityManager.flush();
-            exerciseInstances.add(exerciseInstance);
-        }
-        return exerciseInstances;
-    }
-
-    @Override
-    public List<ExerciseInstance> getMany(EntityManager entityManager, int count, String username, String password) {
-        List<ExerciseInstance> exerciseInstances  = new ArrayList<>(count);
-        for (int i = 0; i < count; i++) {
-            ExerciseInstance exerciseInstance = getOne(entityManager, username, password);
+            ExerciseInstance exerciseInstance = getOne(entityManager, userDemographic);
             entityManager.persist(exerciseInstance);
             entityManager.flush();
             exerciseInstances.add(exerciseInstance);

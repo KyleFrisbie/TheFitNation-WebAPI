@@ -129,7 +129,10 @@ public class UserWeightResourceIntTest {
     @Transactional
     public void createUserWeightForUser() throws Exception {
         Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
-        UserWeight userWeight = UserWeightGenerator.getInstance().getOne(em, user.get());
+        UserDemographic userDemographic = UserDemographicGenerator.getOne(em, user.get());
+        em.persist(userDemographic);
+        em.flush();
+        UserWeight userWeight = UserWeightGenerator.getInstance().getOne(em, userDemographic);
         UserWeightDTO userWeightDTO = userWeightMapper.userWeightToUserWeightDTO(userWeight);
 
         int databaseSizeBeforeCreate = userWeightRepository.findAll().size();
@@ -152,7 +155,10 @@ public class UserWeightResourceIntTest {
     @Transactional
     public void createUserWeightWithExistingId() throws Exception {
         Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
-        UserWeight userWeight = UserWeightGenerator.getInstance().getOne(em, user.get());
+        UserDemographic userDemographic = UserDemographicGenerator.getOne(em, user.get());
+        em.persist(userDemographic);
+        em.flush();
+        UserWeight userWeight = UserWeightGenerator.getInstance().getOne(em, userDemographic);
         em.persist(userWeight);
         em.flush();
         UserWeightDTO userWeightDTO = userWeightMapper.userWeightToUserWeightDTO(userWeight);
@@ -174,7 +180,10 @@ public class UserWeightResourceIntTest {
     @Transactional
     public void checkWeightDateIsRequired() throws Exception {
         Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
-        UserWeight userWeight = UserWeightGenerator.getInstance().getOne(em, user.get());
+        UserDemographic userDemographic = UserDemographicGenerator.getOne(em, user.get());
+        em.persist(userDemographic);
+        em.flush();
+        UserWeight userWeight = UserWeightGenerator.getInstance().getOne(em, userDemographic);
         UserWeightDTO userWeightDTO = userWeightMapper.userWeightToUserWeightDTO(userWeight);
         userWeightDTO.setWeightDate(null);
 
@@ -193,7 +202,10 @@ public class UserWeightResourceIntTest {
     @Transactional
     public void checkWeightIsRequired() throws Exception {
         Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
-        UserWeight userWeight = UserWeightGenerator.getInstance().getOne(em, user.get());
+        UserDemographic userDemographic = UserDemographicGenerator.getOne(em, user.get());
+        em.persist(userDemographic);
+        em.flush();
+        UserWeight userWeight = UserWeightGenerator.getInstance().getOne(em, userDemographic);
         UserWeightDTO userWeightDTO = userWeightMapper.userWeightToUserWeightDTO(userWeight);
         userWeightDTO.setWeight(null);
 
@@ -213,7 +225,10 @@ public class UserWeightResourceIntTest {
     public void getAllUserWeights() throws Exception {
         Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
         int numberOfUserWeights = 10;
-        UserWeight userWeight = UserWeightGenerator.getInstance().getMany(em, numberOfUserWeights, user.get()).get(0);
+        UserDemographic userDemographic = UserDemographicGenerator.getOne(em, user.get());
+        em.persist(userDemographic);
+        em.flush();
+        UserWeight userWeight = UserWeightGenerator.getInstance().getMany(em, numberOfUserWeights, userDemographic).get(0);
 
         // Get all the userWeightList
         restUserWeightMockMvc.perform(get("/api/user-weights?sort=id,desc"))
@@ -228,7 +243,10 @@ public class UserWeightResourceIntTest {
     @Transactional
     public void getUserWeight() throws Exception {
         Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
-        UserWeight userWeight = UserWeightGenerator.getInstance().getOne(em, user.get());
+        UserDemographic userDemographic = UserDemographicGenerator.getOne(em, user.get());
+        em.persist(userDemographic);
+        em.flush();
+        UserWeight userWeight = UserWeightGenerator.getInstance().getOne(em, userDemographic);
         em.persist(userWeight);
         em.flush();
 
@@ -252,7 +270,7 @@ public class UserWeightResourceIntTest {
     @Transactional
     public void getNonExistingUserWeight() throws Exception {
         Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
-        UserDemographic userDemographic = UserDemographicGenerator.getInstance().getOne(em, user.get());
+        UserDemographic userDemographic = UserDemographicGenerator.getOne(em, user.get());
         em.persist(userDemographic);
         em.flush();
 
@@ -264,7 +282,10 @@ public class UserWeightResourceIntTest {
     @Transactional
     public void updateUserWeight() throws Exception {
         Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
-        UserWeight userWeight = UserWeightGenerator.getInstance().getOne(em, user.get());
+        UserDemographic userDemographic = UserDemographicGenerator.getOne(em, user.get());
+        em.persist(userDemographic);
+        em.flush();
+        UserWeight userWeight = UserWeightGenerator.getInstance().getOne(em, userDemographic);
         em.persist(userWeight);
         em.flush();
 
@@ -294,7 +315,7 @@ public class UserWeightResourceIntTest {
     @Transactional
     public void updateNonExistingUserWeight() throws Exception {
         Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
-        UserDemographic userDemographic = UserDemographicGenerator.getInstance().getOne(em, user.get());
+        UserDemographic userDemographic = UserDemographicGenerator.getOne(em, user.get());
         em.persist(userDemographic);
         em.flush();
 
@@ -320,7 +341,10 @@ public class UserWeightResourceIntTest {
     @Transactional
     public void deleteUserWeight() throws Exception {
         Optional<User> user = AuthUtil.logInUser("user", "user", userRepository);
-        UserWeight userWeight = UserWeightGenerator.getInstance().getOne(em, user.get());
+        UserDemographic userDemographic = UserDemographicGenerator.getOne(em, user.get());
+        em.persist(userDemographic);
+        em.flush();
+        UserWeight userWeight = UserWeightGenerator.getInstance().getOne(em, userDemographic);
         em.persist(userWeight);
         em.flush();
         int databaseSizeBeforeDelete = userWeightRepository.findAll().size();
